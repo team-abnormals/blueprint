@@ -9,7 +9,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -34,7 +33,7 @@ public class AbnormalsCore {
 		modEventBus.addListener(this::commonSetup);
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> { 
 			modEventBus.addListener(this::clientSetup);
-			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
+			//modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
 	}
     
