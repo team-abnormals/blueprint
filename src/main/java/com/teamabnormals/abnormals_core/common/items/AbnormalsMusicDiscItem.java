@@ -4,9 +4,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.util.SoundEvent;
 
-public class ItemMusicDisc extends MusicDiscItem {
+public class AbnormalsMusicDiscItem extends MusicDiscItem { 
 	
-	public ItemMusicDisc(int comparatorValueIn, SoundEvent soundIn, Item.Properties builder) {
+	public AbnormalsMusicDiscItem(int comparatorValueIn, SoundEvent soundIn, Item.Properties builder) {
 		super(comparatorValueIn, soundIn, builder);
 	}
+	
 }

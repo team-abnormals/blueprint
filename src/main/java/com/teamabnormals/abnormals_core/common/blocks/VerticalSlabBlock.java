@@ -26,11 +26,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-public class BlockVerticalSlab extends Block implements IWaterLoggable {
+public class VerticalSlabBlock extends Block implements IWaterLoggable {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	
-	public BlockVerticalSlab(Properties properties) {
+	public VerticalSlabBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(TYPE, VerticalSlabType.NORTH).with(WATERLOGGED, false));
 	}

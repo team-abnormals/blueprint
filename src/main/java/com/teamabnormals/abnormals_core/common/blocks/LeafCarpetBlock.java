@@ -10,10 +10,10 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
-public class BlockLeafCarpet extends Block {
+public class LeafCarpetBlock extends Block {
     private static final VoxelShape SHAPE = makeCuboidShape(0, 0, 0, 16, 1, 16);
 
-	public BlockLeafCarpet(Block.Properties properties) {
+	public LeafCarpetBlock(Block.Properties properties) {
 	    super(properties);
 	}
 

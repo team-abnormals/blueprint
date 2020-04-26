@@ -4,12 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 
-public class ItemFuel extends BlockItem {
+public class FuelBlockItem extends BlockItem {
     private int burnTime;
 
-    public ItemFuel(Block block, Properties properties, int burnTimeIn) {
+    public FuelBlockItem(Block block, Properties properties, int burnTimeIn) {
         super(block, properties);
-        burnTime = burnTimeIn;
+        this.burnTime = burnTimeIn;
     }
 
     @Override

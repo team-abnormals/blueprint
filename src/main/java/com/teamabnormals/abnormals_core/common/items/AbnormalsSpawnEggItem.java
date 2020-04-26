@@ -6,10 +6,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.CompoundNBT;
 
-public class ItemSpawnEgg extends SpawnEggItem {
+/**
+ * @author SmellyModder(Luke Tonon)
+ */
+public class AbnormalsSpawnEggItem extends SpawnEggItem {
 	private Supplier<EntityType<?>> entityType;
 
-	public ItemSpawnEgg(Supplier<EntityType<?>> entityType, int primaryColor, int secondaryColor, Properties properties){
+	public AbnormalsSpawnEggItem(Supplier<EntityType<?>> entityType, int primaryColor, int secondaryColor, Properties properties){
 		super(null, primaryColor, secondaryColor, properties);
 		this.entityType = entityType;
 	}

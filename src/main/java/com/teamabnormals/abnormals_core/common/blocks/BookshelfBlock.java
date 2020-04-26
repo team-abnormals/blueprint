@@ -7,9 +7,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 
-public class BlockBookshelf extends Block {
+public class BookshelfBlock extends Block {
 
-	public BlockBookshelf(Properties properties) {
+	public BookshelfBlock(Properties properties) {
 		super(properties);
 	}
 

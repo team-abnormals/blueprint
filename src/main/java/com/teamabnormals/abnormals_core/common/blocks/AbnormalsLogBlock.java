@@ -15,23 +15,24 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class BlockLog extends RotatedPillarBlock {
-	Supplier<Block> block;
+/**
+ * @author SmellyModder(Luke Tonon)
+ */
+public class AbnormalsLogBlock extends RotatedPillarBlock {
+	private final Supplier<Block> block;
 
-	public BlockLog(Supplier<Block> strippedBlock, Properties properties) {
+	public AbnormalsLogBlock(Supplier<Block> strippedBlock, Properties properties) {
 		super(properties);
 		this.block = strippedBlock;
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
 		if(player.getHeldItem(hand).getItem() instanceof AxeItem) {
-			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 2.0F, 1.0F);
-			world.setBlockState(pos, block.get().getDefaultState().with(AXIS, state.get(AXIS)));
+			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+			world.setBlockState(pos, this.block.get().getDefaultState().with(AXIS, state.get(AXIS)));
 			return ActionResultType.SUCCESS;
 		}
-		return super.onBlockActivated(state, world, pos, player, hand, result);
+		return ActionResultType.PASS;
 	}
-
 }

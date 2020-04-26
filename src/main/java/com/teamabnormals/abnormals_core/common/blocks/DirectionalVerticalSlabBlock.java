@@ -25,7 +25,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
-public class BlockDirectionalVerticalSlab extends Block implements IWaterLoggable {
+public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggable {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -36,7 +36,7 @@ public class BlockDirectionalVerticalSlab extends Block implements IWaterLoggabl
 	protected static final VoxelShape NORTH_AABB = Block.makeCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D);
 	protected static final VoxelShape DOUBLE_AABB = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 	
-	public BlockDirectionalVerticalSlab(Properties properties) {
+	public DirectionalVerticalSlabBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
 	}
