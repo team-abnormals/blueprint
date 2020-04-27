@@ -15,9 +15,4 @@ public class DataUtils {
 	public static void registerCompostable(float chance, IItemProvider item) {
 		ComposterBlock.CHANCES.put(item.asItem(), chance);
 	}
-
-//	public static void registerStrippable(Block log, Block stripped) {
-//		AxeItem.BLOCK_STRIPPING_MAP = Maps.newHashMap(AxeItem.BLOCK_STRIPPING_MAP);
-//		AxeItem.BLOCK_STRIPPING_MAP.put(log, stripped);
-//	}
 }

@@ -16,6 +16,9 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+/**
+ * @author bageldotjpg
+ */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
 public class CapeHandler {
 	
@@ -24,22 +27,24 @@ public class CapeHandler {
 			"b8b859a5-2dbc-4743-8f7a-4768f6692606",
 			"4d568080-07a5-4961-96b2-3811f9721aa2", 
 			"caaeff74-cbbc-415c-9c22-21e65ad6c33f",
-			"4378df24-8433-4b5c-b865-bf635b003ebb");
+			"4378df24-8433-4b5c-b865-bf635b003ebb",
+			"9a10620c-ce87-4f6c-a4a7-42d6b8ed39d6",
+			"ff2dd200-7a20-4cad-a42b-65a69da12f2c");
 	
-	private static final Set<String> ADDED_UUIDS = Collections.newSetFromMap(new WeakHashMap<>());
+	private static final Set<String> RENDERERED = Collections.newSetFromMap(new WeakHashMap<>());
 	
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void onRenderPlayer(RenderPlayerEvent.Post event) {
 		PlayerEntity player = event.getPlayer();
 		String uuid = PlayerEntity.getUUID(player.getGameProfile()).toString();
-		if(player instanceof AbstractClientPlayerEntity && UUIDS.contains(uuid) && !ADDED_UUIDS.contains(uuid)) {
+		if(player instanceof AbstractClientPlayerEntity && UUIDS.contains(uuid) && !RENDERERED.contains(uuid)) {
 			AbstractClientPlayerEntity clientPlayer = (AbstractClientPlayerEntity) player;
 			if(clientPlayer.hasPlayerInfo()) {
 				ResourceLocation cape = new ResourceLocation(AbnormalsCore.MODID, "textures/abnormals_cape.png");
 				clientPlayer.playerInfo.playerTextures.put(MinecraftProfileTexture.Type.CAPE, cape);
 				clientPlayer.playerInfo.playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, cape);
-				ADDED_UUIDS.add(uuid);
+				RENDERERED.add(uuid);
 			}
 		}
 	}
