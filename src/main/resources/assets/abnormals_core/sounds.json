@@ -1,0 +1,9 @@
+{
+	"ambient.end_city.test":
+    {
+        "category": "ambient",
+        "sounds": [
+        	{ "name": "abnormals_core:ambient/ambience" }
+        ]
+    }
+}

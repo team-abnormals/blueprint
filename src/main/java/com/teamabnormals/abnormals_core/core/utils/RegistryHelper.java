@@ -2,6 +2,7 @@ package com.teamabnormals.abnormals_core.core.utils;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -10,24 +11,32 @@ import com.google.common.collect.Lists;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.teamabnormals.abnormals_core.common.items.FuelItem;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
-import com.teamabnormals.abnormals_core.core.ExampleBlockRegistry;
-import com.teamabnormals.abnormals_core.core.ExampleItemRegistry;
+import com.teamabnormals.abnormals_core.core.examples.ExampleBlockRegistry;
+import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
+import com.teamabnormals.abnormals_core.core.examples.ExampleItemRegistry;
+import com.teamabnormals.abnormals_core.core.examples.ExampleSoundRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.TallBlockItem;
 import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -41,12 +50,16 @@ public class RegistryHelper {
 	private final String modId;
 	private final DeferredRegister<Item> itemRegister;
 	private final DeferredRegister<Block> blockRegister;
+	private final DeferredRegister<SoundEvent> soundRegister;
+	private final DeferredRegister<EntityType<?>> entityRegister;
 	private final List<RegistryObject<Item>> spawnEggs = Lists.newArrayList();
 	
 	public RegistryHelper(String modId) {
 		this.modId = modId;
 		this.itemRegister = new DeferredRegister<>(ForgeRegistries.ITEMS, modId);
 		this.blockRegister = new DeferredRegister<>(ForgeRegistries.BLOCKS, modId);
+		this.soundRegister = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, modId);
+		this.entityRegister = new DeferredRegister<>(ForgeRegistries.ENTITIES, modId);
 	}
 	
 	public DeferredRegister<Item> getDeferredItemRegister() {
@@ -55,6 +68,13 @@ public class RegistryHelper {
 	
 	public DeferredRegister<Block> getDeferredBlockRegister() {
 		return this.blockRegister;
+	}
+	public DeferredRegister<SoundEvent> getDeferredSoundRegister() {
+		return this.soundRegister;
+	}
+	
+	public DeferredRegister<EntityType<?>> getDeferredEntityRegister() {
+		return this.entityRegister;
 	}
 	
 	public String getModId() {
@@ -262,5 +282,90 @@ public class RegistryHelper {
 		RegistryObject<B> block = this.blockRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(determinedGroup)));
 		return block;
+	}
+	
+	/**
+	 * Creates a SoundEvent
+	 * @see ({@link ExampleSoundRegistry}
+	 * @param name - The sound's name
+	 * @return - The named SoundEvent
+	 */
+	public RegistryObject<SoundEvent> createSoundEvent(String name) {
+		return this.soundRegister.register(name, () -> new SoundEvent(this.prefix(name)));
+	}
+	
+	/**
+	 * Creates a living entity RegistryObject
+	 * For example @see {@link ExampleEntityRegistry}
+	 * @param name - The entity's name
+	 * @param factory - The entity's factory
+	 * @param entityClassification - The entity's classification
+	 * @param width - The width of the entity's bounding box
+	 * @param height - The height of the entity's bounding box
+	 * @return - The customized living entity RegistryObject
+	 */
+	public <E extends LivingEntity> RegistryObject<EntityType<E>> createLivingEntity(String name, EntityType.IFactory<E> factory, EntityClassification entityClassification, float width, float height) {
+		return this.entityRegister.register(name, () -> createLivingEntity(factory, entityClassification, name, width, height));
+	}
+	
+	/**
+	 * Creates an entity RegistryObject
+	 * No examples for this one, but {@link ExampleEntityRegistry} can help
+	 * @param name - The entity's name
+	 * @param factory - The entity's factory
+	 * @param clientFactory - The entity's client factory
+	 * @param entityClassification - The entity's classification
+	 * @param width - The width of the entity's bounding box
+	 * @param height - The height of the entity's bounding box
+	 * @return - The customized entity RegistryObject
+	 */
+	public <E extends Entity> RegistryObject<EntityType<E>> createEntity(String name, EntityType.IFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, World, E> clientFactory, EntityClassification entityClassification, float width, float height) {
+		return this.entityRegister.register(name, () -> createEntity(factory, clientFactory, entityClassification, name, width, height));
+	}
+	
+	/**
+	 * Creates a living entity
+	 * For example @see {@link ExampleEntityRegistry}
+	 * @param name - The entity's name
+	 * @param factory - The entity's factory
+	 * @param entityClassification - The entity's classification
+	 * @param width - The width of the entity's bounding box
+	 * @param height - The height of the entity's bounding box
+	 * @return - The customized living entity
+	 */
+	public <E extends LivingEntity> EntityType<E> createLivingEntity(EntityType.IFactory<E> factory, EntityClassification entityClassification, String name, float width, float height) {
+		ResourceLocation location = this.prefix(name);
+		EntityType<E> entity = EntityType.Builder.create(factory, entityClassification)
+			.size(width, height)
+			.setTrackingRange(64)
+			.setShouldReceiveVelocityUpdates(true)
+			.setUpdateInterval(3)
+			.build(location.toString()
+		);
+		return entity;
+	}
+	
+	/**
+	 * Creates an entity
+	 * No examples for this one, but {@link ExampleEntityRegistry} can help
+	 * @param name - The entity's name
+	 * @param factory - The entity's factory
+	 * @param clientFactory - The entity's client factory
+	 * @param entityClassification - The entity's classification
+	 * @param width - The width of the entity's bounding box
+	 * @param height - The height of the entity's bounding box
+	 * @return - The customized entity
+	 */
+	public <E extends Entity> EntityType<E> createEntity(EntityType.IFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, World, E> clientFactory, EntityClassification entityClassification, String name, float width, float height) {
+		ResourceLocation location = this.prefix(name);
+		EntityType<E> entity = EntityType.Builder.create(factory, entityClassification)
+			.size(width, height)
+			.setTrackingRange(64)
+			.setShouldReceiveVelocityUpdates(true)
+			.setUpdateInterval(3)
+			.setCustomClientFactory(clientFactory)
+			.build(location.toString()
+		);
+		return entity;
 	}
 }

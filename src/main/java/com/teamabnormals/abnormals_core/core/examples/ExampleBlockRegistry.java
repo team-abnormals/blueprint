@@ -1,5 +1,6 @@
-package com.teamabnormals.abnormals_core.core;
+package com.teamabnormals.abnormals_core.core.examples;
 
+import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
 import net.minecraft.block.Block;
