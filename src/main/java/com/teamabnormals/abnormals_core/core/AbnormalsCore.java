@@ -3,10 +3,13 @@ package com.teamabnormals.abnormals_core.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.teamabnormals.abnormals_core.client.example.ExampleEndimatedEntityRenderer;
 import com.teamabnormals.abnormals_core.common.network.MessageS2CEndimation;
+import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
+import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,6 +18,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -45,7 +49,7 @@ public class AbnormalsCore {
         
 		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
 		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
-		//REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		//REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		
 		modEventBus.addListener(this::commonSetup);
@@ -65,7 +69,8 @@ public class AbnormalsCore {
     
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(final FMLClientSetupEvent event) {
-		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 	}
 	
 	@OnlyIn(Dist.CLIENT)

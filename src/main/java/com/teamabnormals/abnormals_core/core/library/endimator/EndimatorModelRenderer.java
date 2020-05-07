@@ -25,11 +25,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class EndimatorModelRenderer extends ModelRenderer {
 	public float defaultRotationPointX, defaultRotationPointY, defaultRotationPointZ;
 	public float defaultRotateAngleX, defaultRotateAngleY, defaultRotateAngleZ;
+	public float defaultOffsetX, defaultOffsetY, defaultOffsetZ, offsetX, offsetY, offsetZ;
 	public int textureOffsetX, textureOffsetY;
 	public float textureWidth, textureHeight;
 	public boolean scaleChildren = true;
-	public float offsetX, offsetY, offsetZ;
-	public float scaleX, scaleY, scaleZ;
+	public float scaleX, scaleY, scaleZ = 1.0F;
 	private final ObjectList<ModelBox> cubeList = new ObjectArrayList<>();
 	private final ObjectList<EndimatorModelRenderer> childModels = new ObjectArrayList<>();
 
@@ -139,6 +139,10 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		this.rotationPointY = this.defaultRotationPointY;
 		this.rotationPointZ = this.defaultRotationPointZ;
 		
+		this.offsetX = this.defaultOffsetX;
+		this.offsetY = this.defaultOffsetY;
+		this.offsetZ = this.defaultOffsetZ;
+		
 		this.rotateAngleX = this.defaultRotateAngleX;
 		this.rotateAngleY = this.defaultRotateAngleY;
 		this.rotateAngleZ = this.defaultRotateAngleZ;
@@ -177,8 +181,18 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		this.scaleZ = scaleZ;
 	}
 	
+	public void applyScaling(EndimatorModelRenderer modelRenderer) {
+		this.setScale(modelRenderer.rotationPointX, modelRenderer.rotationPointY, modelRenderer.rotationPointZ);
+	}
+	
 	public void setShouldScaleChildren(boolean scaleChildren) {
 		this.scaleChildren = scaleChildren;
+	}
+	
+	public void setDefaultOffset(float x, float y, float z) {
+		this.defaultOffsetX = x;
+		this.defaultOffsetY = y;
+		this.defaultOffsetZ = z;
 	}
 	
 	public void setOffset(float x, float y, float z) {

@@ -7,6 +7,7 @@ import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -28,6 +29,18 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	public void tick() {
 		super.tick();
 		this.endimateTick();
+		
+		if(this.getHealth() <= 0.0F) {
+			Endimation deathEndimation = this.getDeathAnimation();
+			if(deathEndimation != null) {
+				if(this.isServerWorld() && !this.isEndimationPlaying(deathEndimation)) {
+					NetworkUtil.setPlayingAnimationMessage(this, deathEndimation);
+				}
+				this.onEndimatedDeathUpdate(deathEndimation.getAnimationTickDuration());
+			} else {
+				this.onEndimatedDeathUpdate(20);
+			}
+		}
 	}
 	
 	@Override
@@ -36,6 +49,25 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 			NetworkUtil.setPlayingAnimationMessage(this, this.getHurtAnimation());
 		}
 		return super.attackEntityFrom(source, amount);
+	}
+	
+	@Override
+	protected void onDeathUpdate() {}
+	
+	private void onEndimatedDeathUpdate(int deathAnimationDuration) {
+		if(this.deathTime++ >= deathAnimationDuration - 1) {
+			this.remove();
+			this.addDeathParticles();
+		}
+	}
+	
+	/*
+	 * Adds the death particles, should be overridden if you want to change the death particles
+	 */
+	protected void addDeathParticles() {
+		for(int i = 0; i < 20; ++i) {
+            this.world.addParticle(ParticleTypes.POOF, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D);
+         }
 	}
 	
 	@Override
@@ -91,6 +123,11 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	
 	@Nullable
 	public Endimation getHurtAnimation() {
+		return null;
+	}
+	
+	@Nullable
+	public Endimation getDeathAnimation() {
 		return null;
 	}
 	

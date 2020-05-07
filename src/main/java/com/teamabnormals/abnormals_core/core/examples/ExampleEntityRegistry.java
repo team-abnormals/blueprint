@@ -1,5 +1,6 @@
 package com.teamabnormals.abnormals_core.core.examples;
 
+import com.teamabnormals.abnormals_core.common.entity.ExampleEndimatedEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
@@ -14,4 +15,5 @@ public class ExampleEntityRegistry {
 	public static final RegistryHelper HELPER = AbnormalsCore.REGISTRY_HELPER;
 	
 	public static final RegistryObject<EntityType<CowEntity>> COW = HELPER.createLivingEntity("example", CowEntity::new, EntityClassification.CREATURE, 1.0F, 1.0F);
+	public static final RegistryObject<EntityType<ExampleEndimatedEntity>> EXAMPLE_ANIMATED = HELPER.createLivingEntity("example_animated", ExampleEndimatedEntity::new, EntityClassification.CREATURE, 1.0F, 1.0F);
 }
