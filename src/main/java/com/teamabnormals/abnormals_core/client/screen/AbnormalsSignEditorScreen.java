@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class AbnormalsSignEditorScreen extends Screen {
-	private final AbnormalsSignTileEntityRenderer.SignModel field_228191_a_ = new AbnormalsSignTileEntityRenderer.SignModel();
+	private final AbnormalsSignTileEntityRenderer.SignModel signModel = new AbnormalsSignTileEntityRenderer.SignModel();
 	private final AbnormalsSignTileEntity tileSign;
 	private int updateCounter;
 	private int editLine;
@@ -122,9 +122,9 @@ public class AbnormalsSignEditorScreen extends Screen {
 		matrixstack.scale(0.6666667F, -0.6666667F, -0.6666667F);
 		IRenderTypeBuffer.Impl irendertypebuffer$impl = this.minecraft.getRenderTypeBuffers().getBufferSource();
 		IVertexBuilder ivertexbuilder = irendertypebuffer$impl.getBuffer(RenderType.getEntityCutoutNoCull(AbnormalsSignTileEntityRenderer.getTexture(blockstate)));
-		this.field_228191_a_.signBoard.render(matrixstack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY);
+		this.signModel.signBoard.render(matrixstack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY);
 		if(flag) {
-			this.field_228191_a_.signStick.render(matrixstack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY);
+			this.signModel.signStick.render(matrixstack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY);
 		}
 
 		matrixstack.pop();
