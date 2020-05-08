@@ -8,6 +8,11 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
+import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
+import com.teamabnormals.abnormals_core.common.items.AbnormalsSignItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.teamabnormals.abnormals_core.common.items.FuelItem;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
@@ -17,6 +22,9 @@ import com.teamabnormals.abnormals_core.core.examples.ExampleItemRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleSoundRegistry;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -27,6 +35,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.TallBlockItem;
 import net.minecraft.item.WallOrFloorItem;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -51,6 +61,7 @@ public class RegistryHelper {
 	private final DeferredRegister<Item> itemRegister;
 	private final DeferredRegister<Block> blockRegister;
 	private final DeferredRegister<SoundEvent> soundRegister;
+	private final DeferredRegister<TileEntityType<?>> tileEntityRegister;
 	private final DeferredRegister<EntityType<?>> entityRegister;
 	private final List<RegistryObject<Item>> spawnEggs = Lists.newArrayList();
 	
@@ -59,6 +70,7 @@ public class RegistryHelper {
 		this.itemRegister = new DeferredRegister<>(ForgeRegistries.ITEMS, modId);
 		this.blockRegister = new DeferredRegister<>(ForgeRegistries.BLOCKS, modId);
 		this.soundRegister = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, modId);
+		this.tileEntityRegister = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, modId);
 		this.entityRegister = new DeferredRegister<>(ForgeRegistries.ENTITIES, modId);
 	}
 	
@@ -69,8 +81,13 @@ public class RegistryHelper {
 	public DeferredRegister<Block> getDeferredBlockRegister() {
 		return this.blockRegister;
 	}
+	
 	public DeferredRegister<SoundEvent> getDeferredSoundRegister() {
 		return this.soundRegister;
+	}
+	
+	public DeferredRegister<TileEntityType<?>> getDeferredTileEntityRegister() {
+		return this.tileEntityRegister;
 	}
 	
 	public DeferredRegister<EntityType<?>> getDeferredEntityRegister() {
@@ -269,6 +286,13 @@ public class RegistryHelper {
 		return block;
 	}
 	
+	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color, ResourceLocation texture) {
+		RegistryObject<AbnormalsStandingSignBlock> standing = this.blockRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.create(Material.WOOD).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD), texture));
+		RegistryObject<AbnormalsWallSignBlock> wall = this.blockRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.create(Material.WOOD, color).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD).lootFrom(standing.get()), texture));
+		ExampleItemRegistry.HELPER.createItem(name + "_sign", () -> new AbnormalsSignItem(new Item.Properties().maxStackSize(16).group(ItemGroup.DECORATIONS), standing.get(), wall.get()));
+		return Pair.of(standing, wall);
+	}
+	
 	/**
 	 * Creates a Compat Block
 	 * @param name - The block's name
@@ -292,6 +316,17 @@ public class RegistryHelper {
 	 */
 	public RegistryObject<SoundEvent> createSoundEvent(String name) {
 		return this.soundRegister.register(name, () -> new SoundEvent(this.prefix(name)));
+	}
+	
+	/**
+	 * Creates a TileEntityType
+	 * @param name - Tile Entity's name
+	 * @param tileEntity - The Tile Entity
+	 * @param validBlocks - The valid blocks for this Tile Entity
+	 * @return - The customized TileEntityType
+	 */
+	public <T extends TileEntity> RegistryObject<TileEntityType<T>> createTileEntity(String name, Supplier<? extends T> tileEntity, Supplier<Block[]> validBlocks) {
+		return this.tileEntityRegister.register(name, () -> new TileEntityType<>(tileEntity, Sets.newHashSet(validBlocks.get()), null));
 	}
 	
 	/**

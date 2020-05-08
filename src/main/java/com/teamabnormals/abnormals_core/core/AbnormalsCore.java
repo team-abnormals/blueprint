@@ -4,8 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.teamabnormals.abnormals_core.client.example.ExampleEndimatedEntityRenderer;
+import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
+import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
 import com.teamabnormals.abnormals_core.common.network.MessageS2CEndimation;
+import com.teamabnormals.abnormals_core.common.network.MessageS2CUpdateSign;
+import com.teamabnormals.abnormals_core.common.network.MessageSOpenSignEditor;
+import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
+import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
@@ -18,8 +24,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -47,17 +56,27 @@ public class AbnormalsCore {
 		
 		this.setupMessages();
         
-		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
 		//REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
+		
+		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
+			final ModConfig config = event.getConfig();
+			if(config.getSpec() == ACConfig.CLIENTSPEC) {
+				ACConfig.ValuesHolder.updateClientValuesFromConfig(config);
+			}
+		});
 		
 		modEventBus.addListener(this::commonSetup);
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> { 
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
-			//modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
+			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
+		
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ACConfig.CLIENTSPEC);
 	}
     
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -71,6 +90,8 @@ public class AbnormalsCore {
 	private void clientSetup(final FMLClientSetupEvent event) {
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
+		
+		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -84,6 +105,21 @@ public class AbnormalsCore {
 		CHANNEL.messageBuilder(MessageS2CEndimation.class, id++)
 		.encoder(MessageS2CEndimation::serialize).decoder(MessageS2CEndimation::deserialize)
 		.consumer(MessageS2CEndimation::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageSOpenSignEditor.class, id++)
+		.encoder(MessageSOpenSignEditor::serialize).decoder(MessageSOpenSignEditor::deserialize)
+		.consumer(MessageSOpenSignEditor::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageC2SEditSign.class, id++)
+		.encoder(MessageC2SEditSign::serialize).decoder(MessageC2SEditSign::deserialize)
+		.consumer(MessageC2SEditSign::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageS2CUpdateSign.class, id++)
+		.encoder(MessageS2CUpdateSign::serialize).decoder(MessageS2CUpdateSign::deserialize)
+		.consumer(MessageS2CUpdateSign::handle)
 		.add();
 	}
 }
