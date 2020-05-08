@@ -43,7 +43,7 @@ public class MessageC2SEditSign {
 	}
 	
 	public static MessageC2SEditSign deserialize(PacketBuffer buf) {
-		return new MessageC2SEditSign(buf.readBlockPos(), buf.readString(), buf.readString(), buf.readString(), buf.readString());
+		return new MessageC2SEditSign(buf.readBlockPos(), buf.readString(32767), buf.readString(32767), buf.readString(32767), buf.readString(32767));
 	}
 	
 	@SuppressWarnings("deprecation")

@@ -64,8 +64,8 @@ public class AbnormalsCore {
 		
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
-			if(config.getSpec() == ACConfig.CLIENTSPEC) {
-				ACConfig.ValuesHolder.updateClientValuesFromConfig(config);
+			if(config.getSpec() == ACConfig.COMMON_SPEC) {
+				ACConfig.ValuesHolder.updateCommonValuesFromConfig(config);
 			}
 		});
 		
@@ -76,7 +76,7 @@ public class AbnormalsCore {
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
 		
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ACConfig.CLIENTSPEC);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
 	}
     
 	private void commonSetup(final FMLCommonSetupEvent event) {

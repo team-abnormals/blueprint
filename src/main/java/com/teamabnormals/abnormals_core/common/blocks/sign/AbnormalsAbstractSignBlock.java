@@ -43,8 +43,11 @@ public abstract class AbnormalsAbstractSignBlock extends AbstractSignBlock {
 				AbnormalsSignTileEntity signtileentity = (AbnormalsSignTileEntity) tileentity;
 				if(canDye) {
 					boolean tryToSetColor = signtileentity.setTextColor(((DyeItem) itemstack.getItem()).getDyeColor());
-					if(tryToSetColor && !player.isCreative()) {
-						itemstack.shrink(1);
+					if(tryToSetColor) {
+						NetworkUtil.updateSignText(pos, signtileentity.getText(0), signtileentity.getText(1), signtileentity.getText(2), signtileentity.getText(3), signtileentity.getTextColor());
+						if(!player.isCreative()) {
+							itemstack.shrink(1);
+						}
 					}
 				} else {
 					if(canEdit && !this.doesSignHaveCommand(signtileentity) && ACConfig.ValuesHolder.isQuarkSignEditingEnabled() && (!ACConfig.ValuesHolder.doesSignEditingRequireEmptyHand() || itemstack.isEmpty()) && !player.isShiftKeyDown()) {

@@ -2,6 +2,8 @@ package com.teamabnormals.abnormals_core.core.utils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.teamabnormals.abnormals_core.client.ClientInfo;
+import com.teamabnormals.abnormals_core.client.screen.AbnormalsSignEditorScreen;
 import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
 import com.teamabnormals.abnormals_core.common.network.MessageS2CEndimation;
 import com.teamabnormals.abnormals_core.common.network.MessageS2CUpdateSign;
@@ -17,6 +19,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
@@ -69,4 +73,8 @@ public class NetworkUtil {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageS2CUpdateSign(signPos, topLine.getString(), secondLine.getString(), thirdLine.getString(), bottomLine.getString(), color.getId()));
 	}
 	
+	@OnlyIn(Dist.CLIENT)
+	public static void openSignScreen(AbnormalsSignTileEntity sign) {
+		ClientInfo.MINECRAFT.displayGuiScreen(new AbnormalsSignEditorScreen(sign));
+	}
 }

@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
@@ -73,7 +72,6 @@ public class AbnormalsSignTileEntity extends TileEntity {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public ITextComponent getText(int line) {
 		return this.signText[line];
 	}
@@ -154,7 +152,6 @@ public class AbnormalsSignTileEntity extends TileEntity {
 		if(newColor != this.getTextColor()) {
 			this.textColor = newColor;
 			this.markDirty();
-			NetworkUtil.updateSignText(this.getPos(), this.getText(0), this.getText(1), this.getText(2), this.getText(3), this.textColor);
 			this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
 			return true;
 		} else {

@@ -4,8 +4,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.teamabnormals.abnormals_core.client.ClientInfo;
-import com.teamabnormals.abnormals_core.client.screen.AbnormalsSignEditorScreen;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -42,7 +42,7 @@ public class MessageSOpenSignEditor {
 			context.enqueueWork(() -> {
 				TileEntity tileentity = ClientInfo.getClientPlayerWorld().getTileEntity(message.signPos);
 				
-				ClientInfo.MINECRAFT.displayGuiScreen(new AbnormalsSignEditorScreen((AbnormalsSignTileEntity) tileentity));
+				NetworkUtil.openSignScreen((AbnormalsSignTileEntity) tileentity);
 			});
 		}
 		context.setPacketHandled(true);

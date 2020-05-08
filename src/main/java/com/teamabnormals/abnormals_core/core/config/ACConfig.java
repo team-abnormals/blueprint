@@ -12,13 +12,13 @@ import net.minecraftforge.fml.config.ModConfig;
  */
 public class ACConfig {
 
-	public static class Client {
+	public static class Common {
 		public final ConfigValue<Boolean> enableQuarkSignEditing;
 		public final ConfigValue<Boolean> signEditingRequiresEmptyHand;
 		
-		Client(ForgeConfigSpec.Builder builder) {
-			builder.comment("Client only settings for Abnormals Core, this will affect all depending mods")
-			.push("client");
+		Common(ForgeConfigSpec.Builder builder) {
+			builder.comment("Common only settings for Abnormals Core, this will affect all depending mods")
+			.push("common");
 			
 			enableQuarkSignEditing = builder
 				.comment("If Quark Sign Editing should be enabled; Default: True")
@@ -38,25 +38,25 @@ public class ACConfig {
 		return "abnormals_core.config." + name;
 	}
 	
-	public static final ForgeConfigSpec CLIENTSPEC;
-	public static final Client CLIENT;
+	public static final ForgeConfigSpec COMMON_SPEC;
+	public static final Common COMMON;
 	static {
-		final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
-		CLIENTSPEC = specPair.getRight();
-		CLIENT = specPair.getLeft();
+		final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
+		COMMON_SPEC = specPair.getRight();
+		COMMON = specPair.getLeft();
 	}
 	
 	public static class ValuesHolder {
 		private static boolean quarkSignEditing;
 		private static boolean signEditingRequireEmptyHand;
 		
-		public static void updateClientValuesFromConfig(ModConfig config) {
-			quarkSignEditing = ACConfig.CLIENT.enableQuarkSignEditing.get();
-			signEditingRequireEmptyHand = ACConfig.CLIENT.signEditingRequiresEmptyHand.get();
+		public static void updateCommonValuesFromConfig(ModConfig config) {
+			quarkSignEditing = ACConfig.COMMON.enableQuarkSignEditing.get();
+			signEditingRequireEmptyHand = ACConfig.COMMON.signEditingRequiresEmptyHand.get();
 		}
 		
 		public static boolean isQuarkSignEditingEnabled() {
-			return ModList.get().isLoaded("quark") && quarkSignEditing;
+			return !ModList.get().isLoaded("quark") && quarkSignEditing;
 		}
 		
 		public static boolean doesSignEditingRequireEmptyHand() {

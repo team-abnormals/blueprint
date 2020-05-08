@@ -3,10 +3,7 @@ package com.teamabnormals.abnormals_core.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class ClientInfo {
 	public static final Minecraft MINECRAFT = Minecraft.getInstance();
 
