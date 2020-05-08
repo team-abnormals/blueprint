@@ -41,6 +41,11 @@ public class NetworkUtil {
 		}
 	}
 	
+	/**
+	 * Opens the sign editor from the server side
+	 * @param player
+	 * @param sign
+	 */
 	public static void openSignEditor(PlayerEntity player, AbnormalsSignTileEntity sign) {
 		if(player instanceof ServerPlayerEntity) {
 			sign.setPlayer(player);
@@ -50,11 +55,11 @@ public class NetworkUtil {
 	
 	/**
 	 * Send a packet to the server to set the sign's text
-	 * @param signPos
-	 * @param topLine
-	 * @param secondLine
-	 * @param thirdLine
-	 * @param bottomLine
+	 * @param signPos - The sign's position
+	 * @param topLine - Top Line Sign Text
+	 * @param secondLine - Second Line Sign Text
+	 * @param thirdLine - Third Line Sign Text
+	 * @param bottomLine - Bottom Line Sign Text
 	 */
 	public static void setNewSignText(BlockPos signPos, ITextComponent topLine, ITextComponent secondLine, ITextComponent thirdLine, ITextComponent bottomLine) {
 		AbnormalsCore.CHANNEL.sendToServer(new MessageC2SEditSign(signPos, topLine.getString(), secondLine.getString(), thirdLine.getString(), bottomLine.getString()));
@@ -62,17 +67,21 @@ public class NetworkUtil {
 	
 	/**
 	 * Send a packet to the server to update the sign's text
-	 * @param signPos
-	 * @param topLine
-	 * @param secondLine
-	 * @param thirdLine
-	 * @param bottomLine
-	 * @param color
+	 * @param signPos - The sign's position
+	 * @param topLine - Top Line Sign Text
+	 * @param secondLine - Second Line Sign Text
+	 * @param thirdLine - Third Line Sign Text
+	 * @param bottomLine - Bottom Line Sign Text
+	 * @param color - The color to update on the sign
 	 */
 	public static void updateSignText(BlockPos signPos, ITextComponent topLine, ITextComponent secondLine, ITextComponent thirdLine, ITextComponent bottomLine, DyeColor color) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageS2CUpdateSign(signPos, topLine.getString(), secondLine.getString(), thirdLine.getString(), bottomLine.getString(), color.getId()));
 	}
 	
+	/**
+	 * Opens the sign screen
+	 * @param sign - The Sign TileEntity to edit
+	 */
 	@OnlyIn(Dist.CLIENT)
 	public static void openSignScreen(AbnormalsSignTileEntity sign) {
 		ClientInfo.MINECRAFT.displayGuiScreen(new AbnormalsSignEditorScreen(sign));

@@ -18,7 +18,7 @@ public class ItemStackUtils {
 	public static int findIndexOfItem(Item item, NonNullList<ItemStack> items) {
 		for(int i = 0; i < items.size(); i++) {
 			if(items.get(i).getItem() == item) {
-				return i + 1;
+				return i;
 			}
 		}
 		return -1;

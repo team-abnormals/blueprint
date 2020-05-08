@@ -38,7 +38,7 @@ public class AbnormalsSignItem extends WallOrFloorItem {
 		if(this.isInGroup(group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_SIGN, items);
 			if(targetIndex != -1) {
-				items.add(targetIndex, new ItemStack(this));
+				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				this.getBlock().fillItemGroup(group, items);
 			}
