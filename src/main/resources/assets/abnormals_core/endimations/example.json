@@ -1,0 +1,36 @@
+{
+    "instructions": [
+        {
+          "type": "start_keyframe",
+          "ticks": 10
+        },
+        {
+          "type": "move",
+          "model_renderer": "scaleController",
+          "x": 0.5,
+          "y": 0.5,
+          "z": 0.5,
+          "ticks": 10
+        },
+        {
+          "type": "end_keyframe",
+          "ticks": 0
+        },
+        {
+          "type": "start_keyframe",
+          "ticks": 20
+        },
+        {
+          "type": "move",
+          "model_renderer": "scaleController",
+          "x": -0.99,
+          "y": -0.99,
+          "z": -0.99,
+          "ticks": 20
+        },
+        {
+          "type": "end_keyframe",
+          "ticks": 0
+        }
+    ]
+}

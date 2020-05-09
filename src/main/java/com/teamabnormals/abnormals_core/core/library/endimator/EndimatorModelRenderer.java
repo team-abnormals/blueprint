@@ -30,6 +30,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	public float textureWidth, textureHeight;
 	public boolean scaleChildren = true;
 	public float scaleX, scaleY, scaleZ = 1.0F;
+	private String name;
 	private final ObjectList<ModelBox> cubeList = new ObjectArrayList<>();
 	private final ObjectList<EndimatorModelRenderer> childModels = new ObjectArrayList<>();
 
@@ -61,6 +62,14 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	
 	public void addChild(EndimatorModelRenderer renderer) {
 		this.childModels.add(renderer);
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	/**

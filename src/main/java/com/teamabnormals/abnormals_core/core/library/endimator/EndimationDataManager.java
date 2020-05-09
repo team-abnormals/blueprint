@@ -90,57 +90,61 @@ public class EndimationDataManager extends JsonReloadListener {
 		
 		public JsonObject serialize() {
 			JsonObject json = new JsonObject();
-			json.addProperty("type", this.type.id);
-			json.addProperty("tickLength", this.tickLength);
+			json.addProperty("type", this.type.toString().toLowerCase());
+			json.addProperty("ticks", this.tickLength);
 			return json;
 		}
 		
 		public static EndimationInstruction deserialize(JsonObject json) {
-			int typeId = json.get("type").getAsInt();
-			int tickLength = json.get("tickLength").getAsInt();
-			InstructionType type = InstructionType.getTypeById(typeId);
+			String stringType = json.get("type").getAsString();
+			int tickLength = json.get("ticks").getAsInt();
+			InstructionType type = InstructionType.getTypeByString(stringType);
 			if(type != InstructionType.START_KEYFRAME && type != InstructionType.END_KEYFRAME) {
-				return new ModelRendererEndimationInstruction(type, json.get("modelRenderer").getAsString(), json.get("value").getAsFloat(), tickLength);
+				return new ModelRendererEndimationInstruction(type, json.get("model_renderer").getAsString(), json.get("x").getAsFloat(), json.get("y").getAsFloat(), json.get("z").getAsFloat(), tickLength);
 			}
 			return new EndimationInstruction(type, tickLength);
 		}
 		
 		public static class ModelRendererEndimationInstruction extends EndimationInstruction {
 			public final String modelRenderer;
-			public final float value;
+			public final float x;
+			public final float y;
+			public final float z;
 			
-			public ModelRendererEndimationInstruction(InstructionType type, String modelRenderer, float value, int tickLength) {
+			public ModelRendererEndimationInstruction(InstructionType type, String modelRenderer, float x, float y, float z, int tickLength) {
 				super(type, tickLength);
 				this.modelRenderer = modelRenderer;
-				this.value = value;
+				this.x = x;
+				this.y = y;
+				this.z = z;
 			}
 			
 			@Override
 			public JsonObject serialize() {
 				JsonObject json = super.serialize();
-				json.addProperty("modelRenderer", this.modelRenderer);
-				json.addProperty("value", this.value);
+				json.addProperty("model_renderer", this.modelRenderer);
+				json.addProperty("x", this.x);
+				json.addProperty("y", this.y);
+				json.addProperty("z", this.z);
 				return json;
 			}
 		}
 	}
 	
 	public enum InstructionType {
-		START_KEYFRAME(0),
-		END_KEYFRAME(1),
-		MOVE(2),
-		ROTATE(3),
-		OFFSET(4);
+		START_KEYFRAME(),
+		END_KEYFRAME(),
+		STATIC_KEYFRAME(),
+		MOVE(),
+		ROTATE(),
+		OFFSET(),
+		ADD_MOVE(),
+		ADD_ROTATE(),
+		ADD_OFFSET();
 		
-		private final int id;
-		
-		private InstructionType(int id) {
-			this.id = id;
-		}
-		
-		public static InstructionType getTypeById(int id) {
+		public static InstructionType getTypeByString(String name) {
 			for(InstructionType types : values()) {
-				if(types.id == id) {
+				if(types.toString().toLowerCase().equals(name)) {
 					return types;
 				}
 			}

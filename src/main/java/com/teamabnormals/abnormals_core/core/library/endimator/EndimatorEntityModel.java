@@ -26,7 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> extends EntityModel<E> {
 	private Map<EndimatorModelRenderer, SimpleTransform> animationBoxValues = Maps.newHashMap();
 	private Map<EndimatorModelRenderer, SimpleTransform> prevAnimationBoxValues = Maps.newHashMap();
-	protected List<EndimatorModelRenderer> savedBoxes = Lists.newArrayList();
+	public List<EndimatorModelRenderer> savedBoxes = Lists.newArrayList();
 	private EndimatorModelRenderer scaleController;
 	protected E entity;
 	private int tickDuration;
@@ -91,6 +91,7 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 		this.scaleController = new EndimatorModelRenderer(this, 0, 0);
 		this.scaleController.showModel = false;
 		this.scaleController.setRotationPoint(1, 1, 1);
+		this.scaleController.setName("scaleController");
 	}
 	
 	/*
@@ -234,5 +235,9 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	
 	public void offset(EndimatorModelRenderer model, float x, float y, float z) {
 		this.getBoxValues(model).setOffset(x, y, z);
+	}
+	
+	public void offsetAdditive(EndimatorModelRenderer model, float x, float y, float z) {
+		this.getBoxValues(model).addOffset(x, y, z);
 	}
 }

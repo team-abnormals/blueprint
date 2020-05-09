@@ -16,6 +16,7 @@ import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -25,7 +26,6 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -75,7 +75,8 @@ public class AbnormalsCore {
 		});
 		
 		modEventBus.addListener(this::commonSetup);
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> { 
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
@@ -97,11 +98,9 @@ public class AbnormalsCore {
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
-	
-		//((IReloadableResourceManager) event.getMinecraftSupplier().get().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 	}
 	
-	@SubscribeEvent
+	//@SubscribeEvent
 	public void onServerStarting(FMLServerAboutToStartEvent event) {
 		event.getServer().getResourceManager().addReloadListener(ENDIMATION_DATA_MANAGER);
 	}

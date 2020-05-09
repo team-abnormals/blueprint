@@ -15,6 +15,7 @@ public class ExampleEndimatedEntityModel<E extends ExampleEndimatedEntity> exten
         this.cube = new EndimatorModelRenderer(this, 0, 0);
         this.cube.setRotationPoint(0.0F, 16.0F, 0.0F);
         this.cube.addBox(-8.0F, -8.0F, -8.0F, 16, 16, 16, 0.0F);
+        this.cube.setName("cube");
         
         this.createScaleController();
         
@@ -48,13 +49,7 @@ public class ExampleEndimatedEntityModel<E extends ExampleEndimatedEntity> exten
     		this.endKeyframe();
     		this.resetKeyframe(10);
     	} else if(this.tryToPlayEndimation(ExampleEndimatedEntity.DEATH_ANIMATION)) {
-    		this.startKeyframe(10);
-    		this.move(this.getScaleController(), 0.5F, 0.5F, 0.5F);
-    		this.endKeyframe();
-    		
-    		this.startKeyframe(20);
-    		this.move(this.getScaleController(), -0.99F, -0.99F, -0.99F);
-    		this.endKeyframe();
+    		ExampleEndimatedEntity.DEATH_ANIMATION.processInstructions(this);
     	}
     	
     	this.cube.applyScaling(this.getScaleController());
