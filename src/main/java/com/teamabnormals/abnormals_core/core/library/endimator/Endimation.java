@@ -65,6 +65,8 @@ public class Endimation {
 				model.endKeyframe();
 			} else if(type == InstructionType.STATIC_KEYFRAME) {
 				model.setStaticKeyframe(tickLength);
+			} else if(type == InstructionType.RESET_KEYFRAME) {
+				model.resetKeyframe(tickLength);
 			} else {
 				ModelRendererEndimationInstruction instruction = (ModelRendererEndimationInstruction) instructions;
 				EndimatorModelRenderer modelRenderer = getModelRendererByName(model, instruction.modelRenderer);

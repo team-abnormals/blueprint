@@ -2,8 +2,6 @@ package com.teamabnormals.abnormals_core.common.entity;
 
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager.EndimationInstruction;
 import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
 
 import net.minecraft.entity.CreatureEntity;
@@ -37,15 +35,6 @@ public class ExampleEndimatedEntity extends EndimatedEntity {
 //			int z = pos.getZ();
 //			GenerationUtils.fillAreaWithBlockCube(this.world, this.getRNG(), x - 2, y - 1, z - 2, x + 2, y + 1, z + 2, GenerationUtils.IS_AIR, new BlockPlacementEntry(Blocks.ANVIL.getDefaultState(), 1), new BlockPlacementEntry(Blocks.BEDROCK.getDefaultState(), 4), new BlockPlacementEntry(Blocks.BIRCH_WOOD.getDefaultState(), 8));
 //		}
-		if(this.world.isRemote) {
-			EndimationDataManager.ENDIMATIONS.forEach((in, out) -> {
-				System.out.println(in.toString());
-				for(EndimationInstruction insns : out.getInstructions()) {
-					System.out.println(insns.type);
-					System.out.println(insns.tickLength);
-				}
-			});
-		}
 	}
 	
 	@Override

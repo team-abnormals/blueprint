@@ -91,16 +91,19 @@ public class EndimationDataManager extends JsonReloadListener {
 		public JsonObject serialize() {
 			JsonObject json = new JsonObject();
 			json.addProperty("type", this.type.toString().toLowerCase());
-			json.addProperty("ticks", this.tickLength);
+			
+			if(this.type != InstructionType.END_KEYFRAME) {
+				json.addProperty("ticks", this.tickLength);
+			}
 			return json;
 		}
 		
 		public static EndimationInstruction deserialize(JsonObject json) {
 			String stringType = json.get("type").getAsString();
-			int tickLength = json.get("ticks").getAsInt();
+			int tickLength = json.has("ticks") ? json.get("ticks").getAsInt() : 0;
 			InstructionType type = InstructionType.getTypeByString(stringType);
-			if(type != InstructionType.START_KEYFRAME && type != InstructionType.END_KEYFRAME) {
-				return new ModelRendererEndimationInstruction(type, json.get("model_renderer").getAsString(), json.get("x").getAsFloat(), json.get("y").getAsFloat(), json.get("z").getAsFloat(), tickLength);
+			if(type != InstructionType.START_KEYFRAME && type != InstructionType.END_KEYFRAME && type != InstructionType.RESET_KEYFRAME && type != InstructionType.STATIC_KEYFRAME) {
+				return new ModelRendererEndimationInstruction(type, json.get("model_renderer").getAsString(), json.get("x").getAsFloat(), json.get("y").getAsFloat(), json.get("z").getAsFloat());
 			}
 			return new EndimationInstruction(type, tickLength);
 		}
@@ -111,8 +114,8 @@ public class EndimationDataManager extends JsonReloadListener {
 			public final float y;
 			public final float z;
 			
-			public ModelRendererEndimationInstruction(InstructionType type, String modelRenderer, float x, float y, float z, int tickLength) {
-				super(type, tickLength);
+			public ModelRendererEndimationInstruction(InstructionType type, String modelRenderer, float x, float y, float z) {
+				super(type, 0);
 				this.modelRenderer = modelRenderer;
 				this.x = x;
 				this.y = y;
@@ -135,6 +138,7 @@ public class EndimationDataManager extends JsonReloadListener {
 		START_KEYFRAME(),
 		END_KEYFRAME(),
 		STATIC_KEYFRAME(),
+		RESET_KEYFRAME(),
 		MOVE(),
 		ROTATE(),
 		OFFSET(),
@@ -165,6 +169,6 @@ public class EndimationDataManager extends JsonReloadListener {
 				AbnormalsCore.LOGGER.error("Parsing error loading Endimation {}", resourcelocation, jsonparseexception);
 			}
 		}
-		AbnormalsCore.LOGGER.info("Loaded Endimation Data");
+		AbnormalsCore.LOGGER.info("Endimation Data Manager has Loaded {} Endimations", ENDIMATIONS.size());
 	}
 }
