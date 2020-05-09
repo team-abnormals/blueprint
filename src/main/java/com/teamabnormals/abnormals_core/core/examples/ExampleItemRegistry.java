@@ -15,4 +15,5 @@ public class ExampleItemRegistry {
 	
 	public static final RegistryObject<Item> ITEM = HELPER.createItem("example", () -> RegistryHelper.createSimpleItem(ItemGroup.FOOD));
 	public static final RegistryObject<Item> COW_SPAWN_EGG = HELPER.createSpawnEggItem("example", () -> EntityType.COW, 100, 200);
+	public static final RegistryObject<Item> BOAT = HELPER.createBoatItem("example", ExampleBlockRegistry.BLOCK);
 }

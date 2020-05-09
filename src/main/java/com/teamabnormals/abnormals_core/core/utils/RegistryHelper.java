@@ -12,6 +12,7 @@ import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
+import com.teamabnormals.abnormals_core.common.items.AbnormalsBoatItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSignItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.teamabnormals.abnormals_core.common.items.FuelItem;
@@ -20,6 +21,7 @@ import com.teamabnormals.abnormals_core.core.examples.ExampleBlockRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleItemRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleSoundRegistry;
+import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -159,6 +161,18 @@ public class RegistryHelper {
 		RegistryObject<Item> spawnEgg = this.itemRegister.register(entityName + "_spawn_egg", () -> new AbnormalsSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().group(ItemGroup.MISC)));
 		this.spawnEggs.add(spawnEgg);
 		return spawnEgg;
+	}
+	
+	/**
+	 * Creates a Boat Item
+	 * @param - The name of the wood, @example "poise"
+	 * @param - The planks block for the boat to drop
+	 */
+	public RegistryObject<Item> createBoatItem(String wood, RegistryObject<Block> block) {
+		String type = this.getModId() + ":" + wood;
+		RegistryObject<Item> boat = this.itemRegister.register(wood + "_boat", () -> new AbnormalsBoatItem(type, createSimpleItemProperty(1, ItemGroup.TRANSPORTATION)));
+		BoatRegistry.registerBoat(type, boat, block);
+		return boat;
 	}
 	
 	/**

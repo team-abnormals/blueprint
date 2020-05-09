@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.teamabnormals.abnormals_core.client.example.ExampleEndimatedEntityRenderer;
+import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
 import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
 import com.teamabnormals.abnormals_core.common.network.MessageS2CEndimation;
@@ -96,6 +97,7 @@ public class AbnormalsCore {
 	private void clientSetup(final FMLClientSetupEvent event) {
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
 		
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
 	}
