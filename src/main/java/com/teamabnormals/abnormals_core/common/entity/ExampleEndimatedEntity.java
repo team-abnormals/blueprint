@@ -26,6 +26,14 @@ public class ExampleEndimatedEntity extends EndimatedEntity {
 //				NetworkUtil.setPlayingAnimationMessage(this, GROW_ANIMATION);
 //			}
 //		}
+//		Funnies ;)
+//		if(this.world.getGameTime() % 40 == 0 && this.isServerWorld()) {
+//			BlockPos pos = this.getPosition();
+//			int x = pos.getX();
+//			int y = pos.getY();
+//			int z = pos.getZ();
+//			GenerationUtils.fillAreaWithBlockCube(this.world, this.getRNG(), x - 2, y - 1, z - 2, x + 2, y + 1, z + 2, GenerationUtils.IS_AIR, new BlockPlacementEntry(Blocks.ANVIL.getDefaultState(), 1), new BlockPlacementEntry(Blocks.BEDROCK.getDefaultState(), 4), new BlockPlacementEntry(Blocks.BIRCH_WOOD.getDefaultState(), 8));
+//		}
 	}
 	
 	@Override
