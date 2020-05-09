@@ -57,17 +57,19 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	private void onEndimatedDeathUpdate(int deathAnimationDuration) {
 		if(this.deathTime++ >= deathAnimationDuration - 1) {
 			this.remove();
-			this.addDeathParticles();
+			this.addDeathEffects();
 		}
 	}
 	
-	/*
-	 * Adds the death particles, should be overridden if you want to change the death particles
+	/**
+	 * Adds the death effects for this entity
+	 * Gets called in {@link #onEndimatedDeathUpdate(int)}
+	 * Should be overridden if you wish to change the death effects of this entity, default is Vanilla poof particles
 	 */
-	protected void addDeathParticles() {
+	protected void addDeathEffects() {
 		for(int i = 0; i < 20; ++i) {
-            this.world.addParticle(ParticleTypes.POOF, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D);
-         }
+			this.world.addParticle(ParticleTypes.POOF, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D);
+		}
 	}
 	
 	@Override
