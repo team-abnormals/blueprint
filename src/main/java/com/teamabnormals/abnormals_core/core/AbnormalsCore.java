@@ -13,9 +13,11 @@ import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
+import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
 import net.minecraft.client.renderer.entity.CowRenderer;
+import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,6 +25,7 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -31,6 +34,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -42,6 +46,7 @@ public class AbnormalsCore {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MODID = "abnormals_core";
 	public static final String NETWORK_PROTOCOL = "AC1";
+	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MODID);
 	
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))
@@ -92,6 +97,13 @@ public class AbnormalsCore {
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
+	
+		//((IReloadableResourceManager) event.getMinecraftSupplier().get().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
+	}
+	
+	@SubscribeEvent
+	public void onServerStarting(FMLServerAboutToStartEvent event) {
+		event.getServer().getResourceManager().addReloadListener(ENDIMATION_DATA_MANAGER);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
