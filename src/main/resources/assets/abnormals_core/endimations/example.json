@@ -12,8 +12,7 @@
           "z": 0.5
         },
         {
-          "type": "end_keyframe",
-          "ticks": 0
+          "type": "end_keyframe"
         },
         {
           "type": "start_keyframe",

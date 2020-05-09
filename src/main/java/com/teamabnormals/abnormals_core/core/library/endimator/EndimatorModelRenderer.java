@@ -64,10 +64,16 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		this.childModels.add(renderer);
 	}
 	
+	/**
+	 * Sets the name for this ModelRenderer to be used Endimation JSONs
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * @return - The name of this ModelRenderer
+	 */
 	public String getName() {
 		return this.name;
 	}

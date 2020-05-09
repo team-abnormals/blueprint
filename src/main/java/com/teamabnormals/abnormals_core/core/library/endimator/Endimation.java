@@ -91,6 +91,9 @@ public class Endimation {
 	private static EndimatorModelRenderer getModelRendererByName(EndimatorEntityModel<?> model, String name) {
 		List<EndimatorModelRenderer> boxes = model.savedBoxes;
 		boxes.removeIf((box) -> !(box.getName() != null && box.getName().equals(name)));
+		if(boxes.isEmpty()) {
+			throw new NullPointerException("No Model Renderer of the name " + "\"" + name + "\"" + " could be found");
+		}
 		return boxes.get(0);
 	}
 	
