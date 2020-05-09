@@ -2,10 +2,9 @@ package com.teamabnormals.abnormals_core.common.blocks;
 
 import net.minecraft.block.DoorBlock;
 
-public class AbormalsDoorBlock extends DoorBlock {
+public class AbnormalsDoorBlock extends DoorBlock {
 
-	protected AbormalsDoorBlock(Properties builder) {
+	public AbnormalsDoorBlock(Properties builder) {
 		super(builder);
 	}
-
 }

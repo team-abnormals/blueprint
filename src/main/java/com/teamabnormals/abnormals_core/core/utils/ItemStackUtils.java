@@ -1,6 +1,7 @@
 package com.teamabnormals.abnormals_core.core.utils;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
@@ -43,4 +44,15 @@ public class ItemStackUtils {
 		return thousands + hundereds + tens + ones;
 	}
 	
+	/**
+	 * Searches for if an {@link Item} is present in an {@link ItemGroup} and returns if it is
+	 * @param item - The item searched
+	 * @param group - The group searched
+	 * @return - Whether or not the item is present in the group
+	 */
+	public static boolean isInGroup(Item item, ItemGroup group) {
+		if (item.getCreativeTabs().stream().anyMatch(tab -> tab == group)) return true;
+		ItemGroup itemgroup = item.getGroup();
+		return itemgroup != null && (group == ItemGroup.SEARCH || group == itemgroup);
+	}
 }

@@ -1,14 +1,21 @@
-package com.teamabnormals.abnormals_core.common.blocks;
+package com.teamabnormals.abnormals_core.common.blocks.wood;
 
 import java.util.function.Supplier;
 
+import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.RotatedPillarBlock;
+import net.minecraft.block.LogBlock;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -18,11 +25,11 @@ import net.minecraft.world.World;
 /**
  * @author SmellyModder(Luke Tonon)
  */
-public class AbnormalsLogBlock extends RotatedPillarBlock {
+public class AbnormalsLogBlock extends LogBlock {
 	private final Supplier<Block> block;
 
-	public AbnormalsLogBlock(Supplier<Block> strippedBlock, Properties properties) {
-		super(properties);
+	public AbnormalsLogBlock(Supplier<Block> strippedBlock, MaterialColor verticalColor, Properties properties) {
+		super(verticalColor, properties);
 		this.block = strippedBlock;
 	}
 	
@@ -34,5 +41,17 @@ public class AbnormalsLogBlock extends RotatedPillarBlock {
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
+	}
+	
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+		if(ItemStackUtils.isInGroup(this.asItem(), group)) {
+			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_LOG, items);
+			if(targetIndex != -1) {
+				items.add(targetIndex + 1, new ItemStack(this));
+			} else {
+				super.fillItemGroup(group, items);
+			}
+		}
 	}
 }

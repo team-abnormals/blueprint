@@ -3,6 +3,7 @@ package com.teamabnormals.abnormals_core.core.examples;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
+import com.teamabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
@@ -21,4 +22,6 @@ public class ExampleBlockRegistry {
 	
 	public static final RegistryObject<Block> BLOCK = HELPER.createBlock("block", () -> new Block(Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
 	public static final Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> SIGNS = HELPER.createSignBlock("example", MaterialColor.PINK, SIGN_TEXTURE);
+	
+	public static final RegistryObject<Block> LOG_BLOCK = HELPER.createBlock("log_block", () -> new AbnormalsLogBlock(() -> Blocks.STRIPPED_ACACIA_LOG, MaterialColor.GREEN, Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
 }

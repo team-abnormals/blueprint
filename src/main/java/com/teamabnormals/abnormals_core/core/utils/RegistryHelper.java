@@ -205,12 +205,12 @@ public class RegistryHelper {
 	
 	/**
 	 * Creates a Fuel Item
-	 * @param itemGroup - The Item's ItemGroup
 	 * @param burnTime - How long the item will burn(measured in ticks)
+	 * @param itemGroup - The Item's ItemGroup
 	 * @return - The customized simple Item
 	 */
-	public static FuelItem createFuelItem(ItemGroup itemGroup, int burnTime) {
-		return new FuelItem(new Item.Properties().group(itemGroup), burnTime);
+	public static FuelItem createFuelItem(int burnTime, ItemGroup itemGroup) {
+		return new FuelItem(burnTime, new Item.Properties().group(itemGroup));
 	}
 	
 	/**
@@ -289,7 +289,7 @@ public class RegistryHelper {
 	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color, ResourceLocation texture) {
 		RegistryObject<AbnormalsStandingSignBlock> standing = this.blockRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.create(Material.WOOD).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD), texture));
 		RegistryObject<AbnormalsWallSignBlock> wall = this.blockRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.create(Material.WOOD, color).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD).lootFrom(standing.get()), texture));
-		ExampleItemRegistry.HELPER.createItem(name + "_sign", () -> new AbnormalsSignItem(new Item.Properties().maxStackSize(16).group(ItemGroup.DECORATIONS), standing.get(), wall.get()));
+		ExampleItemRegistry.HELPER.createItem(name + "_sign", () -> new AbnormalsSignItem(standing.get(), wall.get(), new Item.Properties().maxStackSize(16).group(ItemGroup.DECORATIONS)));
 		return Pair.of(standing, wall);
 	}
 	

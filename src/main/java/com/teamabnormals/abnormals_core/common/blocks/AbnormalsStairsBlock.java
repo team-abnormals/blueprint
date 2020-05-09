@@ -6,8 +6,7 @@ import net.minecraft.block.StairsBlock;
 public class AbnormalsStairsBlock extends StairsBlock {
 
 	@SuppressWarnings("deprecation")
-	protected AbnormalsStairsBlock(BlockState state, Properties properties) {
+	public AbnormalsStairsBlock(BlockState state, Properties properties) {
 		super(state, properties);
 	}
-
 }

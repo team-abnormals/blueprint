@@ -4,8 +4,7 @@ import net.minecraft.block.TrapDoorBlock;
 
 public class AbnormalsTrapDoorBlock extends TrapDoorBlock {
 
-	protected AbnormalsTrapDoorBlock(Properties properties) {
+	public AbnormalsTrapDoorBlock(Properties properties) {
 		super(properties);
 	}
-
 }

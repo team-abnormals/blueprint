@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 
 public class AbnormalsSignItem extends WallOrFloorItem {
 	
-	public AbnormalsSignItem(Item.Properties propertiesIn, Block floorBlockIn, Block wallBlockIn) {
+	public AbnormalsSignItem(Block floorBlockIn, Block wallBlockIn, Item.Properties propertiesIn) {
 		super(floorBlockIn, wallBlockIn, propertiesIn);
 	}
 	

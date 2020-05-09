@@ -1,14 +1,14 @@
-package com.teamabnormals.abnormals_core.common.blocks;
+package com.teamabnormals.abnormals_core.common.blocks.thatch;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SlabBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ThatchSlabBlock extends SlabBlock{
-	public ThatchSlabBlock(Properties properties) {
+public class ThatchBlock extends Block{
+	public ThatchBlock(Properties properties) {
 		super(properties);
 	}
 
