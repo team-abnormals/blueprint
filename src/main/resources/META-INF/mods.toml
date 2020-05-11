@@ -3,6 +3,7 @@ loaderVersion="[31,)"
 #logoFile="abnormalscore.png"
 
 [[mods]]
+logoFile="logo.png"
 modId="abnormals_core"
 version="1.0.0"
 authors="Minecraft Abnormals"
