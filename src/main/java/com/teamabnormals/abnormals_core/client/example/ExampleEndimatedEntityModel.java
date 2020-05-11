@@ -17,8 +17,6 @@ public class ExampleEndimatedEntityModel<E extends ExampleEndimatedEntity> exten
         this.cube.addBox(-8.0F, -8.0F, -8.0F, 16, 16, 16, 0.0F);
         this.cube.setName("cube");
         
-        this.createScaleController();
-        
         this.setDefaultBoxValues();
     }
     
@@ -45,13 +43,11 @@ public class ExampleEndimatedEntityModel<E extends ExampleEndimatedEntity> exten
     		this.resetKeyframe(10);
     	} else if(this.tryToPlayEndimation(ExampleEndimatedEntity.GROW_ANIMATION)) {
     		this.startKeyframe(10);
-    		this.moveAdditive(this.getScaleController(), 0.5F, 0.5F, 0.5F);
+    		this.scaleAdditive(this.cube, 0.5F, 0.5F, 0.5F);
     		this.endKeyframe();
     		this.resetKeyframe(10);
     	} else if(this.tryToPlayEndimation(ExampleEndimatedEntity.DEATH_ANIMATION)) {
     		ExampleEndimatedEntity.DEATH_ANIMATION.processInstructions(this);
     	}
-    	
-    	this.cube.applyScaling(this.getScaleController());
     }
 }

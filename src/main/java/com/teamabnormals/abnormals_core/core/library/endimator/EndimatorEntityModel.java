@@ -27,7 +27,6 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	private Map<EndimatorModelRenderer, SimpleTransform> animationBoxValues = Maps.newHashMap();
 	private Map<EndimatorModelRenderer, SimpleTransform> prevAnimationBoxValues = Maps.newHashMap();
 	public List<EndimatorModelRenderer> savedBoxes = Lists.newArrayList();
-	private EndimatorModelRenderer scaleController;
 	protected E entity;
 	private int tickDuration;
 	private int prevTickDuration;
@@ -81,24 +80,6 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 				((EndimatorModelRenderer) rendererModel).revertToDefaultBoxValues();
 			}
 		});
-	}
-	
-	/*
-	 * Creates a scale controller
-	 * A EndimatorModelRenderer with basic positioning that can be used to get its values to be used as a scaling method
-	 */
-	public void createScaleController() {
-		this.scaleController = new EndimatorModelRenderer(this, 0, 0);
-		this.scaleController.showModel = false;
-		this.scaleController.setRotationPoint(1, 1, 1);
-		this.scaleController.setName("scaleController");
-	}
-	
-	/*
-	 * Gets the scale controller
-	 */
-	public EndimatorModelRenderer getScaleController() {
-		return this.scaleController;
 	}
 	
 	/**
@@ -233,11 +214,47 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 		this.getBoxValues(model).addPosition(x, y, z);
 	}
 	
+	/**
+	 * Offsets an EndimatorRendererModel in the current Keyframe to the offsets specified
+	 * @param model - EndimatorRendererModel to offset
+	 * @param x - The x point
+	 * @param y - The y point
+	 * @param z - The z point
+	 */
 	public void offset(EndimatorModelRenderer model, float x, float y, float z) {
 		this.getBoxValues(model).setOffset(x, y, z);
 	}
 	
+	/**
+	 * Offsets an EndimatorRendererModel in the current Keyframe to the current position plus the positions specified
+	 * @param model - EndimatorRendererModel to offset
+	 * @param x - The x point to add
+	 * @param y - The y point to add
+	 * @param z - The z point to add
+	 */
 	public void offsetAdditive(EndimatorModelRenderer model, float x, float y, float z) {
 		this.getBoxValues(model).addOffset(x, y, z);
+	}
+	
+	/**
+	 * Scales an EndimatorRendererModel in the current Keyframe to the scale specified
+	 * @param model - EndimatorRendererModel to scale
+	 * @param x - The x scale
+	 * @param y - The y scale
+	 * @param z - The z scale
+	 */
+	public void scale(EndimatorModelRenderer model, float x, float y, float z) {
+		this.getBoxValues(model).setScale(x, y, z);
+	}
+	
+	/**
+	 * Scales an EndimatorRendererModel in the current Keyframe to the current scale plus the scale specified
+	 * @param model - EndimatorRendererModel to scale
+	 * @param x - The x scale
+	 * @param y - The y scale
+	 * @param z - The z scale
+	 */
+	public void scaleAdditive(EndimatorModelRenderer model, float x, float y, float z) {
+		this.getBoxValues(model).addScale(x, y, z);
 	}
 }

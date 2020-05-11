@@ -142,9 +142,11 @@ public class EndimationDataManager extends JsonReloadListener {
 		MOVE(),
 		ROTATE(),
 		OFFSET(),
+		SCALE(),
 		ADD_MOVE(),
 		ADD_ROTATE(),
-		ADD_OFFSET();
+		ADD_OFFSET(),
+		ADD_SCALE();
 		
 		public static InstructionType getTypeByString(String name) {
 			for(InstructionType types : values()) {

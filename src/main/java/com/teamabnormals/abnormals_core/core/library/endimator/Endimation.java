@@ -83,6 +83,10 @@ public class Endimation {
 					model.offset(modelRenderer, values[0], values[1], values[2]);
 				} else if(type == InstructionType.ADD_OFFSET) {
 					model.offsetAdditive(modelRenderer, values[0], values[1], values[2]);
+				} else if(type == InstructionType.SCALE) {
+					model.scale(modelRenderer, values[0], values[1], values[2]);
+				} else if(type == InstructionType.ADD_SCALE) {
+					model.scaleAdditive(modelRenderer, values[0], values[1], values[2]);
 				}
 			}
 		}
