@@ -1,16 +1,14 @@
 modLoader="javafml"
 loaderVersion="[31,)"
 #logoFile="abnormalscore.png"
-authors="Minecraft Abnormals"
-credits="SmellyModder & bageldotjpg"
 
 [[mods]]
 modId="abnormals_core"
-version="${file.jarVersion}"
+version="1.0.0"
+authors="Minecraft Abnormals"
+credits="SmellyModder (Luke Tonon) & bageldotjpg"
 displayName="Abnormals Core"
-description='''
-Library mod for all Abnormals mods.
-'''
+description='''Library mod for all Abnormals mods.'''
 
 [[dependencies.abnormals_core]]
     modId="forge"

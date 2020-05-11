@@ -57,6 +57,16 @@ minecraft {
     }
 }
 
+task deobfJar(type: Jar) {
+    description = 'Creates a JAR containing the non-obfuscated compiled code.'
+    from sourceSets.main.output
+    classifier = "deobf"
+}
+
+artifacts {
+    archives deobfJar
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.15.2-31.1.46'
 }
