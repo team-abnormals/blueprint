@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ExampleEntityRegistry {
 	public static final RegistryHelper HELPER = AbnormalsCore.REGISTRY_HELPER;
 	
-	public static final RegistryObject<EntityType<CowEntity>> COW = HELPER.createLivingEntity("example", CowEntity::new, EntityClassification.CREATURE, 1.0F, 1.0F);
-	public static final RegistryObject<EntityType<ExampleEndimatedEntity>> EXAMPLE_ANIMATED = HELPER.createLivingEntity("example_animated", ExampleEndimatedEntity::new, EntityClassification.CREATURE, 1.0F, 1.0F);
+	public static final RegistryObject<EntityType<CowEntity>> COW = null; //HELPER.createLivingEntity("example", CowEntity::new, EntityClassification.CREATURE, 1.0F, 1.0F);
+	public static final RegistryObject<EntityType<ExampleEndimatedEntity>> EXAMPLE_ANIMATED = null; // HELPER.createLivingEntity("example_animated", ExampleEndimatedEntity::new, EntityClassification.CREATURE, 1.0F, 1.0F);
 	public static final RegistryObject<EntityType<AbnormalsBoatEntity>> BOAT = HELPER.createEntity("boat", AbnormalsBoatEntity::new, AbnormalsBoatEntity::new, EntityClassification.MISC, 1.375F, 0.5625F);
 }

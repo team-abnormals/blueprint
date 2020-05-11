@@ -41,6 +41,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@SuppressWarnings("unused")
 @Mod("abnormals_core")
 @Mod.EventBusSubscriber(modid = "abnormals_core", bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AbnormalsCore {
@@ -62,8 +63,8 @@ public class AbnormalsCore {
 		
 		this.setupMessages();
         
-		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
+		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
 		//REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
@@ -95,8 +96,8 @@ public class AbnormalsCore {
     
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(final FMLClientSetupEvent event) {
-		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
+		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
+		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
 		
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
