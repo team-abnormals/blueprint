@@ -3,6 +3,7 @@ package com.teamabnormals.abnormals_core.common.entity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
@@ -20,13 +21,13 @@ public class ExampleEndimatedEntity extends EndimatedEntity {
 	@Override
 	public void tick() {
 		super.tick();
-//		if(this.world.getGameTime() % 40 == 0 && this.isServerWorld()) {
-//			if(this.getRNG().nextFloat() < 0.5F) {
-//				NetworkUtil.setPlayingAnimationMessage(this, SINK_ANIMATION);
-//			} else {
-//				NetworkUtil.setPlayingAnimationMessage(this, GROW_ANIMATION);
-//			}
-//		}
+		if(this.world.getGameTime() % 40 == 0 && this.isServerWorld()) {
+			if(this.getRNG().nextFloat() < 0.5F) {
+				NetworkUtil.setPlayingAnimationMessage(this, SINK_ANIMATION);
+			} else {
+				NetworkUtil.setPlayingAnimationMessage(this, GROW_ANIMATION);
+			}
+		}
 //		Funnies ;)
 //		if(this.world.getGameTime() % 40 == 0 && this.isServerWorld()) {
 //			BlockPos pos = this.getPosition();

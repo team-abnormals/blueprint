@@ -5,8 +5,8 @@
           "ticks": 10
         },
         {
-          "type": "move",
-          "model_renderer": "scaleController",
+          "type": "scale",
+          "model_renderer": "cube",
           "x": 0.5,
           "y": 0.5,
           "z": 0.5
@@ -19,8 +19,8 @@
           "ticks": 20
         },
         {
-          "type": "move",
-          "model_renderer": "scaleController",
+          "type": "scale",
+          "model_renderer": "cube",
           "x": -0.99,
           "y": -0.99,
           "z": -0.99

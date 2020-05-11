@@ -26,10 +26,10 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	public float defaultRotationPointX, defaultRotationPointY, defaultRotationPointZ;
 	public float defaultRotateAngleX, defaultRotateAngleY, defaultRotateAngleZ;
 	public float defaultOffsetX, defaultOffsetY, defaultOffsetZ, offsetX, offsetY, offsetZ;
+	public float defaultScaleX, defaultScaleY, defaultScaleZ, scaleX, scaleY, scaleZ;
 	public int textureOffsetX, textureOffsetY;
 	public float textureWidth, textureHeight;
 	public boolean scaleChildren = true;
-	public float scaleX, scaleY, scaleZ = 1.0F;
 	private String name;
 	private final ObjectList<ModelBox> cubeList = new ObjectArrayList<>();
 	private final ObjectList<EndimatorModelRenderer> childModels = new ObjectArrayList<>();
@@ -39,6 +39,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	 */
 	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> model) {
 		super(model);
+		this.setScale(1.0F, 1.0F, 1.0F);
 		model.addBoxToSavedBoxes(this);
 		model.accept(this);
 		this.setTextureSize(model.textureWidth, model.textureHeight);
@@ -58,6 +59,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	
 	public EndimatorModelRenderer(int textureWidthIn, int textureHeightIn, int textureOffsetXIn, int textureOffsetYIn) {
 		super(textureWidthIn, textureHeightIn, textureOffsetXIn, textureOffsetYIn);
+		this.setScale(1.0F, 1.0F, 1.0F);
 	}
 	
 	public void addChild(EndimatorModelRenderer renderer) {
@@ -137,9 +139,17 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		this.defaultRotationPointY = this.rotationPointY;
 		this.defaultRotationPointZ = this.rotationPointZ;
 		
+		this.defaultOffsetX = this.offsetX;
+		this.defaultOffsetY = this.offsetY;
+		this.defaultOffsetZ = this.offsetZ;
+		
 		this.defaultRotateAngleX = this.rotateAngleX;
 		this.defaultRotateAngleY = this.rotateAngleY;
 		this.defaultRotateAngleZ = this.rotateAngleZ;
+		
+		this.defaultScaleX = this.scaleX;
+		this.defaultScaleY = this.scaleY;
+		this.defaultScaleZ = this.scaleZ;
 	}
 	
 	/**
@@ -161,6 +171,10 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		this.rotateAngleX = this.defaultRotateAngleX;
 		this.rotateAngleY = this.defaultRotateAngleY;
 		this.rotateAngleZ = this.defaultRotateAngleZ;
+		
+		this.scaleX = this.defaultScaleX;
+		this.scaleY = this.defaultScaleY;
+		this.scaleZ = this.defaultScaleZ;
 	}
 	
 	/**

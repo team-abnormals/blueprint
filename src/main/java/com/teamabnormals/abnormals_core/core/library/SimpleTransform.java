@@ -14,10 +14,11 @@ import net.minecraft.util.math.Vec3d;
  * @author SmellyModder(Luke Tonon)
  */
 public class SimpleTransform {
-	public static final SimpleTransform ZERO = new SimpleTransform(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+	public static final SimpleTransform ZERO = new SimpleTransform(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 	private float posX, posY, posZ;
 	private float offsetX, offsetY, offsetZ;
 	private float angleX, angleY, angleZ;
+	private float scaleX, scaleY, scaleZ;
 	
 	public SimpleTransform(float posX, float posY, float posZ, float angleX, float angleY, float angleZ) {
 		this.posX = posX;
@@ -35,8 +36,18 @@ public class SimpleTransform {
 		this.offsetZ = offsetZ;
 	}
 	
+	public SimpleTransform(float posX, float posY, float posZ, float offsetX, float offsetY, float offsetZ, float angleX, float angleY, float angleZ, float scaleX, float scaleY, float scaleZ) {
+		this(posX, posY, posZ, angleX, angleY, angleZ);
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
+		this.offsetZ = offsetZ;
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
+		this.scaleZ = scaleZ;
+	}
+	
 	public static SimpleTransform copy(SimpleTransform transform) {
-		return new SimpleTransform(transform.posX, transform.posY, transform.posZ, transform.angleX, transform.angleY, transform.angleZ);
+		return new SimpleTransform(transform.posX, transform.posY, transform.posZ, transform.offsetY, transform.offsetY, transform.offsetZ, transform.angleX, transform.angleY, transform.angleZ, transform.scaleX, transform.scaleY, transform.scaleZ);
 	}
 	
 	public void scale(Vec3d scale) {
@@ -79,6 +90,18 @@ public class SimpleTransform {
 		this.angleZ += angleZ;
 	}
 	
+	public void setScale(float scaleX, float scaleY, float scaleZ) {
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
+		this.scaleZ = scaleZ;
+	}
+	
+	public void addScale(float scaleX, float scaleY, float scaleZ) {
+		this.scaleX += scaleX;
+		this.scaleY += scaleY;
+		this.scaleZ += scaleZ;
+	}
+	
 	public void applyTransformToModelRenderer(ModelRenderer modelRenderer) {
 		modelRenderer.rotationPointX = this.posX;
 		modelRenderer.rotationPointY = this.posY;
@@ -98,6 +121,7 @@ public class SimpleTransform {
 		modelRenderer.rotateAngleX = this.angleX;
 		modelRenderer.rotateAngleY = this.angleY;
 		modelRenderer.rotateAngleZ = this.angleZ;
+		modelRenderer.setScale(this.scaleX, this.scaleY, this.scaleZ);
 	}
 	
 	public static BiConsumer<ModelRenderer, SimpleTransform> applyTransformToModelRenderer() {
@@ -137,6 +161,9 @@ public class SimpleTransform {
 		modelRenderer.rotateAngleX += this.angleX;
 		modelRenderer.rotateAngleY += this.angleY;
 		modelRenderer.rotateAngleZ += this.angleZ;
+		modelRenderer.scaleX += this.scaleX;
+		modelRenderer.scaleY += this.scaleY;
+		modelRenderer.scaleZ += this.scaleZ;
 	}
 	
 	public static BiConsumer<EndimatorModelRenderer, SimpleTransform> applyAdditiveTransformToEndimatorModelRenderer() {
@@ -170,6 +197,9 @@ public class SimpleTransform {
 		modelRenderer.rotateAngleX += multiplier * this.angleX;
 		modelRenderer.rotateAngleY += multiplier * this.angleY;
 		modelRenderer.rotateAngleZ += multiplier * this.angleZ;
+		modelRenderer.scaleX += multiplier * this.scaleX;
+		modelRenderer.scaleY += multiplier * this.scaleY;
+		modelRenderer.scaleZ += multiplier * this.scaleZ;
 	}
 	
 	public static BiConsumer<EndimatorModelRenderer, SimpleTransform> applyAdditiveTransformToEndimatorModelRendererWithMultiplier(float multiplier) {
@@ -212,5 +242,17 @@ public class SimpleTransform {
 	
 	public float getAngleZ() {
 		return this.angleZ;
+	}
+	
+	public float getScaleX() {
+		return this.scaleX;
+	}
+	
+	public float getScaleY() {
+		return this.scaleY;
+	}
+	
+	public float getScaleZ() {
+		return this.scaleZ;
 	}
 }
