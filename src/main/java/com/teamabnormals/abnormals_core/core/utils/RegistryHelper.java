@@ -136,13 +136,13 @@ public class RegistryHelper {
 	
 	/**
 	 * Creates a Compat Item
-	 * @param name - Item name
 	 * @param modId - The modId of the mod this item is compatible for, set to "indev" for dev tests
+	 * @param name - Item name
 	 * @param properties - The item's properties
 	 * @param group - The ItemGroup for the item
 	 * @return - The Item RegistryObject
 	 */
-	public RegistryObject<Item> createCompatItem(String name, String modId, Item.Properties properties, ItemGroup group) {
+	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, ItemGroup group) {
 		ItemGroup determinedGroup = ModList.get().isLoaded(modId) || modId == "indev" ? group : null;
 		RegistryObject<Item> item = this.itemRegister.register(name, () -> new Item(properties.group(determinedGroup)));
 		return item;
@@ -309,13 +309,13 @@ public class RegistryHelper {
 	
 	/**
 	 * Creates a Compat Block
-	 * @param name - The block's name
 	 * @param modId - The modId of the mod this block is compatible for, set to "indev" for dev tests
+	 * @param name - The block's name
 	 * @param supplier - The supplied Block
 	 * @param group - The BlockItem's ItemGroup
 	 * @return - The Compat Block
 	 */
-	public <B extends Block> RegistryObject<B> createCompatBlock(String name, String modId, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createCompatBlock(String modId, String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
 		ItemGroup determinedGroup = ModList.get().isLoaded(modId) || modId == "indev" ? group : null;
 		RegistryObject<B> block = this.blockRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(determinedGroup)));
