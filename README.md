@@ -16,9 +16,10 @@
 ## Making AC a Dependency
 To make AC a Dependency for your mod requires only one simple step.
 In your 𝐦𝐨𝐝𝐬.𝐭𝐨𝐦𝐥 add the following lines:
-[[𝐝𝐞𝐩𝐞𝐧𝐝𝐞𝐧𝐜𝐢𝐞𝐬.<𝐦𝐨𝐝𝐢𝐝>]]
-    𝐦𝐨𝐝𝐈𝐝="𝐚𝐛𝐧𝐨𝐫𝐦𝐚𝐥𝐬_𝐜𝐨𝐫𝐞"
-    𝐦𝐚𝐧𝐝𝐚𝐭𝐨𝐫𝐲=𝐭𝐫𝐮𝐞
-    𝐯𝐞𝐫𝐬𝐢𝐨𝐧𝐑𝐚𝐧𝐠𝐞="[x.x.x,)"
-    𝐨𝐫𝐝𝐞𝐫𝐢𝐧𝐠="𝐀𝐅𝐓𝐄𝐑"
-    𝐬𝐢𝐝𝐞="𝐁𝐎𝐓𝐇"
+```[[dependencies.<modid>]]
+    modId="abnormals_core"
+    mandatory=true
+    versionRange="[1.0.0,)"
+    ordering="AFTER"
+    side="BOTH"
+```
