@@ -56,7 +56,7 @@ public class ACConfig {
 		}
 		
 		public static boolean isQuarkSignEditingEnabled() {
-			return !ModList.get().isLoaded("quark") && quarkSignEditing;
+			return ModList.get().isLoaded("quark") && quarkSignEditing;
 		}
 		
 		public static boolean doesSignEditingRequireEmptyHand() {
