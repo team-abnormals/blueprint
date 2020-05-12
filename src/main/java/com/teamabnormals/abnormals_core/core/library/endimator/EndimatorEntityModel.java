@@ -85,7 +85,6 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	/**
 	 * Sets an Endimation to be played
 	 * @param endimationToPlay - The animation to play
-	 * @return - Is this the correct animation to play
 	 */
 	public void setEndimationToPlay(Endimation endimationToPlay) {
 		this.updateBoxValueMap();
@@ -95,6 +94,11 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 		}
 	}
 	
+	/**
+	 * Tries to play the Endimation specified
+	 * @param endimationToPlay - The animation to play
+	 * @return - Can the Endimation be played
+	 */
 	public boolean tryToPlayEndimation(Endimation endimationToPlay) {
 		if(this.entity.isEndimationPlaying(endimationToPlay)) {
 			this.setEndimationToPlay(endimationToPlay);
