@@ -4,10 +4,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.teamabnormals.abnormals_core.client.ClientInfo;
 import com.teamabnormals.abnormals_core.client.screen.AbnormalsSignEditorScreen;
-import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
-import com.teamabnormals.abnormals_core.common.network.MessageS2CEndimation;
-import com.teamabnormals.abnormals_core.common.network.MessageS2CUpdateSign;
-import com.teamabnormals.abnormals_core.common.network.MessageSOpenSignEditor;
+import com.teamabnormals.abnormals_core.common.network.*;
+import com.teamabnormals.abnormals_core.common.network.entity.*;
+import com.teamabnormals.abnormals_core.common.network.particle.*;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
@@ -25,9 +24,38 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author - SmellyModder(Luke Tonon)
- * This class holds(will eventually) a big list of useful network functions. Most are used in the mod
+ * This class holds a list of useful network functions
  */
 public class NetworkUtil {
+	
+	/**
+	 * @param name - The registry name of the particle
+	 * All other parameters work same as world#addParticle
+	 * Used for adding particles to the world from the server side
+	 */
+	public static void spawnParticle(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
+		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageS2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
+	}
+	
+	/**
+	 * @param name - The registry name of the particle
+	 * Used for adding particles to all the clients from the client
+	 */
+	public static void spawnParticleC2S2C(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
+		AbnormalsCore.CHANNEL.sendToServer(new MessageC2S2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
+	}
+	
+	/**
+	 * Teleports the entity to a specified location
+	 * @param entity - The Entity to teleport
+	 * @param posX - The x position
+	 * @param posY - The y position
+	 * @param posZ - The z position
+	 */
+	public static void teleportEntity(Entity entity, double posX, double posY, double posZ) {
+		entity.setLocationAndAngles(posX, posY, posZ, entity.rotationYaw, entity.rotationPitch);
+		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageS2CTeleportEntity(entity.getEntityId(), posX, posY, posZ));
+	}
 
 	/**
 	 * Sends an animation message to the clients to update an entity's animations

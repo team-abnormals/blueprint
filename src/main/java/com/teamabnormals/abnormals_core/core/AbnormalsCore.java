@@ -7,9 +7,9 @@ import com.teamabnormals.abnormals_core.client.example.ExampleEndimatedEntityRen
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
 import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
-import com.teamabnormals.abnormals_core.common.network.MessageS2CEndimation;
 import com.teamabnormals.abnormals_core.common.network.MessageS2CUpdateSign;
 import com.teamabnormals.abnormals_core.common.network.MessageSOpenSignEditor;
+import com.teamabnormals.abnormals_core.common.network.entity.MessageS2CEndimation;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;

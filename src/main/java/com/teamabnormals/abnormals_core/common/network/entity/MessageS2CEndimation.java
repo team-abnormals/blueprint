@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.common.network;
+package com.teamabnormals.abnormals_core.common.network.entity;
 
 import java.util.function.Supplier;
 
