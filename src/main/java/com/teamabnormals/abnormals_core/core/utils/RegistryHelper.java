@@ -300,7 +300,8 @@ public class RegistryHelper {
 		return block;
 	}
 	
-	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color, ResourceLocation texture) {
+	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color) {
+		ResourceLocation texture = new ResourceLocation(this.getModId(), "textures/entity/signs/" + name + ".png");
 		RegistryObject<AbnormalsStandingSignBlock> standing = this.blockRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.create(Material.WOOD).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD), texture));
 		RegistryObject<AbnormalsWallSignBlock> wall = this.blockRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.create(Material.WOOD, color).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD).lootFrom(standing.get()), texture));
 		this.createItem(name + "_sign", () -> new AbnormalsSignItem(standing.get(), wall.get(), new Item.Properties().maxStackSize(16).group(ItemGroup.DECORATIONS)));
