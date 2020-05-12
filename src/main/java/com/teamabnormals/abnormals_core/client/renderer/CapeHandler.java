@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
 public class CapeHandler {
 	
-	protected static final ImmutableSet<String> UUIDS = ImmutableSet.of(
+	private static final ImmutableSet<String> UUIDS = ImmutableSet.of(
 			"8ed04941-c497-4caf-80b2-ccf2e821d94d",
 			"b8b859a5-2dbc-4743-8f7a-4768f6692606",
 			"4d568080-07a5-4961-96b2-3811f9721aa2", 
