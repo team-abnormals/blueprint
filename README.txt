@@ -4,7 +4,7 @@
 
 #1 A̲d̲d̲i̲n̲g̲ ̲t̲h̲e̲ ̲C̲u̲r̲s̲e̲ ̲M̲a̲v̲e̲n̲ ̲P̲l̲u̲g̲i̲n̲
    - This allows for the 𝐛𝐮𝐢𝐥𝐝.𝐠𝐫𝐚𝐝𝐥𝐞 to pull the jar from the Curse Maven
-   - After 𝐛𝐮𝐢𝐥𝐝𝐬𝐜𝐫𝐢𝐩𝐭 in 𝐛𝐮𝐢𝐥𝐝.𝐠𝐫𝐚𝐝𝐥𝐞 put the follow lines, 
+   - After 𝐛𝐮𝐢𝐥𝐝𝐬𝐜𝐫𝐢𝐩𝐭 in 𝐛𝐮𝐢𝐥𝐝.𝐠𝐫𝐚𝐝𝐥𝐞 put the following lines, 
       𝐩𝐥𝐮𝐠𝐢𝐧𝐬 {
          𝐢𝐝 "𝐜𝐨𝐦.𝐰𝐲𝐧𝐩𝐫𝐢𝐜𝐞.𝐜𝐮𝐫𝐬𝐞𝐦𝐚𝐯𝐞𝐧" 𝐯𝐞𝐫𝐬𝐢𝐨𝐧 "𝟐.𝟏.𝟏"
       }
