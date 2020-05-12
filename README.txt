@@ -1,53 +1,17 @@
--------------------------------------------
-Source installation information for modders
--------------------------------------------
-This code follows the Minecraft Forge installation methodology. It will apply
-some small patches to the vanilla MCP source code, giving you and it access 
-to some of the data and functions you need to build a successful mod.
+------------------------------------
+      Installation Information
+------------------------------------
 
-Note also that the patches are built against "unrenamed" MCP source code (aka
-srgnames) - this means that you will not be able to read them directly against
-normal code.
-
-Source pack installation information:
-
-Standalone source installation
-==============================
-
-See the Forge Documentation online for more detailed instructions:
-http://mcforge.readthedocs.io/en/latest/gettingstarted/
-
-Step 1: Open your command-line and browse to the folder where you extracted the zip file.
-
-Step 2: You're left with a choice.
-If you prefer to use Eclipse:
-1. Run the following command: "gradlew genEclipseRuns" (./gradlew genEclipseRuns if you are on Mac/Linux)
-2. Open Eclipse, Import > Existing Gradle Project > Select Folder 
-   or run "gradlew eclipse" to generate the project.
-(Current Issue)
-4. Open Project > Run/Debug Settings > Edit runClient and runServer > Environment
-5. Edit MOD_CLASSES to show [modid]%%[Path]; 2 times rather then the generated 4.
-
-If you prefer to use IntelliJ:
-1. Open IDEA, and import project.
-2. Select your build.gradle file and have it import.
-3. Run the following command: "gradlew genIntellijRuns" (./gradlew genIntellijRuns if you are on Mac/Linux)
-4. Refresh the Gradle Project in IDEA if required.
-
-If at any point you are missing libraries in your IDE, or you've run into problems you can run "gradlew --refresh-dependencies" to refresh the local cache. "gradlew clean" to reset everything {this does not affect your code} and then start the processs again.
-
-Should it still not work, 
-Refer to #ForgeGradle on EsperNet for more information about the gradle environment.
-or the Forge Project Discord discord.gg/UvedJ9m
-
-Forge source installation
-=========================
-MinecraftForge ships with this code and installs it as part of the forge
-installation process, no further action is required on your part.
-
-LexManos' Install Video
-=======================
-https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
-
-For more details update more often refer to the Forge Forums:
-http://www.minecraftforge.net/forum/index.php/topic,14048.0.html
+#1 A̲d̲d̲i̲n̲g̲ ̲t̲h̲e̲ ̲C̲u̲r̲s̲e̲ ̲M̲a̲v̲e̲n̲ ̲P̲l̲u̲g̲i̲n̲
+   - This allows for the 𝐛𝐮𝐢𝐥𝐝.𝐠𝐫𝐚𝐝𝐥𝐞 to pull the jar from the Curse Maven
+   - After 𝐛𝐮𝐢𝐥𝐝𝐬𝐜𝐫𝐢𝐩𝐭 in 𝐛𝐮𝐢𝐥𝐝.𝐠𝐫𝐚𝐝𝐥𝐞 put the follow lines, 
+      𝐩𝐥𝐮𝐠𝐢𝐧𝐬 {
+         𝐢𝐝 "𝐜𝐨𝐦.𝐰𝐲𝐧𝐩𝐫𝐢𝐜𝐞.𝐜𝐮𝐫𝐬𝐞𝐦𝐚𝐯𝐞𝐧" 𝐯𝐞𝐫𝐬𝐢𝐨𝐧 "𝟐.𝟏.𝟏"
+      }
+#2 C̲o̲m̲p̲i̲l̲i̲n̲g̲ ̲t̲h̲e̲ ̲d̲e̲p̲e̲n̲d̲e̲n̲c̲y̲
+   - This will get the jar from the Curse Maven and deobfusticate it and add it as a library
+   - In the 𝐝𝐞𝐩𝐞𝐧𝐝𝐞𝐧𝐜𝐢𝐞𝐬 in the 𝐛𝐮𝐢𝐥𝐝.𝐠𝐫𝐚𝐝𝐥𝐞 add this line,
+      𝐜𝐨𝐦𝐩𝐢𝐥𝐞 𝐟𝐠.𝐝𝐞𝐨𝐛𝐟("𝐜𝐮𝐫𝐬𝐞.𝐦𝐚𝐯𝐞𝐧:𝐚𝐛𝐧𝐨𝐫𝐦𝐚𝐥𝐬-𝐜𝐨𝐫𝐞:fileid")
+   - The fileid matches the file id of the file on curse, so for example for Version 1.0.0 of AC it'd use the file id 2954634
+#3 R̲u̲n̲ ̲t̲h̲e̲ ̲g̲r̲a̲d̲l̲e̲ ̲p̲r̲o̲c̲e̲s̲s̲e̲s̲
+   - Once you've done the other steps just do the other normal gradle steps taken to setup a mod dev enviornment and AC will be added as a      dependency
