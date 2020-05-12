@@ -3,8 +3,8 @@
    - This allows for the 𝐛𝐮𝐢𝐥𝐝.𝐠𝐫𝐚𝐝𝐥𝐞 to pull the jar from the Curse Maven
    - After 𝐛𝐮𝐢𝐥𝐝𝐬𝐜𝐫𝐢𝐩𝐭 in 𝐛𝐮𝐢𝐥𝐝.𝐠𝐫𝐚𝐝𝐥𝐞 put the following lines,
       ```
-      𝐩𝐥𝐮𝐠𝐢𝐧𝐬 {
-         𝐢𝐝 "𝐜𝐨𝐦.𝐰𝐲𝐧𝐩𝐫𝐢𝐜𝐞.𝐜𝐮𝐫𝐬𝐞𝐦𝐚𝐯𝐞𝐧" 𝐯𝐞𝐫𝐬𝐢𝐨𝐧 "𝟐.𝟏.𝟏"
+      plugins {
+         id "com.wynprice.cursemaven" version "2.1.1"
       }
       ```
 ### Compiling the Dependency
@@ -13,7 +13,7 @@
       ```compile fg.deobf("curse.maven:abnormals-core:fileid")```
    - The fileid matches the file id of the file on curse, so for example for Version 1.0.0 of AC it'd use the file id 2954634
 ### Run the gradle processes
-   - Once you've done the other steps just do the other normal gradle steps taken to setup a mod dev enviornment and AC will be added as a      dependency
+   - Once you've done the other steps just do the other normal gradle steps taken to setup a mod dev enviornment and AC will be added as     a dependency
 
 ## Making AC a Dependency
 To make AC a Dependency for your mod requires only one simple step.
