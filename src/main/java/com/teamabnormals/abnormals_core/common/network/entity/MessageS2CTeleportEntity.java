@@ -1,6 +1,7 @@
 package com.teamabnormals.abnormals_core.common.network.entity;
 
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
+
 import com.teamabnormals.abnormals_core.client.ClientInfo;
 
 import net.minecraft.entity.Entity;

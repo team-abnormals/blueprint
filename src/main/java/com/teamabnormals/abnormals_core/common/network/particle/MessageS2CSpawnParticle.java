@@ -1,6 +1,7 @@
 package com.teamabnormals.abnormals_core.common.network.particle;
 
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
+
 import com.teamabnormals.abnormals_core.client.ClientInfo;
 
 import net.minecraft.network.PacketBuffer;
@@ -51,7 +52,7 @@ public class MessageS2CSpawnParticle {
 		return new MessageS2CSpawnParticle(particleName, posX, posY, posZ, motionX, motionY, motionZ);
 	}
 	
-	public static boolean handle(MessageS2CSpawnParticle message, Supplier<NetworkEvent.Context> ctx) {
+	public static void handle(MessageS2CSpawnParticle message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		if(context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
@@ -63,7 +64,6 @@ public class MessageS2CSpawnParticle {
 				}
 			});
 		}
-		
-		return true;
+		context.setPacketHandled(true);
 	}
 }

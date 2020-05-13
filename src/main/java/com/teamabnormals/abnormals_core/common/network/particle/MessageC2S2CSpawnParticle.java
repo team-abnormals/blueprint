@@ -1,6 +1,7 @@
 package com.teamabnormals.abnormals_core.common.network.particle;
 
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
+
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import net.minecraft.network.PacketBuffer;

@@ -3,13 +3,15 @@ package com.teamabnormals.abnormals_core.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.teamabnormals.abnormals_core.client.example.ExampleEndimatedEntityRenderer;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
 import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
 import com.teamabnormals.abnormals_core.common.network.MessageS2CUpdateSign;
 import com.teamabnormals.abnormals_core.common.network.MessageSOpenSignEditor;
 import com.teamabnormals.abnormals_core.common.network.entity.MessageS2CEndimation;
+import com.teamabnormals.abnormals_core.common.network.entity.MessageS2CTeleportEntity;
+import com.teamabnormals.abnormals_core.common.network.particle.MessageC2S2CSpawnParticle;
+import com.teamabnormals.abnormals_core.common.network.particle.MessageS2CSpawnParticle;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
@@ -18,7 +20,6 @@ import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataMan
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -134,6 +135,21 @@ public class AbnormalsCore {
 		CHANNEL.messageBuilder(MessageS2CUpdateSign.class, id++)
 		.encoder(MessageS2CUpdateSign::serialize).decoder(MessageS2CUpdateSign::deserialize)
 		.consumer(MessageS2CUpdateSign::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageS2CTeleportEntity.class, id++)
+		.encoder(MessageS2CTeleportEntity::serialize).decoder(MessageS2CTeleportEntity::deserialize)
+		.consumer(MessageS2CTeleportEntity::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageS2CSpawnParticle.class, id++)
+		.encoder(MessageS2CSpawnParticle::serialize).decoder(MessageS2CSpawnParticle::deserialize)
+		.consumer(MessageS2CSpawnParticle::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageC2S2CSpawnParticle.class, id++)
+		.encoder(MessageC2S2CSpawnParticle::serialize).decoder(MessageC2S2CSpawnParticle::deserialize)
+		.consumer(MessageC2S2CSpawnParticle::handle)
 		.add();
 	}
 }
