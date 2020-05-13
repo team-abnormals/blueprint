@@ -54,8 +54,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Simple Registry Helper that can be configured to a specific mod
- * For adding new custom helper methods extend this class
+ * 
+ * Implementation for Registries:
+ * When utilizing your mod's RegistryHelper make sure the classes using it are added to your mod's event bus
+ * 
  * For examples @see {@link ExampleItemRegistry} and {@link ExampleBlockRegistry}
+ * For adding new custom helper methods extend this class
  * @author SmellyModder(Luke Tonon)
  */
 public class RegistryHelper {
