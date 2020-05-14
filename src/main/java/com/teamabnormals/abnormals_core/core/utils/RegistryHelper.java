@@ -69,7 +69,7 @@ public class RegistryHelper {
 	private final DeferredRegister<SoundEvent> soundRegister;
 	private final DeferredRegister<TileEntityType<?>> tileEntityRegister;
 	private final DeferredRegister<EntityType<?>> entityRegister;
-	private final List<RegistryObject<Item>> spawnEggs = Lists.newArrayList();
+	public final List<RegistryObject<Item>> spawnEggs = Lists.newArrayList();
 	
 	public RegistryHelper(String modId) {
 		this.modId = modId;
