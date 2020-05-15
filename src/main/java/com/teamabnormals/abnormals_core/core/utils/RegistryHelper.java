@@ -151,6 +151,19 @@ public class RegistryHelper {
 		RegistryObject<Item> item = this.itemRegister.register(name, () -> new Item(properties.group(determinedGroup)));
 		return item;
 	}
+
+	/**
+	 * Creates a Compat Boat Item
+	 * @param - The name of the wood, @example "poise"
+	 * @param - The planks block for the boat to drop
+	 */
+	public RegistryObject<Item> createBoatItem(String modId, String wood, RegistryObject<Block> block) {
+		ItemGroup determinedGroup = ModList.get().isLoaded(modId) || modId == "indev" ? ItemGroup.TRANSPORTATION : null;
+		String type = this.getModId() + ":" + wood;
+		RegistryObject<Item> boat = this.itemRegister.register(wood + "_boat", () -> new AbnormalsBoatItem(type, createSimpleItemProperty(1, determinedGroup)));
+		BoatRegistry.registerBoat(type, boat, block);
+		return boat;
+	}
 	
 	/**
 	 * Creates a Spawn Egg Item
