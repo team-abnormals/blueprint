@@ -41,6 +41,10 @@ public class MessageSOpenSignEditor {
 			if(!ClientInfo.getClientPlayer().getUniqueID().equals(message.playerUUID)) return;
 			context.enqueueWork(() -> {
 				TileEntity tileentity = ClientInfo.getClientPlayerWorld().getTileEntity(message.signPos);
+				if(!(tileentity instanceof AbnormalsSignTileEntity)) {
+					tileentity = new AbnormalsSignTileEntity();
+					tileentity.setWorldAndPos(ClientInfo.getClientPlayerWorld(), message.signPos);
+				}
 				
 				NetworkUtil.openSignScreen((AbnormalsSignTileEntity) tileentity);
 			});
