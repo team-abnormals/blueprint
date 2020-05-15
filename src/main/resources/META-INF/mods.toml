@@ -5,7 +5,7 @@ loaderVersion="[31,)"
 [[mods]]
 logoFile="logo.png"
 modId="abnormals_core"
-version="1.0.3"
+version="1.0.4"
 authors="Minecraft Abnormals"
 credits="SmellyModder (Luke Tonon) (code), bageldotjpg (code), and Jackson (curse page)"
 displayName="Abnormals Core"
@@ -14,7 +14,7 @@ description='''Library mod for all Abnormals mods.'''
 [[dependencies.abnormals_core]]
     modId="forge"
     mandatory=true
-    versionRange="[31,)"
+    versionRange="[31.1.49)"
     ordering="NONE"
     side="BOTH"
 
