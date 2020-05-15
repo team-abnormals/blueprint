@@ -35,6 +35,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.TallBlockItem;
 import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.tileentity.TileEntity;
@@ -301,6 +302,35 @@ public class RegistryHelper {
 	public <B extends Block> RegistryObject<B> createTallBlock(String name, Supplier<? extends B> supplier, ItemGroup group) {
 		RegistryObject<B> block = this.blockRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new TallBlockItem(block.get(), new Item.Properties().group(group)));
+		return block;
+	}
+	
+	/**
+	 * Creates a Block with a WallOrFloorItem
+	 * @see WallOrFloorItem
+	 * @param name - The block's name
+	 * @param supplier - The supplied Floor Block
+	 * @param supplier - The supplied Wall Block
+	 * @param group - The TallBlockItem's ItemGroup
+	 * @return - The Block with a WallOrFloorItem
+	 */
+	public <B extends Block> RegistryObject<B> createWallOrFloorBlock(String name, Supplier<? extends B> supplier, Supplier<? extends B> wallSupplier, @Nullable ItemGroup group) {
+		RegistryObject<B> block = this.getDeferredBlockRegister().register(name, supplier);
+		this.getDeferredItemRegister().register(name, () -> new WallOrFloorItem(block.get(), wallSupplier.get(), new Item.Properties().group(group)));
+		return block;
+	}
+	
+	/**
+	 * Creates a block with its BlockItem that has a Rarity
+	 * @param name - The block's name
+	 * @param supplier - The supplied Block
+	 * @param rarity - The item's rarity
+	 * @param group - The ItemGroup for the BlockItem
+	 * @return - The customized Block
+	 */
+	public <B extends Block> RegistryObject<B> createRareBlock(String name, Supplier<? extends B> supplier, Rarity rarity, @Nullable ItemGroup group) {
+		RegistryObject<B> block = this.getDeferredBlockRegister().register(name, supplier);
+		this.getDeferredItemRegister().register(name, () -> new BlockItem(block.get(), new Item.Properties().rarity(rarity).group(group)));
 		return block;
 	}
 	
