@@ -13,9 +13,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0.4'
+version = 'v1.0.4'
 group = 'com.teamabnormals.abnormals_core'
-archivesBaseName = 'abnormals_core'
+archivesBaseName = 'Abnormals-Core-1.15.2'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
