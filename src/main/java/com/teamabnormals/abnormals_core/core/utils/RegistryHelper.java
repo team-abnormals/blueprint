@@ -326,6 +326,22 @@ public class RegistryHelper {
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(determinedGroup)));
 		return block;
 	}
+
+	/**
+	 * Creates a Compat Sign Block
+	 * @param modId - The modId of the mod this sign is compatible for, set to "indev" for dev tests
+	 * @param name - The name of the sign's wood type
+	 * @param color - The color of the sign
+	 * @return - Pair of the sign's AbnormalsStandingSignBlock and AbnormalsWallSignBlock
+	 */
+	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createCompatSignBlock(String modId, String name, MaterialColor color) {
+		ItemGroup determinedGroup = ModList.get().isLoaded(modId) || modId == "indev" ? ItemGroup.DECORATIONS : null;
+		ResourceLocation texture = new ResourceLocation(this.getModId(), "textures/entity/signs/" + name + ".png");
+		RegistryObject<AbnormalsStandingSignBlock> standing = this.blockRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.create(Material.WOOD).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD), texture));
+		RegistryObject<AbnormalsWallSignBlock> wall = this.blockRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.create(Material.WOOD, color).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD).lootFrom(standing.get()), texture));
+		this.createItem(name + "_sign", () -> new AbnormalsSignItem(standing.get(), wall.get(), new Item.Properties().maxStackSize(16).group(determinedGroup)));
+		return Pair.of(standing, wall);
+	}
 	
 	/**
 	 * Creates a SoundEvent
