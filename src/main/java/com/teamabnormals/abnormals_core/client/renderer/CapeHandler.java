@@ -28,11 +28,9 @@ public class CapeHandler {
 	private static final ImmutableSet<String> UUIDS = ImmutableSet.of(
 			"8ed04941-c497-4caf-80b2-ccf2e821d94d",
 			"b8b859a5-2dbc-4743-8f7a-4768f6692606",
-			"4d568080-07a5-4961-96b2-3811f9721aa2", 
+			"68c08594-e7cd-43fb-bdf9-240147ee26cf", 
 			"caaeff74-cbbc-415c-9c22-21e65ad6c33f",
-			"4378df24-8433-4b5c-b865-bf635b003ebb",
-			"9a10620c-ce87-4f6c-a4a7-42d6b8ed39d6",
-			"ff2dd200-7a20-4cad-a42b-65a69da12f2c");
+			"4378df24-8433-4b5c-b865-bf635b003ebb");
 	
 	private static final Set<String> RENDERED = Collections.newSetFromMap(new WeakHashMap<>());
 	
