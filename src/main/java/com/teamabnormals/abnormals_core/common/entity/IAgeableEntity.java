@@ -12,4 +12,6 @@ public interface IAgeableEntity {
      */
     void setGrowingAge(int age);
 
+    int getGrowingAge();
+
 }

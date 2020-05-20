@@ -26,7 +26,7 @@ public class CompatEvents {
     @SubscribeEvent
     public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
         if(event.getTarget() instanceof IAgeableEntity && event.getItemStack().getItem() == Items.POISONOUS_POTATO && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
-            if(!event.getTarget().getPersistentData().getBoolean(poisonTag) && !event.getWorld().isRemote) {
+            if(((IAgeableEntity)event.getTarget()).getGrowingAge() < 0 && !event.getTarget().getPersistentData().getBoolean(poisonTag) && !event.getWorld().isRemote) {
                 //Vec3d pos = creepie.getPositionVec();
                 event.getPlayer().swingArm(event.getHand());
                 if(event.getTarget().world.rand.nextDouble() < ACConfig.ValuesHolder.poisonEffectChance()) {
