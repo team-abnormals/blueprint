@@ -19,7 +19,7 @@ After the `buildscript` section on the top of your `build.gradle`, paste in the 
 ### **Adding the Dependency**
 You'll next need to add Abnormals Core as a dependency on your project and tell Forge to deobfuscate it. In the `dependencies` block paste in the following:
 
-    compile fg.deobf("curse.maven:abnormals-core:curseFileID")
+    implementation fg.deobf("curse.maven:abnormals-core:curseFileID")
 *The Curse fileId can be found on the end of the link of the file on CurseForge. For example, the fileId of `2954634` would add Abnormals Core 1.0.0 as a dependency.*
 
 ### **Refresh Gradle**
