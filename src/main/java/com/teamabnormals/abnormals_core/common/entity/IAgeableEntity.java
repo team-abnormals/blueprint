@@ -2,7 +2,7 @@ package com.teamabnormals.abnormals_core.common.entity;
 
 /***
  * @author Voliant
- * Use to make an entity compatible with Quark's potato poisoning.
+ * Use to make an entity that doesn't extend AgeableEntity compatible with Quark's potato poisoning.
  */
 public interface IAgeableEntity {
 
