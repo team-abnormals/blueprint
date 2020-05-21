@@ -11,7 +11,7 @@
    - This will get the jar from the Curse Maven and deobfusticate it and add it as a library
    - In the 𝐝𝐞𝐩𝐞𝐧𝐝𝐞𝐧𝐜𝐢𝐞𝐬 in the 𝐛𝐮𝐢𝐥𝐝.𝐠𝐫𝐚𝐝𝐥𝐞 add this line,
       ```
-	  compile fg.deobf("curse.maven:abnormals-core:fileid")
+	  implementation fg.deobf("curse.maven:abnormals-core:fileid")
 	  ```
    - The fileid matches the file id of the file on curse, so for example for Version 1.0.0 of AC it'd use the file id 2954634
 ### Run the gradle processes
