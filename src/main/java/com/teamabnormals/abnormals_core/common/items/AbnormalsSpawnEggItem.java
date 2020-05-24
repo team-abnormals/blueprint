@@ -5,9 +5,9 @@ import java.util.function.Supplier;
 import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
@@ -38,12 +38,26 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		if(this.isInGroup(group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.ZOMBIE_VILLAGER_SPAWN_EGG, items);
+			int targetIndex = findSpawnEggIndex(this, items);
 			if(targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
+				items.add(targetIndex, new ItemStack(this));
 			} else {
 				super.fillItemGroup(group, items);
 			}
 		}
+	}
+	
+	public static int findSpawnEggIndex(Item item, NonNullList<ItemStack> items) {
+		for(int i = 0; i < items.size(); i++) {
+			if (items.get(i).getItem() instanceof SpawnEggItem) {
+				if(items.get(i).getItem().toString().compareTo(item.toString()) == 1) {
+					return i;
+				} else if (items.get(i).getItem().toString().compareTo(item.toString()) == 0) {
+					return i + 1;
+				}
+			}
+			
+		}
+		return -1;
 	}
 }
