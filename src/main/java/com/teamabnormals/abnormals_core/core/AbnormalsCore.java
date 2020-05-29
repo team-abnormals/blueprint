@@ -11,18 +11,16 @@ import com.google.common.collect.ImmutableSet;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
-import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
-import com.teamabnormals.abnormals_core.common.network.MessageS2CUpdateSign;
-import com.teamabnormals.abnormals_core.common.network.MessageSOpenSignEditor;
-import com.teamabnormals.abnormals_core.common.network.entity.MessageS2CEndimation;
-import com.teamabnormals.abnormals_core.common.network.entity.MessageS2CTeleportEntity;
-import com.teamabnormals.abnormals_core.common.network.particle.MessageC2S2CSpawnParticle;
-import com.teamabnormals.abnormals_core.common.network.particle.MessageS2CSpawnParticle;
+import com.teamabnormals.abnormals_core.common.network.*;
+import com.teamabnormals.abnormals_core.common.network.entity.*;
+import com.teamabnormals.abnormals_core.common.network.particle.*;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
+import com.teamabnormals.abnormals_core.core.library.Test;
 import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
+import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry.LootInjector;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
 import net.minecraft.block.Block;
@@ -32,6 +30,7 @@ import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.PointOfInterestType;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -46,7 +45,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -114,9 +112,10 @@ public class AbnormalsCore {
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
 	}
 	
-	//@SubscribeEvent
-	public void onServerStarting(FMLServerAboutToStartEvent event) {
-		event.getServer().getResourceManager().addReloadListener(ENDIMATION_DATA_MANAGER);
+	@Test
+	private void registerLootInjectors() {
+		LootInjector injector = new LootInjector(MODID);
+		injector.registerLootInjection(injector.buildLootBool("test", 1, 0), LootTables.CHESTS_NETHER_BRIDGE, LootTables.CHESTS_JUNGLE_TEMPLE);
 	}
 	
 	@OnlyIn(Dist.CLIENT)

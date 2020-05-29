@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.library.EntitySpawnHandler;
+import com.teamabnormals.abnormals_core.core.library.Test;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
@@ -22,6 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 /**
  * @author SmellyModder(Luke Tonon)
  */
+@Test
 @SuppressWarnings("unused")
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ExampleEntitySpawnHandler extends EntitySpawnHandler {
