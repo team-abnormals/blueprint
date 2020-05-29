@@ -59,7 +59,9 @@ public class BlockUtils {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static BlockState transferAllBlockStates(BlockState initial, BlockState after) {
 		for(IProperty property : initial.getBlock().getStateContainer().getProperties()) {
-			after = after.with(property, initial.get(property));
+			if (after.getBlock().getStateContainer().getProperties().contains(property) && initial.get(property) != null) {
+				after = after.with(property, initial.get(property));
+			}
 		}
 		return after;
 	}
