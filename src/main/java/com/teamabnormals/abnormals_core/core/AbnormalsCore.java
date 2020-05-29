@@ -19,6 +19,7 @@ import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.library.Test;
 import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
+import com.teamabnormals.abnormals_core.core.library.api.ModLoadedLootCondition;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry.LootInjector;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
@@ -31,6 +32,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.storage.loot.LootTables;
+import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -70,7 +72,8 @@ public class AbnormalsCore {
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		this.setupMessages();
-        
+		LootConditionManager.registerCondition(new ModLoadedLootCondition.Serializer());
+		
 		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
 		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
