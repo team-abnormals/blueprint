@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.state.IProperty;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvent;
@@ -53,6 +54,14 @@ public class BlockUtils {
 			}
 		}
 		return true;
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static BlockState transferAllBlockStates(BlockState initial, BlockState after) {
+		for(IProperty property : initial.getBlock().getStateContainer().getProperties()) {
+			after = after.with(property, initial.get(property));
+		}
+		return after;
 	}
 	
 }
