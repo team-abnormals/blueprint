@@ -1,10 +1,16 @@
 package com.teamabnormals.abnormals_core.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
+import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
 import com.teamabnormals.abnormals_core.common.network.MessageS2CUpdateSign;
 import com.teamabnormals.abnormals_core.common.network.MessageSOpenSignEditor;
@@ -19,9 +25,13 @@ import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.village.PointOfInterestType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -77,6 +87,7 @@ public class AbnormalsCore {
 		});
 		
 		modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::replaceBeehivePOI);
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
@@ -111,6 +122,14 @@ public class AbnormalsCore {
 	@OnlyIn(Dist.CLIENT)
 	private void registerItemColors(ColorHandlerEvent.Item event) {
 		REGISTRY_HELPER.processSpawnEggColors(event);
+	}
+	
+    private void replaceBeehivePOI(final FMLCommonSetupEvent event) {
+    	ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
+        PointOfInterestType.field_226356_s_.blockStates = BlockTags.BEEHIVES.getAllElements().stream().flatMap((map) -> map.getStateContainer().getValidStates().stream()).collect(ImmutableSet.toImmutableSet());
+    	Map<BlockState, PointOfInterestType> pointOfInterestTypeMap = new HashMap<>();
+        BEEHIVES.stream().forEach(block -> block.getStateContainer().getValidStates().forEach(state -> pointOfInterestTypeMap.put(state, PointOfInterestType.field_226356_s_)));
+        PointOfInterestType.field_221073_u.putAll(pointOfInterestTypeMap);
 	}
 	
 	private void setupMessages() {
