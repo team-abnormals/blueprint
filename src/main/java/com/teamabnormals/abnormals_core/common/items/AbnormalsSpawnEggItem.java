@@ -2,6 +2,8 @@ package com.teamabnormals.abnormals_core.common.items;
 
 import java.util.function.Supplier;
 
+import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
