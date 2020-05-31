@@ -24,22 +24,30 @@ import com.teamabnormals.abnormals_core.core.examples.ExampleSoundRegistry;
 import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.item.TallBlockItem;
 import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -124,6 +132,30 @@ public class RegistryHelper {
 						return ((AbnormalsSpawnEggItem) item).getColor(itemsIn);
 					}, item);
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Processes all the spawn egg dispenser behaviors1, should be run in common setup
+	 * @see {@link AbnormalsCore#commonSetup} for example
+	 */
+	public void processSpawnEggDispenseBehaviors() {
+		DefaultDispenseItemBehavior defaultdispenseitembehavior = new DefaultDispenseItemBehavior() {
+
+			public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+				Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+				EntityType<?> entitytype = ((SpawnEggItem)stack.getItem()).getType(stack.getTag());
+				entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+	            stack.shrink(1);
+	            return stack;
+			}
+		};
+		
+		for(RegistryObject<Item> items : this.spawnEggs) {
+			Item item = items.get();
+			if(item instanceof AbnormalsSpawnEggItem) {
+				DispenserBlock.registerDispenseBehavior(item, defaultdispenseitembehavior);
 			}
 		}
 	}
