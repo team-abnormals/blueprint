@@ -11,13 +11,10 @@ import com.google.common.collect.ImmutableSet;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
-import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
-import com.teamabnormals.abnormals_core.common.network.MessageS2CUpdateSign;
-import com.teamabnormals.abnormals_core.common.network.MessageSOpenSignEditor;
-import com.teamabnormals.abnormals_core.common.network.entity.MessageS2CEndimation;
-import com.teamabnormals.abnormals_core.common.network.entity.MessageS2CTeleportEntity;
-import com.teamabnormals.abnormals_core.common.network.particle.MessageC2S2CSpawnParticle;
-import com.teamabnormals.abnormals_core.common.network.particle.MessageS2CSpawnParticle;
+import com.teamabnormals.abnormals_core.common.capability.chunkloading.*;
+import com.teamabnormals.abnormals_core.common.network.*;
+import com.teamabnormals.abnormals_core.common.network.entity.*;
+import com.teamabnormals.abnormals_core.common.network.particle.*;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
@@ -74,6 +71,7 @@ public class AbnormalsCore {
 	public AbnormalsCore() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(new ChunkLoaderEvents());
 		
 		this.setupMessages();
 		LootConditionManager.registerCondition(new ModLoadedLootCondition.Serializer());
@@ -91,7 +89,6 @@ public class AbnormalsCore {
 			}
 		});
 		
-		modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::replaceBeehivePOI);
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
@@ -107,7 +104,8 @@ public class AbnormalsCore {
 		ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 			ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 		});
-		REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
+		ChunkLoaderCapability.register();
+		//REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
 		//ExampleEntitySpawnHandler.processSpawnAdditions();
 	}
     
