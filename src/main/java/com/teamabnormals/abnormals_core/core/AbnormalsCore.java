@@ -20,7 +20,7 @@ import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.library.Test;
 import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
-import com.teamabnormals.abnormals_core.core.library.api.ModLoadedLootCondition;
+import com.teamabnormals.abnormals_core.core.library.api.conditions.*;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry.LootInjector;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
@@ -38,6 +38,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -74,7 +75,10 @@ public class AbnormalsCore {
 		MinecraftForge.EVENT_BUS.register(new ChunkLoaderEvents());
 		
 		this.setupMessages();
+		
+		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		LootConditionManager.registerCondition(new ModLoadedLootCondition.Serializer());
+		LootConditionManager.registerCondition(new QuarkFlagLootCondition.Serializer());
 		
 		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
 		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);

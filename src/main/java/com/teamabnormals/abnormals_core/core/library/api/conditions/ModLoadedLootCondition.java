@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.library.api;
+package com.teamabnormals.abnormals_core.core.library.api.conditions;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
