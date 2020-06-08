@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.common.blocks;
+package com.teamabnormals.abnormals_core.common.blocks.test;
 
 import java.util.Random;
 
