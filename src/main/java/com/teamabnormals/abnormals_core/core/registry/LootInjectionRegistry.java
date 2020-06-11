@@ -38,7 +38,7 @@ public class LootInjectionRegistry {
 			this.modId = modId;
 		}
 		
-		public void registerLootInjection(LootPool pool, ResourceLocation... locations) {
+		public synchronized void registerLootInjection(LootPool pool, ResourceLocation... locations) {
 			POOLS.put(Sets.newHashSet(locations), pool);
 		}
 		

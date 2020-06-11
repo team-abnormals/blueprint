@@ -19,7 +19,7 @@ public class BoatRegistry {
 		entries.put("minecraft:oak", new DefaultBoatData());
 	});
 	
-	public static void registerBoat(String boatName, RegistryObject<Item> boat, RegistryObject<Block> plank) {
+	public static synchronized void registerBoat(String boatName, RegistryObject<Item> boat, RegistryObject<Block> plank) {
 		BOATS.put(boatName, new BoatData(boat, plank, boatName));
 	}
 	
