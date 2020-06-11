@@ -41,6 +41,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -54,8 +55,9 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@Mod("abnormals_core")
-@Mod.EventBusSubscriber(modid = "abnormals_core", bus = Mod.EventBusSubscriber.Bus.MOD)
+@SuppressWarnings("deprecation")
+@Mod(AbnormalsCore.MODID)
+@Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AbnormalsCore {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MODID = "abnormals_core";
@@ -105,8 +107,11 @@ public class AbnormalsCore {
 	}
     
 	private void commonSetup(final FMLCommonSetupEvent event) {
-		ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
-			ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
+		DeferredWorkQueue.runLater(() -> {
+			REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
+			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
+				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
+			});
 		});
 		ChunkLoaderCapability.register();
 		//REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
