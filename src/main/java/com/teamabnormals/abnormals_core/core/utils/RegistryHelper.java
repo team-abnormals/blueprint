@@ -28,7 +28,6 @@ import com.teamabnormals.abnormals_core.core.examples.ExampleBlockRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleItemRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleSoundRegistry;
-import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
 
 import net.minecraft.block.Block;
@@ -378,7 +377,7 @@ public class RegistryHelper {
 	 * @return - The block with its ISTER
 	 */
 	public <B extends Block> RegistryObject<AbnormalsChestBlock> createChestBlock(String type, Block.Properties properties, @Nullable ItemGroup group) {
-		RegistryObject<AbnormalsChestBlock> block = this.blockRegister.register(type + "_chest", () -> new AbnormalsChestBlock(this.getModId(), type, () -> ExampleTileEntityRegistry.CHEST.get(), properties));
+		RegistryObject<AbnormalsChestBlock> block = this.blockRegister.register(type + "_chest", () -> new AbnormalsChestBlock(this.getModId(), type, properties));
 		this.itemRegister.register(type + "_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER())));
 		return block;
 	}
@@ -391,7 +390,7 @@ public class RegistryHelper {
 	 * @return - The block with its ISTER
 	 */
 	public <B extends Block> RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String type, Block.Properties properties, @Nullable ItemGroup group) {
-		RegistryObject<AbnormalsTrappedChestBlock> block = this.blockRegister.register(type + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), type, () -> ExampleTileEntityRegistry.TRAPPED_CHEST.get(), properties));
+		RegistryObject<AbnormalsTrappedChestBlock> block = this.blockRegister.register(type + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), type, properties));
 		this.itemRegister.register(type + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> trappedChestISTER())));
 		return block;
 	}

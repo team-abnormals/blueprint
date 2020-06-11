@@ -12,5 +12,4 @@ public class AbnormalsTrappedChestTileEntity extends AbnormalsChestTileEntity {
 		super.onOpenOrClose();
 		this.world.notifyNeighborsOfStateChange(this.pos.down(), this.getBlockState().getBlock());
 	}
-
 }

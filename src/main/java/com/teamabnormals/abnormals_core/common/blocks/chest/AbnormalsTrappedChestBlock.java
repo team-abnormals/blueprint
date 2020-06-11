@@ -1,7 +1,7 @@
 package com.teamabnormals.abnormals_core.common.blocks.chest;
 
-import com.google.common.base.Supplier;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
+import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.library.api.IChestBlock;
 
 import net.minecraft.block.BlockState;
@@ -10,7 +10,6 @@ import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -22,8 +21,8 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	public final String modid;
 	public final String type;
 
-	public AbnormalsTrappedChestBlock(String modid, String type, Supplier<TileEntityType<? extends ChestTileEntity>> supplier, Properties props) {
-		super(props, supplier);
+	public AbnormalsTrappedChestBlock(String modid, String type, Properties props) {
+		super(props, () -> ExampleTileEntityRegistry.TRAPPED_CHEST.get());
 		this.modid = modid;
 		this.type = type;	
 	}
