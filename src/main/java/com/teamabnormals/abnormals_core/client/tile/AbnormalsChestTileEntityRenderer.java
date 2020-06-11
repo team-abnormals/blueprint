@@ -4,19 +4,16 @@ import java.util.Calendar;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
-import com.teamabnormals.abnormals_core.core.AbnormalsCore;
+import com.teamabnormals.abnormals_core.core.library.api.IChestBlock;
 
 import net.minecraft.block.AbstractChestBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
-import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.tileentity.DualBrightnessCallback;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -32,7 +29,7 @@ import net.minecraft.world.World;
 
 public class AbnormalsChestTileEntityRenderer<T extends TileEntity & IChestLid> extends TileEntityRenderer<T> {
 	
-	public static Block invBlock = null; 
+	public static Block itemBlock = null; 
 	
 	public final ModelRenderer field_228862_a_;
 	public final ModelRenderer field_228863_c_;
@@ -81,7 +78,7 @@ public class AbnormalsChestTileEntityRenderer<T extends TileEntity & IChestLid> 
 		this.field_228870_j_.rotationPointY = 8.0F;
 	}
 
-	public void render(T tileEntity, float p_225616_2_, MatrixStack matrixStack, IRenderTypeBuffer p_225616_4_, int p_225616_5_, int p_225616_6_) {
+	public void render(T tileEntity, float p_225616_2_, MatrixStack matrixStack, IRenderTypeBuffer buffer, int p_225616_5_, int p_225616_6_) {
 		World world = tileEntity.getWorld();
 		boolean flag = world != null;
 		BlockState blockstate = flag ? tileEntity.getBlockState() : Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, Direction.SOUTH);
@@ -107,8 +104,7 @@ public class AbnormalsChestTileEntityRenderer<T extends TileEntity & IChestLid> 
 			f1 = 1.0F - f1;
 			f1 = 1.0F - f1 * f1 * f1;
 			int i = icallbackwrapper.apply(new DualBrightnessCallback<>()).applyAsInt(p_225616_5_);
-			Material material = getMaterial(tileEntity, chesttype);
-			IVertexBuilder ivertexbuilder = material.getBuffer(p_225616_4_, RenderType::getEntityCutout);
+			IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.getEntityCutoutNoCull(this.getChestTexture(tileEntity, chesttype)));
 			if (flag1) {
 				if (chesttype == ChestType.LEFT) {
 					this.func_228871_a_(matrixStack, ivertexbuilder, this.field_228868_h_, this.field_228870_j_, this.field_228869_i_, f1, i, p_225616_6_);
@@ -123,17 +119,17 @@ public class AbnormalsChestTileEntityRenderer<T extends TileEntity & IChestLid> 
 		}
 	}
 
-	public Material getMaterial(T t, ChestType type) {
-		Block inventoryBlock = invBlock;
-		if(inventoryBlock == null)
-			inventoryBlock = t.getBlockState().getBlock();
+	public ResourceLocation getChestTexture(T t, ChestType type) {
+		Block inventoryBlock = itemBlock;
+		if(inventoryBlock == null) inventoryBlock = t.getBlockState().getBlock();
 		
-		AbnormalsChestBlock block = (AbnormalsChestBlock) inventoryBlock;
+		IChestBlock block = (IChestBlock) inventoryBlock;
+		String chestType = block.isTrapped() ? "/trapped" : "/normal";
 		
 		switch(type) {
-			case LEFT: return new Material(Atlases.CHEST_ATLAS, new ResourceLocation(AbnormalsCore.MODID, "entity/chest/" + block.getChestName() + "/normal_left"));
-			case RIGHT: return new Material(Atlases.CHEST_ATLAS, new ResourceLocation(AbnormalsCore.MODID, "entity/chest/" + block.getChestName() + "/normal_right"));
-			case SINGLE: default: return new Material(Atlases.CHEST_ATLAS, new ResourceLocation(AbnormalsCore.MODID, "entity/chest/" + block.getChestName() + "/normal"));
+			case LEFT: return new ResourceLocation(block.getModid(), "textures/entity/chest/" + block.getChestName() + chestType +"_left.png");
+			case RIGHT: return new ResourceLocation(block.getModid(), "textures/entity/chest/" + block.getChestName() + chestType + "_right.png");
+			case SINGLE: default: return new ResourceLocation(block.getModid(), "textures/entity/chest/" + block.getChestName() + chestType +".png");
 		}
 	}
 

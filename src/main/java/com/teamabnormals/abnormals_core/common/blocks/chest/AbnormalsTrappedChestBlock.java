@@ -2,6 +2,7 @@ package com.teamabnormals.abnormals_core.common.blocks.chest;
 
 import com.google.common.base.Supplier;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
+import com.teamabnormals.abnormals_core.core.library.api.IChestBlock;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
@@ -16,12 +17,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
 
-public class AbnormalsTrappedChestBlock extends ChestBlock {
+public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBlock {
 
+	public final String modid;
 	public final String type;
 
-	public AbnormalsTrappedChestBlock(String type, Supplier<TileEntityType<? extends ChestTileEntity>> supplier, Properties props) {
+	public AbnormalsTrappedChestBlock(String modid, String type, Supplier<TileEntityType<? extends ChestTileEntity>> supplier, Properties props) {
 		super(props, supplier);
+		this.modid = modid;
 		this.type = type;	
 	}
 	
@@ -35,8 +38,14 @@ public class AbnormalsTrappedChestBlock extends ChestBlock {
 		return new AbnormalsTrappedChestTileEntity();
 	}
 
+	@Override
 	public String getChestName() {
 		return type;
+	}
+	
+	@Override
+	public String getModid() {
+		return modid;
 	}
 	
 	@Override
@@ -57,5 +66,10 @@ public class AbnormalsTrappedChestBlock extends ChestBlock {
 	@Override
 	public int getStrongPower(BlockState p_176211_1_, IBlockReader p_176211_2_, BlockPos p_176211_3_, Direction p_176211_4_) {
 		return p_176211_4_ == Direction.UP ? p_176211_1_.getWeakPower(p_176211_2_, p_176211_3_, p_176211_4_) : 0;
+	}
+
+	@Override
+	public boolean isTrapped() {
+		return true;
 	}
 }
