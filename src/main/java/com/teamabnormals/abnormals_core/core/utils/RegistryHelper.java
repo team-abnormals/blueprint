@@ -10,6 +10,9 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.abnormals_core.client.renderer.ChestItemRenderer;
+import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
+import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
 import com.teamabnormals.abnormals_core.common.dispenser.SpawnEggDispenseBehavior;
@@ -18,11 +21,14 @@ import com.teamabnormals.abnormals_core.common.items.AbnormalsSignItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.teamabnormals.abnormals_core.common.items.FuelItem;
 import com.teamabnormals.abnormals_core.common.items.InjectedBlockItem;
+import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
+import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.examples.ExampleBlockRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleItemRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleSoundRegistry;
+import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
 
 import net.minecraft.block.Block;
@@ -364,6 +370,32 @@ public class RegistryHelper {
 		return block;
 	}
 	
+	/**
+	 * Creates an AbnormalsChestBlock
+	 * @param type - The type of chest ("oak", "spruce", etc)
+	 * @param properties - The properties of the block
+	 * @param group - The ItemGroup for the BlockItem
+	 * @return - The block with its ISTER
+	 */
+	public <B extends Block> RegistryObject<AbnormalsChestBlock> createChestBlock(String type, Block.Properties properties, @Nullable ItemGroup group) {
+		RegistryObject<AbnormalsChestBlock> block = this.blockRegister.register(type + "_chest", () -> new AbnormalsChestBlock(this.getModId(), type, () -> ExampleTileEntityRegistry.CHEST.get(), properties));
+		this.itemRegister.register(type + "_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER())));
+		return block;
+	}
+	
+	/**
+	 * Creates an AbnormalsTrappedChestBlock
+	 * @param type - The type of chest ("oak", "spruce", etc)
+	 * @param properties - The properties of the block
+	 * @param group - The ItemGroup for the BlockItem
+	 * @return - The block with its ISTER
+	 */
+	public <B extends Block> RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String type, Block.Properties properties, @Nullable ItemGroup group) {
+		RegistryObject<AbnormalsTrappedChestBlock> block = this.blockRegister.register(type + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), type, () -> ExampleTileEntityRegistry.TRAPPED_CHEST.get(), properties));
+		this.itemRegister.register(type + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> trappedChestISTER())));
+		return block;
+	}
+	
 	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color) {
 		ResourceLocation texture = new ResourceLocation(this.getModId(), "textures/entity/signs/" + name + ".png");
 		RegistryObject<AbnormalsStandingSignBlock> standing = this.blockRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.create(Material.WOOD).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD), texture));
@@ -481,5 +513,15 @@ public class RegistryHelper {
 			.build(location.toString()
 		);
 		return entity;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private static Callable<ItemStackTileEntityRenderer> chestISTER() {
+		return () -> new ChestItemRenderer<TileEntity>(AbnormalsChestTileEntity::new);
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private static Callable<ItemStackTileEntityRenderer> trappedChestISTER() {
+		return () -> new ChestItemRenderer<TileEntity>(AbnormalsTrappedChestTileEntity::new);
 	}
 }

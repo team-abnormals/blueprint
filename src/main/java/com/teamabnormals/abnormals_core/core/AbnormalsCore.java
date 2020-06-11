@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
-import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
+import com.teamabnormals.abnormals_core.client.tile.*;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.teamabnormals.abnormals_core.common.capability.chunkloading.*;
 import com.teamabnormals.abnormals_core.common.network.*;
@@ -114,7 +114,6 @@ public class AbnormalsCore {
 			});
 		});
 		ChunkLoaderCapability.register();
-		//REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
 		//ExampleEntitySpawnHandler.processSpawnAdditions();
 	}
     
@@ -124,6 +123,8 @@ public class AbnormalsCore {
 		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
 		
+		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
 	}
 	
