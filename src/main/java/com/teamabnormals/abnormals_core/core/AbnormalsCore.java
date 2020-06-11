@@ -9,18 +9,29 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
+import com.teamabnormals.abnormals_core.client.tile.AbnormalsChestTileEntityRenderer;
 import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
+import com.teamabnormals.abnormals_core.client.tile.AbnormalsTrappedChestTileEntityRenderer;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
-import com.teamabnormals.abnormals_core.common.capability.chunkloading.*;
-import com.teamabnormals.abnormals_core.common.network.*;
-import com.teamabnormals.abnormals_core.common.network.entity.*;
-import com.teamabnormals.abnormals_core.common.network.particle.*;
+import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
+import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
+import com.teamabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderCapability;
+import com.teamabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderEvents;
+import com.teamabnormals.abnormals_core.common.network.MessageC2SEditSign;
+import com.teamabnormals.abnormals_core.common.network.MessageS2CUpdateSign;
+import com.teamabnormals.abnormals_core.common.network.MessageSOpenSignEditor;
+import com.teamabnormals.abnormals_core.common.network.entity.MessageS2CEndimation;
+import com.teamabnormals.abnormals_core.common.network.entity.MessageS2CTeleportEntity;
+import com.teamabnormals.abnormals_core.common.network.particle.MessageC2S2CSpawnParticle;
+import com.teamabnormals.abnormals_core.common.network.particle.MessageS2CSpawnParticle;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.library.Test;
 import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
-import com.teamabnormals.abnormals_core.core.library.api.conditions.*;
+import com.teamabnormals.abnormals_core.core.library.api.conditions.ModLoadedLootCondition;
+import com.teamabnormals.abnormals_core.core.library.api.conditions.QuarkFlagLootCondition;
+import com.teamabnormals.abnormals_core.core.library.api.conditions.QuarkFlagRecipeCondition;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry.LootInjector;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
@@ -37,6 +48,7 @@ import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -82,8 +94,8 @@ public class AbnormalsCore {
 		LootConditionManager.registerCondition(new ModLoadedLootCondition.Serializer());
 		LootConditionManager.registerCondition(new QuarkFlagLootCondition.Serializer());
 		
-		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
 		//REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
@@ -101,6 +113,7 @@ public class AbnormalsCore {
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
+			modEventBus.addListener(EventPriority.LOWEST, this::textureStitch);
 		});
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
@@ -124,6 +137,8 @@ public class AbnormalsCore {
 		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
 		
+		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.TRAPPED_CHEST.get(), AbnormalsTrappedChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
 	}
 	
@@ -145,6 +160,25 @@ public class AbnormalsCore {
         BEEHIVES.stream().forEach(block -> block.getStateContainer().getValidStates().forEach(state -> pointOfInterestTypeMap.put(state, PointOfInterestType.field_226356_s_)));
         PointOfInterestType.field_221073_u.putAll(pointOfInterestTypeMap);
 	}
+    
+    @OnlyIn(Dist.CLIENT)
+	public void textureStitch(TextureStitchEvent.Pre event) {
+    	if(event.getMap().getTextureLocation().toString().equals("minecraft:textures/atlas/chest.png")) {
+    		for(Block b : ExampleTileEntityRegistry.collectChestBlocks()) {
+    			AbnormalsChestBlock block = (AbnormalsChestBlock)b;
+    			event.addSprite(new ResourceLocation(AbnormalsCore.MODID, "entity/chest/" + block.getChestName() + "/normal"));
+    			event.addSprite(new ResourceLocation(AbnormalsCore.MODID, "entity/chest/" + block.getChestName() + "/normal_left"));
+    			event.addSprite(new ResourceLocation(AbnormalsCore.MODID, "entity/chest/" + block.getChestName() + "/normal_right"));
+			}
+    		
+    		for(Block b : ExampleTileEntityRegistry.collectTrappedChestBlocks()) {
+    			AbnormalsTrappedChestBlock block = (AbnormalsTrappedChestBlock)b;
+    			event.addSprite(new ResourceLocation(AbnormalsCore.MODID, "entity/chest/" + block.getChestName() + "/trapped"));
+    			event.addSprite(new ResourceLocation(AbnormalsCore.MODID, "entity/chest/" + block.getChestName() + "/trapped_left"));
+    			event.addSprite(new ResourceLocation(AbnormalsCore.MODID, "entity/chest/" + block.getChestName() + "/trapped_right"));
+			}
+		}
+    }
 	
 	private void setupMessages() {
 		int id = -1;
