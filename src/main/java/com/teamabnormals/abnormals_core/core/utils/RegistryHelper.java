@@ -12,10 +12,12 @@ import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
+import com.teamabnormals.abnormals_core.common.dispenser.SpawnEggDispenseBehavior;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsBoatItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSignItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.teamabnormals.abnormals_core.common.items.FuelItem;
+import com.teamabnormals.abnormals_core.common.items.InjectedBlockItem;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.examples.ExampleBlockRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
@@ -24,6 +26,7 @@ import com.teamabnormals.abnormals_core.core.examples.ExampleSoundRegistry;
 import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -124,6 +127,19 @@ public class RegistryHelper {
 						return ((AbnormalsSpawnEggItem) item).getColor(itemsIn);
 					}, item);
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Processes all the spawn egg dispenser behaviors1, should be run in common setup
+	 * @see {@link AbnormalsCore#commonSetup} for example
+	 */
+	public void processSpawnEggDispenseBehaviors() {
+		for(RegistryObject<Item> items : this.spawnEggs) {
+			Item item = items.get();
+			if(item instanceof AbnormalsSpawnEggItem) {
+				DispenserBlock.registerDispenseBehavior(item, new SpawnEggDispenseBehavior());
 			}
 		}
 	}
@@ -274,6 +290,20 @@ public class RegistryHelper {
 	public <B extends Block> RegistryObject<B> createBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.blockRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group)));
+		return block;
+	}
+	
+	/**
+	 * Creates a block with its InjectedBlockItem
+	 * @param name - The block's name
+	 * @param supplier - The supplied Block
+	 * @param group - The ItemGroup for the InjectedBlockItem
+	 * @return - The customized Block
+	 */
+	
+	public <B extends Block> RegistryObject<B> createInjectedBlock(String name, Item followItem, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+		RegistryObject<B> block = this.getDeferredBlockRegister().register(name, supplier);
+		this.getDeferredItemRegister().register(name, () -> new InjectedBlockItem(followItem, block.get(), new Item.Properties().group(group)));
 		return block;
 	}
 	

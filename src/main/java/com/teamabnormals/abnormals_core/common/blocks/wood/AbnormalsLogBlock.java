@@ -2,6 +2,7 @@ package com.teamabnormals.abnormals_core.common.blocks.wood;
 
 import java.util.function.Supplier;
 
+import com.teamabnormals.abnormals_core.core.utils.BlockUtils;
 import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 
 import net.minecraft.block.Block;
@@ -37,7 +38,7 @@ public class AbnormalsLogBlock extends LogBlock {
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
 		if(player.getHeldItem(hand).getItem() instanceof AxeItem) {
 			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-			world.setBlockState(pos, this.block.get().getDefaultState().with(AXIS, state.get(AXIS)));
+			world.setBlockState(pos, BlockUtils.transferAllBlockStates(state, this.block.get().getDefaultState()));
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;

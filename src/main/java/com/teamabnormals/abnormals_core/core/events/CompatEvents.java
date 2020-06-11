@@ -1,8 +1,9 @@
 package com.teamabnormals.abnormals_core.core.events;
 
-import com.teamabnormals.abnormals_core.common.entity.IAgeableEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
+import com.teamabnormals.abnormals_core.core.library.api.IAgeableEntity;
+
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
 import net.minecraft.potion.EffectInstance;

@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.common.entity;
+package com.teamabnormals.abnormals_core.core.library.api;
 
 /***
  * @author Voliant

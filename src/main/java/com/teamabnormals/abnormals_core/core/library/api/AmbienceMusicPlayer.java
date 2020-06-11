@@ -45,7 +45,7 @@ public class AmbienceMusicPlayer {
 	 * @param additionSound - The common ambient sound(s) for the biome
 	 * @param moodSound - The rare/long(plays every 6000-17999 ticks) ambient sound(s) for the biome
 	 */
-	public static void registerBiomeAmbientSoundPlayer(List<Supplier<Biome>> biome, Supplier<SoundEvent> loopSound, Supplier<SoundEvent> additionSound, Supplier<SoundEvent> moodSound) {
+	public static synchronized void registerBiomeAmbientSoundPlayer(List<Supplier<Biome>> biome, Supplier<SoundEvent> loopSound, Supplier<SoundEvent> additionSound, Supplier<SoundEvent> moodSound) {
 		SOUND_HANDLERS.add(new BiomeAmbientSoundPlayer(biome, loopSound, additionSound, moodSound));
 	}
 	
