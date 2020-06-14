@@ -82,11 +82,11 @@ public class AbnormalsCore {
 		LootConditionManager.registerCondition(new ModLoadedLootCondition.Serializer());
 		LootConditionManager.registerCondition(new QuarkFlagLootCondition.Serializer());
 		
-		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+//		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
+//		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+//		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
-		//REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
@@ -109,19 +109,19 @@ public class AbnormalsCore {
     
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
-			//REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
+//			REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
 		});
 		ChunkLoaderCapability.register();
-		//ExampleEntitySpawnHandler.processSpawnAdditions();
+//		ExampleEntitySpawnHandler.processSpawnAdditions();
 	}
     
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(final FMLClientSetupEvent event) {
-		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
-		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
+//		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
+//		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
 		
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
