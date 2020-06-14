@@ -99,9 +99,10 @@ public class AbnormalsCore {
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
-			modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
+		
+		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
 	}
