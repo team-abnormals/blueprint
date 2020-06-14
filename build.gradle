@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = 'v1.0.6'
+version = '1.0.6'
 group = 'com.teamabnormals.abnormals_core'
 archivesBaseName = 'Abnormals-Core-1.15.2'
 
