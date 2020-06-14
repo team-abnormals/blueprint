@@ -376,9 +376,9 @@ public class RegistryHelper {
 	 * @param group - The ItemGroup for the BlockItem
 	 * @return - The block with its ISTER
 	 */
-	public <B extends Block> RegistryObject<AbnormalsChestBlock> createChestBlock(String type, Block.Properties properties, @Nullable ItemGroup group) {
-		RegistryObject<AbnormalsChestBlock> block = this.blockRegister.register(type + "_chest", () -> new AbnormalsChestBlock(this.getModId(), type, properties));
-		this.itemRegister.register(type + "_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER())));
+	public <B extends Block> RegistryObject<AbnormalsChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
+		RegistryObject<AbnormalsChestBlock> block = this.blockRegister.register(name + "_chest", () -> new AbnormalsChestBlock(this.getModId(), name, properties));
+		this.itemRegister.register(name + "_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER())));
 		return block;
 	}
 	
@@ -389,10 +389,20 @@ public class RegistryHelper {
 	 * @param group - The ItemGroup for the BlockItem
 	 * @return - The block with its ISTER
 	 */
-	public <B extends Block> RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String type, Block.Properties properties, @Nullable ItemGroup group) {
-		RegistryObject<AbnormalsTrappedChestBlock> block = this.blockRegister.register(type + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), type, properties));
-		this.itemRegister.register(type + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> trappedChestISTER())));
+	public <B extends Block> RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
+		RegistryObject<AbnormalsTrappedChestBlock> block = this.blockRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), name, properties));
+		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> trappedChestISTER())));
 		return block;
+	}
+	
+	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, MaterialColor color) {
+		ItemGroup chestGroup = ModList.get().isLoaded("quark") || modId == "indev" ? ItemGroup.DECORATIONS : null;
+		ItemGroup trappedChestGroup = ModList.get().isLoaded("quark") || modId == "indev" ? ItemGroup.REDSTONE : null;
+		RegistryObject<AbnormalsChestBlock> chest = this.blockRegister.register(name + "_chest", () -> new AbnormalsChestBlock(this.getModId(), name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.blockRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
+		this.itemRegister.register(name + "_chest", () -> new BlockItem(chest.get(), new Item.Properties().group(chestGroup).setISTER(() -> chestISTER())));
+		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(trappedChest.get(), new Item.Properties().group(trappedChestGroup).setISTER(() -> trappedChestISTER())));
+		return Pair.of(chest, trappedChest);
 	}
 	
 	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color) {

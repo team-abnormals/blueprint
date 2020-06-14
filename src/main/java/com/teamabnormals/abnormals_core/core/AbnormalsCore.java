@@ -108,7 +108,7 @@ public class AbnormalsCore {
     
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
-			REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
+			//REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
