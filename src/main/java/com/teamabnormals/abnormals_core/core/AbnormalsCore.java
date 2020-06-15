@@ -79,6 +79,7 @@ public class AbnormalsCore {
 		this.setupMessages();
 		
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
+		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
 		LootConditionManager.registerCondition(new ModLoadedLootCondition.Serializer());
 		LootConditionManager.registerCondition(new QuarkFlagLootCondition.Serializer());
 		
