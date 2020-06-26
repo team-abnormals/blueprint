@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.teamabnormals.abnormals_core.client.example.ExampleEndimatedEntityRenderer;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.*;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
@@ -34,7 +33,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.tags.BlockTags;
@@ -87,9 +85,9 @@ public class AbnormalsCore {
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
 		
-		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
+		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
+		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+		//REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
 		
@@ -119,7 +117,7 @@ public class AbnormalsCore {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
 			GlobalEntityTypeAttributes.field_233833_b_ = this.copyGlobalAttributeMap();
-			GlobalEntityTypeAttributes.field_233833_b_.put(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), CowEntity.func_234188_eI_().func_233813_a_());
+			//GlobalEntityTypeAttributes.field_233833_b_.put(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), CowEntity.func_234188_eI_().func_233813_a_());
 		});
 		ChunkLoaderCapability.register();
 //		ExampleEntitySpawnHandler.processSpawnAdditions();
@@ -128,7 +126,7 @@ public class AbnormalsCore {
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(final FMLClientSetupEvent event) {
 //		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
+		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
 		
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
