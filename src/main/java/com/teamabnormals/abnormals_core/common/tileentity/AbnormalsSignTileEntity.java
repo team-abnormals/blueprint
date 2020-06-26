@@ -1,12 +1,13 @@
 package com.teamabnormals.abnormals_core.common.tileentity;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import javax.annotation.Nullable;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.Entity;
@@ -16,9 +17,10 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentUtils;
@@ -31,7 +33,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	public final ITextComponent[] signText = new ITextComponent[]{new StringTextComponent(""), new StringTextComponent(""), new StringTextComponent(""), new StringTextComponent("")};
 	private boolean isEditable = true;
 	private PlayerEntity player;
-	private final String[] renderText = new String[4];
+	private final ITextProperties[] renderText = new ITextProperties[4];
 	private DyeColor textColor = DyeColor.BLACK;
 
 	public AbnormalsSignTileEntity() {
@@ -50,17 +52,17 @@ public class AbnormalsSignTileEntity extends TileEntity {
 		return compound;
 	}
 
-	public void read(CompoundNBT compound) {
+	public void read(BlockState state, CompoundNBT compound) {
 		this.isEditable = false;
-		super.read(compound);
+		super.func_230337_a_(state, compound);
 		this.textColor = DyeColor.byTranslationKey(compound.getString("Color"), DyeColor.BLACK);
 
 		for(int i = 0; i < 4; ++i) {
 			String s = compound.getString("Text" + (i + 1));
-			ITextComponent itextcomponent = ITextComponent.Serializer.fromJson(s.isEmpty() ? "\"\"" : s);
+			ITextComponent itextcomponent = ITextComponent.Serializer.func_240643_a_(s.isEmpty() ? "\"\"" : s);
 			if(this.world instanceof ServerWorld) {
 				try {
-					this.signText[i] = TextComponentUtils.updateForEntity(this.getCommandSource((ServerPlayerEntity)null), itextcomponent, (Entity)null, 0);
+					this.signText[i] = TextComponentUtils.func_240645_a_(this.getCommandSource((ServerPlayerEntity)null), itextcomponent, (Entity)null, 0);
 				} catch (CommandSyntaxException var6) {
 					this.signText[i] = itextcomponent;
 				}
@@ -83,9 +85,9 @@ public class AbnormalsSignTileEntity extends TileEntity {
 
 	@Nullable
 	@OnlyIn(Dist.CLIENT)
-	public String getRenderText(int line, Function<ITextComponent, String> p_212364_2_) {
+	public ITextProperties getRenderText(int line, UnaryOperator<ITextProperties> op) {
 		if(this.renderText[line] == null && this.signText[line] != null) {
-			this.renderText[line] = p_212364_2_.apply(this.signText[line]);
+			this.renderText[line] = op.apply(this.signText[line]);
 		}
 
 		return this.renderText[line];
@@ -141,7 +143,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	public CommandSource getCommandSource(@Nullable ServerPlayerEntity playerIn) {
     	String s = playerIn == null ? "Sign" : playerIn.getName().getString();
     	ITextComponent itextcomponent = (ITextComponent)(playerIn == null ? new StringTextComponent("Sign") : playerIn.getDisplayName());
-    	return new CommandSource(ICommandSource.DUMMY, new Vec3d((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D), Vec2f.ZERO, (ServerWorld) this.world, 2, s, itextcomponent, this.world.getServer(), playerIn);
+    	return new CommandSource(ICommandSource.DUMMY, new Vector3d((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D), Vector2f.ZERO, (ServerWorld) this.world, 2, s, itextcomponent, this.world.getServer(), playerIn);
 	}
 
 	public DyeColor getTextColor() {

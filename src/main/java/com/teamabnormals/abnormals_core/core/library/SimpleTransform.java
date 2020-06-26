@@ -5,7 +5,7 @@ import java.util.function.BiConsumer;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorModelRenderer;
 
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Class that can hold positions and rotations for 3D Space, has some other utility functions
@@ -50,7 +50,7 @@ public class SimpleTransform {
 		return new SimpleTransform(transform.posX, transform.posY, transform.posZ, transform.offsetY, transform.offsetY, transform.offsetZ, transform.angleX, transform.angleY, transform.angleZ, transform.scaleX, transform.scaleY, transform.scaleZ);
 	}
 	
-	public void scale(Vec3d scale) {
+	public void scale(Vector3d scale) {
 		this.setPosition(this.posX * (float) scale.getX(), this.posX * (float) scale.getY(), this.posX * (float) scale.getZ());
 	}
 	

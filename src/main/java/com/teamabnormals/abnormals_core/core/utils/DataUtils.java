@@ -14,6 +14,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraftforge.fml.RegistryObject;
 
 public class DataUtils {
+	
 	public static void registerFlammable(Block block, int encouragement, int flammability) {
 		FireBlock fire = (FireBlock) Blocks.FIRE;
 		fire.setFireInfo(block, encouragement, flammability);
@@ -46,4 +47,5 @@ public class DataUtils {
 			blockColors.register(color, blocks);
 		}
 	}
+	
 }

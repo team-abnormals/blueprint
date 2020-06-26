@@ -9,9 +9,9 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.math.BlockPos.PooledMutable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
 /**
@@ -25,13 +25,13 @@ public class GenerationUtils {
 	};
 	public static final Predicate<BlockState> IS_FLUID(int minLevel, Tag<Fluid> allowedFluids) {
 		return (state) -> {
-			IFluidState fluid = state.getFluidState();
+			FluidState fluid = state.getFluidState();
 			return !fluid.isEmpty() && fluid.getHeight() >= minLevel && fluid.isTagged(allowedFluids);
 		};
 	}
 
 	public static void fillAreaWithBlockCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block, @Nullable Predicate<BlockState> canPlace) {
-		PooledMutable positions = PooledMutable.retain();
+		BlockPos.Mutable positions = new BlockPos.Mutable();
 		for(int xx = x1; xx <= x2; xx++) {
 			for(int yy = y1; yy <= y2; yy++) {
 				for(int zz = z1; zz <= z2; zz++) {
@@ -45,7 +45,7 @@ public class GenerationUtils {
 	}
 	
 	public static void fillAreaWithBlockCube(IWorld world, Random rand, int x1, int y1, int z1, int x2, int y2, int z2, @Nullable Predicate<BlockState> canPlace, BlockPlacementEntry... states) {
-		PooledMutable positions = PooledMutable.retain();
+		BlockPos.Mutable positions = new BlockPos.Mutable();
 		for(int xx = x1; xx <= x2; xx++) {
 			for(int yy = y1; yy <= y2; yy++) {
 				for(int zz = z1; zz <= z2; zz++) {
@@ -59,7 +59,7 @@ public class GenerationUtils {
 	}
 	
 	public static void fillAreaWithBlockCubeEdged(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block, @Nullable Predicate<BlockState> canPlace) {
-		PooledMutable positions = PooledMutable.retain();
+		BlockPos.Mutable positions = new BlockPos.Mutable();
 		for(int xx = x1; xx <= x2; xx++) {
 			for(int yy = y1; yy <= y2; yy++) {
 				for(int zz = z1; zz <= z2; zz++) {
@@ -73,7 +73,7 @@ public class GenerationUtils {
 	}
 	
 	public static void fillAreaWithBlockCubeEdged(IWorld world, Random rand, int x1, int y1, int z1, int x2, int y2, int z2, @Nullable Predicate<BlockState> canPlace, BlockPlacementEntry... states) {
-		PooledMutable positions = PooledMutable.retain();
+		BlockPos.Mutable positions = new BlockPos.Mutable();
 		for(int xx = x1; xx <= x2; xx++) {
 			for(int yy = y1; yy <= y2; yy++) {
 				for(int zz = z1; zz <= z2; zz++) {

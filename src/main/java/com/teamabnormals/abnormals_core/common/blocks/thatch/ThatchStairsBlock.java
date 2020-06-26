@@ -23,9 +23,4 @@ public class ThatchStairsBlock extends StairsBlock{
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
 	    return true;
 	}
-
-	@Override
-	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
-	    return false;
-	}
 }

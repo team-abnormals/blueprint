@@ -8,7 +8,7 @@ import com.teamabnormals.abnormals_core.core.library.Modifier;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvent;
@@ -62,8 +62,8 @@ public class BlockUtils {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static BlockState transferAllBlockStates(BlockState initial, BlockState after) {
 		BlockState block = after;
-		for(IProperty property : initial.getBlock().getStateContainer().getProperties()) {
-			if (after.has(property) && initial.get(property) != null) {
+		for(Property property : initial.getBlock().getStateContainer().getProperties()) {
+			if(after.func_235901_b_(property) && initial.get(property) != null) {
 				block = block.with(property, initial.get(property));
 			}
 		}

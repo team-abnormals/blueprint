@@ -3,7 +3,7 @@ package com.teamabnormals.abnormals_core.core.utils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.teamabnormals.abnormals_core.client.ClientInfo;
-import com.teamabnormals.abnormals_core.client.screen.AbnormalsSignEditorScreen;
+import com.teamabnormals.abnormals_core.client.screen.AbnormalsEditSignScreen;
 import com.teamabnormals.abnormals_core.common.network.*;
 import com.teamabnormals.abnormals_core.common.network.entity.*;
 import com.teamabnormals.abnormals_core.common.network.particle.*;
@@ -112,6 +112,6 @@ public class NetworkUtil {
 	 */
 	@OnlyIn(Dist.CLIENT)
 	public static void openSignScreen(AbnormalsSignTileEntity sign) {
-		ClientInfo.MINECRAFT.displayGuiScreen(new AbnormalsSignEditorScreen(sign));
+		ClientInfo.MINECRAFT.displayGuiScreen(new AbnormalsEditSignScreen(sign));
 	}
 }

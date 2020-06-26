@@ -82,11 +82,11 @@ public class RegistryHelper {
 	
 	public RegistryHelper(String modId) {
 		this.modId = modId;
-		this.itemRegister = new DeferredRegister<>(ForgeRegistries.ITEMS, modId);
-		this.blockRegister = new DeferredRegister<>(ForgeRegistries.BLOCKS, modId);
-		this.soundRegister = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, modId);
-		this.tileEntityRegister = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, modId);
-		this.entityRegister = new DeferredRegister<>(ForgeRegistries.ENTITIES, modId);
+		this.itemRegister = DeferredRegister.create(ForgeRegistries.ITEMS, modId);
+		this.blockRegister = DeferredRegister.create(ForgeRegistries.BLOCKS, modId);
+		this.soundRegister = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, modId);
+		this.tileEntityRegister = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, modId);
+		this.entityRegister = DeferredRegister.create(ForgeRegistries.ENTITIES, modId);
 	}
 	
 	public DeferredRegister<Item> getDeferredItemRegister() {

@@ -18,7 +18,7 @@ import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -36,12 +36,11 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.PooledMutable;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -85,7 +84,7 @@ public class AbnormalsBoatEntity extends BoatEntity {
 	public AbnormalsBoatEntity(World worldIn, double x, double y, double z) {
 		this(ExampleEntityRegistry.BOAT.get(), worldIn);
 		this.setPosition(x, y, z);
-		this.setMotion(Vec3d.ZERO);
+		this.setMotion(Vector3d.ZERO);
 		this.prevPosX = x;
 		this.prevPosY = y;
 		this.prevPosZ = z;
@@ -207,7 +206,7 @@ public class AbnormalsBoatEntity extends BoatEntity {
 
             this.move(MoverType.SELF, this.getMotion());
         } else {
-            this.setMotion(Vec3d.ZERO);
+            this.setMotion(Vector3d.ZERO);
         }
 
         this.updateRocking();
@@ -217,9 +216,9 @@ public class AbnormalsBoatEntity extends BoatEntity {
                 if (!this.isSilent() && (double) (this.paddlePositions[i] % ((float) Math.PI * 2F)) <= (double) ((float) Math.PI / 4F) && ((double) this.paddlePositions[i] + (double) ((float) Math.PI / 8F)) % (double) ((float) Math.PI * 2F) >= (double) ((float) Math.PI / 4F)) {
                     SoundEvent soundevent = this.getPaddleSound();
                     if (soundevent != null) {
-                        Vec3d vec3d = this.getLook(1.0F);
-                        double d0 = i == 1 ? -vec3d.z : vec3d.z;
-                        double d1 = i == 1 ? vec3d.x : -vec3d.x;
+                        Vector3d Vector3d = this.getLook(1.0F);
+                        double d0 = i == 1 ? -Vector3d.z : Vector3d.z;
+                        double d1 = i == 1 ? Vector3d.x : -Vector3d.x;
                         this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat());
                     }
                 }
@@ -272,12 +271,12 @@ public class AbnormalsBoatEntity extends BoatEntity {
                 int j = 60 - k - 1;
                 if (j > 0 && k == 0) {
                     this.setRockingTicks(0);
-                    Vec3d vec3d = this.getMotion();
+                    Vector3d Vector3d = this.getMotion();
                     if (this.field_203060_aN) {
-                        this.setMotion(vec3d.add(0.0D, -0.7D, 0.0D));
+                        this.setMotion(Vector3d.add(0.0D, -0.7D, 0.0D));
                         this.removePassengers();
                     } else {
-                        this.setMotion(vec3d.x, this.isPassenger(PlayerEntity.class) ? 2.7D : 0.6D, vec3d.z);
+                        this.setMotion(Vector3d.x, this.isPassenger(PlayerEntity.class) ? 2.7D : 0.6D, Vector3d.z);
                     }
                 }
 
@@ -341,35 +340,39 @@ public class AbnormalsBoatEntity extends BoatEntity {
         int l = MathHelper.ceil(axisalignedbb.maxY - this.lastYd);
         int i1 = MathHelper.floor(axisalignedbb.minZ);
         int j1 = MathHelper.ceil(axisalignedbb.maxZ);
+        
+        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
 
-        try (PooledMutable blockpos$pooledmutableblockpos = BlockPos.PooledMutable.retain()) {
-            label161:
-            for (int k1 = k; k1 < l; ++k1) {
-                float f = 0.0F;
+        label39:
+        for(int k1 = k; k1 < l; ++k1) {
+        	float f = 0.0F;
+        	int l1 = i;
 
-                for (int l1 = i; l1 < j; ++l1) {
-                    for (int i2 = i1; i2 < j1; ++i2) {
-                        blockpos$pooledmutableblockpos.setPos(l1, k1, i2);
-                        IFluidState ifluidstate = this.world.getFluidState(blockpos$pooledmutableblockpos);
-                        if (ifluidstate.isTagged(FluidTags.WATER)) {
-                            f = Math.max(f, ifluidstate.getActualHeight(this.world, blockpos$pooledmutableblockpos));
-                        }
+        	while(true) {
+        		if (l1 >= j) {
+        			if (f < 1.0F) {
+        				return (float)blockpos$mutable.getY() + f;
+        			}
+        			break;
+        		}
 
-                        if (f >= 1.0F) {
-                            continue label161;
-                        }
-                    }
-                }
+        		for(int i2 = i1; i2 < j1; ++i2) {
+        			blockpos$mutable.setPos(l1, k1, i2);
+        			FluidState fluidstate = this.world.getFluidState(blockpos$mutable);
+        			if (fluidstate.isTagged(FluidTags.WATER)) {
+        				f = Math.max(f, fluidstate.getActualHeight(this.world, blockpos$mutable));
+        			}
 
-                if (f < 1.0F) {
-                    float f2 = (float) blockpos$pooledmutableblockpos.getY() + f;
-                    return f2;
-                }
-            }
+        			if (f >= 1.0F) {
+        				continue label39;
+        			}
+        		}
 
-            float f1 = (float) (l + 1);
-            return f1;
+        		++l1;
+        	}
         }
+
+        return (float)(l + 1);
     }
 
     @Override
@@ -386,24 +389,24 @@ public class AbnormalsBoatEntity extends BoatEntity {
         float f = 0.0F;
         int k1 = 0;
 
-        try (PooledMutable blockpos$pooledmutableblockpos = PooledMutable.retain()) {
-            for (int l1 = i; l1 < j; ++l1) {
-                for (int i2 = i1; i2 < j1; ++i2) {
-                    int j2 = (l1 != i && l1 != j - 1 ? 0 : 1) + (i2 != i1 && i2 != j1 - 1 ? 0 : 1);
-                    if (j2 != 2) {
-                        for (int k2 = k; k2 < l; ++k2) {
-                            if (j2 <= 0 || k2 != k && k2 != l - 1) {
-                                blockpos$pooledmutableblockpos.setPos(l1, k2, i2);
-                                BlockState blockstate = this.world.getBlockState(blockpos$pooledmutableblockpos);
-                                if (!(blockstate.getBlock() instanceof LilyPadBlock) && VoxelShapes.compare(blockstate.getCollisionShape(this.world, blockpos$pooledmutableblockpos).withOffset((double) l1, (double) k2, (double) i2), voxelshape, IBooleanFunction.AND)) {
-                                    f += blockstate.getSlipperiness(this.world, blockpos$pooledmutableblockpos, this);
-                                    ++k1;
-                                }
-                            }
-                        }
+        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+
+        for(int l1 = i; l1 < j; ++l1) {
+           for(int i2 = i1; i2 < j1; ++i2) {
+              int j2 = (l1 != i && l1 != j - 1 ? 0 : 1) + (i2 != i1 && i2 != j1 - 1 ? 0 : 1);
+              if (j2 != 2) {
+                 for(int k2 = k; k2 < l; ++k2) {
+                    if (j2 <= 0 || k2 != k && k2 != l - 1) {
+                       blockpos$mutable.setPos(l1, k2, i2);
+                       BlockState blockstate = this.world.getBlockState(blockpos$mutable);
+                       if (!(blockstate.getBlock() instanceof LilyPadBlock) && VoxelShapes.compare(blockstate.getCollisionShape(this.world, blockpos$mutable).withOffset((double)l1, (double)k2, (double)i2), voxelshape, IBooleanFunction.AND)) {
+                          f += blockstate.getSlipperiness(this.world, blockpos$mutable, this);
+                          ++k1;
+                       }
                     }
-                }
-            }
+                 }
+              }
+           }
         }
 
         return f / (float) k1;
@@ -420,20 +423,20 @@ public class AbnormalsBoatEntity extends BoatEntity {
         boolean flag = false;
         this.waterLevel = Double.MIN_VALUE;
 
-        try (PooledMutable blockpos$pooledmutableblockpos = PooledMutable.retain()) {
-            for (int k1 = i; k1 < j; ++k1) {
-                for (int l1 = k; l1 < l; ++l1) {
-                    for (int i2 = i1; i2 < j1; ++i2) {
-                        blockpos$pooledmutableblockpos.setPos(k1, l1, i2);
-                        IFluidState ifluidstate = this.world.getFluidState(blockpos$pooledmutableblockpos);
-                        if (ifluidstate.isTagged(FluidTags.WATER)) {
-                            float f = (float) l1 + ifluidstate.getActualHeight(this.world, blockpos$pooledmutableblockpos);
-                            this.waterLevel = Math.max((double) f, this.waterLevel);
-                            flag |= axisalignedbb.minY < (double) f;
-                        }
-                    }
-                }
-            }
+        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+
+        for(int k1 = i; k1 < j; ++k1) {
+           for(int l1 = k; l1 < l; ++l1) {
+              for(int i2 = i1; i2 < j1; ++i2) {
+                 blockpos$mutable.setPos(k1, l1, i2);
+                 FluidState fluidstate = this.world.getFluidState(blockpos$mutable);
+                 if (fluidstate.isTagged(FluidTags.WATER)) {
+                    float f = (float)l1 + fluidstate.getActualHeight(this.world, blockpos$mutable);
+                    this.waterLevel = Math.max((double)f, this.waterLevel);
+                    flag |= axisalignedbb.minY < (double)f;
+                 }
+              }
+           }
         }
 
         return flag;
@@ -451,22 +454,22 @@ public class AbnormalsBoatEntity extends BoatEntity {
         int j1 = MathHelper.ceil(axisalignedbb.maxZ);
         boolean flag = false;
 
-        try (PooledMutable blockpos$pooledmutableblockpos = PooledMutable.retain()) {
-            for (int k1 = i; k1 < j; ++k1) {
-                for (int l1 = k; l1 < l; ++l1) {
-                    for (int i2 = i1; i2 < j1; ++i2) {
-                        blockpos$pooledmutableblockpos.setPos(k1, l1, i2);
-                        IFluidState ifluidstate = this.world.getFluidState(blockpos$pooledmutableblockpos);
-                        if (ifluidstate.isTagged(FluidTags.WATER) && d0 < (double) ((float) blockpos$pooledmutableblockpos.getY() + ifluidstate.getActualHeight(this.world, blockpos$pooledmutableblockpos))) {
-                            if (!ifluidstate.isSource()) {
-                                return Status.UNDER_FLOWING_WATER;
-                            }
+        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
 
-                            flag = true;
-                        }
+        for(int k1 = i; k1 < j; ++k1) {
+           for(int l1 = k; l1 < l; ++l1) {
+              for(int i2 = i1; i2 < j1; ++i2) {
+                 blockpos$mutable.setPos(k1, l1, i2);
+                 FluidState fluidstate = this.world.getFluidState(blockpos$mutable);
+                 if (fluidstate.isTagged(FluidTags.WATER) && d0 < (double)((float)blockpos$mutable.getY() + fluidstate.getActualHeight(this.world, blockpos$mutable))) {
+                    if (!fluidstate.isSource()) {
+                       return BoatEntity.Status.UNDER_FLOWING_WATER;
                     }
-                }
-            }
+
+                    flag = true;
+                 }
+              }
+           }
         }
 
         return flag ? Status.UNDER_WATER : null;
@@ -502,12 +505,12 @@ public class AbnormalsBoatEntity extends BoatEntity {
                 }
             }
 
-            Vec3d vec3d = this.getMotion();
-            this.setMotion(vec3d.x * (double) this.momentum, vec3d.y + d1, vec3d.z * (double) this.momentum);
+            Vector3d Vector3d = this.getMotion();
+            this.setMotion(Vector3d.x * (double) this.momentum, Vector3d.y + d1, Vector3d.z * (double) this.momentum);
             this.deltaRotation *= this.momentum;
             if (d2 > 0.0D) {
-                Vec3d vec3d1 = this.getMotion();
-                this.setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06153846016296973D) * 0.75D, vec3d1.z);
+                Vector3d Vector3d1 = this.getMotion();
+                this.setMotion(Vector3d1.x, (Vector3d1.y + d2 * 0.06153846016296973D) * 0.75D, Vector3d1.z);
             }
         }
     }
@@ -560,8 +563,8 @@ public class AbnormalsBoatEntity extends BoatEntity {
                 }
             }
 
-            Vec3d vec3d = (new Vec3d((double) f, 0.0D, 0.0D)).rotateYaw(-this.rotationYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-            passenger.setPosition(this.getPosX() + vec3d.x, this.getPosY() + (double) f1, this.getPosZ() + vec3d.z);
+            Vector3d Vector3d = (new Vector3d((double) f, 0.0D, 0.0D)).rotateYaw(-this.rotationYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+            passenger.setPosition(this.getPosX() + Vector3d.x, this.getPosY() + (double) f1, this.getPosZ() + Vector3d.z);
             passenger.rotationYaw += this.deltaRotation;
             passenger.setRotationYawHead(passenger.getRotationYawHead() + this.deltaRotation);
             this.applyYawToEntity(passenger);
@@ -637,7 +640,7 @@ public class AbnormalsBoatEntity extends BoatEntity {
                 }
 
                 this.fallDistance = 0.0F;
-            } else if (!this.world.getFluidState((new BlockPos(this)).down()).isTagged(FluidTags.WATER) && y < 0.0D) {
+            } else if (!this.world.getFluidState((new BlockPos(this.getPositionVec())).down()).isTagged(FluidTags.WATER) && y < 0.0D) {
                 this.fallDistance = (float) ((double) this.fallDistance - y);
             }
         }

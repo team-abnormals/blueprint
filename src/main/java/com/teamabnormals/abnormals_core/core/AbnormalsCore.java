@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.teamabnormals.abnormals_core.client.example.ExampleEndimatedEntityRenderer;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.*;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
@@ -28,12 +30,16 @@ import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.loot.LootTables;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.PointOfInterestType;
-import net.minecraft.world.storage.loot.LootTables;
-import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -80,12 +86,10 @@ public class AbnormalsCore {
 		
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
-		LootConditionManager.registerCondition(new ModLoadedLootCondition.Serializer());
-		LootConditionManager.registerCondition(new QuarkFlagLootCondition.Serializer());
 		
-//		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-//		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
-//		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
 		
@@ -96,7 +100,7 @@ public class AbnormalsCore {
 			}
 		});
 		
-        modEventBus.addListener(this::replaceBeehivePOI);
+        //modEventBus.addListener(this::replaceBeehivePOI);
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
@@ -114,6 +118,8 @@ public class AbnormalsCore {
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
+			GlobalEntityTypeAttributes.field_233833_b_ = this.copyGlobalAttributeMap();
+			GlobalEntityTypeAttributes.field_233833_b_.put(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), CowEntity.func_234188_eI_().func_233813_a_());
 		});
 		ChunkLoaderCapability.register();
 //		ExampleEntitySpawnHandler.processSpawnAdditions();
@@ -122,7 +128,7 @@ public class AbnormalsCore {
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(final FMLClientSetupEvent event) {
 //		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
-//		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
 		
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
@@ -141,12 +147,13 @@ public class AbnormalsCore {
 		REGISTRY_HELPER.processSpawnEggColors(event);
 	}
 	
-    private void replaceBeehivePOI(final FMLCommonSetupEvent event) {
+    @SuppressWarnings("unused")
+	private void replaceBeehivePOI(final FMLCommonSetupEvent event) {
     	ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
-        PointOfInterestType.field_226356_s_.blockStates = BlockTags.BEEHIVES.getAllElements().stream().flatMap((map) -> map.getStateContainer().getValidStates().stream()).collect(ImmutableSet.toImmutableSet());
+        PointOfInterestType.BEEHIVE.blockStates = BlockTags.BEEHIVES.func_230236_b_().stream().flatMap((map) -> map.getStateContainer().getValidStates().stream()).collect(ImmutableSet.toImmutableSet());
     	Map<BlockState, PointOfInterestType> pointOfInterestTypeMap = new HashMap<>();
-        BEEHIVES.stream().forEach(block -> block.getStateContainer().getValidStates().forEach(state -> pointOfInterestTypeMap.put(state, PointOfInterestType.field_226356_s_)));
-        PointOfInterestType.field_221073_u.putAll(pointOfInterestTypeMap);
+        BEEHIVES.stream().forEach(block -> block.getStateContainer().getValidStates().forEach(state -> pointOfInterestTypeMap.put(state, PointOfInterestType.BEEHIVE)));
+        PointOfInterestType.POIT_BY_BLOCKSTATE.putAll(pointOfInterestTypeMap);
 	}
 	
 	private void setupMessages() {
@@ -186,5 +193,13 @@ public class AbnormalsCore {
 		.encoder(MessageC2S2CSpawnParticle::serialize).decoder(MessageC2S2CSpawnParticle::deserialize)
 		.consumer(MessageC2S2CSpawnParticle::handle)
 		.add();
+	}
+	
+	private Map<EntityType<? extends LivingEntity>, AttributeModifierMap> copyGlobalAttributeMap() {
+		Map<EntityType<? extends LivingEntity>, AttributeModifierMap> copy = Maps.newHashMap();
+		GlobalEntityTypeAttributes.field_233833_b_.forEach((type, map) -> {
+			copy.put(type, map);
+		});
+		return copy;
 	}
 }
