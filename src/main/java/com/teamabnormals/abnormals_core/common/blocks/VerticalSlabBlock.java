@@ -140,11 +140,11 @@ public class VerticalSlabBlock extends Block implements IWaterLoggable {
 		
 		@Override
 		public String toString() {
-			return this.slabDirection != null ? this.slabDirection.getName() : "double";
+			return this.slabDirection != null ? this.slabDirection.func_176610_l() : "double";
 		}
 
 		@Override
-		public String getName() {
+		public String func_176610_l() {
 			return this.toString();
 		}
 	}

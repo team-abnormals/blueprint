@@ -44,6 +44,7 @@ public class AbnormalsBeehiveBlock extends BeehiveBlock {
 		return state.with(FACING, rot.rotate(state.get(FACING)));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
 		return mirrorIn == Mirror.NONE ? state : state.rotate(mirrorIn.toRotation(state.get(FACING)));

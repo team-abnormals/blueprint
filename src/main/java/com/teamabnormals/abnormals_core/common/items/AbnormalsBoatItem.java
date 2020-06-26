@@ -27,7 +27,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class AbnormalsBoatItem extends Item {
@@ -59,10 +59,10 @@ public class AbnormalsBoatItem extends Item {
         if(raytraceresult.getType() == RayTraceResult.Type.MISS) {
             return new ActionResult<>(ActionResultType.PASS, itemstack);
         } else {
-            Vec3d vec3d = playerIn.getLook(1.0F);
+        	Vector3d vec3d = playerIn.getLook(1.0F);
             List<Entity> list = worldIn.getEntitiesInAABBexcluding(playerIn, playerIn.getBoundingBox().expand(vec3d.scale(5.0D)).grow(1.0D), COLLISION_PREDICATE);
             if(!list.isEmpty()) {
-                Vec3d vec3d1 = playerIn.getEyePosition(1.0F);
+                Vector3d vec3d1 = playerIn.getEyePosition(1.0F);
 
                 for(Entity entity : list) {
                     AxisAlignedBB axisalignedbb = entity.getBoundingBox().grow((double)entity.getCollisionBorderSize());
