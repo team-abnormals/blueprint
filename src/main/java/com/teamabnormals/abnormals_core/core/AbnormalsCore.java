@@ -1,14 +1,14 @@
 package com.teamabnormals.abnormals_core.core;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.*;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
@@ -29,13 +29,9 @@ import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.loot.LootTables;
 import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -98,7 +94,7 @@ public class AbnormalsCore {
 			}
 		});
 		
-        //modEventBus.addListener(this::replaceBeehivePOI);
+        modEventBus.addListener(this::replaceBeehivePOI);
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
@@ -116,7 +112,7 @@ public class AbnormalsCore {
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
-			GlobalEntityTypeAttributes.field_233833_b_ = this.copyGlobalAttributeMap();
+			GlobalEntityTypeAttributes.field_233833_b_ = this.copyMap(GlobalEntityTypeAttributes.field_233833_b_);
 			//GlobalEntityTypeAttributes.field_233833_b_.put(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), CowEntity.func_234188_eI_().func_233813_a_());
 		});
 		ChunkLoaderCapability.register();
@@ -145,13 +141,15 @@ public class AbnormalsCore {
 		REGISTRY_HELPER.processSpawnEggColors(event);
 	}
 	
-    @SuppressWarnings("unused")
 	private void replaceBeehivePOI(final FMLCommonSetupEvent event) {
-    	ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
-        PointOfInterestType.BEEHIVE.blockStates = BlockTags.BEEHIVES.func_230236_b_().stream().flatMap((map) -> map.getStateContainer().getValidStates().stream()).collect(ImmutableSet.toImmutableSet());
-    	Map<BlockState, PointOfInterestType> pointOfInterestTypeMap = new HashMap<>();
-        BEEHIVES.stream().forEach(block -> block.getStateContainer().getValidStates().forEach(state -> pointOfInterestTypeMap.put(state, PointOfInterestType.BEEHIVE)));
-        PointOfInterestType.POIT_BY_BLOCKSTATE.putAll(pointOfInterestTypeMap);
+		ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
+		PointOfInterestType.BEEHIVE.blockStates = this.makePOIStatesMutable(PointOfInterestType.BEEHIVE.blockStates);
+		BEEHIVES.stream().forEach((block) -> {
+			block.getStateContainer().getValidStates().forEach(state -> { 
+				PointOfInterestType.POIT_BY_BLOCKSTATE.put(state, PointOfInterestType.BEEHIVE);
+				PointOfInterestType.BEEHIVE.blockStates.add(state);
+			});
+		});
 	}
 	
 	private void setupMessages() {
@@ -193,10 +191,21 @@ public class AbnormalsCore {
 		.add();
 	}
 	
-	private Map<EntityType<? extends LivingEntity>, AttributeModifierMap> copyGlobalAttributeMap() {
-		Map<EntityType<? extends LivingEntity>, AttributeModifierMap> copy = Maps.newHashMap();
-		GlobalEntityTypeAttributes.field_233833_b_.forEach((type, map) -> {
-			copy.put(type, map);
+	/*
+	 * Could be used for more things later, currently only used for making the Attribute map mutable
+	 */
+	private <K, V> Map<K, V> copyMap(Map<K, V> toCopy) {
+		Map<K, V> copy = Maps.newHashMap();
+		toCopy.forEach((k, v) -> {
+			copy.put(k, v);
+		});
+		return copy;
+	}
+	
+	private Set<BlockState> makePOIStatesMutable(Set<BlockState> toCopy) {
+		Set<BlockState> copy = Sets.newHashSet();
+		toCopy.forEach((state) -> {
+			copy.add(state);
 		});
 		return copy;
 	}
