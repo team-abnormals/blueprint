@@ -142,7 +142,8 @@ public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggabl
     		this.name = name;
     	}
 
-    	public String func_176610_l() {
+    	@Override
+    	public String getString() {
     		return this.name;
     	}
     }

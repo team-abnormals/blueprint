@@ -40,6 +40,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 		super(ExampleTileEntityRegistry.SIGN.get());
 	}
 
+	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 
@@ -52,9 +53,10 @@ public class AbnormalsSignTileEntity extends TileEntity {
 		return compound;
 	}
 
+	@Override
 	public void read(BlockState state, CompoundNBT compound) {
 		this.isEditable = false;
-		super.func_230337_a_(state, compound);
+		super.read(state, compound);
 		this.textColor = DyeColor.byTranslationKey(compound.getString("Color"), DyeColor.BLACK);
 
 		for(int i = 0; i < 4; ++i) {
@@ -98,10 +100,12 @@ public class AbnormalsSignTileEntity extends TileEntity {
 		return new SUpdateTileEntityPacket(this.pos, 100, this.getUpdateTag());
 	}
 
+	@Override
 	public CompoundNBT getUpdateTag() {
 		return this.write(new CompoundNBT());
 	}
 
+	@Override
 	public boolean onlyOpsCanSetNbt() {
 		return true;
 	}
@@ -125,7 +129,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	public PlayerEntity getPlayer() {
 		return this.player;
 	}
-		
+	
 	public boolean executeCommand(PlayerEntity playerIn) {
 		for(ITextComponent itextcomponent: this.signText) {
             Style style = itextcomponent == null ? null : itextcomponent.getStyle();

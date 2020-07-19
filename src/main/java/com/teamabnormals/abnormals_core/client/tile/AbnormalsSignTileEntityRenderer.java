@@ -69,7 +69,7 @@ public class AbnormalsSignTileEntityRenderer<A extends AbnormalsSignTileEntity> 
 
 		for(int k1 = 0; k1 < 4; ++k1) {
 			ITextProperties itextproperties = sign.getRenderText(k1, (p_239309_1_) -> {
-				List<ITextProperties> list = fontrenderer.func_238420_b_().func_238362_b_(p_239309_1_, 90, Style.field_240709_b_);
+				List<ITextProperties> list = fontrenderer.func_238420_b_().func_238362_b_(p_239309_1_, 90, Style.EMPTY);
 				return list.isEmpty() ? ITextProperties.field_240651_c_ : list.get(0);
 			});
 			if(itextproperties != null) {
