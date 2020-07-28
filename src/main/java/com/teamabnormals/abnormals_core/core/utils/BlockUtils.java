@@ -63,7 +63,7 @@ public class BlockUtils {
 	public static BlockState transferAllBlockStates(BlockState initial, BlockState after) {
 		BlockState block = after;
 		for(Property property : initial.getBlock().getStateContainer().getProperties()) {
-			if(after.func_235901_b_(property) && initial.get(property) != null) {
+			if(after.hasProperty(property) && initial.get(property) != null) {
 				block = block.with(property, initial.get(property));
 			}
 		}

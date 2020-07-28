@@ -54,7 +54,7 @@ public class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
 	}
 	
 	@Override
-	public Instance func_230307_a_(JsonObject json, ConditionArrayParser context) {
+	public Instance deserialize(JsonObject json, ConditionArrayParser context) {
 		return new Instance(this.id);
 	}
 	
@@ -73,11 +73,13 @@ public class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
 			this.id = id;
 		}
 		
+		@Override
 		public ResourceLocation getId() {
 			return this.id;
 		}
 
-		public JsonObject func_230240_a_(ConditionArraySerializer p_230240_1_) {
+		@Override
+		public JsonObject serialize(ConditionArraySerializer p_230240_1_) {
 			return new JsonObject();
 		}
 	}

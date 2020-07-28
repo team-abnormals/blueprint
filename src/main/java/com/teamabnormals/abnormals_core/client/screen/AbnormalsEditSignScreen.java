@@ -65,7 +65,7 @@ public class AbnormalsEditSignScreen extends Screen {
 	}
 
 	@Override
-	public void removed() {
+	public void onClose() {
 		this.minecraft.keyboardListener.enableRepeatEvents(false);
 		NetworkUtil.setNewSignText(this.tileSign.getPos(), this.tileSign.getText(0), this.tileSign.getText(1), this.tileSign.getText(2), this.tileSign.getText(3));
 		
@@ -87,12 +87,12 @@ public class AbnormalsEditSignScreen extends Screen {
 
 	@Override
 	public boolean charTyped(char char1, int char2) {
-		this.textInputUtil.func_216894_a(char1);
+		this.textInputUtil.putChar(char1);
 		return true;
 	}
 
 	@Override
-	public void onClose() {
+	public void closeScreen() {
 		this.close();
 	}
 
@@ -103,7 +103,7 @@ public class AbnormalsEditSignScreen extends Screen {
 			this.textInputUtil.func_238588_f_();
 			return true;
 		} else if (firstKey != 264 && firstKey != 257 && firstKey != 335) {
-			return this.textInputUtil.func_216897_a(firstKey) ? true : super.keyPressed(firstKey, secondKey, thirdKey);
+			return this.textInputUtil.specialKeyPressed(firstKey) ? true : super.keyPressed(firstKey, secondKey, thirdKey);
 		} else {
 			this.editLine = this.editLine + 1 & 3;
 			this.textInputUtil.func_238588_f_();
@@ -141,8 +141,8 @@ public class AbnormalsEditSignScreen extends Screen {
 		matrixstack.scale(0.010416667F, -0.010416667F, 0.010416667F);
 		
 		int i = this.tileSign.getTextColor().getTextColor();
-		int j = this.textInputUtil.func_216896_c();
-		int k = this.textInputUtil.func_216898_d();
+		int j = this.textInputUtil.getEndIndex();
+		int k = this.textInputUtil.getStartIndex();
 		int l = this.editLine * 10 - this.field_238846_r_.length * 5;
 		Matrix4f matrix4f = matrixstack.getLast().getMatrix();
 

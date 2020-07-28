@@ -80,7 +80,7 @@ public class AdvancedRandomPositionGenerator {
 		}
 
 		if(flag1) {
-			return Vector3d.func_237489_a_(blockpos);
+			return Vector3d.copyCentered(blockpos);
 		} else {
 			return null;
 		}
