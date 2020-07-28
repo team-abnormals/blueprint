@@ -10,7 +10,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
@@ -18,7 +17,6 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -57,44 +55,21 @@ public class VerticalSlabBlock extends Block implements IWaterLoggable {
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		BlockPos blockpos = context.getPos();
 		BlockState blockstate = context.getWorld().getBlockState(blockpos);
-		if(blockstate.getBlock() == this) 
-			return blockstate.with(TYPE, VerticalSlabType.DOUBLE).with(WATERLOGGED, false);
-		
-		FluidState fluid = context.getWorld().getFluidState(blockpos);
-		BlockState retState = getDefaultState().with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
-		Direction direction = getDirectionForPlacement(context);
-		VerticalSlabType type = VerticalSlabType.fromDirection(direction);
-		
-		return retState.with(TYPE, type);
+		if (blockstate.getBlock() == this) return blockstate.with(TYPE, VerticalSlabType.DOUBLE).with(WATERLOGGED, false);
+		return this.getDefaultState().with(WATERLOGGED, context.getWorld().getFluidState(blockpos).getFluid() == Fluids.WATER).with(TYPE, VerticalSlabType.fromDirection(this.getDirectionForPlacement(context)));
 	}
 	
 	private Direction getDirectionForPlacement(BlockItemUseContext context) {
-		Direction direction = context.getFace();
-		if(direction.getAxis() != Axis.Y)
-			return direction;
-		
-		BlockPos pos = context.getPos();
-		Vector3d vec = context.getHitVec().subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ())).subtract(0.5, 0, 0.5);
-		double angle = Math.atan2(vec.x, vec.z) * -180.0 / Math.PI;
-		return Direction.fromAngle(angle).getOpposite();
-	}
-	
-	protected Direction calculateDirectionForPlacement(BlockItemUseContext context) {
 		Direction face = context.getFace();
-		if(face.getAxis() != Direction.Axis.Y) {
-			return face;
-		}
-		Vector3d difference = context.getHitVec().subtract(Vector3d.copyCentered(context.getPos())).subtract(0.5, 0, 0.5);
+		if (face.getAxis() != Direction.Axis.Y) return face;
+		Vector3d difference = context.getHitVec().subtract(Vector3d.copy(context.getPos())).subtract(0.5, 0, 0.5);
 		return Direction.fromAngle(-Math.toDegrees(Math.atan2(difference.getX(), difference.getZ()))).getOpposite();
 	}
 	
 	@Override
-	public boolean isReplaceable(BlockState state, @Nonnull BlockItemUseContext useContext) {
-		ItemStack itemstack = useContext.getItem();
+	public boolean isReplaceable(BlockState state, @Nonnull BlockItemUseContext context) {
 		VerticalSlabType slabtype = state.get(TYPE);
-		return slabtype != VerticalSlabType.DOUBLE && itemstack.getItem() == this.asItem()  &&
-			(useContext.replacingClickedOnBlock() && (useContext.getFace() == slabtype.direction && getDirectionForPlacement(useContext) == slabtype.direction)
-					|| (!useContext.replacingClickedOnBlock() && useContext.getFace().getAxis() != slabtype.direction.getAxis()));
+		return slabtype != VerticalSlabType.DOUBLE && context.getItem().getItem() == this.asItem() && context.replacingClickedOnBlock() && (context.getFace() == slabtype.direction && this.getDirectionForPlacement(context) == slabtype.direction);
 	}
 
 	@Override
@@ -133,45 +108,41 @@ public class VerticalSlabBlock extends Block implements IWaterLoggable {
 		DOUBLE(null);
 		
 		private final String name;
-        public final Direction direction;
-        public final VoxelShape shape;
-
-        VerticalSlabType(Direction directionIn) {
-            direction = directionIn;
-            name = direction == null ? "double" : direction.getString();
-            if (direction == null)
-                shape = VoxelShapes.fullCube();
-            else {
-                double min = 0;
-                double max = 8;
-                if (direction.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
-                    min = 8;
-                    max = 16;
-                }
-                if (direction.getAxis() == Direction.Axis.X) {
-                    shape = Block.makeCuboidShape(min, 0, 0, max, 16, 16);
-                } else shape = Block.makeCuboidShape(0, 0, min, 16, 16, max);
+		@Nullable
+		public final Direction direction;
+		public final VoxelShape shape;
+		
+		VerticalSlabType(@Nullable Direction direction) {
+			this.direction = direction;
+			this.name = direction == null ? "double" : direction.getString();
+			if (direction == null) {
+				this.shape = VoxelShapes.fullCube();
+			} else {
+				boolean isNegativeAxis = direction.getAxisDirection() == Direction.AxisDirection.NEGATIVE;
+				double min = isNegativeAxis ? 8 : 0;
+				double max = isNegativeAxis ? 16 : 8;
+				this.shape = direction.getAxis() == Direction.Axis.X ? Block.makeCuboidShape(min, 0, 0, max, 16, 16) : Block.makeCuboidShape(0, 0, min, 16, 16, max);
             }
         }
 		
-        public static VerticalSlabType fromDirection(Direction direction) {
-            for (VerticalSlabType type : VerticalSlabType.values()) {
-                if (type.direction != null && direction == type.direction) {
-                    return type;
-                }
-            }
-            return null;
-        }
+		public static VerticalSlabType fromDirection(Direction direction) {
+			for (VerticalSlabType type : VerticalSlabType.values()) {
+				if (type.direction != null && direction == type.direction) {
+					return type;
+				}
+			}
+			return null;
+		}
 		
-        @Override
-        public String toString() {
-            return name;
-        }
+		@Override
+		public String toString() {
+			return this.name;
+		}
 
-        @Nonnull
-        @Override
-        public String getString() {
-            return name;
-        }
+		@Nonnull
+		@Override
+		public String getString() {
+			return this.name;
+		}
 	}
 }
