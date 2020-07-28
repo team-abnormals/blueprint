@@ -67,5 +67,5 @@ artifacts {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.92'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.88'
 }
