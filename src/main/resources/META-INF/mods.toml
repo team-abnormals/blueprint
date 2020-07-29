@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="[32,)"
-#logoFile="abnormalscore.png"
 license="https://github.com/minecraftabnormals/Abnormals-Core/blob/master/LICENSE.txt"
+issueTrackerURL="https://github.com/minecraftabnormals/Abnormals-Core/issues"
 
 [[mods]]
 logoFile="logo.png"

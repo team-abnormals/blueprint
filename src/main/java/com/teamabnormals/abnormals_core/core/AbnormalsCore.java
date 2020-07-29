@@ -54,6 +54,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
+//TODO: update package to com.minecraftabnormals.abnormals_core
 @SuppressWarnings("deprecation")
 @Mod(AbnormalsCore.MODID)
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)

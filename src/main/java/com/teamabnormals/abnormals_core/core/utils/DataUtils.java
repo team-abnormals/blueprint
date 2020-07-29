@@ -20,7 +20,13 @@ public class DataUtils {
 		fire.setFireInfo(block, encouragement, flammability);
 	}
 
+	//TODO: remove
+	@Deprecated
 	public static void registerCompostable(float chance, IItemProvider item) {
+		ComposterBlock.CHANCES.put(item.asItem(), chance);
+	}
+	
+	public static void registerCompostable(IItemProvider item, float chance) {
 		ComposterBlock.CHANCES.put(item.asItem(), chance);
 	}
 	
