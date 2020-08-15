@@ -16,7 +16,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 /**
- * @author Voliant
+ * @author tessdotcpp
  * Events for mod compatibility.
  */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
