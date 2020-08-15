@@ -1,7 +1,7 @@
 package com.teamabnormals.abnormals_core.core.library.api;
 
 /***
- * @author Voliant
+ * @author tessdotcpp
  * Use to make an entity that doesn't extend AgeableEntity compatible with Quark's potato poisoning.
  */
 public interface IAgeableEntity {
