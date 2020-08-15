@@ -5,13 +5,14 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Maps;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
+import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.loot.ConditionArrayParser;
+import net.minecraft.loot.ConditionArraySerializer;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -53,7 +54,7 @@ public class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
 	}
 	
 	@Override
-	public Instance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
+	public Instance deserialize(JsonObject json, ConditionArrayParser context) {
 		return new Instance(this.id);
 	}
 	
@@ -64,9 +65,22 @@ public class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
 		}
 	}
 	
-	public static class Instance extends CriterionInstance {
+	public static class Instance implements ICriterionInstance {
+		private final ResourceLocation id;
+		
 		Instance(ResourceLocation id) {
-			super(id);
+			super();
+			this.id = id;
+		}
+		
+		@Override
+		public ResourceLocation getId() {
+			return this.id;
+		}
+
+		@Override
+		public JsonObject serialize(ConditionArraySerializer p_230240_1_) {
+			return new JsonObject();
 		}
 	}
 	

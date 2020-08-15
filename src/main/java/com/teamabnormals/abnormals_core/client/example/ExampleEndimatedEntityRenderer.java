@@ -15,7 +15,7 @@ public class ExampleEndimatedEntityRenderer extends LivingRenderer<ExampleEndima
 	
 	@Override
 	public ResourceLocation getEntityTexture(ExampleEndimatedEntity entity) {
-		return AbnormalsCore.REGISTRY_HELPER.prefix("textures/example.png");
+		return AbnormalsCore.REGISTRY_HELPER.prefix("textures/entity/example.png");
 	}
 	
 }

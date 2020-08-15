@@ -1,15 +1,16 @@
 package com.teamabnormals.abnormals_core.core;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
-import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
+import com.teamabnormals.abnormals_core.client.tile.*;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.teamabnormals.abnormals_core.common.capability.chunkloading.*;
 import com.teamabnormals.abnormals_core.common.network.*;
@@ -28,12 +29,10 @@ import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.loot.LootTables;
 import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.PointOfInterestType;
-import net.minecraft.world.storage.loot.LootTables;
-import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -55,6 +54,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
+//TODO: update package to com.minecraftabnormals.abnormals_core
 @SuppressWarnings("deprecation")
 @Mod(AbnormalsCore.MODID)
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -79,14 +79,13 @@ public class AbnormalsCore {
 		this.setupMessages();
 		
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
-		LootConditionManager.registerCondition(new ModLoadedLootCondition.Serializer());
-		LootConditionManager.registerCondition(new QuarkFlagLootCondition.Serializer());
+		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
 		
-		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+//		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
+//		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+//		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
-		//REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
@@ -97,33 +96,36 @@ public class AbnormalsCore {
 		
         modEventBus.addListener(this::replaceBeehivePOI);
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
-			modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
+		
+		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
 	}
     
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
-			REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
+//			REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
 		});
 		ChunkLoaderCapability.register();
-		//REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
-		//ExampleEntitySpawnHandler.processSpawnAdditions();
+//		ExampleEntitySpawnHandler.processSpawnAdditions();
 	}
     
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(final FMLClientSetupEvent event) {
-		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
-		//RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
+		((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
+
+//		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
+//		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
 		
+		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
 	}
 	
@@ -138,12 +140,15 @@ public class AbnormalsCore {
 		REGISTRY_HELPER.processSpawnEggColors(event);
 	}
 	
-    private void replaceBeehivePOI(final FMLCommonSetupEvent event) {
-    	ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
-        PointOfInterestType.field_226356_s_.blockStates = BlockTags.BEEHIVES.getAllElements().stream().flatMap((map) -> map.getStateContainer().getValidStates().stream()).collect(ImmutableSet.toImmutableSet());
-    	Map<BlockState, PointOfInterestType> pointOfInterestTypeMap = new HashMap<>();
-        BEEHIVES.stream().forEach(block -> block.getStateContainer().getValidStates().forEach(state -> pointOfInterestTypeMap.put(state, PointOfInterestType.field_226356_s_)));
-        PointOfInterestType.field_221073_u.putAll(pointOfInterestTypeMap);
+	private void replaceBeehivePOI(final FMLCommonSetupEvent event) {
+		ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
+		PointOfInterestType.BEEHIVE.blockStates = this.makePOIStatesMutable(PointOfInterestType.BEEHIVE.blockStates);
+		BEEHIVES.stream().forEach((block) -> {
+			block.getStateContainer().getValidStates().forEach(state -> { 
+				PointOfInterestType.POIT_BY_BLOCKSTATE.put(state, PointOfInterestType.BEEHIVE);
+				PointOfInterestType.BEEHIVE.blockStates.add(state);
+			});
+		});
 	}
 	
 	private void setupMessages() {
@@ -183,5 +188,25 @@ public class AbnormalsCore {
 		.encoder(MessageC2S2CSpawnParticle::serialize).decoder(MessageC2S2CSpawnParticle::deserialize)
 		.consumer(MessageC2S2CSpawnParticle::handle)
 		.add();
+	}
+	
+	/*
+	 * Currently unused
+	 */
+	@SuppressWarnings("unused")
+	private <K, V> Map<K, V> copyMap(Map<K, V> toCopy) {
+		Map<K, V> copy = Maps.newHashMap();
+		toCopy.forEach((k, v) -> {
+			copy.put(k, v);
+		});
+		return copy;
+	}
+	
+	private Set<BlockState> makePOIStatesMutable(Set<BlockState> toCopy) {
+		Set<BlockState> copy = Sets.newHashSet();
+		toCopy.forEach((state) -> {
+			copy.add(state);
+		});
+		return copy;
 	}
 }

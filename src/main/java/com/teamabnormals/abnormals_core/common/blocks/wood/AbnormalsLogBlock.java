@@ -7,8 +7,7 @@ import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.LogBlock;
-import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemGroup;
@@ -26,11 +25,11 @@ import net.minecraft.world.World;
 /**
  * @author SmellyModder(Luke Tonon)
  */
-public class AbnormalsLogBlock extends LogBlock {
+public class AbnormalsLogBlock extends RotatedPillarBlock {
 	private final Supplier<Block> block;
 
-	public AbnormalsLogBlock(Supplier<Block> strippedBlock, MaterialColor verticalColor, Properties properties) {
-		super(verticalColor, properties);
+	public AbnormalsLogBlock(Supplier<Block> strippedBlock, Properties properties) {
+		super(properties);
 		this.block = strippedBlock;
 	}
 	

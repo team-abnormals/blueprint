@@ -50,7 +50,7 @@ public abstract class AbnormalsAbstractSignBlock extends AbstractSignBlock {
 						}
 					}
 				} else {
-					if(canEdit && !this.doesSignHaveCommand(signtileentity) && ACConfig.ValuesHolder.isQuarkSignEditingEnabled() && (!ACConfig.ValuesHolder.doesSignEditingRequireEmptyHand() || itemstack.isEmpty()) && !player.isShiftKeyDown()) {
+					if(canEdit && !this.doesSignHaveCommand(signtileentity) && ACConfig.ValuesHolder.isQuarkSignEditingEnabled() && (!ACConfig.ValuesHolder.doesSignEditingRequireEmptyHand() || itemstack.isEmpty()) && !player.isSneaking()) {
 						NetworkUtil.openSignEditor(player, signtileentity);
 						return ActionResultType.SUCCESS;
 					}

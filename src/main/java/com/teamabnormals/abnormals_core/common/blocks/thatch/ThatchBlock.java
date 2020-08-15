@@ -7,7 +7,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ThatchBlock extends Block{
+public class ThatchBlock extends Block {
+	
 	public ThatchBlock(Properties properties) {
 		super(properties);
 	}
@@ -23,8 +24,4 @@ public class ThatchBlock extends Block{
 	    return true;
 	}
 
-	@Override
-	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
-	    return false;
-	}
 }

@@ -149,7 +149,7 @@ public class AmbienceMusicPlayer {
 
 			public void tick() {
 				if(this.player.isAlive() && this.ticksInBiome >= 0) {
-					BlockPos pos = this.player.getPosition();
+					BlockPos pos = new BlockPos(this.player.getPositionVec());
 					if(this.player.world.isAreaLoaded(pos, 1) && this.biomes.contains(this.player.world.getBiome(pos))) {
 						this.ticksInBiome++;
 					} else {
@@ -159,7 +159,7 @@ public class AmbienceMusicPlayer {
 					this.ticksInBiome = Math.min(this.ticksInBiome, 40);
 					this.volume = MathHelper.clamp((float) this.ticksInBiome / 40.0F, 0.0F, 1.0F);
 				} else {
-					this.donePlaying = true;
+					this.func_239509_o_();
 				}
 			}
 		}
@@ -179,7 +179,7 @@ public class AmbienceMusicPlayer {
 			
 			@Override
 			public void tick() {
-				if(!this.player.isAlive()) this.donePlaying = true;
+				if(!this.player.isAlive()) this.func_239509_o_();
 			}
 		}
 	}
@@ -188,7 +188,7 @@ public class AmbienceMusicPlayer {
 		List<Biome> getBiomes();
 		
 		default boolean isInProperBiome(ClientPlayerEntity player) {
-			return this.getBiomes().contains(player.world.getBiome(player.getPosition()));
+			return this.getBiomes().contains(player.world.getBiome(new BlockPos(player.getPositionVec())));
 		}
 	}
 	

@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
@@ -55,7 +56,7 @@ public abstract class BucketableWaterMobEntity extends WaterMobEntity implements
     }
 
     @Override
-    protected boolean processInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getHeldItem(hand);
         if (itemstack.getItem() == Items.WATER_BUCKET && this.isAlive()) {
             this.playSound(SoundEvents.ITEM_BUCKET_FILL_FISH, 1.0F, 1.0F);
@@ -73,9 +74,9 @@ public abstract class BucketableWaterMobEntity extends WaterMobEntity implements
             }
 
             this.remove();
-            return true;
+            return ActionResultType.SUCCESS;
         } else {
-            return super.processInteract(player, hand);
+        	return super.func_230254_b_(player, hand);
         }
     }
 

@@ -14,12 +14,19 @@ import net.minecraft.util.IItemProvider;
 import net.minecraftforge.fml.RegistryObject;
 
 public class DataUtils {
+	
 	public static void registerFlammable(Block block, int encouragement, int flammability) {
 		FireBlock fire = (FireBlock) Blocks.FIRE;
 		fire.setFireInfo(block, encouragement, flammability);
 	}
 
+	//TODO: remove
+	@Deprecated
 	public static void registerCompostable(float chance, IItemProvider item) {
+		ComposterBlock.CHANCES.put(item.asItem(), chance);
+	}
+	
+	public static void registerCompostable(IItemProvider item, float chance) {
 		ComposterBlock.CHANCES.put(item.asItem(), chance);
 	}
 	
@@ -46,4 +53,5 @@ public class DataUtils {
 			blockColors.register(color, blocks);
 		}
 	}
+	
 }

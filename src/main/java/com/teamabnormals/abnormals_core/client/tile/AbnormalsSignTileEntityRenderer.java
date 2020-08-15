@@ -11,17 +11,17 @@ import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntit
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.RenderComponentsUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -67,14 +67,14 @@ public class AbnormalsSignTileEntityRenderer<A extends AbnormalsSignTileEntity> 
 		int l = (int) ((double) NativeImage.getBlue(i) * colorMultiplier);
 		int i1 = NativeImage.getCombined(0, l, k, j);
 
-		for(int j1 = 0; j1 < 4; ++j1) {
-			String s = sign.getRenderText(j1, (p_212491_1_) -> {
-				List<ITextComponent> list = RenderComponentsUtil.splitText(p_212491_1_, 90, fontrenderer, false, true);
-				return list.isEmpty() ? "" : list.get(0).getFormattedText();
+		for(int k1 = 0; k1 < 4; ++k1) {
+			ITextProperties itextproperties = sign.getRenderText(k1, (p_239309_1_) -> {
+				List<ITextProperties> list = fontrenderer.func_238420_b_().func_238362_b_(p_239309_1_, 90, Style.EMPTY);
+				return list.isEmpty() ? ITextProperties.field_240651_c_ : list.get(0);
 			});
-			if(s != null) {
-				float f3 = (float)(-fontrenderer.getStringWidth(s) / 2);
-				fontrenderer.renderString(s, f3, (float)(j1 * 10 - sign.signText.length * 5), i1, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLightIn);
+			if(itextproperties != null) {
+				float f3 = (float)(-fontrenderer.func_238414_a_(itextproperties) / 2);
+				fontrenderer.func_238416_a_(itextproperties, f3, (float)(k1 * 10 - 20), i1, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLightIn);
 			}
 		}
 		matrixStack.pop();

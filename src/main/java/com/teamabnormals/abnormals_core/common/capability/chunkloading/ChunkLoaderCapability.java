@@ -16,7 +16,7 @@ import net.minecraftforge.common.util.LazyOptional;
  */
 public class ChunkLoaderCapability implements ICapabilitySerializable<INBT> {
 	@CapabilityInject(IChunkLoader.class) 
-	public static Capability<IChunkLoader> CHUNK_LOAD_CAP;
+	public static Capability<IChunkLoader> CHUNK_LOAD_CAP = null;
 	
 	private final LazyOptional<IChunkLoader> instance;
 	

@@ -10,7 +10,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 /**
@@ -140,16 +140,16 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	 * @param pathZ - z location of the path
 	 * @return - A vector containing the mid-position of the entity's path end location and its current location
 	 */
-	public Vec3d getMoveControllerPathDistance(double pathX, double pathY, double pathZ) {
-		return new Vec3d(pathX - this.getPosX(), pathY - this.getPosY(), pathY - this.getPosY());
+	public Vector3d getMoveControllerPathDistance(double pathX, double pathY, double pathZ) {
+		return new Vector3d(pathX - this.getPosX(), pathY - this.getPosY(), pathY - this.getPosY());
 	}
 	
 	/**
 	 * Used for rotationYaw in movement controllers
-	 * @param vec3d - The distance vector
+	 * @param Vector3d - The distance vector
 	 * @return - A vector that gets the target angle for a path's distance
 	 */
-	public float getTargetAngleForPathDistance(Vec3d vec3d) {
-		return (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
+	public float getTargetAngleForPathDistance(Vector3d Vector3d) {
+		return (float) (MathHelper.atan2(Vector3d.z, Vector3d.x) * (double) (180F / (float) Math.PI)) - 90F;
 	}
 }

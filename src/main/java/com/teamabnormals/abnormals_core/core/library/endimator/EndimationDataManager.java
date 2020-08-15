@@ -159,8 +159,8 @@ public class EndimationDataManager extends JsonReloadListener {
 	}
 
 	@Override
-	protected void apply(Map<ResourceLocation, JsonObject> resourceMap, IResourceManager resourceManager, IProfiler profiler) {
-		for(Map.Entry<ResourceLocation, JsonObject> entry : resourceMap.entrySet()) {
+	protected void apply(Map<ResourceLocation, JsonElement> resourceMap, IResourceManager resourceManagerIn, IProfiler profilerIn) {
+		for(Map.Entry<ResourceLocation, JsonElement> entry : resourceMap.entrySet()) {
 			ResourceLocation resourcelocation = entry.getKey();
 			if(resourcelocation.getPath().startsWith("_")) continue;
 			

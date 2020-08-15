@@ -8,7 +8,6 @@ import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
@@ -54,8 +53,7 @@ public class MessageC2SEditSign {
 				ServerPlayerEntity player = context.getSender();
 				player.markPlayerActive();
 				
-				MinecraftServer server = player.getServer();
-				ServerWorld world = server.getWorld(player.dimension);
+				ServerWorld world = player.getServerWorld();
 				BlockPos blockpos = message.signPos;
 				if(world.isBlockLoaded(blockpos)) {
 					BlockState blockstate = world.getBlockState(blockpos);
@@ -64,7 +62,6 @@ public class MessageC2SEditSign {
 	
 					AbnormalsSignTileEntity signtileentity = (AbnormalsSignTileEntity) tileentity;
 					if(!signtileentity.getIsEditable() || signtileentity.getPlayer() != player) {
-						server.logWarning("Player " + player.getName().getString() + " just tried to change non-editable sign");
 						return;
 					}
 

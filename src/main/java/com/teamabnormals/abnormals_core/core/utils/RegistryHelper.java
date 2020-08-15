@@ -1,5 +1,6 @@
 package com.teamabnormals.abnormals_core.core.utils;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.function.BiFunction;
@@ -10,6 +11,9 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.abnormals_core.client.renderer.ChestItemRenderer;
+import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
+import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
 import com.teamabnormals.abnormals_core.common.dispenser.SpawnEggDispenseBehavior;
@@ -18,6 +22,8 @@ import com.teamabnormals.abnormals_core.common.items.AbnormalsSignItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.teamabnormals.abnormals_core.common.items.FuelItem;
 import com.teamabnormals.abnormals_core.common.items.InjectedBlockItem;
+import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
+import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.examples.ExampleBlockRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
@@ -31,6 +37,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
+import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -77,11 +84,11 @@ public class RegistryHelper {
 	
 	public RegistryHelper(String modId) {
 		this.modId = modId;
-		this.itemRegister = new DeferredRegister<>(ForgeRegistries.ITEMS, modId);
-		this.blockRegister = new DeferredRegister<>(ForgeRegistries.BLOCKS, modId);
-		this.soundRegister = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, modId);
-		this.tileEntityRegister = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, modId);
-		this.entityRegister = new DeferredRegister<>(ForgeRegistries.ENTITIES, modId);
+		this.itemRegister = DeferredRegister.create(ForgeRegistries.ITEMS, modId);
+		this.blockRegister = DeferredRegister.create(ForgeRegistries.BLOCKS, modId);
+		this.soundRegister = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, modId);
+		this.tileEntityRegister = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, modId);
+		this.entityRegister = DeferredRegister.create(ForgeRegistries.ENTITIES, modId);
 	}
 	
 	public DeferredRegister<Item> getDeferredItemRegister() {
@@ -143,6 +150,18 @@ public class RegistryHelper {
 			}
 		}
 	}
+	
+	/**
+	 * Adds an EnchantmentType to an EnchantmentType array
+	 */
+    public static EnchantmentType[] add(EnchantmentType[] array, EnchantmentType element) {
+        EnchantmentType[] newArray = array;
+        int arrayLength = Array.getLength(newArray);
+        Object newArrayObject = Array.newInstance(newArray.getClass().getComponentType(), arrayLength + 1);
+        System.arraycopy(array, 0, newArrayObject, 0, arrayLength);
+        newArray[newArray.length - 1] = element;
+        return newArray;
+    }
 	
 	/**
 	 * Registers an item
@@ -364,6 +383,42 @@ public class RegistryHelper {
 		return block;
 	}
 	
+	/**
+	 * Creates an AbnormalsChestBlock
+	 * @param type - The type of chest ("oak", "spruce", etc)
+	 * @param properties - The properties of the block
+	 * @param group - The ItemGroup for the BlockItem
+	 * @return - The block with its ISTER
+	 */
+	public <B extends Block> RegistryObject<AbnormalsChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
+		RegistryObject<AbnormalsChestBlock> block = this.blockRegister.register(name + "_chest", () -> new AbnormalsChestBlock(this.getModId(), name, properties));
+		this.itemRegister.register(name + "_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER())));
+		return block;
+	}
+	
+	/**
+	 * Creates an AbnormalsTrappedChestBlock
+	 * @param type - The type of chest ("oak", "spruce", etc)
+	 * @param properties - The properties of the block
+	 * @param group - The ItemGroup for the BlockItem
+	 * @return - The block with its ISTER
+	 */
+	public <B extends Block> RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
+		RegistryObject<AbnormalsTrappedChestBlock> block = this.blockRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), name, properties));
+		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> trappedChestISTER())));
+		return block;
+	}
+	
+	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, MaterialColor color) {
+		ItemGroup chestGroup = ModList.get().isLoaded("quark") || modId == "indev" ? ItemGroup.DECORATIONS : null;
+		ItemGroup trappedChestGroup = ModList.get().isLoaded("quark") || modId == "indev" ? ItemGroup.REDSTONE : null;
+		RegistryObject<AbnormalsChestBlock> chest = this.blockRegister.register(name + "_chest", () -> new AbnormalsChestBlock(this.getModId(), name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.blockRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
+		this.itemRegister.register(name + "_chest", () -> new BlockItem(chest.get(), new Item.Properties().group(chestGroup).setISTER(() -> chestISTER())));
+		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(trappedChest.get(), new Item.Properties().group(trappedChestGroup).setISTER(() -> trappedChestISTER())));
+		return Pair.of(chest, trappedChest);
+	}
+	
 	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color) {
 		ResourceLocation texture = new ResourceLocation(this.getModId(), "textures/entity/signs/" + name + ".png");
 		RegistryObject<AbnormalsStandingSignBlock> standing = this.blockRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.create(Material.WOOD).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD), texture));
@@ -481,5 +536,15 @@ public class RegistryHelper {
 			.build(location.toString()
 		);
 		return entity;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private static Callable<ItemStackTileEntityRenderer> chestISTER() {
+		return () -> new ChestItemRenderer<TileEntity>(AbnormalsChestTileEntity::new);
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private static Callable<ItemStackTileEntityRenderer> trappedChestISTER() {
+		return () -> new ChestItemRenderer<TileEntity>(AbnormalsTrappedChestTileEntity::new);
 	}
 }

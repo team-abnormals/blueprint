@@ -5,8 +5,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
@@ -19,9 +19,9 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
@@ -77,7 +77,7 @@ public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggabl
         if(blockstate.getBlock() == this) {
             return blockstate.with(TYPE, VerticalSlabType.DOUBLE).with(WATERLOGGED, false);
         }
-        IFluidState fluid = context.getWorld().getFluidState(blockpos);
+        FluidState fluid = context.getWorld().getFluidState(blockpos);
         BlockState retState = getDefaultState().with(WATERLOGGED, fluid.getFluid() == Fluids.WATER);
         Direction direction = getDirectionForPlacement(context);
         return retState.with(FACING, direction);
@@ -88,7 +88,7 @@ public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggabl
         if(direction.getAxis() != Direction.Axis.Y) {
             return direction;
         }
-        Vec3d vec = context.getHitVec().subtract(new Vec3d(context.getPos())).subtract(0.5, 0, 0.5);
+        Vector3d vec = context.getHitVec().subtract(Vector3d.copyCentered(context.getPos())).subtract(0.5, 0, 0.5);
         double angle = Math.atan2(vec.x, vec.z) * -180.0 / Math.PI;
         return Direction.fromAngle(angle).getOpposite();
     }
@@ -102,14 +102,13 @@ public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggabl
         (useContext.getFace() == direction && getDirectionForPlacement(useContext) == direction);
     }
 
-	
 	@Override
-	public IFluidState getFluidState(BlockState state) {
+	public FluidState getFluidState(BlockState state) {
 		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
 	}
 
 	@Override
-	public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, IFluidState fluidStateIn) {
+	public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn) {
 		return state.get(TYPE) != VerticalSlabType.DOUBLE && IWaterLoggable.super.receiveFluid(worldIn, pos, state, fluidStateIn);
 	}
 
@@ -142,7 +141,8 @@ public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggabl
     		this.name = name;
     	}
 
-    	public String getName() {
+    	@Override
+    	public String getString() {
     		return this.name;
     	}
     }

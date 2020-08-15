@@ -7,9 +7,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.TableLootEntry;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.TableLootEntry;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

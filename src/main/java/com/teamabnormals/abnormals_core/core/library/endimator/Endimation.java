@@ -7,8 +7,8 @@ import javax.annotation.Nullable;
 
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager.EndimationConversion;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager.EndimationInstruction;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager.EndimationInstruction.ModelRendererEndimationInstruction;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager.InstructionType;
+import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager.EndimationInstruction.ModelRendererEndimationInstruction;
 import com.teamabnormals.abnormals_core.core.library.endimator.entity.IEndimatedEntity;
 
 import net.minecraft.entity.Entity;

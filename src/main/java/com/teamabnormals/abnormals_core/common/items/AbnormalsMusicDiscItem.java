@@ -1,5 +1,6 @@
 package com.teamabnormals.abnormals_core.common.items;
 
+import com.google.common.base.Supplier;
 import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 
 import net.minecraft.item.Item;
@@ -12,7 +13,7 @@ import net.minecraft.util.SoundEvent;
 
 public class AbnormalsMusicDiscItem extends MusicDiscItem { 
 	
-	public AbnormalsMusicDiscItem(int comparatorValueIn, SoundEvent soundIn, Item.Properties builder) {
+	public AbnormalsMusicDiscItem(int comparatorValueIn, Supplier<SoundEvent> soundIn, Item.Properties builder) {
 		super(comparatorValueIn, soundIn, builder);
 	}
 	
