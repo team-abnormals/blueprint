@@ -35,9 +35,15 @@ public class AbnormalsLogBlock extends RotatedPillarBlock {
 	
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-		if(player.getHeldItem(hand).getItem() instanceof AxeItem) {
+		ItemStack stack = player.getHeldItem(hand);
+		if (stack.getItem() instanceof AxeItem) {
 			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-			world.setBlockState(pos, BlockUtils.transferAllBlockStates(state, this.block.get().getDefaultState()));
+			if (!world.isRemote) {
+				world.setBlockState(pos, BlockUtils.transferAllBlockStates(state, this.block.get().getDefaultState()));
+				stack.damageItem(1, player, (playerIn) -> {
+					playerIn.sendBreakAnimation(hand);
+				});
+			}
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
