@@ -36,17 +36,17 @@ public class ACConfig {
 			builder.comment("Compatibility with Quark's poisonous potatoes feature")
 			.push("poisonousPotatoCompat");
 			poisonPotatoCompatEnabled = builder
-					.comment("If booflos can be fed a poisonous potato to stunt their growth when Quark is installed; Default: True")
+					.comment("If baby mobs can be fed a poisonous potato to stunt their growth when Quark is installed; Default: True")
 					.translation(makeTranslation("poison_potato_compat_enabled"))
 					.define("poisonPotatoCompatEnabled",true);
 
 			poisonEffect = builder
-					.comment("If growth stunting should give a booflo poison; Default: True")
+					.comment("If growth stunting should give baby mobs poison; Default: True")
 					.translation(makeTranslation("poison_effect"))
 					.define("poisonEffect",true);
 
 			poisonChance = builder
-					.comment("The chance to stunt booflo growth when feeding a poisonous potato; Default: 0.1")
+					.comment("The chance to stunt baby mob growth when feeding a poisonous potato; Default: 0.1")
 					.translation(makeTranslation("poison_chance"))
 					.defineInRange("poisonChance",0.1,0,1);
 
