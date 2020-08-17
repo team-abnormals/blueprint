@@ -83,14 +83,11 @@ public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggabl
         return retState.with(FACING, direction);
     }
 	
-    private static Direction getDirectionForPlacement(BlockItemUseContext context) {
-        Direction direction = context.getFace();
-        if(direction.getAxis() != Direction.Axis.Y) {
-            return direction;
-        }
-        Vector3d vec = context.getHitVec().subtract(Vector3d.copyCentered(context.getPos())).subtract(0.5, 0, 0.5);
-        double angle = Math.atan2(vec.x, vec.z) * -180.0 / Math.PI;
-        return Direction.fromAngle(angle).getOpposite();
+	private Direction getDirectionForPlacement(BlockItemUseContext context) {
+        Direction face = context.getFace();
+        if (face.getAxis() != Direction.Axis.Y) return face;
+        Vector3d difference = context.getHitVec().subtract(Vector3d.copy(context.getPos())).subtract(0.5, 0, 0.5);
+        return Direction.fromAngle(-Math.toDegrees(Math.atan2(difference.getX(), difference.getZ()))).getOpposite();
     }
 
     @Override
