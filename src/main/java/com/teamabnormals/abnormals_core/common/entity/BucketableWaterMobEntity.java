@@ -15,11 +15,11 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
 public abstract class BucketableWaterMobEntity extends WaterMobEntity implements IBucketableEntity {
-
     private static final DataParameter<Boolean> FROM_BUCKET = EntityDataManager.createKey(BucketableWaterMobEntity.class, DataSerializers.BOOLEAN);
 
     public BucketableWaterMobEntity(EntityType<? extends BucketableWaterMobEntity> type, World world) {
@@ -54,12 +54,16 @@ public abstract class BucketableWaterMobEntity extends WaterMobEntity implements
     public void setFromBucket(boolean value) {
         this.dataManager.set(FROM_BUCKET, value);
     }
+    
+    protected SoundEvent getBucketFillSound() {
+    	return SoundEvents.ITEM_BUCKET_FILL_FISH;
+    }
 
     @Override
     public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getHeldItem(hand);
         if (itemstack.getItem() == Items.WATER_BUCKET && this.isAlive()) {
-            this.playSound(SoundEvents.ITEM_BUCKET_FILL_FISH, 1.0F, 1.0F);
+            this.playSound(this.getBucketFillSound(), 1.0F, 1.0F);
             itemstack.shrink(1);
             ItemStack itemstack1 = this.getBucket();
             this.setBucketData(itemstack1);
@@ -89,5 +93,4 @@ public abstract class BucketableWaterMobEntity extends WaterMobEntity implements
     public boolean preventDespawn() {
     	return this.isFromBucket();
     }
-    
 }
