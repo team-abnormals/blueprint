@@ -16,6 +16,7 @@ import com.teamabnormals.abnormals_core.common.capability.chunkloading.*;
 import com.teamabnormals.abnormals_core.common.network.*;
 import com.teamabnormals.abnormals_core.common.network.entity.*;
 import com.teamabnormals.abnormals_core.common.network.particle.*;
+import com.teamabnormals.abnormals_core.common.world.biome.AbnormalsBiome;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
@@ -108,6 +109,10 @@ public class AbnormalsCore {
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
 //			REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
+		    ForgeRegistries.BIOMES.getValues().stream().filter(biome -> biome instanceof AbnormalsBiome).forEach((biome) -> {
+                ((AbnormalsBiome)biome).addFeatures();
+                ((AbnormalsBiome)biome).addSpawns();
+            });
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
