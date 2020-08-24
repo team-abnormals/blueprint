@@ -4,10 +4,10 @@ import net.minecraft.world.biome.Biome;
 
 public abstract class AbnormalsBiome extends Biome {
     
-    protected AbnormalsBiome(Builder biomeBuilder) {
+    public AbnormalsBiome(Builder biomeBuilder) {
         super(biomeBuilder);
     }
     
-    public void addFeatures() {}
-    public void addSpawns() {}
+    public abstract void addFeatures();
+    public abstract void addSpawns();
 }

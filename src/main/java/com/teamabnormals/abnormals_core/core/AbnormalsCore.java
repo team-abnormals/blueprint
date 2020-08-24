@@ -109,10 +109,10 @@ public class AbnormalsCore {
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
 //			REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
-		    ForgeRegistries.BIOMES.getValues().stream().filter(biome -> biome instanceof AbnormalsBiome).forEach((biome) -> {
-                ((AbnormalsBiome)biome).addFeatures();
-                ((AbnormalsBiome)biome).addSpawns();
-            });
+			ForgeRegistries.BIOMES.getValues().stream().filter(biome -> biome instanceof AbnormalsBiome).forEach((biome) -> {
+				((AbnormalsBiome)biome).addFeatures();
+				((AbnormalsBiome)biome).addSpawns();
+			});
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
