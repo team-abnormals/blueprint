@@ -23,6 +23,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class MobBucketItem extends BucketItem {
 	private final Supplier<EntityType<? extends BucketableWaterMobEntity>> entityType;
@@ -32,9 +33,9 @@ public class MobBucketItem extends BucketItem {
 		this.entityType = entityType;
 	}
 
-	public void onLiquidPlaced(World worldIn, ItemStack stack, BlockPos pos) {
-		if (!worldIn.isRemote) {
-			this.placeEntity(worldIn, stack, pos);
+	public void onLiquidPlaced(World world, ItemStack stack, BlockPos pos) {
+		if (!world.isRemote) {
+			this.placeEntity((ServerWorld) world, stack, pos);
 		}
 	}
 	
@@ -42,8 +43,8 @@ public class MobBucketItem extends BucketItem {
 		worldIn.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY_FISH, SoundCategory.NEUTRAL, 1.0F, 1.0F);
 	}
 
-	protected void placeEntity(World worldIn, ItemStack stack, BlockPos pos) {
-		Entity entity = this.entityType.get().spawn(worldIn, stack, (PlayerEntity)null, pos, SpawnReason.BUCKET, true, false);
+	protected void placeEntity(ServerWorld world, ItemStack stack, BlockPos pos) {
+		Entity entity = this.entityType.get().spawn(world, stack, null, pos, SpawnReason.BUCKET, true, false);
 		if (entity != null) {
 			((BucketableWaterMobEntity)entity).setFromBucket(true);
 		}

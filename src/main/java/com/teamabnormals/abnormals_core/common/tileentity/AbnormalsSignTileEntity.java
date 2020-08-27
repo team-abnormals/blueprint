@@ -1,6 +1,6 @@
 package com.teamabnormals.abnormals_core.common.tileentity;
 
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
@@ -17,10 +17,10 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentUtils;
@@ -33,7 +33,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	public final ITextComponent[] signText = new ITextComponent[]{new StringTextComponent(""), new StringTextComponent(""), new StringTextComponent(""), new StringTextComponent("")};
 	private boolean isEditable = true;
 	private PlayerEntity player;
-	private final ITextProperties[] renderText = new ITextProperties[4];
+	private final IReorderingProcessor[] renderText = new IReorderingProcessor[4];
 	private DyeColor textColor = DyeColor.BLACK;
 
 	public AbnormalsSignTileEntity() {
@@ -52,11 +52,11 @@ public class AbnormalsSignTileEntity extends TileEntity {
 		compound.putString("Color", this.textColor.getTranslationKey());
 		return compound;
 	}
-
+	
 	@Override
-	public void read(BlockState state, CompoundNBT compound) {
+	public void func_230337_a_(BlockState state, CompoundNBT compound) {
 		this.isEditable = false;
-		super.read(state, compound);
+		super.func_230337_a_(state, compound);
 		this.textColor = DyeColor.byTranslationKey(compound.getString("Color"), DyeColor.BLACK);
 
 		for (int i = 0; i < 4; ++i) {
@@ -87,9 +87,9 @@ public class AbnormalsSignTileEntity extends TileEntity {
 
 	@Nullable
 	@OnlyIn(Dist.CLIENT)
-	public ITextProperties getRenderText(int line, UnaryOperator<ITextProperties> op) {
+	public IReorderingProcessor getRenderText(int line, Function<ITextComponent, IReorderingProcessor> function) {
 		if (this.renderText[line] == null && this.signText[line] != null) {
-			this.renderText[line] = op.apply(this.signText[line]);
+			this.renderText[line] = function.apply(this.signText[line]);
 		}
 
 		return this.renderText[line];

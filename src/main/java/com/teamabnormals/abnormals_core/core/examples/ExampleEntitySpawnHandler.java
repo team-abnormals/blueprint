@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ExampleEntitySpawnHandler extends EntitySpawnHandler {
 	private static final List<EntitySpawn<? extends MobEntity>> SPAWNS = Util.make(Lists.newArrayList(), spawns -> {
-		spawns.add(new EntitySpawn<CowEntity>(() -> ExampleEntityRegistry.COW.get(), new SpawnEntry(EntityClassification.CREATURE, 8, 1, 3), PlacementType.ON_GROUND, Heightmap.Type.WORLD_SURFACE, CowEntity::canAnimalSpawn, (biome) -> biome == Biomes.PLAINS));
+		spawns.add(new EntitySpawn<CowEntity>(() -> ExampleEntityRegistry.COW.get(), new SpawnEntry(EntityClassification.CREATURE, 8, 1, 3), PlacementType.ON_GROUND, Heightmap.Type.WORLD_SURFACE, CowEntity::canAnimalSpawn, (key, biome) -> key == Biomes.PLAINS));
 	});
 	
 	private static void registerSpawnPlacements() {

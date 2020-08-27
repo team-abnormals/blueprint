@@ -18,10 +18,9 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -67,14 +66,14 @@ public class AbnormalsSignTileEntityRenderer<A extends AbnormalsSignTileEntity> 
 		int l = (int) ((double) NativeImage.getBlue(i) * colorMultiplier);
 		int i1 = NativeImage.getCombined(0, l, k, j);
 
-		for(int k1 = 0; k1 < 4; ++k1) {
-			ITextProperties itextproperties = sign.getRenderText(k1, (p_239309_1_) -> {
-				List<ITextProperties> list = fontrenderer.func_238420_b_().func_238362_b_(p_239309_1_, 90, Style.EMPTY);
-				return list.isEmpty() ? ITextProperties.field_240651_c_ : list.get(0);
+		for (int line = 0; line < 4; line++) {
+			IReorderingProcessor processor = sign.getRenderText(line, (p_239309_1_) -> {
+				List<IReorderingProcessor> list = fontrenderer.func_238425_b_(p_239309_1_, 90);
+				return list.isEmpty() ? IReorderingProcessor.field_242232_a : list.get(0);
 			});
-			if(itextproperties != null) {
-				float f3 = (float)(-fontrenderer.func_238414_a_(itextproperties) / 2);
-				fontrenderer.func_238416_a_(itextproperties, f3, (float)(k1 * 10 - 20), i1, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLightIn);
+			if (processor != null) {
+				float f3 = (float)(-fontrenderer.func_243245_a(processor) / 2);
+				fontrenderer.func_238416_a_(processor, f3, (float) (line * 10 - 20), i1, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLightIn);
 			}
 		}
 		matrixStack.pop();
