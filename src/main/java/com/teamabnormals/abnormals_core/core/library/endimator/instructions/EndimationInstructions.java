@@ -27,7 +27,7 @@ public final class EndimationInstructions {
 	
 	/**
 	 * Use this method to register an {@link EndimationInstruction} during the initialization of your mod.
-	 * @param name - The registry for this instruction.
+	 * @param name - The registry name for this instruction.
 	 * @param instruction - The instruction to register.
 	 */
 	public static synchronized <E extends EndimationInstruction<?>> void register(String name, E instruction) {
