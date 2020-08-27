@@ -19,7 +19,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
  * Update message for the signs
  * @author SmellyModder(Luke Tonon)
  */
-public class MessageS2CUpdateSign {
+public final class MessageS2CUpdateSign {
 	private BlockPos signPos;
 	private String topLine, secondLine, thirdLine, bottomLine;
 	private int color;
@@ -51,13 +51,13 @@ public class MessageS2CUpdateSign {
 	@SuppressWarnings("deprecation")
 	public static void handle(MessageS2CUpdateSign message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		if(context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				ClientWorld world = (ClientWorld) ClientInfo.getClientPlayerWorld();
 				BlockPos blockpos = message.signPos;
-				if(world.isBlockLoaded(blockpos)) {
+				if (world.isBlockLoaded(blockpos)) {
 					TileEntity tileentity = world.getTileEntity(blockpos);
-					if(!(tileentity instanceof AbnormalsSignTileEntity)) return;
+					if (!(tileentity instanceof AbnormalsSignTileEntity)) return;
 	
 					AbnormalsSignTileEntity signtileentity = (AbnormalsSignTileEntity) tileentity;
 

@@ -9,16 +9,15 @@ import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 
 public class WoodDoorBlock extends DoorBlock {
-
 	public WoodDoorBlock(Properties builder) {
 		super(builder);
 	}
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if(ItemStackUtils.isInGroup(this.asItem(), group)) {
+		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_DOOR, items);
-			if(targetIndex != -1) {
+			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				super.fillItemGroup(group, items);

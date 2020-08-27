@@ -56,11 +56,11 @@ public class AbnormalsWallSignBlock extends AbnormalsAbstractSignBlock {
 		BlockPos blockpos = context.getPos();
 		Direction[] adirection = context.getNearestLookingDirections();
 
-		for(Direction direction : adirection) {
-			if(direction.getAxis().isHorizontal()) {
+		for (Direction direction : adirection) {
+			if (direction.getAxis().isHorizontal()) {
 				Direction direction1 = direction.getOpposite();
 				blockstate = blockstate.with(FACING, direction1);
-				if(blockstate.isValidPosition(iworldreader, blockpos)) {
+				if (blockstate.isValidPosition(iworldreader, blockpos)) {
 					return blockstate.with(WATERLOGGED, ifluidstate.getFluid() == Fluids.WATER);
 				}
 			}

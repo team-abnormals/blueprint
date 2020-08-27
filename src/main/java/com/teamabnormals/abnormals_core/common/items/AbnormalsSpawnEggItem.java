@@ -25,10 +25,10 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 
 	@Override
 	public EntityType<?> getType(CompoundNBT compound){
-		if(compound != null && compound.contains("EntityTag", 10)) {
+		if (compound != null && compound.contains("EntityTag", 10)) {
 			CompoundNBT entityTag = compound.getCompound("EntityTag");
 
-			if(entityTag.contains("id", 8)) {
+			if (entityTag.contains("id", 8)) {
 				return EntityType.byKey(entityTag.getString("id")).orElse(this.entityType.get());
 			}
 		}
@@ -37,9 +37,9 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if(this.isInGroup(group)) {
+		if (this.isInGroup(group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(Items.ZOMBIE_VILLAGER_SPAWN_EGG, items);
-			if(targetIndex != -1) {
+			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				super.fillItemGroup(group, items);

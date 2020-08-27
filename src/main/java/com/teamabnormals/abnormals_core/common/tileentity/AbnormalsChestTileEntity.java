@@ -7,7 +7,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class AbnormalsChestTileEntity extends ChestTileEntity {
-
 	protected AbnormalsChestTileEntity(TileEntityType<?> typeIn) {
 		super(typeIn);
 	}

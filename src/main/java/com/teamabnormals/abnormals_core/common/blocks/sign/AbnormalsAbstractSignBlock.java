@@ -35,27 +35,26 @@ public abstract class AbnormalsAbstractSignBlock extends AbstractSignBlock {
 		ItemStack itemstack = player.getHeldItem(handIn);
 		boolean canEdit = player.abilities.allowEdit;
 		boolean canDye = itemstack.getItem() instanceof DyeItem && canEdit;
-		if(worldIn.isRemote) {
+		if (worldIn.isRemote) {
 			return canDye ? ActionResultType.SUCCESS : ActionResultType.CONSUME;
 		} else {
 			TileEntity tileentity = worldIn.getTileEntity(pos);
-			if(tileentity instanceof AbnormalsSignTileEntity) {
+			if (tileentity instanceof AbnormalsSignTileEntity) {
 				AbnormalsSignTileEntity signtileentity = (AbnormalsSignTileEntity) tileentity;
-				if(canDye) {
+				if (canDye) {
 					boolean tryToSetColor = signtileentity.setTextColor(((DyeItem) itemstack.getItem()).getDyeColor());
-					if(tryToSetColor) {
+					if (tryToSetColor) {
 						NetworkUtil.updateSignText(pos, signtileentity.getText(0), signtileentity.getText(1), signtileentity.getText(2), signtileentity.getText(3), signtileentity.getTextColor());
-						if(!player.isCreative()) {
+						if (!player.isCreative()) {
 							itemstack.shrink(1);
 						}
 					}
 				} else {
-					if(canEdit && !this.doesSignHaveCommand(signtileentity) && ACConfig.ValuesHolder.isQuarkSignEditingEnabled() && (!ACConfig.ValuesHolder.doesSignEditingRequireEmptyHand() || itemstack.isEmpty()) && !player.isSneaking()) {
+					if (canEdit && !this.doesSignHaveCommand(signtileentity) && ACConfig.ValuesHolder.isQuarkSignEditingEnabled() && (!ACConfig.ValuesHolder.doesSignEditingRequireEmptyHand() || itemstack.isEmpty()) && !player.isSneaking()) {
 						NetworkUtil.openSignEditor(player, signtileentity);
 						return ActionResultType.SUCCESS;
 					}
 				}
-
 				return signtileentity.executeCommand(player) ? ActionResultType.SUCCESS : ActionResultType.PASS;
 			} else {
 				return ActionResultType.PASS;
@@ -64,11 +63,11 @@ public abstract class AbnormalsAbstractSignBlock extends AbstractSignBlock {
 	}
 	
 	private boolean doesSignHaveCommand(AbnormalsSignTileEntity sign) {
-		for(ITextComponent itextcomponent : sign.signText) {
+		for (ITextComponent itextcomponent : sign.signText) {
 			Style style = itextcomponent == null ? null : itextcomponent.getStyle();
-			if(style != null && style.getClickEvent() != null) {
+			if (style != null && style.getClickEvent() != null) {
 				ClickEvent clickevent = style.getClickEvent();
-				if(clickevent.getAction() == ClickEvent.Action.RUN_COMMAND) {
+				if (clickevent.getAction() == ClickEvent.Action.RUN_COMMAND) {
 					return true;
 				}
 			}

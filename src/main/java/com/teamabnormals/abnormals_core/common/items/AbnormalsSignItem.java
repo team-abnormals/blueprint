@@ -26,18 +26,17 @@ public class AbnormalsSignItem extends WallOrFloorItem {
 	
 	protected boolean onBlockPlaced(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
 		boolean flag = super.onBlockPlaced(pos, world, player, stack, state);
-		if(!world.isRemote && !flag && player != null) {
+		if (!world.isRemote && !flag && player != null) {
 			NetworkUtil.openSignEditor(player, (AbnormalsSignTileEntity) world.getTileEntity(pos));
 		}
-
 		return flag;
 	}
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if(this.isInGroup(group)) {
+		if (this.isInGroup(group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_SIGN, items);
-			if(targetIndex != -1) {
+			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				this.getBlock().fillItemGroup(group, items);

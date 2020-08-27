@@ -15,7 +15,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
-public class ACAndRecipeCondition implements ICondition {
+public final class ACAndRecipeCondition implements ICondition {
 	private final ResourceLocation location;
 	private final List<ICondition> children;
 	
@@ -44,7 +44,7 @@ public class ACAndRecipeCondition implements ICondition {
 		@Override
 		public void write(JsonObject json, ACAndRecipeCondition value) {
 			JsonArray values = new JsonArray();
-			for(ICondition child : value.children) {
+			for (ICondition child : value.children) {
 				values.add(CraftingHelper.serialize(child));
 			}
 			json.add("values", values);
@@ -53,12 +53,12 @@ public class ACAndRecipeCondition implements ICondition {
 		@Override
 		public ACAndRecipeCondition read(JsonObject json) {
 			List<ICondition> children = new ArrayList<>();
-			for(JsonElement elements : JSONUtils.getJsonArray(json, "values")) {
-				if(!elements.isJsonObject()) {
+			for (JsonElement elements : JSONUtils.getJsonArray(json, "values")) {
+				if (!elements.isJsonObject()) {
 					throw new JsonSyntaxException("And condition values must be an array of JsonObjects");
 				}
 				ICondition condition = CraftingHelper.getCondition(elements.getAsJsonObject());
-				if(!condition.test()) {
+				if (!condition.test()) {
 					children.clear();
 					break;
 				} else {

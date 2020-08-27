@@ -41,7 +41,7 @@ public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
 	}
 
 	public boolean shouldExecute() {
-		if(!this.canOwnerTarget.test(this.goalOwner) || (this.targetChance > 0 && this.goalOwner.getRNG().nextInt(this.targetChance) != 0)) {
+		if (!this.canOwnerTarget.test(this.goalOwner) || (this.targetChance > 0 && this.goalOwner.getRNG().nextInt(this.targetChance) != 0)) {
 			return false;
 		} else {
 			this.findNearestTarget();
@@ -54,7 +54,7 @@ public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
 	}
 
 	protected void findNearestTarget() {
-		if(this.targetClass != PlayerEntity.class && this.targetClass != ServerPlayerEntity.class) {
+		if (this.targetClass != PlayerEntity.class && this.targetClass != ServerPlayerEntity.class) {
 			this.nearestTarget = this.goalOwner.world.<T>func_225318_b(this.targetClass, this.targetEntitySelector, this.goalOwner, this.goalOwner.getPosX(), this.goalOwner.getPosYEye(), this.goalOwner.getPosZ(), this.getTargetableArea(this.getTargetDistance()));
 		} else {
 			this.nearestTarget = this.goalOwner.world.getClosestPlayer(this.targetEntitySelector, this.goalOwner, this.goalOwner.getPosX(), this.goalOwner.getPosYEye(), this.goalOwner.getPosZ());

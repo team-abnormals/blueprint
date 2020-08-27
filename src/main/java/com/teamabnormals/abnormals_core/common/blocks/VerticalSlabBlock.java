@@ -89,7 +89,7 @@ public class VerticalSlabBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if(state.get(WATERLOGGED)) {
+		if (state.get(WATERLOGGED)) {
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
 		}
 		return state;

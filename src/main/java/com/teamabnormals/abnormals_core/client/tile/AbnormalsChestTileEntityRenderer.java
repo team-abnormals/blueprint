@@ -28,7 +28,6 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
 public class AbnormalsChestTileEntityRenderer<T extends TileEntity & IChestLid> extends TileEntityRenderer<T> {
-	
 	public static Block itemBlock = null; 
 	
 	public final ModelRenderer singleLid;

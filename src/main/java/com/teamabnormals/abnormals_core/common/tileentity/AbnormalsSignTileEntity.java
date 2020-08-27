@@ -44,7 +44,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 
-		for(int i = 0; i < 4; ++i) {
+		for (int i = 0; i < 4; ++i) {
 			String s = ITextComponent.Serializer.toJson(this.signText[i]);
 			compound.putString("Text" + (i + 1), s);
 		}
@@ -59,10 +59,10 @@ public class AbnormalsSignTileEntity extends TileEntity {
 		super.read(state, compound);
 		this.textColor = DyeColor.byTranslationKey(compound.getString("Color"), DyeColor.BLACK);
 
-		for(int i = 0; i < 4; ++i) {
+		for (int i = 0; i < 4; ++i) {
 			String s = compound.getString("Text" + (i + 1));
 			ITextComponent itextcomponent = ITextComponent.Serializer.func_240643_a_(s.isEmpty() ? "\"\"" : s);
-			if(this.world instanceof ServerWorld) {
+			if (this.world instanceof ServerWorld) {
 				try {
 					this.signText[i] = TextComponentUtils.func_240645_a_(this.getCommandSource((ServerPlayerEntity)null), itextcomponent, (Entity)null, 0);
 				} catch (CommandSyntaxException var6) {
@@ -88,7 +88,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	@Nullable
 	@OnlyIn(Dist.CLIENT)
 	public ITextProperties getRenderText(int line, UnaryOperator<ITextProperties> op) {
-		if(this.renderText[line] == null && this.signText[line] != null) {
+		if (this.renderText[line] == null && this.signText[line] != null) {
 			this.renderText[line] = op.apply(this.signText[line]);
 		}
 
@@ -117,7 +117,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	@OnlyIn(Dist.CLIENT)
 	public void setEditable(boolean isEditableIn) {
 		this.isEditable = isEditableIn;
-		if(!isEditableIn) {
+		if (!isEditableIn) {
 			this.player = null;
 		}
 	}
@@ -131,7 +131,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	}
 	
 	public boolean executeCommand(PlayerEntity playerIn) {
-		for(ITextComponent itextcomponent: this.signText) {
+		for (ITextComponent itextcomponent: this.signText) {
             Style style = itextcomponent == null ? null : itextcomponent.getStyle();
             if (style != null && style.getClickEvent() != null) {
                 ClickEvent clickevent = style.getClickEvent();
@@ -155,7 +155,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	}
 
 	public boolean setTextColor(DyeColor newColor) {
-		if(newColor != this.getTextColor()) {
+		if (newColor != this.getTextColor()) {
 			this.textColor = newColor;
 			this.markDirty();
 			this.world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);

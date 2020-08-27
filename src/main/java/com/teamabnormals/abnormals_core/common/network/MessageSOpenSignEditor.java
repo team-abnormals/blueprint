@@ -17,7 +17,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
  * Sends a message to the client to open the sign editor
  * @author SmellyModder(Luke Tonon)
  */
-public class MessageSOpenSignEditor {
+public final class MessageSOpenSignEditor {
 	public UUID playerUUID;
 	public BlockPos signPos;
 	
@@ -37,11 +37,11 @@ public class MessageSOpenSignEditor {
 	
 	public static void handle(MessageSOpenSignEditor message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		if(context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-			if(!ClientInfo.getClientPlayer().getUniqueID().equals(message.playerUUID)) return;
+		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+			if (!ClientInfo.getClientPlayer().getUniqueID().equals(message.playerUUID)) return;
 			context.enqueueWork(() -> {
 				TileEntity tileentity = ClientInfo.getClientPlayerWorld().getTileEntity(message.signPos);
-				if(!(tileentity instanceof AbnormalsSignTileEntity)) {
+				if (!(tileentity instanceof AbnormalsSignTileEntity)) {
 					tileentity = new AbnormalsSignTileEntity();
 					tileentity.setWorldAndPos(ClientInfo.getClientPlayerWorld(), message.signPos);
 				}

@@ -21,8 +21,8 @@ public class ExampleEndimatedEntity extends EndimatedEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		if(this.world.getGameTime() % 40 == 0 && this.isServerWorld()) {
-			if(this.getRNG().nextFloat() < 0.5F) {
+		if (this.world.getGameTime() % 40 == 0 && this.isServerWorld()) {
+			if (this.rand.nextFloat() < 0.5F) {
 				NetworkUtil.setPlayingAnimationMessage(this, SINK_ANIMATION);
 			} else {
 				NetworkUtil.setPlayingAnimationMessage(this, GROW_ANIMATION);

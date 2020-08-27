@@ -10,7 +10,7 @@ import net.minecraft.util.math.MathHelper;
  * Can also be used as a way to make simple animations in a more clean/easy way
  * @author - SmellyModder(Luke Tonon)
  */
-public class ControlledEndimation {
+public final class ControlledEndimation {
 	private int tick, prevTick;
 	public int tickDuration;
 	private boolean shouldDecrement;
@@ -33,11 +33,11 @@ public class ControlledEndimation {
 	 * Used to update logic and progress of the animation
 	 */
 	public void tick() {
-		if(this.isPaused) return;
+		if (this.isPaused) return;
 		
-		if(this.shouldDecrement && this.tick > 0) {
+		if (this.shouldDecrement && this.tick > 0) {
 			this.tick--;
-		} else if(!this.shouldDecrement && this.tick < this.tickDuration) {
+		} else if (!this.shouldDecrement && this.tick < this.tickDuration) {
 			this.tick++;
 		}
 	}

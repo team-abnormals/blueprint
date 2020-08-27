@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoatEntity> {
-	protected final AbnormalsBoatModel model = new AbnormalsBoatModel();
+	private final AbnormalsBoatModel model = new AbnormalsBoatModel();
 
 	public AbnormalsBoatRenderer(EntityRendererManager renderManagerIn) {
 		super(renderManagerIn);
@@ -38,16 +38,16 @@ public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoatEntity> {
 		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
 		float f = (float)entity.getTimeSinceHit() - partialTicks;
 		float f1 = entity.getDamageTaken() - partialTicks;
-		if(f1 < 0.0F) {
+		if (f1 < 0.0F) {
 			f1 = 0.0F;
 		}
 
-		if(f > 0.0F) {
+		if (f > 0.0F) {
 			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(MathHelper.sin(f) * f * f1 / 10.0F * (float)entity.getForwardDirection()));
 		}
 
 		float f2 = entity.getRockingAngle(partialTicks);
-		if(!MathHelper.epsilonEquals(f2, 0.0F)) {
+		if (!MathHelper.epsilonEquals(f2, 0.0F)) {
 			matrixStackIn.rotate(new Quaternion(new Vector3f(1.0F, 0.0F, 1.0F), entity.getRockingAngle(partialTicks), true));
 		}
 
@@ -75,7 +75,6 @@ public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoatEntity> {
 
 		public AbnormalsBoatModel() {
 			ModelRenderer[] amodelrenderer = new ModelRenderer[] {(new ModelRenderer(this, 0, 0)).setTextureSize(128, 64), (new ModelRenderer(this, 0, 19)).setTextureSize(128, 64), (new ModelRenderer(this, 0, 27)).setTextureSize(128, 64), (new ModelRenderer(this, 0, 35)).setTextureSize(128, 64), (new ModelRenderer(this, 0, 43)).setTextureSize(128, 64)};
-		      
 			amodelrenderer[0].addBox(-14.0F, -9.0F, -3.0F, 28.0F, 16.0F, 3.0F, 0.0F);
 			amodelrenderer[0].setRotationPoint(0.0F, 3.0F, 1.0F);
 			amodelrenderer[1].addBox(-13.0F, -7.0F, -1.0F, 18.0F, 6.0F, 2.0F, 0.0F);

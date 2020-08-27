@@ -16,7 +16,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Message for telling the client to spawn particles
  * @author - SmellyModder(Luke Tonon)
  */
-public class MessageS2CSpawnParticle {
+public final class MessageS2CSpawnParticle {
 	public String particleName;
 	public double posX, posY, posZ;
 	public double motionX, motionY, motionZ;
@@ -54,12 +54,12 @@ public class MessageS2CSpawnParticle {
 	
 	public static void handle(MessageS2CSpawnParticle message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		if(context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				World world = ClientInfo.getClientPlayerWorld();
 				BasicParticleType particleType = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(message.particleName));
 				
-				if(particleType != null) {
+				if (particleType != null) {
 					world.addParticle(particleType, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
 				}
 			});

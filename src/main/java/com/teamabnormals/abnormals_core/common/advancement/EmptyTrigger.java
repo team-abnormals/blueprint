@@ -40,9 +40,9 @@ public class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
 	@Override
 	public void removeListener(PlayerAdvancements playerAdvancements, Listener<Instance> listener) {
 		Listeners listeners = this.listeners.get(playerAdvancements);
-		if(listeners != null) {
+		if (listeners != null) {
 			listeners.remove(listener);
-			if(listeners.isEmpty()) {
+			if (listeners.isEmpty()) {
 				this.listeners.remove(playerAdvancements);
 			}
 		}
@@ -60,7 +60,7 @@ public class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
 	
 	public void trigger(ServerPlayerEntity player) {
 		Listeners listeners = this.listeners.get(player.getAdvancements());
-		if(listeners != null) {
+		if (listeners != null) {
 			listeners.trigger();
 		}
 	}

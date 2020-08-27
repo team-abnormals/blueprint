@@ -32,7 +32,7 @@ public abstract class BucketableWaterMobEntity extends WaterMobEntity implements
     }
 
     protected void setBucketData(ItemStack bucket) {
-        if(this.hasCustomName()) {
+        if (this.hasCustomName()) {
             bucket.setDisplayName(this.getCustomName());
         }
     }

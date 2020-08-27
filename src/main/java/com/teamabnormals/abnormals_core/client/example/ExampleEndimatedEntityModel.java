@@ -6,7 +6,7 @@ import com.teamabnormals.abnormals_core.common.entity.ExampleEndimatedEntity;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorEntityModel;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorModelRenderer;
 
-public class ExampleEndimatedEntityModel<E extends ExampleEndimatedEntity> extends EndimatorEntityModel<E> {
+public final class ExampleEndimatedEntityModel<E extends ExampleEndimatedEntity> extends EndimatorEntityModel<E> {
 	public EndimatorModelRenderer cube;
 
     public ExampleEndimatedEntityModel() {
@@ -36,17 +36,17 @@ public class ExampleEndimatedEntityModel<E extends ExampleEndimatedEntity> exten
     public void animateModel(E exampleEntity) {
     	super.animateModel(exampleEntity);
     	
-    	if(this.tryToPlayEndimation(ExampleEndimatedEntity.SINK_ANIMATION)) {
+    	if (this.tryToPlayEndimation(ExampleEndimatedEntity.SINK_ANIMATION)) {
     		this.startKeyframe(10);
     		this.offset(this.cube, 0.0F, 1.0F, 0.0F);
     		this.endKeyframe();
     		this.resetKeyframe(10);
-    	} else if(this.tryToPlayEndimation(ExampleEndimatedEntity.GROW_ANIMATION)) {
+    	} else if (this.tryToPlayEndimation(ExampleEndimatedEntity.GROW_ANIMATION)) {
     		this.startKeyframe(10);
     		this.scaleAdditive(this.cube, 0.5F, 0.5F, 0.5F);
     		this.endKeyframe();
     		this.resetKeyframe(10);
-    	} else if(this.tryToPlayEndimation(ExampleEndimatedEntity.DEATH_ANIMATION)) {
+    	} else if (this.tryToPlayEndimation(ExampleEndimatedEntity.DEATH_ANIMATION)) {
     		ExampleEndimatedEntity.DEATH_ANIMATION.processInstructions(this);
     	}
     }

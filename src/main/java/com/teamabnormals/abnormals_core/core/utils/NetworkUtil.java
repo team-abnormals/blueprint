@@ -26,7 +26,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
  * @author - SmellyModder(Luke Tonon)
  * This class holds a list of useful network functions
  */
-public class NetworkUtil {
+public final class NetworkUtil {
 	
 	/**
 	 * @param name - The registry name of the particle

@@ -6,7 +6,7 @@ import java.util.function.Consumer;
  * Class that works as a timer that can execute a task when it's complete
  * @author SmellyModder(Luke Tonon)
  */
-public class TaskTickTimer<T> {
+public final class TaskTickTimer<T> {
 	private final T owner;
 	private final Consumer<T> consumer;
 	private final int ticks;

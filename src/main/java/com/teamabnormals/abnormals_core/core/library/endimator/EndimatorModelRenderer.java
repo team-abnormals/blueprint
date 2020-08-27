@@ -35,7 +35,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	private final ObjectList<EndimatorModelRenderer> childModels = new ObjectArrayList<>();
 
 	/**
-	 * @param entityModel - Entity model this ModelRenderer belongs to
+	 * @param model - Entity model this ModelRenderer belongs to
 	 */
 	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> model) {
 		super(model);
@@ -47,7 +47,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	
 	/**
 	 * Texture offset constuctor 
-	 * @param entityModel - Entity model this ModelRenderer belongs to
+	 * @param model - Entity model this ModelRenderer belongs to
 	 * @param textureOffsetX - X offset on the texture
 	 * @param textureOffsetY - Y offset on the texture
 	 */
@@ -153,11 +153,9 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	}
 	
 	/**
-	 * A method that reverts the current box's values back to the default values
-	 * 
-	 * Should be called before applying further rotations and/or animations
-	 * 
-	 * @see ModelAdolescentBooflo#setRotationAngles()
+	 * A method that reverts the current box's values back to the default values.
+	 *
+	 * Should be called before applying further rotations and/or animations.
 	 */
 	public void revertToDefaultBoxValues() {
 		this.rotationPointX = this.defaultRotationPointX;
@@ -232,17 +230,17 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	
 	@Override
 	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if(this.showModel) {
-			if(!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
+		if (this.showModel) {
+			if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
 				matrixStackIn.push();
 				this.translateRotate(matrixStackIn);
 				
-				if(this.scaleChildren) {
+				if (this.scaleChildren) {
 					matrixStackIn.translate(this.offsetX, this.offsetY, this.offsetZ);
 					matrixStackIn.scale(this.scaleX, this.scaleY, this.scaleZ);
 					this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 					
-					for(EndimatorModelRenderer modelrenderer : this.childModels) {
+					for (EndimatorModelRenderer modelrenderer : this.childModels) {
 						modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 					}
 				} else {
@@ -252,7 +250,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 					this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 					matrixStackIn.pop();
 					
-					for(EndimatorModelRenderer modelrenderer : this.childModels) {
+					for (EndimatorModelRenderer modelrenderer : this.childModels) {
 						modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 					}
 				}
@@ -265,15 +263,15 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		Matrix4f matrix4f = matrixEntryIn.getMatrix();
 		Matrix3f matrix3f = matrixEntryIn.getNormal();
 
-		for(ModelBox modelrenderer$modelbox : this.cubeList) {
-			for(TexturedQuad modelrenderer$texturedquad : modelrenderer$modelbox.quads) {
+		for (ModelBox modelrenderer$modelbox : this.cubeList) {
+			for (TexturedQuad modelrenderer$texturedquad : modelrenderer$modelbox.quads) {
 				Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
 				vector3f.transform(matrix3f);
 				float f = vector3f.getX();
 				float f1 = vector3f.getY();
 				float f2 = vector3f.getZ();
 
-				for(int i = 0; i < 4; ++i) {
+				for (int i = 0; i < 4; ++i) {
 					PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
 					float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
 					float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
@@ -376,10 +374,10 @@ public class EndimatorModelRenderer extends ModelRenderer {
 			positionsIn[1] = positionsIn[1].setTextureUV(u1 / texWidth + f, v1 / texHeight + f1);
 			positionsIn[2] = positionsIn[2].setTextureUV(u1 / texWidth + f, v2 / texHeight - f1);
 			positionsIn[3] = positionsIn[3].setTextureUV(u2 / texWidth - f, v2 / texHeight - f1);
-			if(mirrorIn) {
+			if (mirrorIn) {
 				int i = positionsIn.length;
 
-				for(int j = 0; j < i / 2; ++j) {
+				for (int j = 0; j < i / 2; ++j) {
 	               PositionTextureVertex modelrenderer$positiontexturevertex = positionsIn[j];
 	               positionsIn[j] = positionsIn[i - 1 - j];
 	               positionsIn[i - 1 - j] = modelrenderer$positiontexturevertex;
@@ -387,7 +385,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 			}
 
 			this.normal = directionIn.toVector3f();
-			if(mirrorIn) {
+			if (mirrorIn) {
 				this.normal.mul(-1.0F, 1.0F, 1.0F);
 			}
 		}

@@ -65,7 +65,7 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	 */
 	public void setDefaultBoxValues() {
 		this.savedBoxes.forEach((rendererModel) -> {
-			if(rendererModel instanceof EndimatorModelRenderer) {
+			if (rendererModel instanceof EndimatorModelRenderer) {
 				((EndimatorModelRenderer) rendererModel).setDefaultBoxValues();
 			}
 		});
@@ -76,7 +76,7 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	 */
 	public void revertBoxesToDefaultValues() {
 		this.savedBoxes.forEach((rendererModel) -> {
-			if(rendererModel instanceof EndimatorModelRenderer) {
+			if (rendererModel instanceof EndimatorModelRenderer) {
 				((EndimatorModelRenderer) rendererModel).revertToDefaultBoxValues();
 			}
 		});
@@ -89,7 +89,7 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	public void setEndimationToPlay(Endimation endimationToPlay) {
 		this.updateBoxValueMap();
 		this.tickDuration = this.prevTickDuration = 0;
-		if(this.entity.getPlayingEndimation() != endimationToPlay) {
+		if (this.entity.getPlayingEndimation() != endimationToPlay) {
 			AbnormalsCore.LOGGER.warn("Endimation to be played doesn't match the Endimation playing on the entity!");
 		}
 	}
@@ -100,7 +100,7 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	 * @return - Can the Endimation be played
 	 */
 	public boolean tryToPlayEndimation(Endimation endimationToPlay) {
-		if(this.entity.isEndimationPlaying(endimationToPlay)) {
+		if (this.entity.isEndimationPlaying(endimationToPlay)) {
 			this.setEndimationToPlay(endimationToPlay);
 			return true;
 		}
@@ -145,7 +145,7 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	 */
 	public void setStaticKeyframe(int tickDuration) {
 		this.startKeyframe(tickDuration);
-		if(this.shouldApplyTransformToModelRenderers()) {
+		if (this.shouldApplyTransformToModelRenderers()) {
 			this.prevAnimationBoxValues.forEach(SimpleTransform.applyAdditiveTransformToEndimatorModelRenderer());
 		}
 	}
@@ -154,7 +154,7 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	 * Ends the current Keyframe
 	 */
 	public void endKeyframe() {
-		if(this.shouldApplyTransformToModelRenderers()) {
+		if (this.shouldApplyTransformToModelRenderers()) {
 			float intermediateTick = (this.entity.getAnimationTick() - this.prevTickDuration + ClientInfo.getPartialTicks()) / (this.tickDuration - this.prevTickDuration);
 			float increment = MathHelper.sin((float) (intermediateTick * Math.PI / 2.0F));
 			

@@ -24,13 +24,13 @@ import net.minecraftforge.fml.common.Mod;
  */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
 public class CapeHandler {
-	
 	private static final ImmutableSet<String> UUIDS = ImmutableSet.of(
 			"8ed04941-c497-4caf-80b2-ccf2e821d94d",
 			"b8b859a5-2dbc-4743-8f7a-4768f6692606",
 			"68c08594-e7cd-43fb-bdf9-240147ee26cf", 
 			"caaeff74-cbbc-415c-9c22-21e65ad6c33f",
-			"4378df24-8433-4b5c-b865-bf635b003ebb");
+			"4378df24-8433-4b5c-b865-bf635b003ebb"
+	);
 	
 	private static final Set<String> RENDERED = Collections.newSetFromMap(new WeakHashMap<>());
 	
@@ -39,9 +39,9 @@ public class CapeHandler {
 	public static void onRenderPlayer(RenderPlayerEvent.Post event) {
 		PlayerEntity player = event.getPlayer();
 		String uuid = PlayerEntity.getUUID(player.getGameProfile()).toString();
-		if(player instanceof AbstractClientPlayerEntity && UUIDS.contains(uuid) && !RENDERED.contains(uuid)) {
+		if (player instanceof AbstractClientPlayerEntity && UUIDS.contains(uuid) && !RENDERED.contains(uuid)) {
 			AbstractClientPlayerEntity clientPlayer = (AbstractClientPlayerEntity) player;
-			if(clientPlayer.hasPlayerInfo()) {
+			if (clientPlayer.hasPlayerInfo()) {
 				ResourceLocation cape = new ResourceLocation(AbnormalsCore.MODID, "textures/abnormals_cape.png");
 				clientPlayer.playerInfo.playerTextures.put(MinecraftProfileTexture.Type.CAPE, cape);
 				clientPlayer.playerInfo.playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, cape);

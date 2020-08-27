@@ -15,8 +15,7 @@ import net.minecraft.util.math.vector.Vector3d;
 /**
  * @author SmellyModder(Luke Tonon)
  */
-public class AdvancedRandomPositionGenerator {
-
+public final class AdvancedRandomPositionGenerator {
 	/**
 	 * Finds a random target within xz and y
 	 */
@@ -39,21 +38,21 @@ public class AdvancedRandomPositionGenerator {
 		double d0 = Double.NEGATIVE_INFINITY;
 		BlockPos blockpos = new BlockPos(creature.getPositionVec());
 
-		for(int i = 0; i < 10; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			BlockPos blockpos1 = getBlockPos(random, xz, y, p_191379_3_, p_191379_5_, goDeep);
-			if(blockpos1 != null) {
+			if (blockpos1 != null) {
 				int j = blockpos1.getX();
 				int k = blockpos1.getY();
 				int l = blockpos1.getZ();
-				if(creature.detachHome() && xz > 1) {
+				if (creature.detachHome() && xz > 1) {
 					BlockPos blockpos2 = creature.getHomePosition();
-					if(creature.getPosX() > (double)blockpos2.getX()) {
+					if (creature.getPosX() > (double)blockpos2.getX()) {
 						j -= random.nextInt(xz / 2);
 					} else {
 						j += random.nextInt(xz / 2);
 					}
 
-					if(creature.getPosZ() > (double)blockpos2.getZ()) {
+					if (creature.getPosZ() > (double)blockpos2.getZ()) {
 						l -= random.nextInt(xz / 2);
 					} else {
 						l += random.nextInt(xz / 2);
@@ -61,16 +60,16 @@ public class AdvancedRandomPositionGenerator {
 				}
 
 				BlockPos blockpos3 = new BlockPos((double)j + creature.getPosX(), (double)k + creature.getPosY(), (double)l + creature.getPosZ());
-				if((!flag || creature.isWithinHomeDistanceFromPosition(blockpos3)) && pathnavigator.canEntityStandOnPos(blockpos3)) {
-					if(!p_191379_4_) {
+				if ((!flag || creature.isWithinHomeDistanceFromPosition(blockpos3)) && pathnavigator.canEntityStandOnPos(blockpos3)) {
+					if (!p_191379_4_) {
 						blockpos3 = moveAboveSolid(blockpos3, creature);
-						if(isWaterDestination(blockpos3, creature)) {
+						if (isWaterDestination(blockpos3, creature)) {
 							continue;
 						}
 					}
 
 					double d1 = p_191379_7_.applyAsDouble(blockpos3);
-					if(d1 > d0) {
+					if (d1 > d0) {
 						d0 = d1;
 						blockpos = blockpos3;
 						flag1 = true;

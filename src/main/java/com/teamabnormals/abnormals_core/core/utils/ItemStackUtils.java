@@ -6,10 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 /**
- * @author SmellyModder(Luke Tonon)
+ * @author SmellyModder (Luke Tonon)
  */
-public class ItemStackUtils {
-
+public final class ItemStackUtils {
 	/**
 	 * Searches for a specific item in a {@link NonNullList} of {@link ItemStack} and returns its index
 	 * @param item - The item to search for
@@ -17,8 +16,8 @@ public class ItemStackUtils {
 	 * @return - The index of the specified item in the list, if no item was found returns -1
 	 */
 	public static int findIndexOfItem(Item item, NonNullList<ItemStack> items) {
-		for(int i = 0; i < items.size(); i++) {
-			if(items.get(i).getItem() == item) {
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i).getItem() == item) {
 				return i;
 			}
 		}

@@ -36,8 +36,8 @@ public class GenerationPiece {
 	 * @return - If all the blocks loaded in this piece can be placed
 	 */
 	public boolean canPlace(IWorld world) {
-		for(BlockPart blocks : this.blockPieces) {
-			if(!this.blockPlaceCondition.test(world, blocks)) {
+		for (BlockPart blocks : this.blockPieces) {
+			if (!this.blockPlaceCondition.test(world, blocks)) {
 				return false;
 			}
 		}
@@ -49,7 +49,7 @@ public class GenerationPiece {
 	 * @param world - The world to place the piece in
 	 */
 	public void place(IWorld world) {
-		for(BlockPart blocks : this.blockPieces) {
+		for (BlockPart blocks : this.blockPieces) {
 			world.setBlockState(blocks.pos, blocks.state, 2);
 		}
 	}
@@ -59,7 +59,7 @@ public class GenerationPiece {
 	 * @param world - The world to place the piece in
 	 */
 	public void tryToPlace(IWorld world) {
-		if(this.canPlace(world)) {
+		if (this.canPlace(world)) {
 			this.place(world);
 		}
 	}

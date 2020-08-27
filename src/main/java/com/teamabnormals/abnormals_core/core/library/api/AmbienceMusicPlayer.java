@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 /**
  * @author SmellyModder(Luke Tonon)
+ * TODO: Possibly remove in 1.16.2
  */
 @SuppressWarnings("unused")
 @EventBusSubscriber(modid = AbnormalsCore.MODID, value = Dist.CLIENT)

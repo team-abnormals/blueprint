@@ -10,7 +10,7 @@ import net.minecraftforge.fml.config.ModConfig;
 /**
  * @author SmellyModder(Luke Tonon)
  */
-public class ACConfig {
+public final class ACConfig {
 
 	public static class Common {
 		public final ConfigValue<Boolean> enableQuarkSignEditing;
@@ -102,5 +102,5 @@ public class ACConfig {
 			return poisonChance;
 		}
 	}
- 
+
 }

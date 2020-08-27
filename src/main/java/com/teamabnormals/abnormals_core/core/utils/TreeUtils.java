@@ -24,7 +24,7 @@ import net.minecraftforge.common.IPlantable;
 /** 
  * @author - bageldotjpg
  */
-public class TreeUtils {
+public final class TreeUtils {
     
     public static void placeLogAt(IWorldWriter world, BlockPos pos, Random rand, BaseTreeFeatureConfig config) {
         setForcedState(world, pos, config.trunkProvider.getBlockState(rand, pos));
@@ -90,4 +90,5 @@ public class TreeUtils {
     public static boolean isValidGround(IWorld world, BlockPos pos, SaplingBlock sapling) {
         return world.getBlockState(pos).canSustainPlant(world, pos, Direction.UP, (IPlantable) sapling);
     }
+
 }

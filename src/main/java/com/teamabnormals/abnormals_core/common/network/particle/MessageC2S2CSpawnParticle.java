@@ -12,7 +12,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
  * Message for telling the server to spawn particles on clients from the client
  * @author - SmellyModder(Luke Tonon)
  */
-public class MessageC2S2CSpawnParticle {
+public final class MessageC2S2CSpawnParticle {
 	public String particleName;
 	public double posX, posY, posZ;
 	public double motionX, motionY, motionZ;
@@ -50,7 +50,7 @@ public class MessageC2S2CSpawnParticle {
 	
 	public static void handle(MessageC2S2CSpawnParticle message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		if(context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
 				NetworkUtil.spawnParticle(message.particleName, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
 			});

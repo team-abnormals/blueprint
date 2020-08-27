@@ -20,7 +20,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
  * Message for updating edited sign text from the client to the server
  * @author - SmellyModder(Luke Tonon)
  */
-public class MessageC2SEditSign {
+public final class MessageC2SEditSign {
 	private BlockPos signPos;
 	private String topLine, secondLine, thirdLine, bottomLine;
 	
@@ -48,20 +48,20 @@ public class MessageC2SEditSign {
 	@SuppressWarnings("deprecation")
 	public static void handle(MessageC2SEditSign message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		if(context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
 				ServerPlayerEntity player = context.getSender();
 				player.markPlayerActive();
 				
 				ServerWorld world = player.getServerWorld();
 				BlockPos blockpos = message.signPos;
-				if(world.isBlockLoaded(blockpos)) {
+				if (world.isBlockLoaded(blockpos)) {
 					BlockState blockstate = world.getBlockState(blockpos);
 					TileEntity tileentity = world.getTileEntity(blockpos);
-					if(!(tileentity instanceof AbnormalsSignTileEntity)) return;
+					if (!(tileentity instanceof AbnormalsSignTileEntity)) return;
 	
 					AbnormalsSignTileEntity signtileentity = (AbnormalsSignTileEntity) tileentity;
-					if(!signtileentity.getIsEditable() || signtileentity.getPlayer() != player) {
+					if (!signtileentity.getIsEditable() || signtileentity.getPlayer() != player) {
 						return;
 					}
 

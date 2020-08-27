@@ -28,7 +28,7 @@ import net.minecraft.util.ResourceLocation;
  * Handles all the Data Driven Endimation internals
  * @author SmellyModder
  */
-public class EndimationDataManager extends JsonReloadListener {
+public final class EndimationDataManager extends JsonReloadListener {
 	private static final Gson GSON = (new GsonBuilder()).registerTypeAdapter(EndimationConversion.class, new EndimationConversion.Serializer()).create();
 	public static final Map<ResourceLocation, EndimationConversion> ENDIMATIONS = Maps.newHashMap();
 	
@@ -36,6 +36,9 @@ public class EndimationDataManager extends JsonReloadListener {
 		super(GSON, "endimations");
 	}
 
+	/**
+	 * TODO: Codec-ize in 1.16.2
+	 */
 	public static class EndimationConversion {
 		private List<EndimationInstruction> instructions = Lists.newArrayList();
 		
@@ -149,8 +152,8 @@ public class EndimationDataManager extends JsonReloadListener {
 		ADD_SCALE();
 		
 		public static InstructionType getTypeByString(String name) {
-			for(InstructionType types : values()) {
-				if(types.toString().toLowerCase().equals(name)) {
+			for (InstructionType types : values()) {
+				if (types.toString().toLowerCase().equals(name)) {
 					return types;
 				}
 			}
@@ -160,9 +163,9 @@ public class EndimationDataManager extends JsonReloadListener {
 
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> resourceMap, IResourceManager resourceManagerIn, IProfiler profilerIn) {
-		for(Map.Entry<ResourceLocation, JsonElement> entry : resourceMap.entrySet()) {
+		for (Map.Entry<ResourceLocation, JsonElement> entry : resourceMap.entrySet()) {
 			ResourceLocation resourcelocation = entry.getKey();
-			if(resourcelocation.getPath().startsWith("_")) continue;
+			if (resourcelocation.getPath().startsWith("_")) continue;
 			
 			try {
 				EndimationConversion conversion = GSON.fromJson(entry.getValue(), EndimationConversion.class);

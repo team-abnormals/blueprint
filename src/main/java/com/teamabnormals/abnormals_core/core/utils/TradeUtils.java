@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 
-public class TradeUtils {
+public final class TradeUtils {
 	public static class ItemsForEmeraldsTrade implements ITrade {
 	    private final ItemStack itemstack;
 	    private final int stackSize;

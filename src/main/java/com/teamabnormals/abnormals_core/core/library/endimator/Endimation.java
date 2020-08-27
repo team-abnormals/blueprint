@@ -50,42 +50,42 @@ public class Endimation {
 	
 	/**
 	 * Processes the Instructions for this animation from a JSON file
-	 * @param modelRenderer - The model to process the animation for
+	 * @param model - The model to process the animation for
 	 */
 	public <E extends Entity & IEndimatedEntity> void processInstructions(EndimatorEntityModel<E> model) {
 		Objects.requireNonNull(this.instructionsLocation, () -> "Instructions are null, this should not be the case!");
 		EndimationConversion conversion = EndimationDataManager.ENDIMATIONS.get(this.instructionsLocation);
-		for(EndimationInstruction instructions : conversion.getInstructions()) {
+		for (EndimationInstruction instructions : conversion.getInstructions()) {
 			InstructionType type = instructions.type;
 			int tickLength = instructions.tickLength;
 			
-			if(type == InstructionType.START_KEYFRAME) {
+			if (type == InstructionType.START_KEYFRAME) {
 				model.startKeyframe(tickLength);
-			} else if(type == InstructionType.END_KEYFRAME) {
+			} else if (type == InstructionType.END_KEYFRAME) {
 				model.endKeyframe();
-			} else if(type == InstructionType.STATIC_KEYFRAME) {
+			} else if (type == InstructionType.STATIC_KEYFRAME) {
 				model.setStaticKeyframe(tickLength);
-			} else if(type == InstructionType.RESET_KEYFRAME) {
+			} else if (type == InstructionType.RESET_KEYFRAME) {
 				model.resetKeyframe(tickLength);
 			} else {
 				ModelRendererEndimationInstruction instruction = (ModelRendererEndimationInstruction) instructions;
 				EndimatorModelRenderer modelRenderer = getModelRendererByName(model, instruction.modelRenderer);
 				float[] values = new float[] {instruction.x, instruction.y, instruction.z};
-				if(type == InstructionType.MOVE) {
+				if (type == InstructionType.MOVE) {
 					model.move(modelRenderer, values[0], values[1], values[2]);
-				} else if(type == InstructionType.ADD_MOVE) {
+				} else if (type == InstructionType.ADD_MOVE) {
 					model.moveAdditive(modelRenderer, values[0], values[1], values[2]);
-				} else if(type == InstructionType.ROTATE) {
+				} else if (type == InstructionType.ROTATE) {
 					model.rotate(modelRenderer, (float) Math.toRadians(values[0]), (float) Math.toRadians(values[1]), (float) Math.toRadians(values[2]));
-				} else if(type == InstructionType.ADD_ROTATE) {
+				} else if (type == InstructionType.ADD_ROTATE) {
 					model.rotateAdditive(modelRenderer, (float) Math.toRadians(values[0]), (float) Math.toRadians(values[1]), (float) Math.toRadians(values[2]));
-				} else if(type == InstructionType.OFFSET) {
+				} else if (type == InstructionType.OFFSET) {
 					model.offset(modelRenderer, values[0], values[1], values[2]);
-				} else if(type == InstructionType.ADD_OFFSET) {
+				} else if (type == InstructionType.ADD_OFFSET) {
 					model.offsetAdditive(modelRenderer, values[0], values[1], values[2]);
-				} else if(type == InstructionType.SCALE) {
+				} else if (type == InstructionType.SCALE) {
 					model.scale(modelRenderer, values[0], values[1], values[2]);
-				} else if(type == InstructionType.ADD_SCALE) {
+				} else if (type == InstructionType.ADD_SCALE) {
 					model.scaleAdditive(modelRenderer, values[0], values[1], values[2]);
 				}
 			}
@@ -95,7 +95,7 @@ public class Endimation {
 	private static EndimatorModelRenderer getModelRendererByName(EndimatorEntityModel<?> model, String name) {
 		List<EndimatorModelRenderer> boxes = model.savedBoxes;
 		boxes.removeIf((box) -> !(box.getName() != null && box.getName().equals(name)));
-		if(boxes.isEmpty()) {
+		if (boxes.isEmpty()) {
 			throw new NullPointerException("No Model Renderer of the name " + "\"" + name + "\"" + " could be found");
 		}
 		return boxes.get(0);

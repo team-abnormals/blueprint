@@ -42,7 +42,7 @@ public class MobBucketItem extends BucketItem {
 		worldIn.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY_FISH, SoundCategory.NEUTRAL, 1.0F, 1.0F);
 	}
 
-	private void placeEntity(World worldIn, ItemStack stack, BlockPos pos) {
+	protected void placeEntity(World worldIn, ItemStack stack, BlockPos pos) {
 		Entity entity = this.entityType.get().spawn(worldIn, stack, (PlayerEntity)null, pos, SpawnReason.BUCKET, true, false);
 		if (entity != null) {
 			((BucketableWaterMobEntity)entity).setFromBucket(true);
@@ -51,9 +51,9 @@ public class MobBucketItem extends BucketItem {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if(this.isInGroup(group)) {
+		if (this.isInGroup(group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(Items.TROPICAL_FISH_BUCKET, items);
-			if(targetIndex != -1) {
+			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				super.fillItemGroup(group, items);

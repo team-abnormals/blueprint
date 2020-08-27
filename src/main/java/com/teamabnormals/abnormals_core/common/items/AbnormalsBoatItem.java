@@ -42,9 +42,9 @@ public class AbnormalsBoatItem extends Item {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if(this.isInGroup(group)) {
+		if (this.isInGroup(group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_BOAT, items);
-			if(targetIndex != -1) {
+			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				super.fillItemGroup(group, items);
@@ -56,34 +56,34 @@ public class AbnormalsBoatItem extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         RayTraceResult raytraceresult = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.ANY);
-        if(raytraceresult.getType() == RayTraceResult.Type.MISS) {
+        if (raytraceresult.getType() == RayTraceResult.Type.MISS) {
             return new ActionResult<>(ActionResultType.PASS, itemstack);
         } else {
         	Vector3d vec3d = playerIn.getLook(1.0F);
             List<Entity> list = worldIn.getEntitiesInAABBexcluding(playerIn, playerIn.getBoundingBox().expand(vec3d.scale(5.0D)).grow(1.0D), COLLISION_PREDICATE);
-            if(!list.isEmpty()) {
+            if (!list.isEmpty()) {
                 Vector3d vec3d1 = playerIn.getEyePosition(1.0F);
 
-                for(Entity entity : list) {
+                for (Entity entity : list) {
                     AxisAlignedBB axisalignedbb = entity.getBoundingBox().grow((double)entity.getCollisionBorderSize());
-                    if(axisalignedbb.contains(vec3d1)) {
+                    if (axisalignedbb.contains(vec3d1)) {
                         return new ActionResult<>(ActionResultType.PASS, itemstack);
                     }
                 }
             }
 
-            if(raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
+            if (raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
             	AbnormalsBoatEntity boatentity = new AbnormalsBoatEntity(worldIn, raytraceresult.getHitVec().x, raytraceresult.getHitVec().y, raytraceresult.getHitVec().z);
                 boatentity.setBoat(this.type);
                 boatentity.rotationYaw = playerIn.rotationYaw;
-                if(!worldIn.hasNoCollisions(boatentity, boatentity.getBoundingBox().grow(-0.1D))) {
+                if (!worldIn.hasNoCollisions(boatentity, boatentity.getBoundingBox().grow(-0.1D))) {
                     return new ActionResult<>(ActionResultType.FAIL, itemstack);
                 } else {
-                    if(!worldIn.isRemote) {
+                    if (!worldIn.isRemote) {
                         worldIn.addEntity(boatentity);
                     }
 
-                    if(!playerIn.abilities.isCreativeMode) {
+                    if (!playerIn.abilities.isCreativeMode) {
                         itemstack.shrink(1);
                     }
 
@@ -113,10 +113,10 @@ public class AbnormalsBoatItem extends Item {
     		double z = iBlockSource.getZ() + (double) ((float) direction.getZOffset() * 1.125f);
     		BlockPos pos = iBlockSource.getBlockPos().offset(direction);
     		double adjustY;
-    		if(world.getFluidState(pos).isTagged(FluidTags.WATER)) {
+    		if (world.getFluidState(pos).isTagged(FluidTags.WATER)) {
     			adjustY = 1d;
     		} else {
-    			if(!world.getBlockState(pos).isAir() || !world.getFluidState(pos.down()).isTagged(FluidTags.WATER)) {
+    			if (!world.getBlockState(pos).isAir() || !world.getFluidState(pos.down()).isTagged(FluidTags.WATER)) {
     				return this.defaultDispenseItemBehavior.dispense(iBlockSource, stack);
     			}
     			adjustY = 0d;

@@ -13,7 +13,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
  * Message for telling clients to begin playing an animation on an {@link IEndimatedEntity}
  * @author - SmellyModder(Luke Tonon)
  */
-public class MessageS2CEndimation {
+public final class MessageS2CEndimation {
 	private int entityId;
 	private int endimationIndex;
 	
@@ -36,10 +36,10 @@ public class MessageS2CEndimation {
 	public static void handle(MessageS2CEndimation message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		IEndimatedEntity endimatedEntity = (IEndimatedEntity) ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
-		if(context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				if(endimatedEntity != null) {
-					if(message.endimationIndex != -1) {
+				if (endimatedEntity != null) {
+					if (message.endimationIndex != -1) {
 						endimatedEntity.setPlayingEndimation(endimatedEntity.getEndimations()[message.endimationIndex]);
 					} else {
 						endimatedEntity.setPlayingEndimation(IEndimatedEntity.BLANK_ANIMATION);

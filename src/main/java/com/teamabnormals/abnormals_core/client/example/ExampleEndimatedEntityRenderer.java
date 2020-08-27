@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ExampleEndimatedEntityRenderer extends LivingRenderer<ExampleEndimatedEntity, ExampleEndimatedEntityModel<ExampleEndimatedEntity>> {
+public final class ExampleEndimatedEntityRenderer extends LivingRenderer<ExampleEndimatedEntity, ExampleEndimatedEntityModel<ExampleEndimatedEntity>> {
 	
 	public ExampleEndimatedEntityRenderer(EntityRendererManager renderManager) {
         super(renderManager, new ExampleEndimatedEntityModel<>(), 0.0F);

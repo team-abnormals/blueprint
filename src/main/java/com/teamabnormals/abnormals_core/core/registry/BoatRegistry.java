@@ -29,8 +29,8 @@ public class BoatRegistry {
 	}
 	
 	public static String getNameForData(BoatData data) {
-		for(Map.Entry<String, BoatData> entries : BOATS.entrySet()) {
-			if(entries.getValue().equals(data)) {
+		for (Map.Entry<String, BoatData> entries : BOATS.entrySet()) {
+			if (entries.getValue().equals(data)) {
 				return entries.getKey();
 			}
 		}
@@ -73,8 +73,8 @@ public class BoatRegistry {
 		
 		private String findModId(String parentString) {
 			StringBuilder builder = new StringBuilder();
-			for(char parentChars : parentString.toCharArray()) {
-				if(parentChars == ':') {
+			for (char parentChars : parentString.toCharArray()) {
+				if (parentChars == ':') {
 					break;
 				}
 				builder.append(parentChars);
@@ -85,12 +85,12 @@ public class BoatRegistry {
 		private String findWood(String parentString) {
 			StringBuilder builder = new StringBuilder();
 			boolean start = false;
-			for(char parentChars : parentString.toCharArray()) {
-				if(start) {
+			for (char parentChars : parentString.toCharArray()) {
+				if (start) {
 					builder.append(parentChars);
 				}
 				
-				if(parentChars == ':') {
+				if (parentChars == ':') {
 					start = true;
 				}
 			}
@@ -98,7 +98,6 @@ public class BoatRegistry {
 		}
 		
 		public static class DefaultBoatData extends BoatData {
-			
 			public DefaultBoatData() {
 				super(null, null, "minecraft:oak");
 			}
@@ -112,7 +111,6 @@ public class BoatRegistry {
 			public Item getPlankItem() {
 				return Items.OAK_PLANKS.asItem();
 			}
-			
 		}
 	}
 }

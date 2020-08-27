@@ -8,7 +8,7 @@ import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
  * @author SmellyModder(Luke Tonon)
  */
 public interface IEndimatedEntity {
-	public static final Endimation BLANK_ANIMATION = new Endimation();
+	Endimation BLANK_ANIMATION = new Endimation();
 	
 	/**
 	 * @return - The entity's animations

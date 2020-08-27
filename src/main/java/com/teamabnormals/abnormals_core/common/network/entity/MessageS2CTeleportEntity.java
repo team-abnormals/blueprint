@@ -13,7 +13,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
  * Message for teleporting the entity from the server
  * @author SmellyModder(Luke Tonon)
  */
-public class MessageS2CTeleportEntity {
+public final class MessageS2CTeleportEntity {
 	private int entityId;
 	private double posX, posY, posZ;
 	
@@ -39,9 +39,11 @@ public class MessageS2CTeleportEntity {
 	public static void handle(MessageS2CTeleportEntity message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
-		if(context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				entity.setLocationAndAngles(message.posX, message.posY, message.posZ, entity.rotationYaw, entity.rotationPitch);
+				if (entity != null) {
+					entity.setLocationAndAngles(message.posX, message.posY, message.posZ, entity.rotationYaw, entity.rotationPitch);
+				}
 			});
 			context.setPacketHandled(true);
 		}

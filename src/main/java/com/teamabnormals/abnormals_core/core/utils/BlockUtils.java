@@ -22,14 +22,14 @@ import net.minecraft.world.World;
 /** 
  * @author - SmellyModder(Luke Tonon)
  */
-public class BlockUtils {
+public final class BlockUtils {
 
 	public static boolean isBlockInWater(World world, BlockPos pos) {
-		if(world.getBlockState(pos).getFluidState().isTagged(FluidTags.WATER)) {
+		if (world.getBlockState(pos).getFluidState().isTagged(FluidTags.WATER)) {
 			return true;
 		}
-		for(Direction direction : Direction.values()) {
-			if(world.getFluidState(pos.offset(direction)).isTagged(FluidTags.WATER)) {
+		for (Direction direction : Direction.values()) {
+			if (world.getFluidState(pos.offset(direction)).isTagged(FluidTags.WATER)) {
 				return true;
 			}
 		}
@@ -48,10 +48,10 @@ public class BlockUtils {
 	}
 	
 	public static boolean isPosNotTouchingBlock(IWorld world, BlockPos pos, Block blockToCheck, Direction... blacklistedDirections) {
-		for(Direction directions : Direction.values()) {
+		for (Direction directions : Direction.values()) {
 			List<Direction> blacklistedDirectionsList = Arrays.asList(blacklistedDirections);
-			if(!blacklistedDirectionsList.contains(directions)) {
-				if(world.getBlockState(pos.offset(directions)).getBlock() == blockToCheck) {
+			if (!blacklistedDirectionsList.contains(directions)) {
+				if (world.getBlockState(pos.offset(directions)).getBlock() == blockToCheck) {
 					return false;
 				}
 			}
@@ -62,8 +62,8 @@ public class BlockUtils {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static BlockState transferAllBlockStates(BlockState initial, BlockState after) {
 		BlockState block = after;
-		for(Property property : initial.getBlock().getStateContainer().getProperties()) {
-			if(after.hasProperty(property) && initial.get(property) != null) {
+		for (Property property : initial.getBlock().getStateContainer().getProperties()) {
+			if (after.hasProperty(property) && initial.get(property) != null) {
 				block = block.with(property, initial.get(property));
 			}
 		}

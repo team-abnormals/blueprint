@@ -7,5 +7,5 @@ package com.teamabnormals.abnormals_core.core.library;
  */
 @FunctionalInterface
 public interface Modifier<T> {
-	public T modify(T toModify);
+	T modify(T toModify);
 }

@@ -31,7 +31,7 @@ public class WoodBlock extends RotatedPillarBlock {
 	
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-		if(player.getHeldItem(hand).getItem() instanceof AxeItem) {
+		if (player.getHeldItem(hand).getItem() instanceof AxeItem) {
 			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
 			world.setBlockState(pos, this.block.get().getDefaultState().with(AXIS, state.get(AXIS)));
 			return ActionResultType.SUCCESS;
@@ -41,9 +41,9 @@ public class WoodBlock extends RotatedPillarBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if(ItemStackUtils.isInGroup(this.asItem(), group)) {
+		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_WOOD, items);
-			if(targetIndex != -1) {
+			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				super.fillItemGroup(group, items);

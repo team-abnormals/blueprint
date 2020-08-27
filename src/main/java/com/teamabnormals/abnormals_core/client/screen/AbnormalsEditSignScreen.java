@@ -122,7 +122,7 @@ public class AbnormalsEditSignScreen extends Screen {
 		matrixstack.translate(0.0D, -1.3125D, 0.0D);
 		BlockState blockstate = this.tileSign.getBlockState();
 		boolean flag = blockstate.getBlock() instanceof AbnormalsStandingSignBlock;
-		if(!flag) {
+		if (!flag) {
 			matrixstack.translate(0.0D, -0.3125D, 0.0D);
 		}
 
@@ -132,7 +132,7 @@ public class AbnormalsEditSignScreen extends Screen {
 		IRenderTypeBuffer.Impl irendertypebuffer$impl = this.minecraft.getRenderTypeBuffers().getBufferSource();
 		IVertexBuilder ivertexbuilder = irendertypebuffer$impl.getBuffer(RenderType.getEntityCutoutNoCull(AbnormalsSignTileEntityRenderer.getTexture(blockstate)));
 		this.signModel.signBoard.render(matrixstack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY);
-		if(flag) {
+		if (flag) {
 			this.signModel.signStick.render(matrixstack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY);
 		}
 
@@ -146,19 +146,19 @@ public class AbnormalsEditSignScreen extends Screen {
 		int l = this.editLine * 10 - this.field_238846_r_.length * 5;
 		Matrix4f matrix4f = matrixstack.getLast().getMatrix();
 
-		for(int i1 = 0; i1 < this.field_238846_r_.length; ++i1) {
+		for (int i1 = 0; i1 < this.field_238846_r_.length; ++i1) {
 			String s = this.field_238846_r_[i1];
-			if(s != null) {
-				if(this.font.getBidiFlag()) {
+			if (s != null) {
+				if (this.font.getBidiFlag()) {
 					s = this.font.bidiReorder(s);
 				}
 
 				float f3 = (float)(-this.minecraft.fontRenderer.getStringWidth(s) / 2);
 				this.minecraft.fontRenderer.func_238411_a_(s, f3, (float)(i1 * 10 - this.field_238846_r_.length * 5), i, false, matrix4f, irendertypebuffer$impl, false, 0, 15728880, false);
-				if(i1 == this.editLine && j >= 0 && flag1) {
+				if (i1 == this.editLine && j >= 0 && flag1) {
 					int j1 = this.minecraft.fontRenderer.getStringWidth(s.substring(0, Math.max(Math.min(j, s.length()), 0)));
 					int k1 = j1 - this.minecraft.fontRenderer.getStringWidth(s) / 2;
-					if(j >= s.length()) {
+					if (j >= s.length()) {
 						this.minecraft.fontRenderer.func_238411_a_("_", (float)k1, (float)l, i, false, matrix4f, irendertypebuffer$impl, false, 0, 15728880, false);
 					}
 				}
@@ -167,16 +167,16 @@ public class AbnormalsEditSignScreen extends Screen {
 
 		irendertypebuffer$impl.finish();
 
-		for(int i3 = 0; i3 < this.field_238846_r_.length; ++i3) {
+		for (int i3 = 0; i3 < this.field_238846_r_.length; ++i3) {
 			String s1 = field_238846_r_[i3];
-			if(s1 != null && i3 == this.editLine && k >= 0) {
+			if (s1 != null && i3 == this.editLine && k >= 0) {
 				int j3 = this.minecraft.fontRenderer.getStringWidth(s1.substring(0, Math.max(Math.min(j, s1.length()), 0)));
 	            int k3 = j3 - this.minecraft.fontRenderer.getStringWidth(s1) / 2;
 	            if (flag1 && j < s1.length()) {
 	               fill(matrixstack, k3, l - 1, k3 + 1, l + 9, -16777216 | i);
 	            }
 
-				if(k != j) {
+				if (k != j) {
 					int l3 = Math.min(j, k);
 					int l1 = Math.max(j, k);
 					int i2 = this.minecraft.fontRenderer.getStringWidth(s1.substring(0, l3)) - this.minecraft.fontRenderer.getStringWidth(s1) / 2;

@@ -74,7 +74,7 @@ public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggabl
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockPos blockpos = context.getPos();
         BlockState blockstate = context.getWorld().getBlockState(blockpos);
-        if(blockstate.getBlock() == this) {
+        if (blockstate.getBlock() == this) {
             return blockstate.with(TYPE, VerticalSlabType.DOUBLE).with(WATERLOGGED, false);
         }
         FluidState fluid = context.getWorld().getFluidState(blockpos);
@@ -117,7 +117,7 @@ public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggabl
 	@SuppressWarnings("deprecation")
 	@Override
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if(stateIn.get(WATERLOGGED)) {
+        if (stateIn.get(WATERLOGGED)) {
             worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
         }
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
@@ -134,7 +134,7 @@ public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggabl
 
     	private final String name;
     	   
-    	private VerticalSlabType(String name) {
+    	VerticalSlabType(String name) {
     		this.name = name;
     	}
 

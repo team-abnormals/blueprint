@@ -13,7 +13,7 @@ import net.minecraft.util.math.vector.Vector3d;
  * Rotations are measured in radians; (x° × Math.PI / 180)
  * @author SmellyModder(Luke Tonon)
  */
-public class SimpleTransform {
+public final class SimpleTransform {
 	public static final SimpleTransform ZERO = new SimpleTransform(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 	private float posX, posY, posZ;
 	private float offsetX, offsetY, offsetZ;

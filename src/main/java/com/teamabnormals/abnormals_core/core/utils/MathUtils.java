@@ -8,7 +8,7 @@ import net.minecraft.util.math.vector.Vector3d;
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public class MathUtils {
+public final class MathUtils {
 
 	public interface Equation {
 		public double compute(double theta);

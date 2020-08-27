@@ -30,10 +30,10 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 		super.tick();
 		this.endimateTick();
 		
-		if(this.getHealth() <= 0.0F) {
+		if (this.getHealth() <= 0.0F) {
 			Endimation deathEndimation = this.getDeathAnimation();
-			if(deathEndimation != null) {
-				if(this.isServerWorld() && !this.isEndimationPlaying(deathEndimation)) {
+			if (deathEndimation != null) {
+				if (this.isServerWorld() && !this.isEndimationPlaying(deathEndimation)) {
 					NetworkUtil.setPlayingAnimationMessage(this, deathEndimation);
 				}
 				this.onEndimatedDeathUpdate(deathEndimation.getAnimationTickDuration());
@@ -45,7 +45,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if(!this.isWorldRemote() && this.getHurtAnimation() != null && this.isNoEndimationPlaying()) {
+		if (!this.isWorldRemote() && this.getHurtAnimation() != null && this.isNoEndimationPlaying()) {
 			NetworkUtil.setPlayingAnimationMessage(this, this.getHurtAnimation());
 		}
 		return super.attackEntityFrom(source, amount);
@@ -55,7 +55,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	protected void onDeathUpdate() {}
 	
 	private void onEndimatedDeathUpdate(int deathAnimationDuration) {
-		if(this.deathTime++ >= deathAnimationDuration - 1) {
+		if (this.deathTime++ >= deathAnimationDuration - 1) {
 			this.remove();
 			this.addDeathEffects();
 		}
@@ -67,7 +67,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	 * Should be overridden if you wish to change the death effects of this entity, default is Vanilla poof particles
 	 */
 	protected void addDeathEffects() {
-		for(int i = 0; i < 20; ++i) {
+		for (int i = 0; i < 20; ++i) {
 			this.world.addParticle(ParticleTypes.POOF, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D);
 		}
 	}

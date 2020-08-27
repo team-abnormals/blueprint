@@ -9,7 +9,7 @@ import net.minecraft.util.math.vector.Vector3d;
 /** 
  * @author - SmellyModder(Luke Tonon)
  */
-public class EntityUtils {
+public final class EntityUtils {
 	
 	public static RayTraceResult rayTrace(Entity entity, double distance, float delta) {
 		return entity.world.rayTraceBlocks(new RayTraceContext(

@@ -17,7 +17,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
 
 public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBlock {
-
 	public final String modid;
 	public final String type;
 

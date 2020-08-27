@@ -13,7 +13,7 @@ import net.minecraftforge.fml.ModList;
  * Recipe Condition that uses Quark's flags without making use of Quark's classes
  * @author SmellyModder(Luke Tonon)
  */
-public class QuarkFlagRecipeCondition implements ICondition {
+public final class QuarkFlagRecipeCondition implements ICondition {
 	private final ResourceLocation location;
 	private final String flag;
 	
@@ -29,7 +29,7 @@ public class QuarkFlagRecipeCondition implements ICondition {
 
 	@Override
 	public boolean test() {
-		if(ModList.get().isLoaded("quark")) {
+		if (ModList.get().isLoaded("quark")) {
 			JsonObject dummyObject = new JsonObject();
 			dummyObject.addProperty("type", "quark:flag");
 			dummyObject.addProperty("flag", this.flag);

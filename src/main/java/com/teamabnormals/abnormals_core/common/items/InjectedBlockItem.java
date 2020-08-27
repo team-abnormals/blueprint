@@ -19,9 +19,9 @@ public class InjectedBlockItem extends BlockItem {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if(this.isInGroup(group)) {
+		if (this.isInGroup(group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(this.followItem, items);
-			if(targetIndex != -1) {
+			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				super.fillItemGroup(group, items);

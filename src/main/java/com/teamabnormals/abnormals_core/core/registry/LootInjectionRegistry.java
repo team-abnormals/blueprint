@@ -25,7 +25,7 @@ public class LootInjectionRegistry {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onInjectLoot(LootTableLoadEvent event) {
 		POOLS.keySet().forEach(locations -> {
-			if(locations.contains(event.getName())) {
+			if (locations.contains(event.getName())) {
 				event.getTable().addPool(POOLS.get(locations));
 			}
 		});

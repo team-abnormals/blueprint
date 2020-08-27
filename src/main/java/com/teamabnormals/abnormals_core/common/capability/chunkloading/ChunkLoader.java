@@ -28,7 +28,7 @@ public class ChunkLoader implements IChunkLoader {
 	
 	@Override
 	public void addPos(BlockPos pos) {
-		if(!this.containsPos(pos)) {
+		if (!this.containsPos(pos)) {
 			this.forceChunk(pos, true);
 			this.loadedPositions.add(pos.toLong());
 		}
@@ -36,7 +36,7 @@ public class ChunkLoader implements IChunkLoader {
 
 	@Override
 	public void removePos(BlockPos pos) {
-		if(this.loadedPositions.remove(pos.toLong())) {
+		if (this.loadedPositions.remove(pos.toLong())) {
 			this.forceChunk(pos, false);
 		}
 	}
@@ -48,14 +48,14 @@ public class ChunkLoader implements IChunkLoader {
 	
 	@Override
 	public void tick() {
-		for(TaskTickTimer<IChunk> process : this.scheduledChunkProcesses) {
+		for (TaskTickTimer<IChunk> process : this.scheduledChunkProcesses) {
 			process.update();
 		}
 		this.scheduledChunkProcesses.removeIf(process -> process.isComplete());
 	}
 	
 	private void forceChunk(BlockPos pos, boolean load) {
-		if(this.world != null) {
+		if (this.world != null) {
 			this.world.forceChunk(pos.getX() >> 4, pos.getZ() >> 4, load);
 		}
 	}
