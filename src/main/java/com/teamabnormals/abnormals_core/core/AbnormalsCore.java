@@ -94,8 +94,9 @@ public class AbnormalsCore {
 			}
 		});
 		
-        modEventBus.addListener(this::replaceBeehivePOI);
+		modEventBus.addListener(this::replaceBeehivePOI);
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
@@ -119,8 +120,6 @@ public class AbnormalsCore {
     
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(final FMLClientSetupEvent event) {
-		((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
-
 //		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
 //		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
