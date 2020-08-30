@@ -44,9 +44,7 @@ public final class EndimationDataManager extends JsonReloadListener {
 				return result.get().getFirst();
 			}
 
-			decode.error().ifPresent(error -> {
-				AbnormalsCore.LOGGER.error("Failed to decode Endimation: {}", error.toString());
-			});
+			decode.error().ifPresent(error -> AbnormalsCore.LOGGER.error("Failed to decode Endimation: {}", error.toString()));
 			return null;
 		}
 	}

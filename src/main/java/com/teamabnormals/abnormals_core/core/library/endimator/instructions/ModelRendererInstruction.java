@@ -5,8 +5,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import com.mojang.serialization.Codec;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorEntityModel;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorModelRenderer;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatorEntityModel;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatorModelRenderer;
 
 /**
  * @author SmellyModder (Luke Tonon)

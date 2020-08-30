@@ -3,8 +3,8 @@ package com.teamabnormals.abnormals_core.client.example;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.teamabnormals.abnormals_core.common.entity.ExampleEndimatedEntity;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorEntityModel;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorModelRenderer;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatorEntityModel;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatorModelRenderer;
 
 public final class ExampleEndimatedEntityModel<E extends ExampleEndimatedEntity> extends EndimatorEntityModel<E> {
 	public EndimatorModelRenderer cube;

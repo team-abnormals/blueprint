@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorEntityModel;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatorEntityModel;
 
 /**
  * @author SmellyModder (Luke Tonon)

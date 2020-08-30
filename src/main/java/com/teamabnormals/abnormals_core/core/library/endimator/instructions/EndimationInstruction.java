@@ -1,7 +1,7 @@
 package com.teamabnormals.abnormals_core.core.library.endimator.instructions;
 
 import com.mojang.serialization.Codec;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorEntityModel;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatorEntityModel;
 
 /**
  * @author SmellyModder (Luke Tonon)
@@ -16,9 +16,16 @@ public abstract class EndimationInstruction<IS extends EndimationInstruction<?>>
 	public EndimationInstruction(Codec<IS> codec) {
 		this.codec = codec;
 	}
-	
+
+	/**
+	 * Call when processing the instruction on a {@link EndimatorEntityModel}.
+	 * @param model - The model to process the instruction for.
+	 */
 	public abstract void process(EndimatorEntityModel<?> model);
-	
+
+	/**
+	 * @return The Codec for deserializing this instruction in {@link com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager}.
+	 */
 	public Codec<IS> getCodec() {
 		return this.codec;
 	}

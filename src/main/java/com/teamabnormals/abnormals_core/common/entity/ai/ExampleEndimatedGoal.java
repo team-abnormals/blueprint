@@ -2,7 +2,7 @@ package com.teamabnormals.abnormals_core.common.entity.ai;
 
 import com.teamabnormals.abnormals_core.common.entity.ExampleEndimatedEntity;
 import com.teamabnormals.abnormals_core.core.library.Test;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedGoal;
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 
 @Test

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatorEntityModel;
 import com.teamabnormals.abnormals_core.core.library.endimator.entity.IEndimatedEntity;
 
 import net.minecraft.entity.Entity;

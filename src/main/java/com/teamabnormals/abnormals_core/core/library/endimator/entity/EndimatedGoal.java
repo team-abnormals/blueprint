@@ -1,5 +1,6 @@
-package com.teamabnormals.abnormals_core.core.library.endimator;
+package com.teamabnormals.abnormals_core.core.library.endimator.entity;
 
+import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 import com.teamabnormals.abnormals_core.core.library.endimator.entity.IEndimatedEntity;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 

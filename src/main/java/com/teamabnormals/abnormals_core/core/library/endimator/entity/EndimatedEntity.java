@@ -14,15 +14,15 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 /**
- * Skeleton class for Endimator entities
+ * Implementation class of {@link IEndimatedEntity} for Endimated entities.
  * @author - SmellyModder(Luke Tonon)
  */
 public abstract class EndimatedEntity extends CreatureEntity implements IEndimatedEntity {
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	
-	public EndimatedEntity(EntityType<? extends CreatureEntity> type, World worldIn) {
-		super(type, worldIn);
+	public EndimatedEntity(EntityType<? extends CreatureEntity> type, World world) {
+		super(type, world);
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	/**
 	 * Adds the death effects for this entity
 	 * Gets called in {@link #onEndimatedDeathUpdate(int)}
-	 * Should be overridden if you wish to change the death effects of this entity, default is Vanilla poof particles
+	 * Should be overridden if you wish to change the death effects of this entity, default is Vanilla poof particles.
 	 */
 	protected void addDeathEffects() {
 		for (int i = 0; i < 20; ++i) {

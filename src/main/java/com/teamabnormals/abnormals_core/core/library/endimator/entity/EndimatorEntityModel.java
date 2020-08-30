@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.library.endimator;
+package com.teamabnormals.abnormals_core.core.library.endimator.entity;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.teamabnormals.abnormals_core.client.ClientInfo;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.library.SimpleTransform;
-import com.teamabnormals.abnormals_core.core.library.endimator.entity.IEndimatedEntity;
+import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.entity.Entity;

@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.library.endimator;
+package com.teamabnormals.abnormals_core.core.library.endimator.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
