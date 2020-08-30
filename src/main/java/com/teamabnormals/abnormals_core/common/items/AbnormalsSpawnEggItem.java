@@ -2,7 +2,7 @@ package com.teamabnormals.abnormals_core.common.items;
 
 import java.util.function.Supplier;
 
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemGroup;
@@ -38,7 +38,7 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		if (this.isInGroup(group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.ZOMBIE_VILLAGER_SPAWN_EGG, items);
+			int targetIndex = ItemStackUtil.findIndexOfItem(Items.ZOMBIE_VILLAGER_SPAWN_EGG, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

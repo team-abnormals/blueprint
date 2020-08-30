@@ -1,7 +1,7 @@
 package com.teamabnormals.abnormals_core.common.items;
 
 import com.google.common.base.Supplier;
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -20,7 +20,7 @@ public class AbnormalsMusicDiscItem extends MusicDiscItem {
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		if (this.isInGroup(group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.MUSIC_DISC_WAIT, items);
+			int targetIndex = ItemStackUtil.findIndexOfItem(Items.MUSIC_DISC_WAIT, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

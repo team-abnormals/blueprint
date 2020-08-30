@@ -3,7 +3,7 @@ package com.teamabnormals.abnormals_core.common.network;
 import java.util.function.Supplier;
 
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;

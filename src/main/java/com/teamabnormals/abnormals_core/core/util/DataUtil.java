@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.utils;
+package com.teamabnormals.abnormals_core.core.util;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.fml.RegistryObject;
 
-public final class DataUtils {
+public final class DataUtil {
 	
 	public static void registerFlammable(Block block, int encouragement, int flammability) {
 		FireBlock fire = (FireBlock) Blocks.FIRE;

@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.utils;
+package com.teamabnormals.abnormals_core.core.util;
 
 import java.util.Random;
 
@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 
-public final class TradeUtils {
+public final class TradeUtil {
 	public static class ItemsForEmeraldsTrade implements ITrade {
 	    private final ItemStack itemstack;
 	    private final int stackSize;

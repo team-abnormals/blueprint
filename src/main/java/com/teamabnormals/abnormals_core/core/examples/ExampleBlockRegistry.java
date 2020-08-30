@@ -11,7 +11,7 @@ import com.teamabnormals.abnormals_core.common.blocks.test.RotatedVoxelShapeTest
 import com.teamabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.library.Test;
-import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
+import com.teamabnormals.abnormals_core.core.util.RegistryHelper;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;

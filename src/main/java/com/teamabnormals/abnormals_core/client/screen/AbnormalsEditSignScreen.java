@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.teamabnormals.abnormals_core.client.tile.AbnormalsSignTileEntityRenderer;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.DialogTexts;

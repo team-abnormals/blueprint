@@ -2,7 +2,7 @@ package com.teamabnormals.abnormals_core.core.examples;
 
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.library.Test;
-import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
+import com.teamabnormals.abnormals_core.core.util.RegistryHelper;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;

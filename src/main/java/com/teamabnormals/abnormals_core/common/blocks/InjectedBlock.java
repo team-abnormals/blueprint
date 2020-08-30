@@ -1,6 +1,6 @@
 package com.teamabnormals.abnormals_core.common.blocks;
 
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -18,8 +18,8 @@ public class InjectedBlock extends Block {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(this.followItem, items);
+		if (ItemStackUtil.isInGroup(this.asItem(), group)) {
+			int targetIndex = ItemStackUtil.findIndexOfItem(this.followItem, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

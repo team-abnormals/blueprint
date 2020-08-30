@@ -3,7 +3,7 @@ package com.teamabnormals.abnormals_core.core.examples;
 import com.teamabnormals.abnormals_core.common.entity.AbnormalsBoatEntity;
 import com.teamabnormals.abnormals_core.common.entity.ExampleEndimatedEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
-import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
+import com.teamabnormals.abnormals_core.core.util.RegistryHelper;
 
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;

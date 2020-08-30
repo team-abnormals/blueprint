@@ -2,8 +2,8 @@ package com.teamabnormals.abnormals_core.common.blocks.wood;
 
 import java.util.function.Supplier;
 
-import com.teamabnormals.abnormals_core.core.utils.BlockUtils;
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.util.BlockUtil;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -39,7 +39,7 @@ public class AbnormalsLogBlock extends RotatedPillarBlock {
 		if (stack.getItem() instanceof AxeItem) {
 			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
 			if (!world.isRemote) {
-				world.setBlockState(pos, BlockUtils.transferAllBlockStates(state, this.block.get().getDefaultState()));
+				world.setBlockState(pos, BlockUtil.transferAllBlockStates(state, this.block.get().getDefaultState()));
 				stack.damageItem(1, player, (playerIn) -> {
 					playerIn.sendBreakAnimation(hand);
 				});
@@ -51,8 +51,8 @@ public class AbnormalsLogBlock extends RotatedPillarBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_LOG, items);
+		if (ItemStackUtil.isInGroup(this.asItem(), group)) {
+			int targetIndex = ItemStackUtil.findIndexOfItem(Items.DARK_OAK_LOG, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

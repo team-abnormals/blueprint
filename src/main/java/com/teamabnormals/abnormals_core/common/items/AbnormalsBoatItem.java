@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.teamabnormals.abnormals_core.common.entity.AbnormalsBoatEntity;
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
@@ -43,7 +43,7 @@ public class AbnormalsBoatItem extends Item {
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		if (this.isInGroup(group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_BOAT, items);
+			int targetIndex = ItemStackUtil.findIndexOfItem(Items.DARK_OAK_BOAT, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

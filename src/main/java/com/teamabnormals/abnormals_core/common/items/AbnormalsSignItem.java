@@ -3,8 +3,8 @@ package com.teamabnormals.abnormals_core.common.items;
 import javax.annotation.Nullable;
 
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -35,7 +35,7 @@ public class AbnormalsSignItem extends WallOrFloorItem {
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		if (this.isInGroup(group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_SIGN, items);
+			int targetIndex = ItemStackUtil.findIndexOfItem(Items.DARK_OAK_SIGN, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

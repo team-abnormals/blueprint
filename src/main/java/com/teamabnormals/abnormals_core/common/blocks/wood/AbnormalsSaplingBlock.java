@@ -1,6 +1,6 @@
 package com.teamabnormals.abnormals_core.common.blocks.wood;
 
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.trees.Tree;
@@ -16,8 +16,8 @@ public class AbnormalsSaplingBlock extends SaplingBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_SAPLING, items);
+		if (ItemStackUtil.isInGroup(this.asItem(), group)) {
+			int targetIndex = ItemStackUtil.findIndexOfItem(Items.DARK_OAK_SAPLING, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

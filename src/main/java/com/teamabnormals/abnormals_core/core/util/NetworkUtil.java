@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.utils;
+package com.teamabnormals.abnormals_core.core.util;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -27,7 +27,6 @@ import net.minecraftforge.fml.network.PacketDistributor;
  * This class holds a list of useful network functions
  */
 public final class NetworkUtil {
-	
 	/**
 	 * @param name - The registry name of the particle
 	 * All other parameters work same as world#addParticle

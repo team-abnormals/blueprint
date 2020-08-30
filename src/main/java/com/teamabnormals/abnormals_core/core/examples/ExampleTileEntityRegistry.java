@@ -9,7 +9,7 @@ import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEnti
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
-import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
+import com.teamabnormals.abnormals_core.core.util.RegistryHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntityType;

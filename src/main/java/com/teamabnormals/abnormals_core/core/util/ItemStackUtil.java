@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.utils;
+package com.teamabnormals.abnormals_core.core.util;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -8,7 +8,7 @@ import net.minecraft.util.NonNullList;
 /**
  * @author SmellyModder (Luke Tonon)
  */
-public final class ItemStackUtils {
+public final class ItemStackUtil {
 	/**
 	 * Searches for a specific item in a {@link NonNullList} of {@link ItemStack} and returns its index
 	 * @param item - The item to search for

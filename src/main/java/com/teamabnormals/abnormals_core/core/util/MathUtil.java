@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.utils;
+package com.teamabnormals.abnormals_core.core.util;
 
 import java.util.Random;
 
@@ -8,7 +8,7 @@ import net.minecraft.util.math.vector.Vector3d;
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public final class MathUtils {
+public final class MathUtil {
 
 	public interface Equation {
 		public double compute(double theta);

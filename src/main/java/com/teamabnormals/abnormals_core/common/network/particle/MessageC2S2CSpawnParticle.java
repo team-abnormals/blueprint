@@ -2,7 +2,7 @@ package com.teamabnormals.abnormals_core.common.network.particle;
 
 import java.util.function.Supplier;
 
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.LogicalSide;

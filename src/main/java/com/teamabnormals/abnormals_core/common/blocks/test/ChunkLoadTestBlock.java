@@ -5,7 +5,7 @@ import java.util.Random;
 import com.teamabnormals.abnormals_core.common.capability.chunkloading.ChunkLoader;
 import com.teamabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderCapability;
 import com.teamabnormals.abnormals_core.core.library.Test;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

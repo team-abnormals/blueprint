@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.utils;
+package com.teamabnormals.abnormals_core.core.util;
 
 import java.util.Random;
 
@@ -24,7 +24,7 @@ import net.minecraftforge.common.IPlantable;
 /** 
  * @author - bageldotjpg
  */
-public final class TreeUtils {
+public final class TreeUtil {
     
     public static void placeLogAt(IWorldWriter world, BlockPos pos, Random rand, BaseTreeFeatureConfig config) {
         setForcedState(world, pos, config.trunkProvider.getBlockState(rand, pos));

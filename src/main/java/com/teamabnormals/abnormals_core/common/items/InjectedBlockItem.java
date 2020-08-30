@@ -1,6 +1,6 @@
 package com.teamabnormals.abnormals_core.common.items;
 
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -20,7 +20,7 @@ public class InjectedBlockItem extends BlockItem {
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		if (this.isInGroup(group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(this.followItem, items);
+			int targetIndex = ItemStackUtil.findIndexOfItem(this.followItem, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

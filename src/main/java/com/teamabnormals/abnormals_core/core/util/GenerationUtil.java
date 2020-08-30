@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.utils;
+package com.teamabnormals.abnormals_core.core.util;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +18,7 @@ import net.minecraft.world.IWorld;
  * This class holds a list of useful methods for generation
  * @author SmellyModder(Luke Tonon)
  */
-public class GenerationUtils {
+public class GenerationUtil {
 	@SuppressWarnings("deprecation")
 	public static final Predicate<BlockState> IS_AIR = (state) -> {
 		return state.isAir();

@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.utils;
+package com.teamabnormals.abnormals_core.core.util;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 /** 
  * @author - SmellyModder(Luke Tonon)
  */
-public final class BlockUtils {
+public final class BlockUtil {
 
 	public static boolean isBlockInWater(World world, BlockPos pos) {
 		if (world.getBlockState(pos).getFluidState().isTagged(FluidTags.WATER)) {

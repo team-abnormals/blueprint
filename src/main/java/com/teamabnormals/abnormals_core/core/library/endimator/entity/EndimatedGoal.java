@@ -1,8 +1,7 @@
 package com.teamabnormals.abnormals_core.core.library.endimator.entity;
 
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.library.endimator.entity.IEndimatedEntity;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;

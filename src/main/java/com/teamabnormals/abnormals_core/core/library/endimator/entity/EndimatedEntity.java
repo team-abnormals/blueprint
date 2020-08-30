@@ -3,7 +3,7 @@ package com.teamabnormals.abnormals_core.core.library.endimator.entity;
 import javax.annotation.Nullable;
 
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;

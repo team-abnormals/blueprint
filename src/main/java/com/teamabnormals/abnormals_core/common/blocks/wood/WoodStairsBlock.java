@@ -1,7 +1,7 @@
 package com.teamabnormals.abnormals_core.common.blocks.wood;
 
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsStairsBlock;
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
@@ -16,8 +16,8 @@ public class WoodStairsBlock extends AbnormalsStairsBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_STAIRS, items);
+		if (ItemStackUtil.isInGroup(this.asItem(), group)) {
+			int targetIndex = ItemStackUtil.findIndexOfItem(Items.DARK_OAK_STAIRS, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

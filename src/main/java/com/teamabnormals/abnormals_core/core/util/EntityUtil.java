@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.utils;
+package com.teamabnormals.abnormals_core.core.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -9,7 +9,7 @@ import net.minecraft.util.math.vector.Vector3d;
 /** 
  * @author - SmellyModder(Luke Tonon)
  */
-public final class EntityUtils {
+public final class EntityUtil {
 	
 	public static RayTraceResult rayTrace(Entity entity, double distance, float delta) {
 		return entity.world.rayTraceBlocks(new RayTraceContext(

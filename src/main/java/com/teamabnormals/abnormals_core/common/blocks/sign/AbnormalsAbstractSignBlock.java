@@ -2,7 +2,7 @@ package com.teamabnormals.abnormals_core.common.blocks.sign;
 
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
 import net.minecraft.block.AbstractSignBlock;
 import net.minecraft.block.BlockRenderType;

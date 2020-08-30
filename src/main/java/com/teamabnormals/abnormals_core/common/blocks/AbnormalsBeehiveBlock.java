@@ -3,7 +3,7 @@ package com.teamabnormals.abnormals_core.common.blocks;
 import javax.annotation.Nullable;
 
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.BlockState;
@@ -29,8 +29,8 @@ public class AbnormalsBeehiveBlock extends BeehiveBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.BEEHIVE, items);
+		if (ItemStackUtil.isInGroup(this.asItem(), group)) {
+			int targetIndex = ItemStackUtil.findIndexOfItem(Items.BEEHIVE, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

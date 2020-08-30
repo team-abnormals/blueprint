@@ -1,7 +1,7 @@
 package com.teamabnormals.abnormals_core.common.blocks.test;
 
 import com.teamabnormals.abnormals_core.core.library.Test;
-import com.teamabnormals.abnormals_core.core.utils.BlockUtils;
+import com.teamabnormals.abnormals_core.core.util.BlockUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -36,7 +36,7 @@ public class RotatedVoxelShapeTestBlock extends HorizontalBlock {
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		VoxelShape shape = makeCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D);
-		return VoxelShapes.create(BlockUtils.rotateHorizontalBB(shape.getBoundingBox(), BlockUtils.BBRotation.getRotationForDirection(state.get(HORIZONTAL_FACING), Direction.NORTH)));
+		return VoxelShapes.create(BlockUtil.rotateHorizontalBB(shape.getBoundingBox(), BlockUtil.BBRotation.getRotationForDirection(state.get(HORIZONTAL_FACING), Direction.NORTH)));
 	}
 	
 	@Override
