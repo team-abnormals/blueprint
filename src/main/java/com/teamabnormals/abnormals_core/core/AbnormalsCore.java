@@ -93,8 +93,7 @@ public class AbnormalsCore {
 				ACConfig.ValuesHolder.updateCommonValuesFromConfig(config);
 			}
 		});
-		
-		modEventBus.addListener(this::replaceBeehivePOI);
+
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
@@ -113,6 +112,7 @@ public class AbnormalsCore {
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
+			this.replaceBeehivePOI();
 		});
 		ChunkLoaderCapability.register();
 //		ExampleEntitySpawnHandler.processSpawnAdditions();
@@ -140,7 +140,7 @@ public class AbnormalsCore {
 		REGISTRY_HELPER.processSpawnEggColors(event);
 	}
 	
-	private void replaceBeehivePOI(final FMLCommonSetupEvent event) {
+	private void replaceBeehivePOI() {
 		ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
 		PointOfInterestType.BEEHIVE.blockStates = this.makePOIStatesMutable(PointOfInterestType.BEEHIVE.blockStates);
 		BEEHIVES.stream().forEach((block) -> {
