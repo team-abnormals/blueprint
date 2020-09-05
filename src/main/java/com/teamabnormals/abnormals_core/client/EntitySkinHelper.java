@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 /**
  * A simple helper class for custom name entity skins.
  *
- * @auhor - SmellyModder (Luke Tonon)
+ * @author - SmellyModder (Luke Tonon)
  * @param <E> - The type of entity.
  */
 public class EntitySkinHelper<E extends Entity> {
@@ -91,10 +91,7 @@ public class EntitySkinHelper<E extends Entity> {
 	 */
 	@Nullable
 	public ResourceLocation getSkinForEntity(E entity) {
-		if (entity.hasCustomName()) {
-			return this.skins.get(entity.getCustomName().getString().toLowerCase().trim());
-		}
-		return null;
+		return entity.hasCustomName() ? this.skins.get(entity.getCustomName().getString().toLowerCase().trim()) : null;
 	}
 
 	/**
