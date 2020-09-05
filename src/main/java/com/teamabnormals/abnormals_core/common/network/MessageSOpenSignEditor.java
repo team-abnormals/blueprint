@@ -7,6 +7,7 @@ import com.teamabnormals.abnormals_core.client.ClientInfo;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -40,10 +41,11 @@ public final class MessageSOpenSignEditor {
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			if (!ClientInfo.getClientPlayer().getUniqueID().equals(message.playerUUID)) return;
 			context.enqueueWork(() -> {
-				TileEntity tileentity = ClientInfo.getClientPlayerWorld().getTileEntity(message.signPos);
+				ClientWorld world = ClientInfo.getClientPlayerWorld();
+				TileEntity tileentity = world.getTileEntity(message.signPos);
 				if (!(tileentity instanceof AbnormalsSignTileEntity)) {
 					tileentity = new AbnormalsSignTileEntity();
-					tileentity.setWorldAndPos(ClientInfo.getClientPlayerWorld(), message.signPos);
+					tileentity.setWorldAndPos(world, message.signPos);
 				}
 				
 				NetworkUtil.openSignScreen((AbnormalsSignTileEntity) tileentity);

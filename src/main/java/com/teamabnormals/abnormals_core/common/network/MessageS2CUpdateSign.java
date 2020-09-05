@@ -53,7 +53,7 @@ public final class MessageS2CUpdateSign {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				ClientWorld world = (ClientWorld) ClientInfo.getClientPlayerWorld();
+				ClientWorld world = ClientInfo.getClientPlayerWorld();
 				BlockPos blockpos = message.signPos;
 				if (world.isBlockLoaded(blockpos)) {
 					TileEntity tileentity = world.getTileEntity(blockpos);

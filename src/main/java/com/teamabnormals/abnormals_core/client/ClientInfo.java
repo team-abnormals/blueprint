@@ -2,6 +2,7 @@ package com.teamabnormals.abnormals_core.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
 
 public class ClientInfo {
@@ -24,7 +25,7 @@ public class ClientInfo {
 	/**
 	 * @return - The client player's world; equivalent to getting the client world
 	 */
-	public static World getClientPlayerWorld() {
-		return ClientInfo.getClientPlayer().world;
+	public static ClientWorld getClientPlayerWorld() {
+		return (ClientWorld) ClientInfo.getClientPlayer().world;
 	}
 }

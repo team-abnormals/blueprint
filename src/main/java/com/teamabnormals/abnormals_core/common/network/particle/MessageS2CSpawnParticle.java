@@ -7,7 +7,6 @@ import com.teamabnormals.abnormals_core.client.ClientInfo;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -56,11 +55,10 @@ public final class MessageS2CSpawnParticle {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				World world = ClientInfo.getClientPlayerWorld();
 				BasicParticleType particleType = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(message.particleName));
 				
 				if (particleType != null) {
-					world.addParticle(particleType, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
+					ClientInfo.getClientPlayerWorld().addParticle(particleType, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
 				}
 			});
 		}
