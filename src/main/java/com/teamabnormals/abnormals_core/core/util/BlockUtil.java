@@ -2,8 +2,7 @@ package com.teamabnormals.abnormals_core.core.util;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.teamabnormals.abnormals_core.core.library.Modifier;
+import java.util.function.UnaryOperator;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -91,14 +90,14 @@ public final class BlockUtil {
 			return REVERSE_X.rotateBB(RIGHT.rotateBB(bb));
 		});
 		
-		private final Modifier<AxisAlignedBB> modifier;
+		private final UnaryOperator<AxisAlignedBB> modifier;
 		
-		BBRotation(Modifier<AxisAlignedBB> modifier) {
+		BBRotation(UnaryOperator<AxisAlignedBB> modifier) {
 			this.modifier = modifier;
 		}
 		
 		public AxisAlignedBB rotateBB(AxisAlignedBB bb) {
-			return this.modifier.modify(bb);
+			return this.modifier.apply(bb);
 		}
 		
 		public static BBRotation getRotationForDirection(Direction currentDirection, Direction startingDirection) {
