@@ -1,5 +1,6 @@
 {
 	"abnormals_core.config.quark_sign_editing": "Quark Sign Editing",
 	"abnormals_core.config.require_empty_hand": "Quark Sign Editing Requires Empty Hand",
+	"abnormals_core.message.redirect": "Redirecting",
 	"entity.abnormals_core.boat": "Boat"
 }

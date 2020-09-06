@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.MultiplayerScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -19,7 +20,6 @@ import java.util.function.Supplier;
  * @author Jackson
  */
 public class MessageS2CServerRedirect {
-
     private final String connectionAddress;
 
     public MessageS2CServerRedirect(String address) {
@@ -42,7 +42,7 @@ public class MessageS2CServerRedirect {
                 boolean integrated = minecraft.isIntegratedServerRunning();
                 if (minecraft.world != null) {
                     minecraft.world.sendQuittingDisconnectingPacket();
-                    minecraft.unloadWorld(new DirtMessageScreen(new StringTextComponent("Redirecting...")));
+                    minecraft.unloadWorld(new DirtMessageScreen(new TranslationTextComponent("abnormals_core.message.redirect")));
 
                     if (integrated) minecraft.displayGuiScreen(new MainMenuScreen());
                     else minecraft.displayGuiScreen(new MultiplayerScreen(new MainMenuScreen()));
