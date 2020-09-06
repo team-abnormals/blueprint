@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
  * Contains some useful RenderTypes
  * @author SmellyModder(Luke Tonon)
  */
-public class ACRenderTypes extends RenderState {
+public final class ACRenderTypes extends RenderState {
 
 	public ACRenderTypes(String nameIn, Runnable setupTaskIn, Runnable clearTaskIn) {
 		super(nameIn, setupTaskIn, clearTaskIn);

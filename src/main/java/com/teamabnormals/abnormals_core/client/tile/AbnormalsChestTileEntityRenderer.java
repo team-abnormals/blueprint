@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.teamabnormals.abnormals_core.core.library.api.IChestBlock;
+import com.teamabnormals.abnormals_core.core.api.IChestBlock;
 
 import net.minecraft.block.AbstractChestBlock;
 import net.minecraft.block.Block;

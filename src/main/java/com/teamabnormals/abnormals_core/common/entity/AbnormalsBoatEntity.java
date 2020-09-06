@@ -1,6 +1,6 @@
 package com.teamabnormals.abnormals_core.common.entity;
 
-import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
+import com.teamabnormals.abnormals_core.core.registry.ACEntities;
 import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
 import com.teamabnormals.abnormals_core.core.registry.BoatRegistry.BoatData;
 
@@ -35,7 +35,7 @@ public class AbnormalsBoatEntity extends BoatEntity {
 	}
 	
 	public AbnormalsBoatEntity(World worldIn, double x, double y, double z) {
-		this(ExampleEntityRegistry.BOAT.get(), worldIn);
+		this(ACEntities.BOAT.get(), worldIn);
 		this.setPosition(x, y, z);
 		this.setMotion(Vector3d.ZERO);
 		this.prevPosX = x;
@@ -44,7 +44,7 @@ public class AbnormalsBoatEntity extends BoatEntity {
 	}
 
 	public AbnormalsBoatEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
-		this(ExampleEntityRegistry.BOAT.get(), world);
+		this(ACEntities.BOAT.get(), world);
 	}
 	
 	@Override

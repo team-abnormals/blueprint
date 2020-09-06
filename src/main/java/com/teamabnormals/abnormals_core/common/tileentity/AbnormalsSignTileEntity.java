@@ -5,7 +5,7 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
+import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.command.CommandSource;
@@ -37,7 +37,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	private DyeColor textColor = DyeColor.BLACK;
 
 	public AbnormalsSignTileEntity() {
-		super(ExampleTileEntityRegistry.SIGN.get());
+		super(ACTileEntities.SIGN.get());
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package com.teamabnormals.abnormals_core.common.tileentity;
 
-import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
+import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
 
 import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -12,7 +12,7 @@ public class AbnormalsChestTileEntity extends ChestTileEntity {
 	}
 
 	public AbnormalsChestTileEntity() {
-		super(ExampleTileEntityRegistry.CHEST.get());
+		super(ACTileEntities.CHEST.get());
 	}
 
 	@Override

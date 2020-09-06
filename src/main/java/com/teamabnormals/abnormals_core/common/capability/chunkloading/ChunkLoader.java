@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
-import com.teamabnormals.abnormals_core.core.library.TaskTickTimer;
+import com.teamabnormals.abnormals_core.core.util.TickTask;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.IChunk;
@@ -20,7 +20,7 @@ public class ChunkLoader implements IChunkLoader {
 	@Nullable
 	private final ServerWorld world;
 	public final List<Long> loadedPositions = Lists.newArrayList();
-	private final List<TaskTickTimer<IChunk>> scheduledChunkProcesses = Lists.newArrayList();
+	private final List<TickTask<IChunk>> scheduledChunkProcesses = Lists.newArrayList();
 	
 	public ChunkLoader(@Nullable ServerWorld world) {
 		this.world = world;
@@ -48,10 +48,10 @@ public class ChunkLoader implements IChunkLoader {
 	
 	@Override
 	public void tick() {
-		for (TaskTickTimer<IChunk> process : this.scheduledChunkProcesses) {
-			process.update();
+		for (TickTask<IChunk> process : this.scheduledChunkProcesses) {
+			process.tick();
 		}
-		this.scheduledChunkProcesses.removeIf(process -> process.isComplete());
+		this.scheduledChunkProcesses.removeIf(TickTask::isComplete);
 	}
 	
 	private void forceChunk(BlockPos pos, boolean load) {
@@ -61,6 +61,6 @@ public class ChunkLoader implements IChunkLoader {
 	}
 	
 	public void scheduleChunkProcess(IChunk chunk, Consumer<IChunk> chunkProcess, int ticks) {
-		this.scheduledChunkProcesses.add(new TaskTickTimer<>(chunk, chunkProcess, ticks));
+		this.scheduledChunkProcesses.add(new TickTask<>(chunk, chunkProcess, ticks));
 	}
 }

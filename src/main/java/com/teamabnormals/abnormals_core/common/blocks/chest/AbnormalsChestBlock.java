@@ -1,8 +1,8 @@
 package com.teamabnormals.abnormals_core.common.blocks.chest;
 
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
-import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
-import com.teamabnormals.abnormals_core.core.library.api.IChestBlock;
+import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.teamabnormals.abnormals_core.core.api.IChestBlock;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
@@ -16,7 +16,7 @@ public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
 	public final String type;
 	
 	public AbnormalsChestBlock(String modid, String type, Properties props) {
-		super(props, () -> ExampleTileEntityRegistry.CHEST.get());	
+		super(props, () -> ACTileEntities.CHEST.get());
 		this.modid = modid;
 		this.type = type;
 	}

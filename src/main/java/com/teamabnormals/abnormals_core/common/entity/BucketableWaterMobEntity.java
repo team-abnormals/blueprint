@@ -1,6 +1,6 @@
 package com.teamabnormals.abnormals_core.common.entity;
 
-import com.teamabnormals.abnormals_core.core.library.api.IBucketableEntity;
+import com.teamabnormals.abnormals_core.core.api.IBucketableEntity;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.EntityType;

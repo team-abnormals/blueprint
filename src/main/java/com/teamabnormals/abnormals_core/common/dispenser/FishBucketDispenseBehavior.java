@@ -11,7 +11,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class FishBucketDispenseBehavior extends DefaultDispenseItemBehavior {
+public final class FishBucketDispenseBehavior extends DefaultDispenseItemBehavior {
+	@Override
 	public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 	    BucketItem bucketitem = (BucketItem)stack.getItem();
 	    BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));

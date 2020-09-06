@@ -30,6 +30,9 @@ minecraft {
                 abnormals_core {
                     source sourceSets.main
                 }
+                ac_test {
+                    source sourceSets.test
+                }
             }
         }
         server {
@@ -39,6 +42,9 @@ minecraft {
             mods {
                 abnormals_core {
                     source sourceSets.main
+                }
+                ac_test {
+                    source sourceSets.test
                 }
             }
         }
@@ -50,6 +56,9 @@ minecraft {
             mods {
                 abnormals_core {
                     source sourceSets.main
+                }
+                ac_test {
+                    source sourceSets.test
                 }
             }
         }

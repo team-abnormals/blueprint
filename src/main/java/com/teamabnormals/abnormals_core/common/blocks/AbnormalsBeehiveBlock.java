@@ -2,7 +2,7 @@ package com.teamabnormals.abnormals_core.common.blocks;
 
 import javax.annotation.Nullable;
 
-import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
+import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
 import net.minecraft.block.BeehiveBlock;
@@ -24,7 +24,7 @@ public class AbnormalsBeehiveBlock extends BeehiveBlock {
 	@Nullable
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return ExampleTileEntityRegistry.BEEHIVE.get().create();
+		return ACTileEntities.BEEHIVE.get().create();
 	}
 	
 	@Override

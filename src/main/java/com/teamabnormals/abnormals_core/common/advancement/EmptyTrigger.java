@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
+public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
 	private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
 	private final ResourceLocation id;
 	

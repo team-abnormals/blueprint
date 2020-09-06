@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.world.World;
 
-public class ClientInfo {
+public final class ClientInfo {
 	public static final Minecraft MINECRAFT = Minecraft.getInstance();
 
 	/**

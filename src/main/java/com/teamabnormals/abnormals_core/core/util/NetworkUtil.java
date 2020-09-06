@@ -9,8 +9,8 @@ import com.teamabnormals.abnormals_core.common.network.entity.*;
 import com.teamabnormals.abnormals_core.common.network.particle.*;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.library.endimator.entity.IEndimatedEntity;
+import com.teamabnormals.abnormals_core.core.endimator.Endimation;
+import com.teamabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

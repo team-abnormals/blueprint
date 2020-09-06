@@ -18,7 +18,7 @@ import net.minecraft.world.IWorld;
  * This class holds a list of useful methods for generation
  * @author SmellyModder(Luke Tonon)
  */
-public class GenerationUtil {
+public final class GenerationUtil {
 	@SuppressWarnings("deprecation")
 	public static final Predicate<BlockState> IS_AIR = (state) -> {
 		return state.isAir();

@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Direction;
 
-public class SpawnEggDispenseBehavior extends DefaultDispenseItemBehavior {
+public final class SpawnEggDispenseBehavior extends DefaultDispenseItemBehavior {
 	@Override
 	public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 		Direction direction = source.getBlockState().get(DispenserBlock.FACING);

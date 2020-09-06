@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.fml.RegistryObject;
 
-public class BoatRegistry {
+public final class BoatRegistry {
 	private static final Map<String, BoatData> BOATS = Util.make(Maps.newHashMap(), (entries) -> {
 		entries.put("minecraft:oak", new DefaultBoatData());
 	});

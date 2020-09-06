@@ -25,10 +25,7 @@ import com.teamabnormals.abnormals_core.common.items.InjectedBlockItem;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
-import com.teamabnormals.abnormals_core.core.examples.ExampleBlockRegistry;
-import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
-import com.teamabnormals.abnormals_core.core.examples.ExampleItemRegistry;
-import com.teamabnormals.abnormals_core.core.examples.ExampleSoundRegistry;
+import com.teamabnormals.abnormals_core.core.registry.ACEntities;
 import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
 
 import net.minecraft.block.Block;
@@ -465,7 +462,7 @@ public class RegistryHelper {
 	
 	/**
 	 * Creates a living entity RegistryObject
-	 * For example @see {@link ExampleEntityRegistry}
+	 * For example @see {@link ACEntities}
 	 * @param name - The entity's name
 	 * @param factory - The entity's factory
 	 * @param entityClassification - The entity's classification
@@ -479,7 +476,7 @@ public class RegistryHelper {
 	
 	/**
 	 * Creates an entity RegistryObject
-	 * No examples for this one, but {@link ExampleEntityRegistry} can help
+	 * No examples for this one, but {@link ACEntities} can help
 	 * @param name - The entity's name
 	 * @param factory - The entity's factory
 	 * @param clientFactory - The entity's client factory
@@ -494,7 +491,7 @@ public class RegistryHelper {
 	
 	/**
 	 * Creates a living entity
-	 * For example @see {@link ExampleEntityRegistry}
+	 * For example @see {@link ACEntities}
 	 * @param name - The entity's name
 	 * @param factory - The entity's factory
 	 * @param entityClassification - The entity's classification
@@ -516,7 +513,7 @@ public class RegistryHelper {
 	
 	/**
 	 * Creates an entity
-	 * No examples for this one, but {@link ExampleEntityRegistry} can help
+	 * No examples for this one, but {@link ACEntities} can help
 	 * @param name - The entity's name
 	 * @param factory - The entity's factory
 	 * @param clientFactory - The entity's client factory

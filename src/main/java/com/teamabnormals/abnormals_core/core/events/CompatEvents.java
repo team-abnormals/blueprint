@@ -2,7 +2,7 @@ package com.teamabnormals.abnormals_core.core.events;
 
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
-import com.teamabnormals.abnormals_core.core.library.api.IAgeableEntity;
+import com.teamabnormals.abnormals_core.core.api.IAgeableEntity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -24,8 +24,8 @@ import net.minecraftforge.fml.common.Mod;
  * Events for mod compatibility.
  */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
-public class CompatEvents {
-    public static final String poisonTag = AbnormalsCore.MODID + ":poisoned_by_potato";
+public final class CompatEvents {
+    public static final String POISON_TAG = AbnormalsCore.MODID + ":poisoned_by_potato";
 
     @SubscribeEvent
     public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
@@ -34,11 +34,11 @@ public class CompatEvents {
         if (target instanceof IAgeableEntity && stack.getItem() == Items.POISONOUS_POTATO && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
             PlayerEntity player = event.getPlayer();
             CompoundNBT persistantData = target.getPersistentData();
-            if (((IAgeableEntity) target).getGrowingAge() < 0 && !persistantData.getBoolean(poisonTag)) {
+            if (((IAgeableEntity) target).getGrowingAge() < 0 && !persistantData.getBoolean(POISON_TAG)) {
                 if (!event.getWorld().isRemote) {
                     if (target.world.rand.nextDouble() < ACConfig.ValuesHolder.poisonEffectChance()) {
                         target.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.5f, 0.25f);
-                        persistantData.putBoolean(poisonTag, true);
+                        persistantData.putBoolean(POISON_TAG, true);
                         if (ACConfig.ValuesHolder.shouldPoisonEntity()) {
                             ((LivingEntity) target).addPotionEffect(new EffectInstance(Effects.POISON, 200));
                         }
@@ -57,7 +57,7 @@ public class CompatEvents {
     public static void onUpdateEntity(LivingEvent.LivingUpdateEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof IAgeableEntity && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
-            if (entity.getPersistentData().getBoolean(poisonTag)) ((IAgeableEntity) entity).setGrowingAge(-24000);
+            if (entity.getPersistentData().getBoolean(POISON_TAG)) ((IAgeableEntity) entity).setGrowingAge(-24000);
         }
     }
 }

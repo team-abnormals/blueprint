@@ -3,7 +3,7 @@ package com.teamabnormals.abnormals_core.common.network.entity;
 import java.util.function.Supplier;
 
 import com.teamabnormals.abnormals_core.client.ClientInfo;
-import com.teamabnormals.abnormals_core.core.library.endimator.entity.IEndimatedEntity;
+import com.teamabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.LogicalSide;

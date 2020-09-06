@@ -1,13 +1,11 @@
 package com.teamabnormals.abnormals_core.core;
 
-import java.util.Map;
-import java.util.Set;
-
+import com.teamabnormals.abnormals_core.core.registry.ACEntities;
+import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.*;
@@ -17,25 +15,18 @@ import com.teamabnormals.abnormals_core.common.network.*;
 import com.teamabnormals.abnormals_core.common.network.entity.*;
 import com.teamabnormals.abnormals_core.common.network.particle.*;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
-import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
-import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
-import com.teamabnormals.abnormals_core.core.library.Test;
-import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
-import com.teamabnormals.abnormals_core.core.library.api.conditions.*;
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
-import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry.LootInjector;
+import com.teamabnormals.abnormals_core.core.api.IAddToBiomes;
+import com.teamabnormals.abnormals_core.core.api.conditions.*;
+import com.teamabnormals.abnormals_core.core.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.util.RegistryHelper;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.loot.LootTables;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -58,7 +49,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 @SuppressWarnings("deprecation")
 @Mod(AbnormalsCore.MODID)
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class AbnormalsCore {
+public final class AbnormalsCore {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MODID = "abnormals_core";
 	public static final String NETWORK_PROTOCOL = "AC1";
@@ -80,10 +71,7 @@ public class AbnormalsCore {
 		
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
-		
-		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
+
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
 		
@@ -97,58 +85,29 @@ public class AbnormalsCore {
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
-			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
 		
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
-		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
 	}
     
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
-//			REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
-
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
 				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
 			});
 			this.replaceBeehivePOI();
 		});
 		ChunkLoaderCapability.register();
-//		ExampleEntitySpawnHandler.processSpawnAdditions();
 	}
     
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(final FMLClientSetupEvent event) {
-//		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.COW.get(), CowRenderer::new);
-//		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.EXAMPLE_ANIMATED.get(), ExampleEndimatedEntityRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(ExampleEntityRegistry.BOAT.get(), AbnormalsBoatRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ACEntities.BOAT.get(), AbnormalsBoatRenderer::new);
 		
-		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
-	}
-	
-	@Test
-	private void registerLootInjectors() {
-		LootInjector injector = new LootInjector(MODID);
-		injector.registerLootInjection(injector.buildLootBool("test", 1, 0), LootTables.CHESTS_NETHER_BRIDGE, LootTables.CHESTS_JUNGLE_TEMPLE);
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	private void registerItemColors(ColorHandlerEvent.Item event) {
-		REGISTRY_HELPER.processSpawnEggColors(event);
-	}
-	
-	private void replaceBeehivePOI() {
-		ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
-		PointOfInterestType.BEEHIVE.blockStates = this.makePOIStatesMutable(PointOfInterestType.BEEHIVE.blockStates);
-		BEEHIVES.stream().forEach((block) -> {
-			block.getStateContainer().getValidStates().forEach(state -> { 
-				PointOfInterestType.POIT_BY_BLOCKSTATE.put(state, PointOfInterestType.BEEHIVE);
-				PointOfInterestType.BEEHIVE.blockStates.add(state);
-			});
-		});
+		ClientRegistry.bindTileEntityRenderer(ACTileEntities.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ACTileEntities.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
 	}
 	
 	private void setupMessages() {
@@ -189,24 +148,13 @@ public class AbnormalsCore {
 		.consumer(MessageC2S2CSpawnParticle::handle)
 		.add();
 	}
-	
-	/*
-	 * Currently unused
-	 */
-	@SuppressWarnings("unused")
-	private <K, V> Map<K, V> copyMap(Map<K, V> toCopy) {
-		Map<K, V> copy = Maps.newHashMap();
-		toCopy.forEach((k, v) -> {
-			copy.put(k, v);
-		});
-		return copy;
-	}
-	
-	private Set<BlockState> makePOIStatesMutable(Set<BlockState> toCopy) {
-		Set<BlockState> copy = Sets.newHashSet();
-		toCopy.forEach((state) -> {
-			copy.add(state);
-		});
-		return copy;
+
+	private void replaceBeehivePOI() {
+		ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
+		PointOfInterestType.BEEHIVE.blockStates = Sets.newHashSet(PointOfInterestType.BEEHIVE.blockStates);
+		BEEHIVES.stream().forEach((block) -> block.getStateContainer().getValidStates().forEach(state -> {
+			PointOfInterestType.POIT_BY_BLOCKSTATE.put(state, PointOfInterestType.BEEHIVE);
+			PointOfInterestType.BEEHIVE.blockStates.add(state);
+		}));
 	}
 }

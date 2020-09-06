@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
  * @author SmellyModder(Luke Tonon)
  */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
-public class LootInjectionRegistry {
+public final class LootInjectionRegistry {
 	private static final Map<Set<ResourceLocation>, LootPool> POOLS = Maps.newHashMap();
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
