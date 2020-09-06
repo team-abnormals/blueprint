@@ -114,4 +114,20 @@ public final class NetworkUtil {
 	public static void openSignScreen(AbnormalsSignTileEntity sign) {
 		ClientInfo.MINECRAFT.displayGuiScreen(new AbnormalsEditSignScreen(sign));
 	}
+
+	/**
+	 * Send a packet to the client to redirect them to another server
+	 * @param address - The address to connect to
+	 */
+	public static void redirectToServer(ServerPlayerEntity player, String address) {
+		AbnormalsCore.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MessageS2CServerRedirect(address));
+	}
+
+	/**
+	 * Send a packet to all clients to redirect them to another server
+	 * @param address - The address to connect to
+	 */
+	public static void redirectAllToServer(String address) {
+		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageS2CServerRedirect(address));
+	}
 }
