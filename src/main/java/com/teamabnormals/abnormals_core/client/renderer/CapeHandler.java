@@ -29,7 +29,10 @@ public class CapeHandler {
 			"b8b859a5-2dbc-4743-8f7a-4768f6692606",
 			"68c08594-e7cd-43fb-bdf9-240147ee26cf", 
 			"caaeff74-cbbc-415c-9c22-21e65ad6c33f",
-			"82d459b2-d085-4991-997f-6f210228e527"
+			"82d459b2-d085-4991-997f-6f210228e527",
+			"7d3a5f6e-ac22-43d8-8c9f-863c6f4ded1c",
+			"ff2dd200-7a20-4cad-a42b-65a69da12f2c",
+			"c92ca019-c110-4856-a1ec-1b3c8d25546e"
 	);
 	
 	private static final Set<String> RENDERED = Collections.newSetFromMap(new WeakHashMap<>());
