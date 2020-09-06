@@ -1,5 +1,6 @@
 package com.teamabnormals.abnormals_core.client;
 
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -28,7 +29,10 @@ public final class CapeHandler {
 			"b8b859a5-2dbc-4743-8f7a-4768f6692606",
 			"68c08594-e7cd-43fb-bdf9-240147ee26cf", 
 			"caaeff74-cbbc-415c-9c22-21e65ad6c33f",
-			"4378df24-8433-4b5c-b865-bf635b003ebb"
+			"82d459b2-d085-4991-997f-6f210228e527",
+			"7d3a5f6e-ac22-43d8-8c9f-863c6f4ded1c",
+			"ff2dd200-7a20-4cad-a42b-65a69da12f2c",
+			"c92ca019-c110-4856-a1ec-1b3c8d25546e"
 	);
 
 	private static final Set<String> RENDERED = Sets.newHashSet();
@@ -41,8 +45,9 @@ public final class CapeHandler {
 		if (player instanceof AbstractClientPlayerEntity && UUIDS.contains(uuid) && !RENDERED.contains(uuid)) {
 			AbstractClientPlayerEntity clientPlayer = (AbstractClientPlayerEntity) player;
 			if (clientPlayer.hasPlayerInfo()) {
-				clientPlayer.playerInfo.playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
-				clientPlayer.playerInfo.playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
+				Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = clientPlayer.playerInfo.playerTextures;
+				playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
+				playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
 				RENDERED.add(uuid);
 			}
 		}
