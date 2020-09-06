@@ -193,6 +193,11 @@ public class AbnormalsCore {
 		.encoder(MessageC2S2CSpawnParticle::serialize).decoder(MessageC2S2CSpawnParticle::deserialize)
 		.consumer(MessageC2S2CSpawnParticle::handle)
 		.add();
+
+		CHANNEL.messageBuilder(MessageS2CServerRedirect.class, id++)
+		.encoder(MessageS2CServerRedirect::serialize).decoder(MessageS2CServerRedirect::deserialize)
+		.consumer(MessageS2CServerRedirect::handle)
+		.add();
 	}
 	
 	/*
