@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.MultiplayerScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -16,7 +15,6 @@ import java.util.function.Supplier;
 
 /**
  * Allows servers to redirect clients to another server.
- *
  * @author Jackson
  */
 public class MessageS2CServerRedirect {
