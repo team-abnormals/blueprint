@@ -15,13 +15,6 @@ public class WoodDoorBlock extends DoorBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtil.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtil.findIndexOfItem(Items.DARK_OAK_DOOR, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				super.fillItemGroup(group, items);
-			}
-		}
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.field_234753_jT_, group, items);
 	}
 }

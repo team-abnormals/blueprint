@@ -15,13 +15,6 @@ public class PlanksBlock extends Block {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtil.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtil.findIndexOfItem(Items.DARK_OAK_PLANKS, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				super.fillItemGroup(group, items);
-			}
-		}
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.field_234799_w_, group, items);
 	}
 }

@@ -34,14 +34,7 @@ public class AbnormalsSignItem extends WallOrFloorItem {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (this.isInGroup(group)) {
-			int targetIndex = ItemStackUtil.findIndexOfItem(Items.DARK_OAK_SIGN, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				this.getBlock().fillItemGroup(group, items);
-			}
-		}
+		ItemStackUtil.fillAfterItemForGroup(this, Items.field_234762_lJ_, group, items);
 	}
 	
 }
