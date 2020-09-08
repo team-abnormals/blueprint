@@ -51,13 +51,6 @@ public class MobBucketItem extends BucketItem {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (this.isInGroup(group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.TROPICAL_FISH_BUCKET, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				super.fillItemGroup(group, items);
-			}
-		}
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.TROPICAL_FISH_BUCKET, group, items);
 	}
 }

@@ -19,14 +19,7 @@ public class AbnormalsMusicDiscItem extends MusicDiscItem {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (this.isInGroup(group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.MUSIC_DISC_WAIT, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				super.fillItemGroup(group, items);
-			}
-		}
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.MUSIC_DISC_WAIT, group, items);
 	}
 	
 }

@@ -37,13 +37,6 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (this.isInGroup(group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.ZOMBIE_VILLAGER_SPAWN_EGG, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				super.fillItemGroup(group, items);
-			}
-		}
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.ZOMBIE_VILLAGER_SPAWN_EGG, group, items);
 	}
 }

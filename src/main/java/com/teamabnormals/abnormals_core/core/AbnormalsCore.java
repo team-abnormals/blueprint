@@ -82,9 +82,9 @@ public class AbnormalsCore {
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
 		
-		//REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		//REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
-		//REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
 		

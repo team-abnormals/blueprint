@@ -41,13 +41,6 @@ public class WoodBlock extends RotatedPillarBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.DARK_OAK_WOOD, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				super.fillItemGroup(group, items);
-			}
-		}
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.DARK_OAK_WOOD, group, items);
 	}
 }

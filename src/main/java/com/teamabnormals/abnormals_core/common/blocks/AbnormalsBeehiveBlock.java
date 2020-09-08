@@ -29,14 +29,7 @@ public class AbnormalsBeehiveBlock extends BeehiveBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.BEEHIVE, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				super.fillItemGroup(group, items);
-			}
-		}
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.BEEHIVE, group, items);
 	}
 	
 	@Override

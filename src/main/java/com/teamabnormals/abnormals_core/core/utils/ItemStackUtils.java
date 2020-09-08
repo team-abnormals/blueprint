@@ -36,6 +36,24 @@ public final class ItemStackUtils {
 		}
 		return -1;
 	}
+
+	/**
+	 * Used in {@link Item#fillItemGroup(ItemGroup, NonNullList)} and {@link Block#fillItemGroup(ItemGroup, NonNullList)} to fill an item after a specific item for a group.
+	 * @param item The item to fill.
+	 * @param targetItem The item to fill after.
+	 * @param group The group to fill it in.
+	 * @param items The {@link NonNullList} of item stacks to search for the target item and inject the item in.
+	 */
+	public static void fillAfterItemForGroup(Item item, Item targetItem, ItemGroup group, NonNullList<ItemStack> items) {
+		if (isInGroup(item, group)) {
+			int targetIndex = ItemStackUtils.findIndexOfItem(targetItem, items);
+			if (targetIndex != -1) {
+				items.add(targetIndex + 1, new ItemStack(item));
+			} else {
+				items.add(new ItemStack(item));
+			}
+		}
+	}
 	
 	/**
 	 * Converts an Integer to a String of Roman Numerals; useful for levels
