@@ -15,6 +15,6 @@ public class StrippedLogBlock extends RotatedPillarBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.field_234712_aa_, group, items);
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.STRIPPED_WARPED_STEM, group, items);
 	}
 }

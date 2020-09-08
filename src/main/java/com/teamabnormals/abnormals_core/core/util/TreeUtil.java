@@ -36,7 +36,7 @@ public final class TreeUtil {
     
     public static boolean isInTag(IWorldGenerationBaseReader world, BlockPos pos, INamedTag<Block> tag) {
         return world.hasBlockState(pos, (block) -> {
-            return block.func_235714_a_(tag);
+            return block.isIn(tag);
         });
     }
 
@@ -61,13 +61,13 @@ public final class TreeUtil {
 
     public static boolean isLog(IWorldGenerationBaseReader world, BlockPos pos) {
         return world.hasBlockState(pos, (state) -> {
-            return state.func_235714_a_(BlockTags.LOGS);
+            return state.isIn(BlockTags.LOGS);
         });
     }
 
     public static boolean isLeaves(IWorldGenerationBaseReader worldIn, BlockPos pos) {
         return worldIn.hasBlockState(pos, (state) -> {
-            return state.func_235714_a_(BlockTags.LEAVES);
+            return state.isIn(BlockTags.LEAVES);
         });
     }
 
@@ -76,7 +76,7 @@ public final class TreeUtil {
             return world.hasBlockState(pos, state -> state.canBeReplacedByLeaves((IWorldReader) world, pos));
         }
         return world.hasBlockState(pos, (state) -> {
-            return isAir(world, pos) || state.func_235714_a_(BlockTags.LEAVES);
+            return isAir(world, pos) || state.isIn(BlockTags.LEAVES);
         });
     }
 

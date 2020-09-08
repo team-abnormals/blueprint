@@ -41,6 +41,6 @@ public class WoodBlock extends RotatedPillarBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.field_234716_aq_, group, items);
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_HYPHAE, group, items);
 	}
 }

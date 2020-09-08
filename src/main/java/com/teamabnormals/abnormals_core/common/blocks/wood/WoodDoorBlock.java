@@ -15,6 +15,6 @@ public class WoodDoorBlock extends DoorBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.field_234753_jT_, group, items);
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_DOOR, group, items);
 	}
 }

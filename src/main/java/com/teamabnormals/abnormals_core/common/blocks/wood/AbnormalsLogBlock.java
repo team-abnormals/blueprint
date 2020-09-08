@@ -51,6 +51,6 @@ public class AbnormalsLogBlock extends RotatedPillarBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.field_234710_S_, group, items);
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_STEM, group, items);
 	}
 }

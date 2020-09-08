@@ -15,6 +15,6 @@ public class WoodFenceGateBlock extends FenceGateBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.field_234731_dZ_, group, items);
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_FENCE_GATE, group, items);
 	}
 }

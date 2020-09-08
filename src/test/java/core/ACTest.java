@@ -49,8 +49,8 @@ public final class ACTest {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
-			GlobalEntityTypeAttributes.put(TestEntities.ENDIMATED_TEST.get(), CreatureEntity.func_233666_p_().func_233813_a_());
-			GlobalEntityTypeAttributes.put(TestEntities.COW.get(), CowEntity.func_234188_eI_().func_233813_a_());
+			GlobalEntityTypeAttributes.put(TestEntities.ENDIMATED_TEST.get(), CreatureEntity.func_233666_p_().create());
+			GlobalEntityTypeAttributes.put(TestEntities.COW.get(), CowEntity.func_234188_eI_().create());
 			TestEntitySpawnHelper.processSpawnAdditions();
 		});
 		this.registerLootInjectors();

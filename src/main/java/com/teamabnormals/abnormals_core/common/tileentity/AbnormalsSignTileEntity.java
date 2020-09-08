@@ -54,9 +54,9 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	}
 	
 	@Override
-	public void func_230337_a_(BlockState state, CompoundNBT compound) {
+	public void read(BlockState state, CompoundNBT compound) {
+		super.read(state, compound);
 		this.isEditable = false;
-		super.func_230337_a_(state, compound);
 		this.textColor = DyeColor.byTranslationKey(compound.getString("Color"), DyeColor.BLACK);
 
 		for (int i = 0; i < 4; ++i) {
@@ -75,6 +75,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 			this.renderText[i] = null;
 		}
 	}
+
 
 	public ITextComponent getText(int line) {
 		return this.signText[line];

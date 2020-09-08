@@ -16,6 +16,6 @@ public class WoodStairsBlock extends AbnormalsStairsBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.field_234747_ey_, group, items);
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_STAIRS, group, items);
 	}
 }

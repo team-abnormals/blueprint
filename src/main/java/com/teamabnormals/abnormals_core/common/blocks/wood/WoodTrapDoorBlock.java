@@ -15,6 +15,6 @@ public class WoodTrapDoorBlock extends TrapDoorBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.field_234739_dz_, group, items);
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_TRAPDOOR, group, items);
 	}
 }

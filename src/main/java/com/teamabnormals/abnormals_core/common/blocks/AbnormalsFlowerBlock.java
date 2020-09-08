@@ -19,4 +19,5 @@ public class AbnormalsFlowerBlock extends FlowerBlock {
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WITHER_ROSE, group, items);
 	}
+
 }

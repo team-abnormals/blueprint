@@ -19,7 +19,7 @@ public class AbnormalsMusicDiscItem extends MusicDiscItem {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this, Items.field_234775_qK_, group, items);
+		ItemStackUtil.fillAfterItemForGroup(this, Items.MUSIC_DISC_PIGSTEP, group, items);
 	}
 	
 }
