@@ -37,6 +37,6 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.ZOMBIE_VILLAGER_SPAWN_EGG, group, items);
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.ZOMBIFIED_PIGLIN_SPAWN_EGG, group, items);
 	}
 }

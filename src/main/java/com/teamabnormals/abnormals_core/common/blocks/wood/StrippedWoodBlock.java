@@ -15,6 +15,6 @@ public class StrippedWoodBlock extends RotatedPillarBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.STRIPPED_DARK_OAK_WOOD, group, items);
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.STRIPPED_WARPED_HYPHAE, group, items);
 	}
 }

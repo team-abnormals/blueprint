@@ -15,6 +15,6 @@ public class WoodPressurePlateBlock extends AbnormalsPressurePlateBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.DARK_OAK_PRESSURE_PLATE, group, items);
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.WARPED_PRESSURE_PLATE, group, items);
 	}
 }

@@ -34,7 +34,7 @@ public class AbnormalsSignItem extends WallOrFloorItem {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.DARK_OAK_SIGN, group, items);
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.WARPED_SIGN, group, items);
 	}
 	
 }

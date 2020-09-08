@@ -16,6 +16,6 @@ public class AbnormalsWoodButtonBlock extends WoodButtonBlock {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.DARK_OAK_BUTTON, group, items);
+		ItemStackUtils.fillAfterItemForGroup(this.asItem(), Items.WARPED_BUTTON, group, items);
 	}
 }
