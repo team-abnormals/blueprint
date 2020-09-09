@@ -21,6 +21,7 @@ import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.library.Test;
+import com.teamabnormals.abnormals_core.core.library.api.BannerManager;
 import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
 import com.teamabnormals.abnormals_core.core.library.api.conditions.*;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
@@ -87,6 +88,7 @@ public class AbnormalsCore {
 //		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
+		BannerManager.RECIPE_SERIALIZERS.register(modEventBus);
 		
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
@@ -107,6 +109,7 @@ public class AbnormalsCore {
     
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
+//			BannerManager.addPattern(BannerManager.ABNORMALS, Items.CREEPER_SPAWN_EGG);
 //			REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
 			ForgeRegistries.BIOMES.getValues().stream().filter(biome -> biome instanceof AbnormalsBiome).forEach((biome) -> {
 				((AbnormalsBiome)biome).addFeatures();
