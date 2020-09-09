@@ -5,7 +5,8 @@
   "minVersion": "0.8",
   "refmap": "abnormals_core.refmap.json",
   "mixins": [
-    "ServerWorldMixin"
+    "ServerWorldMixin",
+    "TrapDoorBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
