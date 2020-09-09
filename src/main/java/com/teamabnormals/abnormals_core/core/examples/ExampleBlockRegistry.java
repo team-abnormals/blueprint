@@ -2,6 +2,7 @@ package com.teamabnormals.abnormals_core.core.examples;
 
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
+import com.teamabnormals.abnormals_core.common.blocks.ScentedCandleBlock;
 import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
@@ -19,6 +20,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.potion.Effects;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
@@ -38,4 +40,5 @@ public class ExampleBlockRegistry {
 
 	public static final RegistryObject<Block> LOG_BLOCK = HELPER.createBlock("log_block", () -> new AbnormalsLogBlock(() -> Blocks.STRIPPED_ACACIA_LOG, AbstractBlock.Properties.create(Material.WOOD, MaterialColor.ADOBE)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> BEEHIVE = HELPER.createBlock("example_beehive", () -> new AbnormalsBeehiveBlock(Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> SCENTED_CANDLE = HELPER.createBlock("test_candle", () -> new ScentedCandleBlock(Block.Properties.from(Blocks.DIRT), () -> Effects.BLINDNESS), ItemGroup.BUILDING_BLOCKS);
 }
