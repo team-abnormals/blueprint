@@ -1,0 +1,7 @@
+{
+  "parent": "abnormals_core:block/two_candles",
+  "textures": {
+    "particle": "block/dirt",
+    "all": "block/dirt"
+  }
+}
