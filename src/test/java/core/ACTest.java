@@ -3,6 +3,7 @@ package core;
 import client.TestEndimatedEntityRenderer;
 import com.teamabnormals.abnormals_core.common.world.storage.GlobalStorage;
 import com.teamabnormals.abnormals_core.core.annotations.Test;
+import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry;
 import com.teamabnormals.abnormals_core.core.util.RegistryHelper;
 import common.world.TestGlobalStorage;
@@ -12,7 +13,9 @@ import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
+import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,6 +38,7 @@ public final class ACTest {
 	public static final String MOD_ID = "ac_test";
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MOD_ID);
 	public static final TestGlobalStorage TEST_GLOBAL_STORAGE = GlobalStorage.createStorage(new ResourceLocation(MOD_ID, "test_storage"), new TestGlobalStorage());
+	public static final BannerPattern TEST_BANNER_PATTERN = BannerManager.createPattern("mca", "test", "tst");
 
 	public ACTest() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -57,6 +61,7 @@ public final class ACTest {
 			GlobalEntityTypeAttributes.put(TestEntities.COW.get(), CowEntity.func_234188_eI_().create());
 			TestEntitySpawnHelper.processSpawnAdditions();
 		});
+		BannerManager.addPattern(BannerManager.TEST, Items.CREEPER_SPAWN_EGG);
 		this.registerLootInjectors();
 	}
 

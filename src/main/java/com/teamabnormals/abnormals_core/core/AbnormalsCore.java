@@ -1,5 +1,6 @@
 package com.teamabnormals.abnormals_core.core;
 
+import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.teamabnormals.abnormals_core.core.registry.ACEntities;
 import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
 import org.apache.logging.log4j.LogManager;
@@ -71,6 +72,7 @@ public final class AbnormalsCore {
 		
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
+		BannerManager.RECIPE_SERIALIZERS.register(modEventBus);
 
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
