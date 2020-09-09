@@ -1,16 +1,23 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://dist.creeper.host/Sponge/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
+
+mixin {
+    add sourceSets.main, "abnormals_core.refmap.json"
+}
 
 version = '2.0.3'
 group = 'com.minecraftabnormals'
@@ -26,6 +33,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            arg "-mixin.config=abnormals_core.mixins.json"
             mods {
                 abnormals_core {
                     source sourceSets.main
@@ -36,6 +44,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            arg "-mixin.config=abnormals_core.mixins.json"
             mods {
                 abnormals_core {
                     source sourceSets.main
@@ -64,6 +73,21 @@ task deobfJar(type: Jar) {
 
 artifacts {
     archives deobfJar
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "Abnormals Core",
+                "Specification-Vendor": "Team Abnormals",
+                "Specification-Version": "1",
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor": "Team Abnormals",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "abnormals_core.mixins.json"
+        ])
+    }
 }
 
 dependencies {
