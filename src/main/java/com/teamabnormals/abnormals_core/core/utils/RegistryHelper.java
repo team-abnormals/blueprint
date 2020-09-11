@@ -20,6 +20,7 @@ import com.teamabnormals.abnormals_core.common.dispenser.SpawnEggDispenseBehavio
 import com.teamabnormals.abnormals_core.common.items.AbnormalsBoatItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSignItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
+import com.teamabnormals.abnormals_core.common.items.FuelBlockItem;
 import com.teamabnormals.abnormals_core.common.items.FuelItem;
 import com.teamabnormals.abnormals_core.common.items.InjectedBlockItem;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
@@ -309,6 +310,20 @@ public class RegistryHelper {
 	public <B extends Block> RegistryObject<B> createBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.blockRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group)));
+		return block;
+	}
+	
+	/**
+	 * Creates a block with its BlockItem
+	 * @param name - The block's name
+	 * @param supplier - The supplied Block
+	 * @param burnTime - How long the item will burn(measured in ticks)
+	 * @param group - The ItemGroup for the BlockItem
+	 * @return - The customized Block
+	 */
+	public <B extends Block> RegistryObject<B> createFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
+		RegistryObject<B> block = this.blockRegister.register(name, supplier);
+		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().group(group)));
 		return block;
 	}
 	
