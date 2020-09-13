@@ -10,7 +10,7 @@ import net.minecraft.util.math.vector.Vector3d;
 /**
  * Class that can hold positions and rotations for 3D Space, has some other utility functions
  * Positions and Offsets are measured the same as Minecraft positioning; (1.0F = 1 Block)
- * Rotations are measured in radians; (x° × Math.PI / 180)
+ * Rotations are measured in radians; (xDegrees * Math.PI / 180)
  * @author SmellyModder(Luke Tonon)
  */
 public final class SimpleTransform {
