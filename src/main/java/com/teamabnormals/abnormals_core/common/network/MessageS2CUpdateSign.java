@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import com.teamabnormals.abnormals_core.client.ClientInfo;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.DyeColor;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;

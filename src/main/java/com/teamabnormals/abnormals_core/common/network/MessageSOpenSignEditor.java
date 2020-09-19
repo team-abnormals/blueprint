@@ -7,7 +7,6 @@ import com.teamabnormals.abnormals_core.client.ClientInfo;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
