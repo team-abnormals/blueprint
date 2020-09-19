@@ -1,11 +1,9 @@
 package com.teamabnormals.abnormals_core.common.network;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.multiplayer.ServerData;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -16,7 +14,6 @@ import java.util.function.Supplier;
  * @author Jackson
  */
 public final class MessageS2CServerRedirect {
-	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 	private final String connectionAddress;
 
 	public MessageS2CServerRedirect(String address) {
@@ -35,22 +32,14 @@ public final class MessageS2CServerRedirect {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				World world = MINECRAFT.world;
-				Screen currentScreen = MINECRAFT.currentScreen;
-				boolean integrated = MINECRAFT.isIntegratedServerRunning();
-
-				if (world != null) {
-					world.sendQuittingDisconnectingPacket();
-					MINECRAFT.unloadWorld(new DirtMessageScreen(new TranslationTextComponent("abnormals_core.message.redirect")));
-
-					MainMenuScreen menuScreen = new MainMenuScreen();
-					MINECRAFT.displayGuiScreen(integrated ? menuScreen : new MultiplayerScreen(menuScreen));
-
-					if (currentScreen != null)
-						MINECRAFT.displayGuiScreen(new ConnectingScreen(currentScreen, MINECRAFT, new ServerData("Redirect", message.connectionAddress, false)));
-				}
+				NetworkUtil.redirectToServer(message.getConnectionAddress());
 			});
 			context.setPacketHandled(true);
 		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public String getConnectionAddress() {
+		return connectionAddress;
 	}
 }
