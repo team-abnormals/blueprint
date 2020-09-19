@@ -6,7 +6,6 @@
   "refmap": "abnormals_core.refmap.json",
   "mixins": [
     "ServerWorldMixin",
-    "TrapDoorBlockMixin",
     "EntityMixin",
     "TrackedEntityMixin"
   ],
