@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -53,7 +54,7 @@ public final class MessageS2CUpdateSign {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				ClientWorld world = ClientInfo.getClientPlayerWorld();
+				World world = ClientInfo.getClientPlayerWorld();
 				BlockPos blockpos = message.signPos;
 				if (world.isBlockLoaded(blockpos)) {
 					TileEntity tileentity = world.getTileEntity(blockpos);

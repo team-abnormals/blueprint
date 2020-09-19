@@ -11,6 +11,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -41,7 +42,7 @@ public final class MessageSOpenSignEditor {
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			if (!ClientInfo.getClientPlayer().getUniqueID().equals(message.playerUUID)) return;
 			context.enqueueWork(() -> {
-				ClientWorld world = ClientInfo.getClientPlayerWorld();
+				World world = ClientInfo.getClientPlayerWorld();
 				TileEntity tileentity = world.getTileEntity(message.signPos);
 				if (!(tileentity instanceof AbnormalsSignTileEntity)) {
 					tileentity = new AbnormalsSignTileEntity();
