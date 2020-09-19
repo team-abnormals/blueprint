@@ -1,6 +1,11 @@
 package com.teamabnormals.abnormals_core.core.utils;
 
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.teamabnormals.abnormals_core.client.ClientInfo;
@@ -132,6 +137,25 @@ public final class NetworkUtil {
 	 */
 	public static void redirectAllToServer(String address) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageS2CServerRedirect(address));
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void redirectToServer(String address) {
+		Minecraft minecraft = ClientInfo.MINECRAFT;
+		World world = minecraft.world;
+		Screen currentScreen = minecraft.currentScreen;
+		boolean integrated = minecraft.isIntegratedServerRunning();
+
+		if (world != null) {
+			world.sendQuittingDisconnectingPacket();
+			minecraft.unloadWorld(new DirtMessageScreen(new TranslationTextComponent(integrated ? "menu.savingLevel" : "abnormals_core.message.redirect")));
+
+			MainMenuScreen menuScreen = new MainMenuScreen();
+			minecraft.displayGuiScreen(integrated ? menuScreen : new MultiplayerScreen(menuScreen));
+
+			if (currentScreen != null)
+				minecraft.displayGuiScreen(new ConnectingScreen(currentScreen, minecraft, new ServerData("Redirect", address, false)));
+		}
 	}
 
 	public static void updateTrackedData(ServerPlayerEntity player, Entity target, Set<IDataManager.DataEntry<?>> entries) {
