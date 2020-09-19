@@ -1,7 +1,6 @@
 package com.teamabnormals.abnormals_core.core.examples;
 
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
-import com.teamabnormals.abnormals_core.common.blocks.ScentedCandleBlock;
 import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsAbstractSignBlock;
@@ -23,7 +22,6 @@ public class ExampleTileEntityRegistry {
 	public static final RegistryObject<TileEntityType<AbnormalsBeehiveTileEntity>> BEEHIVE = HELPER.createTileEntity("beehive", AbnormalsBeehiveTileEntity::new, () -> collectBlocks(AbnormalsBeehiveBlock.class));
 	public static final RegistryObject<TileEntityType<AbnormalsChestTileEntity>> CHEST = HELPER.createTileEntity("chest", AbnormalsChestTileEntity::new, () -> collectBlocks(AbnormalsChestBlock.class));
 	public static final RegistryObject<TileEntityType<AbnormalsTrappedChestTileEntity>> TRAPPED_CHEST = HELPER.createTileEntity("trapped_chest", AbnormalsTrappedChestTileEntity::new, () -> collectBlocks(AbnormalsTrappedChestBlock.class));
-	public static final RegistryObject<TileEntityType<ScentedCandleTileEntity>> SCENTED_CANDLE = HELPER.createTileEntity("scented_candle", ScentedCandleTileEntity::new, () -> collectBlocks(ScentedCandleBlock.class));
 
 	private static Block[] collectBlocks(Class<? extends Block> blockClass) {
 		return ForgeRegistries.BLOCKS.getValues().stream().filter(block -> blockClass.isInstance(block)).toArray(Block[]::new);
