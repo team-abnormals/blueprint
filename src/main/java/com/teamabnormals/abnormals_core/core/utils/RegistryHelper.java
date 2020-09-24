@@ -429,8 +429,8 @@ public class RegistryHelper {
 		ItemGroup trappedChestGroup = ModList.get().isLoaded("quark") || modId == "indev" ? ItemGroup.REDSTONE : null;
 		RegistryObject<AbnormalsChestBlock> chest = this.blockRegister.register(name + "_chest", () -> new AbnormalsChestBlock(this.getModId(), name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
 		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.blockRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
-		this.itemRegister.register(name + "_chest", () -> new BlockItem(chest.get(), new Item.Properties().group(chestGroup).setISTER(() -> chestISTER())));
-		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(trappedChest.get(), new Item.Properties().group(trappedChestGroup).setISTER(() -> trappedChestISTER())));
+		this.itemRegister.register(name + "_chest", () -> new FuelBlockItem(chest.get(), 300, new Item.Properties().group(chestGroup).setISTER(() -> chestISTER())));
+		this.itemRegister.register(name + "_trapped_chest", () -> new FuelBlockItem(trappedChest.get(), 300, new Item.Properties().group(trappedChestGroup).setISTER(() -> trappedChestISTER())));
 		return Pair.of(chest, trappedChest);
 	}
 	
