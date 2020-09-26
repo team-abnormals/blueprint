@@ -456,6 +456,22 @@ public class RegistryHelper {
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(determinedGroup)));
 		return block;
 	}
+
+	/**
+	 * Creates a Compat Block that can also be used as fuel in furnaces.
+	 * @param modId - The modId of the mod this block is compatible for, set to "indev" for dev tests
+	 * @param name - The block's name
+	 * @param supplier - The supplied Block
+	 * @param burnTime - How many ticks this fuel block should burn for.
+	 * @param group - The BlockItem's ItemGroup
+	 * @return - The Compat Block
+	 */
+	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String modId, String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
+		ItemGroup determinedGroup = ModList.get().isLoaded(modId) || modId == "indev" ? group : null;
+		RegistryObject<B> block = this.blockRegister.register(name, supplier);
+		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().group(determinedGroup)));
+		return block;
+	}
 	
 	/**
 	 * Creates a SoundEvent
