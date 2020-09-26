@@ -1,7 +1,6 @@
 package common.entities.ai;
 
 import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.endimator.Endimation;
 import com.teamabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import common.entities.TestEndimatedEntity;
 
@@ -9,12 +8,7 @@ import common.entities.TestEndimatedEntity;
 public class TestEndimatedGoal extends EndimatedGoal<TestEndimatedEntity> {
 
 	public TestEndimatedGoal(TestEndimatedEntity entity) {
-		super(entity);
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return TestEndimatedEntity.GROW_ANIMATION;
+		super(entity, TestEndimatedEntity.GROW_ANIMATION);
 	}
 
 	@Override
