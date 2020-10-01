@@ -25,6 +25,9 @@ public interface IDataManager {
 
 	/**
 	 * Gets a value for a {@link TrackedData}.
+	 * It is also important to note that mutating this object will not re-sync it!
+	 * If you wish to mutate an object and then re-sync it <b>DO NOT</b> use {@link #setValue(TrackedData, Object)} since the object globally mutates meaning the value in the map and the local object will be equal!
+	 * So instead copy the value and then use it in {@link #setValue(TrackedData, Object)} or manually mark the data dirty using {@link #setDataMap(Map)} and {@link DataEntry#markDirty()}.
 	 * @param trackedData The {@link TrackedData} to get the value for.
 	 * @param <T> The type of value.
 	 */

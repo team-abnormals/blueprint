@@ -1,6 +1,6 @@
 package com.teamabnormals.abnormals_core.common.world.storage.tracking;
 
-import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * This class works as an information holder for a type to be tracked.
@@ -9,12 +9,12 @@ import java.util.Objects;
  */
 public class TrackedData<T> {
 	private final IDataProcessor<T> processor;
+	private final Supplier<T> defaultValue;
 	private final SyncType syncType;
-	private final T defaultValue;
 	private final boolean save;
 	private final boolean persistent;
 
-	private TrackedData(final IDataProcessor<T> processor, final SyncType syncType, final T defaultValue, final boolean save, final boolean persistent) {
+	private TrackedData(final IDataProcessor<T> processor, final SyncType syncType, final Supplier<T> defaultValue, final boolean save, final boolean persistent) {
 		this.processor = processor;
 		this.syncType = syncType;
 		this.defaultValue = defaultValue;
@@ -31,7 +31,7 @@ public class TrackedData<T> {
 	}
 
 	public T getDefaultValue() {
-		return this.defaultValue;
+		return this.defaultValue.get();
 	}
 
 	public boolean shouldSave() {
@@ -44,14 +44,15 @@ public class TrackedData<T> {
 
 	public static class Builder<T> {
 		private final IDataProcessor<T> processor;
+		private final Supplier<T> defaultValue;
 		private SyncType syncType;
-		private T defaultValue;
 		private boolean save;
 		private boolean persistent;
 
-		private Builder(final IDataProcessor<T> processor) {
+		private Builder(final IDataProcessor<T> processor, final Supplier<T> defaultValue) {
 			this.processor = processor;
 			this.syncType = SyncType.TO_CLIENTS;
+			this.defaultValue = defaultValue;
 		}
 
 		/**
@@ -60,8 +61,8 @@ public class TrackedData<T> {
 		 * @param <T> The type of data to track.
 		 * @return This current builder.
 		 */
-		public static <T> Builder<T> create(final IDataProcessor<T> processor) {
-			return new Builder<>(processor);
+		public static <T> Builder<T> create(final IDataProcessor<T> processor, final Supplier<T> defaultValue) {
+			return new Builder<>(processor, defaultValue);
 		}
 
 		/**
@@ -72,17 +73,6 @@ public class TrackedData<T> {
 		 */
 		public Builder<T> setSyncType(SyncType syncType) {
 			this.syncType = syncType;
-			return this;
-		}
-
-		/**
-		 * Sets the default value for the {@link TrackedData} to be built.
-		 * <p> This <b> MUST </b> be called in this builder or an {@link NullPointerException} will be thrown. </p>
-		 * @param defaultValue The default value to set.
-		 * @return This current builder.
-		 */
-		public Builder<T> setDefaultValue(T defaultValue) {
-			this.defaultValue = defaultValue;
 			return this;
 		}
 
@@ -107,11 +97,9 @@ public class TrackedData<T> {
 
 		/**
 		 * Builds a {@link TrackedData}.
-		 * @throws NullPointerException If {@link #defaultValue} is null.
 		 * @return A {@link TrackedData} constructed using this builder.
 		 */
 		public TrackedData<T> build() {
-			Objects.requireNonNull(this.defaultValue, "Missing T 'defaultValue' when building Tracked Data!");
 			return new TrackedData<>(this.processor, this.syncType, this.defaultValue, this.save, this.persistent);
 		}
 	}

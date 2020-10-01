@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
+import net.minecraft.nbt.CompoundNBT;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -68,8 +69,9 @@ public class AbnormalsCore {
 	public static final String NETWORK_PROTOCOL = "AC1";
 	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MODID);
-	public static final TrackedData<Boolean> TEST_TRACKED_DATA = TrackedData.Builder.create(DataProcessors.BOOLEAN).setDefaultValue(false).enablePersistence().enableSaving().build();
-	
+	public static final TrackedData<Boolean> TEST_TRACKED_DATA = TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> false).enablePersistence().enableSaving().build();
+	public static final TrackedData<CompoundNBT> TEST_TRACKED_DATA_NBT = TrackedData.Builder.create(DataProcessors.COMPOUND, CompoundNBT::new).enablePersistence().enableSaving().build();
+
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))
 		.networkProtocolVersion(() -> NETWORK_PROTOCOL)
 		.clientAcceptedVersions(NETWORK_PROTOCOL::equals)
