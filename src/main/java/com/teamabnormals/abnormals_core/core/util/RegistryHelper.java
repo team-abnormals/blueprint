@@ -399,7 +399,7 @@ public class RegistryHelper {
 	 */
 	public <B extends Block> RegistryObject<AbnormalsChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
 		RegistryObject<AbnormalsChestBlock> block = this.blockRegister.register(name + "_chest", () -> new AbnormalsChestBlock(this.getModId(), name, properties));
-		this.itemRegister.register(name + "_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER())));
+		this.itemRegister.register(name + "_chest", () -> new FuelBlockItem(block.get(), 300, new Item.Properties().group(group).setISTER(() -> chestISTER())));
 		return block;
 	}
 	
@@ -412,7 +412,7 @@ public class RegistryHelper {
 	 */
 	public <B extends Block> RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
 		RegistryObject<AbnormalsTrappedChestBlock> block = this.blockRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.getModId(), name, properties));
-		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> trappedChestISTER())));
+		this.itemRegister.register(name + "_trapped_chest", () -> new FuelBlockItem(block.get(), 300, new Item.Properties().group(group).setISTER(() -> trappedChestISTER())));
 		return block;
 	}
 	
