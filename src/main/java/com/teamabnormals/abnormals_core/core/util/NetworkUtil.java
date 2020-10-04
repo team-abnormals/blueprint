@@ -1,5 +1,6 @@
 package com.teamabnormals.abnormals_core.core.util;
 
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.DirtMessageScreen;
@@ -30,6 +31,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
+
+import java.util.Set;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -156,5 +159,13 @@ public final class NetworkUtil {
 			if (currentScreen != null)
 				minecraft.displayGuiScreen(new ConnectingScreen(currentScreen, minecraft, new ServerData("Redirect", address, false)));
 		}
+	}
+
+	public static void updateTrackedData(ServerPlayerEntity player, Entity target, Set<IDataManager.DataEntry<?>> entries) {
+		AbnormalsCore.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MessageS2CUpdateEntityData(target.getEntityId(), entries));
+	}
+
+	public static void updateTrackedData(Entity entity, Set<IDataManager.DataEntry<?>> entries) {
+		AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CUpdateEntityData(entity.getEntityId(), entries));
 	}
 }

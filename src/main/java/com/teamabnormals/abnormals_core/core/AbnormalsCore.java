@@ -154,6 +154,11 @@ public final class AbnormalsCore {
 		.encoder(MessageS2CServerRedirect::serialize).decoder(MessageS2CServerRedirect::deserialize)
 		.consumer(MessageS2CServerRedirect::handle)
 		.add();
+
+		CHANNEL.messageBuilder(MessageS2CUpdateEntityData.class, id++)
+		.encoder(MessageS2CUpdateEntityData::serialize).decoder(MessageS2CUpdateEntityData::deserialize)
+		.consumer(MessageS2CUpdateEntityData::handle)
+		.add();
 	}
 
 	private void replaceBeehivePOI() {

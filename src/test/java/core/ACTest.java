@@ -2,6 +2,9 @@ package core;
 
 import client.TestEndimatedEntityRenderer;
 import com.teamabnormals.abnormals_core.common.world.storage.GlobalStorage;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.abnormals_core.core.annotations.Test;
 import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry;
@@ -39,6 +42,7 @@ public final class ACTest {
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MOD_ID);
 	public static final TestGlobalStorage TEST_GLOBAL_STORAGE = GlobalStorage.createStorage(new ResourceLocation(MOD_ID, "test_storage"), new TestGlobalStorage());
 	public static final BannerPattern TEST_BANNER_PATTERN = BannerManager.createPattern("mca", "test", "tst");
+	public static final TrackedData<Boolean> TEST_TRACKED_DATA = TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> false).enableSaving().enablePersistence().build();
 
 	public ACTest() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -53,6 +57,7 @@ public final class ACTest {
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
+		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "tracked_data"), TEST_TRACKED_DATA);
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
