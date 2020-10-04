@@ -19,7 +19,7 @@ mixin {
     add sourceSets.main, "abnormals_core.refmap.json"
 }
 
-version = '2.0.2'
+version = '2.1.0'
 group = 'com.minecraftabnormals'
 archivesBaseName = 'Abnormals-Core-1.16.3'
 
