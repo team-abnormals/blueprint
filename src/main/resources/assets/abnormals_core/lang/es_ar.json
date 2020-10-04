@@ -1,5 +1,6 @@
 {
-	"abnormals_core.config.quark_sign_editing": "Editar carteles de Quark",
+	"abnormals_core.config.quark_sign_editing": "Edición de carteles de Quark",
 	"abnormals_core.config.require_empty_hand": "Editar carteles de Quark solo con la mano vacía",
+	"abnormals_core.message.redirect": "Redireccionando",
 	"entity.abnormals_core.boat": "Bote"
 }
