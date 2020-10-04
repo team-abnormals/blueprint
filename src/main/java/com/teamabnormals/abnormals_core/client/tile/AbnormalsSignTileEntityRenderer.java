@@ -68,7 +68,7 @@ public class AbnormalsSignTileEntityRenderer<A extends AbnormalsSignTileEntity> 
 
 		for (int line = 0; line < 4; line++) {
 			IReorderingProcessor processor = sign.getRenderText(line, (p_239309_1_) -> {
-				List<IReorderingProcessor> list = fontrenderer.func_238425_b_(p_239309_1_, 90);
+				List<IReorderingProcessor> list = fontrenderer.trimStringToWidth(p_239309_1_, 90);
 				return list.isEmpty() ? IReorderingProcessor.field_242232_a : list.get(0);
 			});
 			if (processor != null) {

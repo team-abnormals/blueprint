@@ -23,7 +23,6 @@ import java.util.Set;
  * @author SmellyModder(Luke Tonon)
  */
 @Test
-@SuppressWarnings("unused")
 @Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class TestEntitySpawnHelper extends EntitySpawnHelper {
 	private static final Set<EntitySpawn<? extends MobEntity>> SPAWNS = Util.make(Sets.newHashSet(), spawns -> {

@@ -28,7 +28,7 @@ public final class ServerWorldMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void init(MinecraftServer server, Executor workerExecutor, SaveFormat.LevelSave levelSave, IServerWorldInfo serverWorldInfo, RegistryKey<World> registryKey, DimensionType dimensionType, IChunkStatusListener statusListener, ChunkGenerator chunkGenerator, boolean bl, long l, List<ISpecialSpawner> list, boolean bl2, CallbackInfo info) {
 		//Overworld
-		if (registryKey == World.field_234918_g_) {
+		if (registryKey == World.OVERWORLD) {
 			GlobalStorageManager.getOrCreate((ServerWorld) (Object) this);
 		}
 	}

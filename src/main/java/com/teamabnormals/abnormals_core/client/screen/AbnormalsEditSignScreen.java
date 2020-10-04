@@ -50,7 +50,7 @@ public class AbnormalsEditSignScreen extends Screen {
 	@Override
 	protected void init() {
 		this.minecraft.keyboardListener.enableRepeatEvents(true);
-		this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 120, 200, 20, DialogTexts.field_240632_c_, (p_238847_1_) -> {
+		this.addButton(new Button(this.width / 2 - 100, this.height / 4 + 120, 200, 20, DialogTexts.GUI_DONE, (p_238847_1_) -> {
 			this.close();
 		}));
 		this.tileSign.setEditable(false);
@@ -59,7 +59,7 @@ public class AbnormalsEditSignScreen extends Screen {
 		}, (p_238850_1_) -> {
 			this.field_238846_r_[this.editLine] = p_238850_1_;
 			this.tileSign.setText(this.editLine, new StringTextComponent(p_238850_1_));
-		}, TextInputUtil.func_238570_a_(this.minecraft), TextInputUtil.func_238582_c_(this.minecraft), (p_238848_1_) -> {
+		}, TextInputUtil.getClipboardTextSupplier(this.minecraft), TextInputUtil.getClipboardTextSetter(this.minecraft), (p_238848_1_) -> {
 			return this.minecraft.fontRenderer.getStringWidth(p_238848_1_) <= 90;
 		});
 	}
@@ -100,13 +100,13 @@ public class AbnormalsEditSignScreen extends Screen {
 	public boolean keyPressed(int firstKey, int secondKey, int thirdKey) {
 		if(firstKey == 265) {
 			this.editLine = this.editLine - 1 & 3;
-			this.textInputUtil.func_238588_f_();
+			this.textInputUtil.moveCursorToEnd();
 			return true;
 		} else if (firstKey != 264 && firstKey != 257 && firstKey != 335) {
 			return this.textInputUtil.specialKeyPressed(firstKey) ? true : super.keyPressed(firstKey, secondKey, thirdKey);
 		} else {
 			this.editLine = this.editLine + 1 & 3;
-			this.textInputUtil.func_238588_f_();
+			this.textInputUtil.moveCursorToEnd();
 			return true;
 		}
 	}

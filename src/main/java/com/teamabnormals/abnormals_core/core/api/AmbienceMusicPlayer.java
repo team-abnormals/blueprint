@@ -157,7 +157,7 @@ public class AmbienceMusicPlayer {
 					this.ticksInBiome = Math.min(this.ticksInBiome, 40);
 					this.volume = MathHelper.clamp((float) this.ticksInBiome / 40.0F, 0.0F, 1.0F);
 				} else {
-					this.func_239509_o_();
+					this.finishPlaying();
 				}
 			}
 		}
@@ -177,7 +177,7 @@ public class AmbienceMusicPlayer {
 			
 			@Override
 			public void tick() {
-				if(!this.player.isAlive()) this.func_239509_o_();
+				if(!this.player.isAlive()) this.finishPlaying();
 			}
 		}
 	}

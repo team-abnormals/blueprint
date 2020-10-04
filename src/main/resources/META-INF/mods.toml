@@ -15,13 +15,13 @@ issueTrackerURL="https://github.com/minecraftabnormals/Abnormals-Core/issues"
 [[dependencies.abnormals_core]]
     modId="forge"
     mandatory=true
-    versionRange="[33.0.22,)"
+    versionRange="[34.1.5,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.abnormals_core]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.2]"
+    versionRange="[1.16.3]"
     ordering="NONE"
     side="BOTH"
