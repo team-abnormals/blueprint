@@ -1,5 +1,14 @@
 package com.teamabnormals.abnormals_core.core.util;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screen.DirtMessageScreen;
+import net.minecraft.client.gui.screen.ConnectingScreen;
+import net.minecraft.client.gui.screen.MultiplayerScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.teamabnormals.abnormals_core.client.ClientInfo;
@@ -112,5 +121,40 @@ public final class NetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void openSignScreen(AbnormalsSignTileEntity sign) {
 		ClientInfo.MINECRAFT.displayGuiScreen(new AbnormalsEditSignScreen(sign));
+	}
+
+	/**
+	 * Send a packet to the client to redirect them to another server
+	 * @param address - The address to connect to
+	 */
+	public static void redirectToServer(ServerPlayerEntity player, String address) {
+		AbnormalsCore.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MessageS2CServerRedirect(address));
+	}
+
+	/**
+	 * Send a packet to all clients to redirect them to another server
+	 * @param address - The address to connect to
+	 */
+	public static void redirectAllToServer(String address) {
+		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageS2CServerRedirect(address));
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void redirectToServer(String address) {
+		Minecraft minecraft = ClientInfo.MINECRAFT;
+		World world = minecraft.world;
+		Screen currentScreen = minecraft.currentScreen;
+		boolean integrated = minecraft.isIntegratedServerRunning();
+
+		if (world != null) {
+			world.sendQuittingDisconnectingPacket();
+			minecraft.unloadWorld(new DirtMessageScreen(new TranslationTextComponent(integrated ? "menu.savingLevel" : "abnormals_core.message.redirect")));
+
+			MainMenuScreen menuScreen = new MainMenuScreen();
+			minecraft.displayGuiScreen(integrated ? menuScreen : new MultiplayerScreen(menuScreen));
+
+			if (currentScreen != null)
+				minecraft.displayGuiScreen(new ConnectingScreen(currentScreen, minecraft, new ServerData("Redirect", address, false)));
+		}
 	}
 }
