@@ -5,9 +5,13 @@
   "minVersion": "0.8",
   "refmap": "abnormals_core.refmap.json",
   "mixins": [
-    "ServerWorldMixin",
     "EntityMixin",
+    "ServerWorldMixin",
     "TrackedEntityMixin"
+  ],
+  "client": [
+    "client.EditSignScreenMixin",
+    "client.SignTileEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
