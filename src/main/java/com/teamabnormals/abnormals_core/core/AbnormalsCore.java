@@ -115,51 +115,16 @@ public final class AbnormalsCore {
 	
 	private void setupMessages() {
 		int id = -1;
-		
-		CHANNEL.messageBuilder(MessageS2CEndimation.class, id++)
-		.encoder(MessageS2CEndimation::serialize).decoder(MessageS2CEndimation::deserialize)
-		.consumer(MessageS2CEndimation::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageSOpenSignEditor.class, id++)
-		.encoder(MessageSOpenSignEditor::serialize).decoder(MessageSOpenSignEditor::deserialize)
-		.consumer(MessageSOpenSignEditor::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageC2SEditSign.class, id++)
-		.encoder(MessageC2SEditSign::serialize).decoder(MessageC2SEditSign::deserialize)
-		.consumer(MessageC2SEditSign::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageS2CUpdateSign.class, id++)
-		.encoder(MessageS2CUpdateSign::serialize).decoder(MessageS2CUpdateSign::deserialize)
-		.consumer(MessageS2CUpdateSign::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageS2CTeleportEntity.class, id++)
-		.encoder(MessageS2CTeleportEntity::serialize).decoder(MessageS2CTeleportEntity::deserialize)
-		.consumer(MessageS2CTeleportEntity::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageS2CSpawnParticle.class, id++)
-		.encoder(MessageS2CSpawnParticle::serialize).decoder(MessageS2CSpawnParticle::deserialize)
-		.consumer(MessageS2CSpawnParticle::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageC2S2CSpawnParticle.class, id++)
-		.encoder(MessageC2S2CSpawnParticle::serialize).decoder(MessageC2S2CSpawnParticle::deserialize)
-		.consumer(MessageC2S2CSpawnParticle::handle)
-		.add();
 
-		CHANNEL.messageBuilder(MessageS2CServerRedirect.class, id++)
-		.encoder(MessageS2CServerRedirect::serialize).decoder(MessageS2CServerRedirect::deserialize)
-		.consumer(MessageS2CServerRedirect::handle)
-		.add();
-
-		CHANNEL.messageBuilder(MessageS2CUpdateEntityData.class, id++)
-		.encoder(MessageS2CUpdateEntityData::serialize).decoder(MessageS2CUpdateEntityData::deserialize)
-		.consumer(MessageS2CUpdateEntityData::handle)
-		.add();
+		CHANNEL.registerMessage(id++, MessageS2CEndimation.class, MessageS2CEndimation::serialize, MessageS2CEndimation::deserialize, MessageS2CEndimation::handle);
+		CHANNEL.registerMessage(id++, MessageSOpenSignEditor.class, MessageSOpenSignEditor::serialize, MessageSOpenSignEditor::deserialize, MessageSOpenSignEditor::handle);
+		CHANNEL.registerMessage(id++, MessageC2SEditSign.class, MessageC2SEditSign::serialize, MessageC2SEditSign::deserialize, MessageC2SEditSign::handle);
+		CHANNEL.registerMessage(id++, MessageS2CUpdateSign.class, MessageS2CUpdateSign::serialize, MessageS2CUpdateSign::deserialize, MessageS2CUpdateSign::handle);
+		CHANNEL.registerMessage(id++, MessageS2CTeleportEntity.class, MessageS2CTeleportEntity::serialize, MessageS2CTeleportEntity::deserialize, MessageS2CTeleportEntity::handle);
+		CHANNEL.registerMessage(id++, MessageS2CSpawnParticle.class, MessageS2CSpawnParticle::serialize, MessageS2CSpawnParticle::deserialize, MessageS2CSpawnParticle::handle);
+		CHANNEL.registerMessage(id++, MessageC2S2CSpawnParticle.class, MessageC2S2CSpawnParticle::serialize, MessageC2S2CSpawnParticle::deserialize, MessageC2S2CSpawnParticle::handle);
+		CHANNEL.registerMessage(id++, MessageS2CServerRedirect.class, MessageS2CServerRedirect::serialize, MessageS2CServerRedirect::deserialize, MessageS2CServerRedirect::handle);
+		CHANNEL.registerMessage(id++, MessageS2CUpdateEntityData.class, MessageS2CUpdateEntityData::serialize, MessageS2CUpdateEntityData::deserialize, MessageS2CUpdateEntityData::handle);
 	}
 
 	private void replaceBeehivePOI() {
