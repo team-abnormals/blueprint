@@ -2,8 +2,10 @@ package com.teamabnormals.abnormals_core.common.items;
 
 import java.util.function.Supplier;
 
+import com.teamabnormals.abnormals_core.common.dispenser.SpawnEggDispenseBehavior;
 import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -21,6 +23,7 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 	public AbnormalsSpawnEggItem(Supplier<EntityType<?>> entityType, int primaryColor, int secondaryColor, Properties properties){
 		super(null, primaryColor, secondaryColor, properties);
 		this.entityType = entityType;
+		DispenserBlock.registerDispenseBehavior(this, new SpawnEggDispenseBehavior());
 	}
 
 	@Override

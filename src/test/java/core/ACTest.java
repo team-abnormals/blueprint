@@ -8,7 +8,8 @@ import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedDat
 import com.teamabnormals.abnormals_core.core.annotations.Test;
 import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry;
-import com.teamabnormals.abnormals_core.core.util.RegistryHelper;
+import com.teamabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
+import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
 import core.registry.TestEntities;
 import core.registry.TestEntitySpawnHelper;
@@ -39,7 +40,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ACTest {
 	public static final String MOD_ID = "ac_test";
-	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MOD_ID);
+	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper.Builder(MOD_ID).build();
 	public static final TestGlobalStorage TEST_GLOBAL_STORAGE = GlobalStorage.createStorage(new ResourceLocation(MOD_ID, "test_storage"), new TestGlobalStorage());
 	public static final BannerPattern TEST_BANNER_PATTERN = BannerManager.createPattern("mca", "test", "tst");
 	public static final TrackedData<Boolean> TEST_TRACKED_DATA = TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> false).enableSaving().enablePersistence().build();
@@ -48,10 +49,7 @@ public final class ACTest {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 
-		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
+		REGISTRY_HELPER.register(modEventBus);
 
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(this::clientSetup);
@@ -78,7 +76,8 @@ public final class ACTest {
 
 	@OnlyIn(Dist.CLIENT)
 	private void registerItemColors(ColorHandlerEvent.Item event) {
-		REGISTRY_HELPER.processSpawnEggColors(event);
+		ItemSubRegistryHelper itemSubRegistryHelper = REGISTRY_HELPER.getItemSubHelper();
+		itemSubRegistryHelper.processSpawnEggColors(event);
 	}
 
 	private void registerLootInjectors() {

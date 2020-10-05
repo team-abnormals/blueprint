@@ -1,5 +1,6 @@
 package com.teamabnormals.abnormals_core.core.util;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -53,5 +55,17 @@ public final class DataUtil {
 			blockColors.register(color, blocks);
 		}
 	}
+	
+	/**
+	 * Adds an EnchantmentType to an EnchantmentType array
+	 */
+    public static EnchantmentType[] add(EnchantmentType[] array, EnchantmentType element) {
+        EnchantmentType[] newArray = array;
+        int arrayLength = Array.getLength(newArray);
+        Object newArrayObject = Array.newInstance(newArray.getClass().getComponentType(), arrayLength + 1);
+        System.arraycopy(array, 0, newArrayObject, 0, arrayLength);
+        newArray[newArray.length - 1] = element;
+        return newArray;
+    }
 	
 }

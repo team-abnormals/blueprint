@@ -3,6 +3,8 @@ package com.teamabnormals.abnormals_core.core;
 import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.teamabnormals.abnormals_core.core.registry.ACEntities;
 import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +21,6 @@ import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.api.IAddToBiomes;
 import com.teamabnormals.abnormals_core.core.api.conditions.*;
 import com.teamabnormals.abnormals_core.core.endimator.EndimationDataManager;
-import com.teamabnormals.abnormals_core.core.util.RegistryHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -55,7 +56,7 @@ public final class AbnormalsCore {
 	public static final String MODID = "abnormals_core";
 	public static final String NETWORK_PROTOCOL = "AC1";
 	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
-	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MODID);
+	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper.Builder(MODID).build();
 	
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))
 		.networkProtocolVersion(() -> NETWORK_PROTOCOL)
@@ -74,8 +75,8 @@ public final class AbnormalsCore {
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
 		BannerManager.RECIPE_SERIALIZERS.register(modEventBus);
 
-		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
+		REGISTRY_HELPER.getEntitySubHelper().register(modEventBus);
+		REGISTRY_HELPER.getTileEntitySubHelper().register(modEventBus);
 		
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();

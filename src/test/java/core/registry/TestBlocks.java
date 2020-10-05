@@ -8,7 +8,7 @@ import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSign
 import com.teamabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
 import com.teamabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
 import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.util.RegistryHelper;
+import com.teamabnormals.abnormals_core.core.util.registry.BlockSubRegistryHelper;
 import common.blocks.ChunkLoadTestBlock;
 import common.blocks.RotatedVoxelShapeTestBlock;
 import core.ACTest;
@@ -24,13 +24,13 @@ import net.minecraftforge.fml.common.Mod;
 @Test
 @Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class TestBlocks {
-	private static final RegistryHelper HELPER = ACTest.REGISTRY_HELPER;
+	private static final BlockSubRegistryHelper HELPER = ACTest.REGISTRY_HELPER.getBlockSubHelper();
 
 	public static final RegistryObject<Block> BLOCK = HELPER.createBlock("block", () -> new Block(Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> TEST_LOADER = HELPER.createBlock("test_loader", () -> new ChunkLoadTestBlock(Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> TEST_ROTATION = HELPER.createBlock("test_rotation", () -> new RotatedVoxelShapeTestBlock(Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
 	public static final Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> SIGNS = HELPER.createSignBlock("test", MaterialColor.PINK);
-	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> CHESTS = HELPER.createCompatChestBlocks("test_two", MaterialColor.PURPLE);
+	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> CHESTS = HELPER.createCompatChestBlocks("test_two", "indev", MaterialColor.PURPLE);
 
 	public static final RegistryObject<AbnormalsChestBlock> EXAMPLE_CHEST = HELPER.createChestBlock("test", Block.Properties.from(Blocks.DIRT), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<AbnormalsTrappedChestBlock> EXAMPLE_TRAPPED_CHEST = HELPER.createTrappedChestBlock("test", Block.Properties.from(Blocks.CHEST), ItemGroup.DECORATIONS);

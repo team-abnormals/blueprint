@@ -26,7 +26,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
  * @author SmellyModder(Luke Tonon)
  * TODO: Possibly remove in 1.16.2
  */
-@SuppressWarnings("unused")
 @EventBusSubscriber(modid = AbnormalsCore.MODID, value = Dist.CLIENT)
 public class AmbienceMusicPlayer {
 	private static final List<IAmbientSoundHandler> SOUND_HANDLERS = Lists.newArrayList();
