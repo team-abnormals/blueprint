@@ -19,21 +19,21 @@ public class ChunkLoaderEvents {
 	@SubscribeEvent
 	public void attachChunkLoaderCap(AttachCapabilitiesEvent<World> event) {
 		World world = event.getObject();
-		if(!world.isRemote) {
+		if (!world.isRemote) {
 			LazyOptional<IChunkLoader> loaderInstance = LazyOptional.of(() -> new ChunkLoader((ServerWorld) world));
 			event.addCapability(new ResourceLocation(AbnormalsCore.MODID, "chunk_loader"), new ChunkLoaderCapability(loaderInstance));
 			event.addListener(() -> loaderInstance.invalidate());
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void tickChunkLoader(WorldTickEvent event) {
 		World world = event.world;
-		if(!world.isRemote && event.phase == Phase.START) {
+		if (!world.isRemote && event.phase == Phase.START) {
 			world.getCapability(ChunkLoaderCapability.CHUNK_LOAD_CAP).ifPresent(loader -> {
 				loader.tick();
 			});
 		}
 	}
-	
+
 }

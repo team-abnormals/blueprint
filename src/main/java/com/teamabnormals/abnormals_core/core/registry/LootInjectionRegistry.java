@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
 public final class LootInjectionRegistry {
 	private static final Map<Set<ResourceLocation>, LootPool> POOLS = Maps.newHashMap();
-	
+
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onInjectLoot(LootTableLoadEvent event) {
 		POOLS.keySet().forEach(locations -> {
@@ -30,18 +30,18 @@ public final class LootInjectionRegistry {
 			}
 		});
 	}
-	
+
 	public static class LootInjector {
 		private final String modId;
-		
+
 		public LootInjector(String modId) {
 			this.modId = modId;
 		}
-		
+
 		public synchronized void registerLootInjection(LootPool pool, ResourceLocation... locations) {
 			POOLS.put(Sets.newHashSet(locations), pool);
 		}
-		
+
 		public LootPool buildLootBool(String name, int weight, int quality) {
 			return LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(this.modId, "injections/" + name)).weight(weight).quality(quality)).name(name).build();
 		}

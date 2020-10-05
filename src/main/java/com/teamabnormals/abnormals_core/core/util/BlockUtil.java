@@ -18,7 +18,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-/** 
+/**
  * @author - SmellyModder(Luke Tonon)
  */
 public final class BlockUtil {
@@ -34,18 +34,18 @@ public final class BlockUtil {
 		}
 		return false;
 	}
-	
+
 	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos, BlockState state) {
 		ISelectionContext selectionContext = player == null ? ISelectionContext.dummy() : ISelectionContext.forEntity(player);
 		VoxelShape voxelshape = state.getCollisionShape(world, pos, selectionContext);
 		VoxelShape offsetShape = world.getBlockState(pos).getCollisionShape(world, pos);
 		return (offsetShape.isEmpty() || world.getBlockState(pos).getMaterial().isReplaceable()) && state.isValidPosition(world, pos) && world.checkNoEntityCollision(null, voxelshape.withOffset(pos.getX(), pos.getY(), pos.getZ()));
 	}
-	
+
 	public static SoundEvent getPlaceSound(BlockState state, World world, BlockPos pos, PlayerEntity entity) {
 		return state.getSoundType(world, pos, entity).getPlaceSound();
 	}
-	
+
 	public static boolean isPosNotTouchingBlock(IWorld world, BlockPos pos, Block blockToCheck, Direction... blacklistedDirections) {
 		for (Direction directions : Direction.values()) {
 			List<Direction> blacklistedDirectionsList = Arrays.asList(blacklistedDirections);
@@ -57,8 +57,8 @@ public final class BlockUtil {
 		}
 		return true;
 	}
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static BlockState transferAllBlockStates(BlockState initial, BlockState after) {
 		BlockState block = after;
 		for (Property property : initial.getBlock().getStateContainer().getProperties()) {
@@ -68,12 +68,12 @@ public final class BlockUtil {
 		}
 		return block;
 	}
-	
+
 	public static AxisAlignedBB rotateHorizontalBB(AxisAlignedBB bb, BBRotation rotation) {
 		AxisAlignedBB newBB = bb;
 		return rotation.rotateBB(newBB);
 	}
-	
+
 	public enum BBRotation {
 		REVERSE_X((bb) -> {
 			final float minX = 1.0F - (float) bb.maxX;
@@ -89,23 +89,23 @@ public final class BlockUtil {
 		LEFT((bb) -> {
 			return REVERSE_X.rotateBB(RIGHT.rotateBB(bb));
 		});
-		
+
 		private final UnaryOperator<AxisAlignedBB> modifier;
-		
+
 		BBRotation(UnaryOperator<AxisAlignedBB> modifier) {
 			this.modifier = modifier;
 		}
-		
+
 		public AxisAlignedBB rotateBB(AxisAlignedBB bb) {
 			return this.modifier.apply(bb);
 		}
-		
+
 		public static BBRotation getRotationForDirection(Direction currentDirection, Direction startingDirection) {
 			int currentIndex = currentDirection.getIndex() - 2;
 			int startingIndex = startingDirection.getIndex() - 2;
 			int index = (currentIndex - startingIndex) % 4;
-			
-			switch(index) {
+
+			switch (index) {
 				default:
 				case 0:
 					return BBRotation.REVERSE_X;

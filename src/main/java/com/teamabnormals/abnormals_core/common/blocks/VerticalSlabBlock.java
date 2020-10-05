@@ -29,43 +29,44 @@ import net.minecraft.world.IWorld;
 public class VerticalSlabBlock extends Block implements IWaterLoggable {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	
+
 	public VerticalSlabBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(TYPE, VerticalSlabType.NORTH).with(WATERLOGGED, false));
 	}
-	
+
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(TYPE, WATERLOGGED);
 	}
-	
+
 	@Override
 	public boolean isTransparent(BlockState state) {
 		return state.get(TYPE) != VerticalSlabType.DOUBLE;
 	}
-	
+
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return state.get(TYPE).shape;
 	}
-	
+
 	@Override
 	@Nullable
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		BlockPos blockpos = context.getPos();
 		BlockState blockstate = context.getWorld().getBlockState(blockpos);
-		if (blockstate.getBlock() == this) return blockstate.with(TYPE, VerticalSlabType.DOUBLE).with(WATERLOGGED, false);
+		if (blockstate.getBlock() == this)
+			return blockstate.with(TYPE, VerticalSlabType.DOUBLE).with(WATERLOGGED, false);
 		return this.getDefaultState().with(WATERLOGGED, context.getWorld().getFluidState(blockpos).getFluid() == Fluids.WATER).with(TYPE, VerticalSlabType.fromDirection(this.getDirectionForPlacement(context)));
 	}
-	
+
 	private Direction getDirectionForPlacement(BlockItemUseContext context) {
 		Direction face = context.getFace();
 		if (face.getAxis() != Direction.Axis.Y) return face;
 		Vector3d difference = context.getHitVec().subtract(Vector3d.copy(context.getPos())).subtract(0.5, 0, 0.5);
 		return Direction.fromAngle(-Math.toDegrees(Math.atan2(difference.getX(), difference.getZ()))).getOpposite();
 	}
-	
+
 	@Override
 	public boolean isReplaceable(BlockState state, @Nonnull BlockItemUseContext context) {
 		VerticalSlabType slabtype = state.get(TYPE);
@@ -106,12 +107,12 @@ public class VerticalSlabBlock extends Block implements IWaterLoggable {
 		WEST(Direction.WEST),
 		EAST(Direction.EAST),
 		DOUBLE(null);
-		
+
 		private final String name;
 		@Nullable
 		public final Direction direction;
 		public final VoxelShape shape;
-		
+
 		VerticalSlabType(@Nullable Direction direction) {
 			this.direction = direction;
 			this.name = direction == null ? "double" : direction.getString();
@@ -122,9 +123,9 @@ public class VerticalSlabBlock extends Block implements IWaterLoggable {
 				double min = isNegativeAxis ? 8 : 0;
 				double max = isNegativeAxis ? 16 : 8;
 				this.shape = direction.getAxis() == Direction.Axis.X ? Block.makeCuboidShape(min, 0, 0, max, 16, 16) : Block.makeCuboidShape(0, 0, min, 16, 16, max);
-            }
-        }
-		
+			}
+		}
+
 		public static VerticalSlabType fromDirection(Direction direction) {
 			for (VerticalSlabType type : VerticalSlabType.values()) {
 				if (type.direction != null && direction == type.direction) {
@@ -133,7 +134,7 @@ public class VerticalSlabBlock extends Block implements IWaterLoggable {
 			}
 			return null;
 		}
-		
+
 		@Override
 		public String toString() {
 			return this.name;

@@ -10,9 +10,9 @@ import net.minecraft.util.NonNullList;
 
 public class StrippedWoodBlock extends RotatedPillarBlock {
 	public StrippedWoodBlock(Properties properties) {
-        super(properties);
-    }
-	
+		super(properties);
+	}
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.STRIPPED_WARPED_HYPHAE, group, items);

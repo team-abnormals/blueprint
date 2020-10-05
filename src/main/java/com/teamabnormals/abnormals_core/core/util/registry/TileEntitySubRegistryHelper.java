@@ -12,8 +12,9 @@ import java.util.function.Supplier;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for tile entities. This contains a few registering methods for tile entities.
- * @see AbstractSubRegistryHelper
+ *
  * @author SmellyModder (Luke Tonon)
+ * @see AbstractSubRegistryHelper
  */
 public class TileEntitySubRegistryHelper extends AbstractSubRegistryHelper<TileEntityType<?>> {
 
@@ -27,8 +28,9 @@ public class TileEntitySubRegistryHelper extends AbstractSubRegistryHelper<TileE
 
 	/**
 	 * Creates and registers a {@link TileEntityType}.
-	 * @param name - The name for the {@link TileEntity}.
-	 * @param tileEntity - The {@link TileEntity}.
+	 *
+	 * @param name        - The name for the {@link TileEntity}.
+	 * @param tileEntity  - The {@link TileEntity}.
 	 * @param validBlocks - The valid blocks for this {@link TileEntityType}.
 	 * @return A {@link RegistryObject} containing the customized {@link TileEntityType}.
 	 */
@@ -39,7 +41,8 @@ public class TileEntitySubRegistryHelper extends AbstractSubRegistryHelper<TileE
 	/**
 	 * Creates and registers a {@link TileEntityType} with valid blocks that are an instance of a {@link Block} class.
 	 * Useful for dynamic valid blocks on tile entities.
-	 * @param name - The name for the {@link TileEntity}.
+	 *
+	 * @param name       - The name for the {@link TileEntity}.
 	 * @param tileEntity - The {@link TileEntity}.
 	 * @param blockClass - The block class to filter registered blocks that are an instance of it.
 	 * @return A {@link RegistryObject} containing the customized {@link TileEntityType}.
@@ -50,6 +53,7 @@ public class TileEntitySubRegistryHelper extends AbstractSubRegistryHelper<TileE
 
 	/**
 	 * Collects all registered {@link Block}s that are an instance of a {@link Block} class.
+	 *
 	 * @param blockClass - The instance of class to filter
 	 * @return A filtered array of registered {@link Block}s that are an instance of a {@link Block} class
 	 */

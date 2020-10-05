@@ -12,8 +12,8 @@ import java.util.function.Consumer;
 /**
  * A simple helper class for custom name entity skins.
  *
- * @author - SmellyModder (Luke Tonon)
  * @param <E> - The type of entity.
+ * @author - SmellyModder (Luke Tonon)
  */
 public class EntitySkinHelper<E extends Entity> {
 	private final Map<String, ResourceLocation> skins = Maps.newHashMap();
@@ -30,11 +30,12 @@ public class EntitySkinHelper<E extends Entity> {
 
 	/**
 	 * Creates a basic {@link EntitySkinHelper}.
-	 * @param modId - The mod id.
-	 * @param path - The path of the folder to lookup the textures in.
-	 * @param prefix - The prefix for the textures to lookup (e.g. prefix = "booflo"; "booflo_snake").
+	 *
+	 * @param modId    - The mod id.
+	 * @param path     - The path of the folder to lookup the textures in.
+	 * @param prefix   - The prefix for the textures to lookup (e.g. prefix = "booflo"; "booflo_snake").
 	 * @param consumer - A consumer used to call the methods to put skins for names.
-	 * @param <E> - The type of entity
+	 * @param <E>      - The type of entity
 	 * @return A {@link EntitySkinHelper} with a specified mod id, path, and prefix.
 	 */
 	public static <E extends Entity> EntitySkinHelper<E> create(String modId, String path, String prefix, Consumer<EntitySkinHelper<E>> consumer) {
@@ -45,10 +46,11 @@ public class EntitySkinHelper<E extends Entity> {
 
 	/**
 	 * Creates a {@link EntitySkinHelper} with no prefix.
-	 * @param modId - The mod id.
-	 * @param path - The path of the folder to lookup the textures in.
+	 *
+	 * @param modId    - The mod id.
+	 * @param path     - The path of the folder to lookup the textures in.
 	 * @param consumer - A consumer used to call the methods to put skins for names.
-	 * @param <E> - The type of entity
+	 * @param <E>      - The type of entity
 	 * @return A {@link EntitySkinHelper} with a specified mod id and path.
 	 */
 	public static <E extends Entity> EntitySkinHelper<E> createWithoutPrefix(String modId, String path, Consumer<EntitySkinHelper<E>> consumer) {
@@ -60,8 +62,9 @@ public class EntitySkinHelper<E extends Entity> {
 	/**
 	 * Puts multiple skin name keys onto the map for a skin texture.
 	 * For putting one skin name key use {@link #putSkin(String, String)}.
+	 *
 	 * @param skinTexture - The name of the skin texture.
-	 * @param skinNames - The name keys to be mapped for this skin texture.
+	 * @param skinNames   - The name keys to be mapped for this skin texture.
 	 */
 	public void putSkins(String skinTexture, String... skinNames) {
 		ResourceLocation skinTextureLocation = this.createTextureLocation(skinTexture);
@@ -73,8 +76,9 @@ public class EntitySkinHelper<E extends Entity> {
 	/**
 	 * Puts a skin name key onto the map for a skin texture.
 	 * For multiple skin name keys use {@link #putSkins(String, String...)}.
+	 *
 	 * @param skinTexture - The name of the skin texture.
-	 * @param skinName - The name key to be mapped for this skin texture.
+	 * @param skinName    - The name key to be mapped for this skin texture.
 	 */
 	public void putSkin(String skinTexture, String skinName) {
 		this.skins.put(skinName, this.createTextureLocation(skinTexture));
@@ -86,6 +90,7 @@ public class EntitySkinHelper<E extends Entity> {
 
 	/**
 	 * Gets the skin texture {@link ResourceLocation} for an entity.
+	 *
 	 * @param entity - The entity to get the skin for.
 	 * @return The skin texture {@link ResourceLocation} for an entity or null if no skin could be found for its name.
 	 */
@@ -96,6 +101,7 @@ public class EntitySkinHelper<E extends Entity> {
 
 	/**
 	 * Gets the skin texture {@link ResourceLocation} for an entity or defaults to {@param otherSkinTexture} if skin couldn't be looked up.
+	 *
 	 * @param entity - The entity to get the skin for.
 	 * @return The skin texture {@link ResourceLocation} for an entity or {@param otherSkinTexture} if null.
 	 */

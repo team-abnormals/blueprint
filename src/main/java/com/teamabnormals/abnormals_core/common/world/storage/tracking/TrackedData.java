@@ -9,6 +9,7 @@ import java.util.function.Supplier;
  * <p>A {@link SyncType} for how this data should be synced.</p>
  * <p>A boolean, {@link #save}, if this data should be saved and reloaded.</p>
  * <p>A boolean, {@link #persistent}, if this data should be wiped when a data-clearing event occurs, e.g. a player dying.</p>
+ *
  * @param <T> The type to track.
  * @author SmellyModder (Luke Tonon)
  */
@@ -62,8 +63,9 @@ public class TrackedData<T> {
 
 		/**
 		 * Creates a builder for a {@link IDataProcessor}.
+		 *
 		 * @param processor The processor to use for the {@link TrackedData}.
-		 * @param <T> The type of data to track.
+		 * @param <T>       The type of data to track.
 		 * @return This current builder.
 		 */
 		public static <T> Builder<T> create(final IDataProcessor<T> processor, final Supplier<T> defaultValue) {
@@ -73,6 +75,7 @@ public class TrackedData<T> {
 		/**
 		 * Sets the {@link SyncType} for the {@link TrackedData} to be built.
 		 * <p> This is {@link SyncType#TO_CLIENTS} by default. </p>
+		 *
 		 * @param syncType The {@link SyncType} to set.
 		 * @return This current builder.
 		 */
@@ -83,6 +86,7 @@ public class TrackedData<T> {
 
 		/**
 		 * Enables NBT writing and reading.
+		 *
 		 * @return This current builder.
 		 */
 		public Builder<T> enableSaving() {
@@ -93,6 +97,7 @@ public class TrackedData<T> {
 		/**
 		 * Enables data persistence.
 		 * When this is enabled for players the data is kept even when the players die.
+		 *
 		 * @return This current builder.
 		 */
 		public Builder<T> enablePersistence() {
@@ -102,6 +107,7 @@ public class TrackedData<T> {
 
 		/**
 		 * Builds the {@link TrackedData}.
+		 *
 		 * @return A {@link TrackedData} constructed using this builder.
 		 */
 		public TrackedData<T> build() {

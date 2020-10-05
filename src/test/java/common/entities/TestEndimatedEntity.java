@@ -18,7 +18,7 @@ public class TestEndimatedEntity extends EndimatedEntity {
 	public TestEndimatedEntity(EntityType<? extends CreatureEntity> type, World worldIn) {
 		super(type, worldIn);
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();
@@ -38,7 +38,7 @@ public class TestEndimatedEntity extends EndimatedEntity {
 //			GenerationUtils.fillAreaWithBlockCube(this.world, this.getRNG(), x - 2, y - 1, z - 2, x + 2, y + 1, z + 2, GenerationUtils.IS_AIR, new BlockPlacementEntry(Blocks.ANVIL.getDefaultState(), 1), new BlockPlacementEntry(Blocks.BEDROCK.getDefaultState(), 4), new BlockPlacementEntry(Blocks.BIRCH_WOOD.getDefaultState(), 8));
 //		}
 	}
-	
+
 	@Override
 	public Endimation getDeathAnimation() {
 		return DEATH_ANIMATION;
@@ -46,10 +46,10 @@ public class TestEndimatedEntity extends EndimatedEntity {
 
 	@Override
 	public Endimation[] getEndimations() {
-		return new Endimation[] {
-			SINK_ANIMATION,
-			GROW_ANIMATION,
-			DEATH_ANIMATION
+		return new Endimation[]{
+				SINK_ANIMATION,
+				GROW_ANIMATION,
+				DEATH_ANIMATION
 		};
 	}
 }

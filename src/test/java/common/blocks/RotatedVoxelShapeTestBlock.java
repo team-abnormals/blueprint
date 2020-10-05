@@ -21,23 +21,23 @@ public class RotatedVoxelShapeTestBlock extends HorizontalBlock {
 	public RotatedVoxelShapeTestBlock(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Override
 	protected void fillStateContainer(Builder<Block, BlockState> builder) {
 		builder.add(HORIZONTAL_FACING);
 	}
-	
+
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		return this.getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing());
 	}
-	
+
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		VoxelShape shape = makeCuboidShape(0.0D, 0.0D, 8.0D, 16.0D, 16.0D, 16.0D);
 		return VoxelShapes.create(BlockUtil.rotateHorizontalBB(shape.getBoundingBox(), BlockUtil.BBRotation.getRotationForDirection(state.get(HORIZONTAL_FACING), Direction.NORTH)));
 	}
-	
+
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;

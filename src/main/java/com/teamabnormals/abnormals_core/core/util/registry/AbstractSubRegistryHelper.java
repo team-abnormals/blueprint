@@ -10,9 +10,8 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  * <p> It is recommended you use this for making a new {@link ISubRegistryHelper}. </p>
  *
  * @param <T> The type of {@link IForgeRegistryEntry} to register objects for.
- * @see ISubRegistryHelper
- *
  * @author SmellyModder (Luke Tonon)
+ * @see ISubRegistryHelper
  */
 public abstract class AbstractSubRegistryHelper<T extends IForgeRegistryEntry<T>> implements ISubRegistryHelper<T> {
 	protected final RegistryHelper parent;
@@ -41,6 +40,7 @@ public abstract class AbstractSubRegistryHelper<T extends IForgeRegistryEntry<T>
 
 	/**
 	 * Registers the {@link #getDeferredRegister()}.
+	 *
 	 * @param eventBus The event bus to register this to.
 	 */
 	@Override

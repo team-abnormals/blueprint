@@ -16,6 +16,7 @@ import net.minecraft.world.IWorld;
 
 /**
  * This class holds a list of useful methods for generation
+ *
  * @author SmellyModder(Luke Tonon)
  */
 public final class GenerationUtil {
@@ -23,6 +24,7 @@ public final class GenerationUtil {
 	public static final Predicate<BlockState> IS_AIR = (state) -> {
 		return state.isAir();
 	};
+
 	public static final Predicate<BlockState> IS_FLUID(int minLevel, Tag<Fluid> allowedFluids) {
 		return (state) -> {
 			FluidState fluid = state.getFluidState();
@@ -43,7 +45,7 @@ public final class GenerationUtil {
 			}
 		}
 	}
-	
+
 	public static void fillAreaWithBlockCube(IWorld world, Random rand, int x1, int y1, int z1, int x2, int y2, int z2, @Nullable Predicate<BlockState> canPlace, BlockPlacementEntry... states) {
 		BlockPos.Mutable positions = new BlockPos.Mutable();
 		for (int xx = x1; xx <= x2; xx++) {
@@ -57,7 +59,7 @@ public final class GenerationUtil {
 			}
 		}
 	}
-	
+
 	public static void fillAreaWithBlockCubeEdged(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block, @Nullable Predicate<BlockState> canPlace) {
 		BlockPos.Mutable positions = new BlockPos.Mutable();
 		for (int xx = x1; xx <= x2; xx++) {
@@ -71,7 +73,7 @@ public final class GenerationUtil {
 			}
 		}
 	}
-	
+
 	public static void fillAreaWithBlockCubeEdged(IWorld world, Random rand, int x1, int y1, int z1, int x2, int y2, int z2, @Nullable Predicate<BlockState> canPlace, BlockPlacementEntry... states) {
 		BlockPos.Mutable positions = new BlockPos.Mutable();
 		for (int xx = x1; xx <= x2; xx++) {
@@ -85,16 +87,16 @@ public final class GenerationUtil {
 			}
 		}
 	}
-	
+
 	public static class BlockPlacementEntry {
 		private final BlockState state;
 		private final int weight;
-		
+
 		public BlockPlacementEntry(BlockState state, int weight) {
 			this.state = state;
 			this.weight = weight;
 		}
-		
+
 		public static BlockState getRandomState(Random rand, List<BlockPlacementEntry> entries) {
 			int randTotalWeight = rand.nextInt(getTotalWeight(entries));
 			for (int i = 0; i < entries.size(); i++) {
@@ -106,7 +108,7 @@ public final class GenerationUtil {
 			}
 			return null;
 		}
-		
+
 		private static int getTotalWeight(List<BlockPlacementEntry> entries) {
 			int totalWeight = 0;
 			for (BlockPlacementEntry entry : entries) {

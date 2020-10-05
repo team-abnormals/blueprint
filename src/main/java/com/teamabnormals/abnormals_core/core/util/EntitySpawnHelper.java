@@ -16,18 +16,19 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * A class that makes adding automatic entity spawning easier; extend it to use it
+ *
  * @author SmellyModder(Luke Tonon)
  */
 public abstract class EntitySpawnHelper {
-	
+
 	protected static BiPredicate<RegistryKey<Biome>, Biome> coldOceanCondition() {
 		return (key, biome) -> key == Biomes.COLD_OCEAN;
 	}
-	
+
 	protected static BiPredicate<RegistryKey<Biome>, Biome> hotOceanCondition() {
 		return (key, biome) -> key == Biomes.WARM_OCEAN;
 	}
-	
+
 	protected static BiPredicate<RegistryKey<Biome>, Biome> warmishOceanCondition() {
 		return (key, biome) -> key == Biomes.WARM_OCEAN || key == Biomes.LUKEWARM_OCEAN;
 	}
@@ -39,7 +40,7 @@ public abstract class EntitySpawnHelper {
 		public final Heightmap.Type heightmapType;
 		public final EntitySpawnPlacementRegistry.IPlacementPredicate<T> placementPredicate;
 		public final BiPredicate<RegistryKey<Biome>, Biome> biomePredicate;
-		
+
 		public EntitySpawn(Supplier<EntityType<T>> entity, SpawnEntry spawnEntry, PlacementType placementType, Heightmap.Type heightmapType, EntitySpawnPlacementRegistry.IPlacementPredicate<T> placementPredicate, BiPredicate<RegistryKey<Biome>, Biome> biomePredicate) {
 			this.entity = entity;
 			this.spawnEntry = spawnEntry;
@@ -48,11 +49,11 @@ public abstract class EntitySpawnHelper {
 			this.placementPredicate = placementPredicate;
 			this.biomePredicate = biomePredicate;
 		}
-		
+
 		public void registerSpawnPlacement() {
 			EntitySpawnPlacementRegistry.register(this.entity.get(), this.placementType, this.heightmapType, this.placementPredicate);
 		}
-		
+
 		public void processSpawnAddition() {
 			ForgeRegistries.BIOMES.getEntries().stream().filter(biome -> this.biomePredicate.test(biome.getKey(), biome.getValue())).forEach((biome) -> {
 				//TODO: Fix immutability.
@@ -61,11 +62,11 @@ public abstract class EntitySpawnHelper {
 			});
 		}
 	}
-	
+
 	protected static class SpawnEntry {
 		public final EntityClassification classification;
 		public final int weight, minGroup, maxGroup;
-		
+
 		public SpawnEntry(EntityClassification classification, int weight, int minGroup, int maxGroup) {
 			this.classification = classification;
 			this.weight = weight;
@@ -73,5 +74,5 @@ public abstract class EntitySpawnHelper {
 			this.maxGroup = maxGroup;
 		}
 	}
-	
+
 }

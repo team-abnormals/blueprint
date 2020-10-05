@@ -13,14 +13,14 @@ public final class ClientInfo {
 	public static float getPartialTicks() {
 		return MINECRAFT.isGamePaused() ? MINECRAFT.renderPartialTicksPaused : MINECRAFT.getRenderPartialTicks();
 	}
-	
+
 	/**
 	 * @return - The client player entity
 	 */
 	public static ClientPlayerEntity getClientPlayer() {
 		return MINECRAFT.player;
 	}
-		
+
 	/**
 	 * @return - The client player's world; equivalent to getting the client world
 	 */

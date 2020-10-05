@@ -14,13 +14,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Message for telling the client to spawn particles
+ *
  * @author - SmellyModder(Luke Tonon)
  */
 public final class MessageS2CSpawnParticle {
 	public String particleName;
 	public double posX, posY, posZ;
 	public double motionX, motionY, motionZ;
-	
+
 	public MessageS2CSpawnParticle(String particleName, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		this.particleName = particleName;
 		this.posX = posX;
@@ -30,7 +31,7 @@ public final class MessageS2CSpawnParticle {
 		this.motionY = motionY;
 		this.motionZ = motionZ;
 	}
-	
+
 	public void serialize(PacketBuffer buf) {
 		buf.writeString(this.particleName);
 		buf.writeDouble(this.posX);
@@ -40,7 +41,7 @@ public final class MessageS2CSpawnParticle {
 		buf.writeDouble(this.motionY);
 		buf.writeDouble(this.motionZ);
 	}
-	
+
 	public static MessageS2CSpawnParticle deserialize(PacketBuffer buf) {
 		String particleName = buf.readString();
 		double posX = buf.readDouble();
@@ -51,14 +52,14 @@ public final class MessageS2CSpawnParticle {
 		double motionZ = buf.readDouble();
 		return new MessageS2CSpawnParticle(particleName, posX, posY, posZ, motionX, motionY, motionZ);
 	}
-	
+
 	public static void handle(MessageS2CSpawnParticle message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				World world = ClientInfo.getClientPlayerWorld();
 				BasicParticleType particleType = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(message.particleName));
-				
+
 				if (particleType != null) {
 					world.addParticle(particleType, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
 				}

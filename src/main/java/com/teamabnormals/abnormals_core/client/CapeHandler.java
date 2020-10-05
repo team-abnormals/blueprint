@@ -36,7 +36,7 @@ public final class CapeHandler {
 	);
 
 	private static final Set<String> RENDERED = Sets.newHashSet();
-	
+
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void onRenderPlayer(RenderPlayerEvent.Post event) {

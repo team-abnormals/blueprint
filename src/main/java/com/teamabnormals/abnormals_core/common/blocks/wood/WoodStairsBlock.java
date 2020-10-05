@@ -13,7 +13,7 @@ public class WoodStairsBlock extends AbnormalsStairsBlock {
 	public WoodStairsBlock(BlockState state, Properties properties) {
 		super(state, properties);
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_STAIRS, group, items);

@@ -14,6 +14,7 @@ import net.minecraft.world.server.ServerWorld;
 
 /**
  * Can load and unload Chunks, as well as schedule tick tasks on Chunks
+ *
  * @author SmellyModder(Luke Tonon)
  */
 public class ChunkLoader implements IChunkLoader {
@@ -21,11 +22,11 @@ public class ChunkLoader implements IChunkLoader {
 	private final ServerWorld world;
 	public final List<Long> loadedPositions = Lists.newArrayList();
 	private final List<TickTask<IChunk>> scheduledChunkProcesses = Lists.newArrayList();
-	
+
 	public ChunkLoader(@Nullable ServerWorld world) {
 		this.world = world;
 	}
-	
+
 	@Override
 	public void addPos(BlockPos pos) {
 		if (!this.containsPos(pos)) {
@@ -45,7 +46,7 @@ public class ChunkLoader implements IChunkLoader {
 	public boolean containsPos(BlockPos pos) {
 		return this.loadedPositions.contains(pos.toLong());
 	}
-	
+
 	@Override
 	public void tick() {
 		for (TickTask<IChunk> process : this.scheduledChunkProcesses) {
@@ -53,13 +54,13 @@ public class ChunkLoader implements IChunkLoader {
 		}
 		this.scheduledChunkProcesses.removeIf(TickTask::isComplete);
 	}
-	
+
 	private void forceChunk(BlockPos pos, boolean load) {
 		if (this.world != null) {
 			this.world.forceChunk(pos.getX() >> 4, pos.getZ() >> 4, load);
 		}
 	}
-	
+
 	public void scheduleChunkProcess(IChunk chunk, Consumer<IChunk> chunkProcess, int ticks) {
 		this.scheduledChunkProcesses.add(new TickTask<>(chunk, chunkProcess, ticks));
 	}

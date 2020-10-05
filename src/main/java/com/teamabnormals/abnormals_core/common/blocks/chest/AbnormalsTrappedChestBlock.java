@@ -23,9 +23,9 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	public AbnormalsTrappedChestBlock(String modid, String type, Properties props) {
 		super(props, () -> ACTileEntities.TRAPPED_CHEST.get());
 		this.modid = modid;
-		this.type = type;	
+		this.type = type;
 	}
-	
+
 	@Override
 	public boolean isFlammable(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
 		return false;
@@ -40,12 +40,12 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	public String getChestName() {
 		return type;
 	}
-	
+
 	@Override
 	public String getModid() {
 		return modid;
 	}
-	
+
 	@Override
 	protected Stat<ResourceLocation> getOpenStat() {
 		return Stats.CUSTOM.get(Stats.TRIGGER_TRAPPED_CHEST);

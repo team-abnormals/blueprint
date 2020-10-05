@@ -29,7 +29,7 @@ public abstract class AbnormalsAbstractSignBlock extends AbstractSignBlock {
 		super(properties, null);
 		this.textureLocation = textureLocation;
 	}
-	
+
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 		ItemStack itemstack = player.getHeldItem(handIn);
@@ -61,7 +61,7 @@ public abstract class AbnormalsAbstractSignBlock extends AbstractSignBlock {
 			}
 		}
 	}
-	
+
 	private boolean doesSignHaveCommand(AbnormalsSignTileEntity sign) {
 		for (ITextComponent itextcomponent : sign.signText) {
 			Style style = itextcomponent == null ? null : itextcomponent.getStyle();
@@ -74,15 +74,15 @@ public abstract class AbnormalsAbstractSignBlock extends AbstractSignBlock {
 		}
 		return false;
 	}
-	
+
 	public ResourceLocation getTextureLocation() {
 		return this.textureLocation;
 	}
-	
+
 	public TileEntity createNewTileEntity(IBlockReader world) {
 		return new AbnormalsSignTileEntity();
 	}
-	
+
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;

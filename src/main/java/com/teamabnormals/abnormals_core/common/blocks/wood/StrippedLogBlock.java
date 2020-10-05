@@ -10,9 +10,9 @@ import net.minecraft.util.NonNullList;
 
 public class StrippedLogBlock extends RotatedPillarBlock {
 	public StrippedLogBlock(Properties properties) {
-        super(properties);
-    }
-	
+		super(properties);
+	}
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.STRIPPED_WARPED_STEM, group, items);

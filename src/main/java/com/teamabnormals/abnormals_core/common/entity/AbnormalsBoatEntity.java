@@ -28,12 +28,12 @@ import net.minecraftforge.fml.network.NetworkHooks;
  */
 public class AbnormalsBoatEntity extends BoatEntity {
 	private static final DataParameter<String> BOAT_TYPE = EntityDataManager.createKey(AbnormalsBoatEntity.class, DataSerializers.STRING);
-	
+
 	public AbnormalsBoatEntity(EntityType<? extends BoatEntity> type, World world) {
 		super(type, world);
 		this.preventEntitySpawning = true;
 	}
-	
+
 	public AbnormalsBoatEntity(World worldIn, double x, double y, double z) {
 		this(ACEntities.BOAT.get(), worldIn);
 		this.setPosition(x, y, z);
@@ -46,7 +46,7 @@ public class AbnormalsBoatEntity extends BoatEntity {
 	public AbnormalsBoatEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
 		this(ACEntities.BOAT.get(), world);
 	}
-	
+
 	@Override
 	protected void registerData() {
 		super.registerData();
@@ -60,17 +60,17 @@ public class AbnormalsBoatEntity extends BoatEntity {
 
 	@Override
 	protected void readAdditional(CompoundNBT compound) {
-    	if (compound.contains("Type", Constants.NBT.TAG_STRING)) {
-    		String type = compound.getString("Type");
-    		BoatData data = BoatRegistry.getDataForBoat(type);
-    		if (data != null) this.setBoat(BoatRegistry.getNameForData(data));
-    		else this.setBoat(BoatRegistry.getBaseBoatName());
-    	} else {
-    		this.setBoat(BoatRegistry.getBaseBoatName());
-    	}
-    }
+		if (compound.contains("Type", Constants.NBT.TAG_STRING)) {
+			String type = compound.getString("Type");
+			BoatData data = BoatRegistry.getDataForBoat(type);
+			if (data != null) this.setBoat(BoatRegistry.getNameForData(data));
+			else this.setBoat(BoatRegistry.getBaseBoatName());
+		} else {
+			this.setBoat(BoatRegistry.getBaseBoatName());
+		}
+	}
 
-	@Override	
+	@Override
 	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 		this.lastYd = this.getMotion().y;
 		if (!this.isPassenger()) {
@@ -102,12 +102,12 @@ public class AbnormalsBoatEntity extends BoatEntity {
 			}
 		}
 	}
-	
+
 	@Override
 	public Item getItemBoat() {
 		return this.getBoat().getBoatItem();
 	}
-	
+
 	public void setBoat(String boat) {
 		this.dataManager.set(BOAT_TYPE, boat);
 	}
@@ -115,7 +115,7 @@ public class AbnormalsBoatEntity extends BoatEntity {
 	public BoatData getBoat() {
 		return BoatRegistry.getDataForBoat(this.dataManager.get(BOAT_TYPE));
 	}
-	
+
 	@Override
 	public IPacket<?> createSpawnPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);

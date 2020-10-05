@@ -32,8 +32,9 @@ import java.util.function.Supplier;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for blocks. This contains some useful registering methods for blocks.
- * @see AbstractSubRegistryHelper
+ *
  * @author SmellyModder (Luke Tonon)
+ * @see AbstractSubRegistryHelper
  */
 public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	private final DeferredRegister<Item> itemRegister;
@@ -53,9 +54,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a {@link Block} with a {@link BlockItem}
-	 * @param name - The block's name
+	 *
+	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param group - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}.
 	 */
 	public <B extends Block> RegistryObject<B> createBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
@@ -66,9 +68,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a {@link Block} with a specified {@link BlockItem}
-	 * @param name - The block's name
+	 *
+	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param item - The {@link BlockItem} for this {@link Block}.
+	 * @param item     - The {@link BlockItem} for this {@link Block}.
 	 * @return A {@link RegistryObject} containing the created {@link Block}.
 	 */
 	public <B extends Block> RegistryObject<B> createBlockWithItem(String name, Supplier<? extends B> supplier, Supplier<BlockItem> item) {
@@ -78,7 +81,8 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a {@link Block} with no {@link BlockItem}
-	 * @param name - The block's name
+	 *
+	 * @param name     - The block's name
 	 * @param supplier - The supplied Block
 	 * @return A {@link RegistryObject} containing the created {@link Block}.
 	 */
@@ -88,10 +92,11 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a {@link Block} with its {@link BlockItem} that can be used as fuel.
-	 * @param name - The block's name
+	 *
+	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
 	 * @param burnTime - How long the item will burn (measured in ticks)
-	 * @param group - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}.
 	 */
 	public <B extends Block> RegistryObject<B> createFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
@@ -102,9 +107,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a {@link Block} with an {@link InjectedBlockItem}.
-	 * @param name - The block's name
+	 *
+	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param group - The {@link ItemGroup} for the {@link InjectedBlockItem}
+	 * @param group    - The {@link ItemGroup} for the {@link InjectedBlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}.
 	 */
 	public <B extends Block> RegistryObject<B> createInjectedBlock(String name, Item followItem, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
@@ -115,10 +121,11 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a {@link Block} with a {@link BlockItem} with a {@link ItemStackTileEntityRenderer}
-	 * @param name - The block's name
+	 *
+	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param ister - A supplier containing a callable {@link ItemStackTileEntityRenderer} for the {@link BlockItem}
-	 * @param group - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param ister    - A supplier containing a callable {@link ItemStackTileEntityRenderer} for the {@link BlockItem}
+	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
 	public <B extends Block> RegistryObject<B> createBlockWithISTER(String name, Supplier<? extends B> supplier, Supplier<Callable<ItemStackTileEntityRenderer>> ister, @Nullable ItemGroup group) {
@@ -129,9 +136,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a {@link Block} with a {@link TallBlockItem}
-	 * @param name - The block's name
+	 *
+	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param group - The {@link ItemGroup} for the {@link TallBlockItem}
+	 * @param group    - The {@link ItemGroup} for the {@link TallBlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 * @see TallBlockItem
 	 */
@@ -143,10 +151,11 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers {@link Block} with a {@link WallOrFloorItem}
-	 * @param name - The block's name
+	 *
+	 * @param name     - The block's name
 	 * @param supplier - The supplied floor {@link Block}
 	 * @param supplier - The supplied wall {@link Block}
-	 * @param group - The {@link ItemGroup} for the {@link WallOrFloorItem}
+	 * @param group    - The {@link ItemGroup} for the {@link WallOrFloorItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 * @see WallOrFloorItem
 	 */
@@ -158,9 +167,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers {@link Block} with a {@link BlockItem} that has {@link Rarity}
-	 * @param name - The block's name
+	 *
+	 * @param name   - The block's name
 	 * @param rarity - The {@link Rarity} of the {@link BlockItem}
-	 * @param group - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group  - The {@link ItemGroup} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
 	public <B extends Block> RegistryObject<B> createRareBlock(String name, Supplier<? extends B> supplier, Rarity rarity, @Nullable ItemGroup group) {
@@ -171,9 +181,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers {@link AbnormalsChestBlock} with a {@link FuelBlockItem}
-	 * @param name - The name for this {@link AbnormalsChestBlock}
+	 *
+	 * @param name       - The name for this {@link AbnormalsChestBlock}
 	 * @param properties - The properties for this {@link AbnormalsChestBlock}
-	 * @param group - The ItemGroup for the BlockItem
+	 * @param group      - The ItemGroup for the BlockItem
 	 * @return A {@link RegistryObject} containing the created {@link AbnormalsChestBlock}
 	 */
 	public RegistryObject<AbnormalsChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
@@ -184,9 +195,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers {@link AbnormalsTrappedChestBlock} with a {@link FuelBlockItem}.
-	 * @param name - The name for this {@link AbnormalsTrappedChestBlock}
+	 *
+	 * @param name       - The name for this {@link AbnormalsTrappedChestBlock}
 	 * @param properties - The properties for this {@link AbnormalsTrappedChestBlock}
-	 * @param group - The ItemGroup for the BlockItem
+	 * @param group      - The ItemGroup for the BlockItem
 	 * @return A {@link RegistryObject} containing the created {@link AbnormalsTrappedChestBlock}
 	 */
 	public RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
@@ -197,7 +209,8 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a {@link AbnormalsStandingSignBlock} and a {@link AbnormalsWallSignBlock} with an {@link AbnormalsSignItem}.
-	 * @param name - The name for the sign blocks
+	 *
+	 * @param name  - The name for the sign blocks
 	 * @param color - The {@link MaterialColor} for the sign blocks.
 	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link AbnormalsStandingSignBlock} and the {@link AbnormalsWallSignBlock}
 	 */
@@ -211,10 +224,11 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a compat {@link Block}
-	 * @param modId - The mod id of the mod this block is compatible for, set to "indev" for dev tests
-	 * @param name - The block's name
+	 *
+	 * @param modId    - The mod id of the mod this block is compatible for, set to "indev" for dev tests
+	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param group - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
 	public <B extends Block> RegistryObject<B> createCompatBlock(String modId, String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
@@ -225,11 +239,12 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a compat {@link Block} with a {@link FuelBlockItem}.
-	 * @param modId - The modId of the mod this block is compatible for, set to "indev" for dev tests
-	 * @param name - The block's name
+	 *
+	 * @param modId    - The modId of the mod this block is compatible for, set to "indev" for dev tests
+	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
 	 * @param burnTime - How many ticks this fuel block should burn for.
-	 * @param group - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
 	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String modId, String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
@@ -240,9 +255,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	/**
 	 * Creates and registers a {@link AbnormalsChestBlock} and a {@link AbnormalsTrappedChestBlock} with their {@link FuelBlockItem}s.
-	 * @param name - The name for the chest blocks
+	 *
+	 * @param name        - The name for the chest blocks
 	 * @param compatModId - The mod id of the mod these chests are compatible for.
-	 * @param color - The {@link MaterialColor} for the chest blocks.
+	 * @param color       - The {@link MaterialColor} for the chest blocks.
 	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link AbnormalsChestBlock} and the {@link AbnormalsTrappedChestBlock}
 	 */
 	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, String compatModId, MaterialColor color) {

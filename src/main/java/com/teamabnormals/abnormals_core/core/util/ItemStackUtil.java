@@ -24,7 +24,8 @@ import javax.annotation.Nullable;
 public final class ItemStackUtil {
 	/**
 	 * Searches for a specific item in a {@link NonNullList} of {@link ItemStack} and returns its index
-	 * @param item - The item to search for
+	 *
+	 * @param item  - The item to search for
 	 * @param items - The list of ItemStacks
 	 * @return - The index of the specified item in the list, if no item was found returns -1
 	 */
@@ -39,10 +40,11 @@ public final class ItemStackUtil {
 
 	/**
 	 * Used in {@link Item#fillItemGroup(ItemGroup, NonNullList)} and {@link Block#fillItemGroup(ItemGroup, NonNullList)} to fill an item after a specific item for a group.
-	 * @param item The item to fill.
+	 *
+	 * @param item       The item to fill.
 	 * @param targetItem The item to fill after.
-	 * @param group The group to fill it in.
-	 * @param items The {@link NonNullList} of item stacks to search for the target item and inject the item in.
+	 * @param group      The group to fill it in.
+	 * @param items      The {@link NonNullList} of item stacks to search for the target item and inject the item in.
 	 */
 	public static void fillAfterItemForGroup(Item item, Item targetItem, ItemGroup group, NonNullList<ItemStack> items) {
 		if (isInGroup(item, group)) {
@@ -54,29 +56,31 @@ public final class ItemStackUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * Converts an Integer to a String of Roman Numerals; useful for levels
+	 *
 	 * @param number - The Integer to convert
 	 * @return - The String of the Integer converted to Roman Numerals
 	 */
 	public static String intToRomanNumerals(int number) {
-		String m[] = {"", "M", "MM", "MMM"}; 
-		String c[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}; 
-		String x[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}; 
+		String m[] = {"", "M", "MM", "MMM"};
+		String c[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+		String x[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
 		String i[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
-		
-		String thousands = m[number / 1000]; 
-		String hundereds = c[(number % 1000) / 100]; 
-		String tens = x[(number % 100) / 10]; 
+
+		String thousands = m[number / 1000];
+		String hundereds = c[(number % 1000) / 100];
+		String tens = x[(number % 100) / 10];
 		String ones = i[number % 10];
-		
+
 		return thousands + hundereds + tens + ones;
 	}
-	
+
 	/**
 	 * Searches for if an {@link Item} is present in an {@link ItemGroup} and returns if it is
-	 * @param item - The item searched
+	 *
+	 * @param item  - The item searched
 	 * @param group - The group searched
 	 * @return - Whether or not the item is present in the group
 	 */
@@ -101,8 +105,9 @@ public final class ItemStackUtil {
 
 		/**
 		 * Sets the stack's count.
-		 * @see ItemStack#setCount(int).
+		 *
 		 * @return This builder.
+		 * @see ItemStack#setCount(int).
 		 */
 		public ItemStackBuilder setCount(int count) {
 			this.stack.setCount(count);
@@ -111,9 +116,10 @@ public final class ItemStackUtil {
 
 		/**
 		 * Grows the stack by an amount.
+		 *
 		 * @param amount Amount to grow the stack by.
-		 * @see ItemStack#grow(int).
 		 * @return This builder.
+		 * @see ItemStack#grow(int).
 		 */
 		public ItemStackBuilder grow(int amount) {
 			this.stack.grow(amount);
@@ -122,9 +128,10 @@ public final class ItemStackUtil {
 
 		/**
 		 * Shrinks the stack by an amount.
+		 *
 		 * @param amount Amount to shrink the stack by.
-		 * @see ItemStack#shrink(int).
 		 * @return This builder.
+		 * @see ItemStack#shrink(int).
 		 */
 		public ItemStackBuilder shrink(int amount) {
 			this.stack.shrink(amount);
@@ -133,6 +140,7 @@ public final class ItemStackUtil {
 
 		/**
 		 * Sets the stack unbreakable.
+		 *
 		 * @return This builder.
 		 */
 		public ItemStackBuilder setUnbreakable() {
@@ -142,8 +150,9 @@ public final class ItemStackUtil {
 
 		/**
 		 * Adds an enchantment with a level to the stack.
+		 *
 		 * @param enchantment The {@link Enchantment} to add.
-		 * @param level The level of the {@link Enchantment} to add.
+		 * @param level       The level of the {@link Enchantment} to add.
 		 * @return This builder.
 		 */
 		public ItemStackBuilder addEnchantment(Enchantment enchantment, int level) {
@@ -153,9 +162,10 @@ public final class ItemStackUtil {
 
 		/**
 		 * Sets the name of the stack.
+		 *
 		 * @param text The name to set.
-		 * @see ItemStack#setDisplayName(ITextComponent).
 		 * @return This builder.
+		 * @see ItemStack#setDisplayName(ITextComponent).
 		 */
 		public ItemStackBuilder setName(@Nullable ITextComponent text) {
 			this.stack.setDisplayName(text);
@@ -164,6 +174,7 @@ public final class ItemStackUtil {
 
 		/**
 		 * Adds lore to the stack.
+		 *
 		 * @param text The lore text to add.
 		 * @return This builder.
 		 */
@@ -182,11 +193,12 @@ public final class ItemStackUtil {
 
 		/**
 		 * Adds an {@link AttributeModifier} for an {@link Attribute} for an {@link EquipmentSlotType} on the stack.
+		 *
 		 * @param attribute The attribute to apply the {@link AttributeModifier} for.
-		 * @param modifier The {@link AttributeModifier} to apply to the {@link Attribute}.
-		 * @param slot The slot for when the {@link AttributeModifier} should be applied.
-		 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
+		 * @param modifier  The {@link AttributeModifier} to apply to the {@link Attribute}.
+		 * @param slot      The slot for when the {@link AttributeModifier} should be applied.
 		 * @return This builder.
+		 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
 		 */
 		public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, @Nullable EquipmentSlotType slot) {
 			this.stack.addAttributeModifier(attribute, modifier, slot);
@@ -195,12 +207,13 @@ public final class ItemStackUtil {
 
 		/**
 		 * Adds an {@link AttributeModifier} for an {@link Attribute} for a multiple {@link EquipmentSlotType}s on the stack.
+		 *
 		 * @param attribute The attribute to apply the {@link AttributeModifier} for.
-		 * @param modifier The {@link AttributeModifier} to apply to the {@link Attribute}.
-		 * @param slots The slots for when the {@link AttributeModifier} should be applied.
+		 * @param modifier  The {@link AttributeModifier} to apply to the {@link Attribute}.
+		 * @param slots     The slots for when the {@link AttributeModifier} should be applied.
+		 * @return This builder.
 		 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
 		 * @see #addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
-		 * @return This builder.
 		 */
 		public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, EquipmentSlotType... slots) {
 			for (EquipmentSlotType slot : slots) {
@@ -212,7 +225,8 @@ public final class ItemStackUtil {
 		/**
 		 * Adds a predicate string tag for a predicate key.
 		 * The two types of predicate keys are "CanDestroy" and "CanPlace".
-		 * @param key The predicate key.
+		 *
+		 * @param key       The predicate key.
 		 * @param predicate The predicate string, this should be a string id.
 		 * @return This builder.
 		 */
@@ -230,6 +244,7 @@ public final class ItemStackUtil {
 
 		/**
 		 * Adds a can destroy predicate for a specific block.
+		 *
 		 * @param block The block to mark as able to be destroyed.
 		 * @return This builder.
 		 */
@@ -239,6 +254,7 @@ public final class ItemStackUtil {
 
 		/**
 		 * Adds a can place on predicate for a specific block.
+		 *
 		 * @param block The block to mark as able to be placed on.
 		 * @return This builder.
 		 */

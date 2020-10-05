@@ -15,15 +15,15 @@ import net.minecraftforge.common.util.LazyOptional;
  * @author SmellyModder(Luke Tonon)
  */
 public class ChunkLoaderCapability implements ICapabilitySerializable<INBT> {
-	@CapabilityInject(IChunkLoader.class) 
+	@CapabilityInject(IChunkLoader.class)
 	public static Capability<IChunkLoader> CHUNK_LOAD_CAP = null;
-	
+
 	private final LazyOptional<IChunkLoader> instance;
-	
+
 	public ChunkLoaderCapability(LazyOptional<IChunkLoader> instance) {
 		this.instance = instance;
 	}
-	
+
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
 		return CHUNK_LOAD_CAP.orEmpty(cap, this.instance);
@@ -38,7 +38,7 @@ public class ChunkLoaderCapability implements ICapabilitySerializable<INBT> {
 	public void deserializeNBT(INBT nbt) {
 		CHUNK_LOAD_CAP.readNBT(this.instance.orElse(null), null, nbt);
 	}
-	
+
 	public static void register() {
 		CapabilityManager.INSTANCE.register(IChunkLoader.class, new IStorage<IChunkLoader>() {
 			@Override
@@ -51,7 +51,7 @@ public class ChunkLoaderCapability implements ICapabilitySerializable<INBT> {
 			public void readNBT(Capability<IChunkLoader> capability, IChunkLoader instance, Direction side, INBT nbt) {
 				ChunkLoader loader = (ChunkLoader) instance;
 				loader.loadedPositions.clear();
-				for(Long pos : ((LongArrayNBT) nbt).getAsLongArray()) {
+				for (Long pos : ((LongArrayNBT) nbt).getAsLongArray()) {
 					loader.addPos(BlockPos.fromLong(pos));
 				}
 			}

@@ -41,27 +41,28 @@ import java.util.Set;
 public final class NetworkUtil {
 	/**
 	 * @param name - The registry name of the particle
-	 * All other parameters work same as world#addParticle
-	 * Used for adding particles to the world from the server side
+	 *             All other parameters work same as world#addParticle
+	 *             Used for adding particles to the world from the server side
 	 */
 	public static void spawnParticle(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageS2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
 	}
-	
+
 	/**
 	 * @param name - The registry name of the particle
-	 * Used for adding particles to all the clients from the client
+	 *             Used for adding particles to all the clients from the client
 	 */
 	public static void spawnParticleC2S2C(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		AbnormalsCore.CHANNEL.sendToServer(new MessageC2S2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
 	}
-	
+
 	/**
 	 * Teleports the entity to a specified location
+	 *
 	 * @param entity - The Entity to teleport
-	 * @param posX - The x position
-	 * @param posY - The y position
-	 * @param posZ - The z position
+	 * @param posX   - The x position
+	 * @param posY   - The y position
+	 * @param posZ   - The z position
 	 */
 	public static void teleportEntity(Entity entity, double posX, double posY, double posZ) {
 		entity.setLocationAndAngles(posX, posY, posZ, entity.rotationYaw, entity.rotationPitch);
@@ -70,55 +71,60 @@ public final class NetworkUtil {
 
 	/**
 	 * Sends an animation message to the clients to update an entity's animations
-	 * @param entity - The Entity to send the packet for
+	 *
+	 * @param entity           - The Entity to send the packet for
 	 * @param endimationToPlay - The endimation to play
 	 */
 	public static <E extends Entity & IEndimatedEntity> void setPlayingAnimationMessage(E entity, Endimation endimationToPlay) {
-		if(!entity.world.isRemote) {
+		if (!entity.world.isRemote) {
 			AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CEndimation(entity.getEntityId(), ArrayUtils.indexOf(entity.getEndimations(), endimationToPlay)));
 			entity.setPlayingEndimation(endimationToPlay);
 		}
 	}
-	
+
 	/**
 	 * Opens the sign editor from the server side
+	 *
 	 * @param player
 	 * @param sign
 	 */
 	public static void openSignEditor(PlayerEntity player, AbnormalsSignTileEntity sign) {
-		if(player instanceof ServerPlayerEntity) {
+		if (player instanceof ServerPlayerEntity) {
 			sign.setPlayer(player);
 			AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageSOpenSignEditor(player.getUniqueID(), sign.getPos()));
 		}
 	}
-	
+
 	/**
 	 * Send a packet to the server to set the sign's text
-	 * @param signPos - The sign's position
-	 * @param topLine - Top Line Sign Text
+	 *
+	 * @param signPos    - The sign's position
+	 * @param topLine    - Top Line Sign Text
 	 * @param secondLine - Second Line Sign Text
-	 * @param thirdLine - Third Line Sign Text
+	 * @param thirdLine  - Third Line Sign Text
 	 * @param bottomLine - Bottom Line Sign Text
 	 */
 	public static void setNewSignText(BlockPos signPos, ITextComponent topLine, ITextComponent secondLine, ITextComponent thirdLine, ITextComponent bottomLine) {
 		AbnormalsCore.CHANNEL.sendToServer(new MessageC2SEditSign(signPos, topLine.getString(), secondLine.getString(), thirdLine.getString(), bottomLine.getString()));
 	}
-	
+
 	/**
 	 * Send a packet to the server to update the sign's text
-	 * @param signPos - The sign's position
-	 * @param topLine - Top Line Sign Text
+	 *
+	 * @param signPos    - The sign's position
+	 * @param topLine    - Top Line Sign Text
 	 * @param secondLine - Second Line Sign Text
-	 * @param thirdLine - Third Line Sign Text
+	 * @param thirdLine  - Third Line Sign Text
 	 * @param bottomLine - Bottom Line Sign Text
-	 * @param color - The color to update on the sign
+	 * @param color      - The color to update on the sign
 	 */
 	public static void updateSignText(BlockPos signPos, ITextComponent topLine, ITextComponent secondLine, ITextComponent thirdLine, ITextComponent bottomLine, DyeColor color) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageS2CUpdateSign(signPos, topLine.getString(), secondLine.getString(), thirdLine.getString(), bottomLine.getString(), color.getId()));
 	}
-	
+
 	/**
 	 * Opens the sign screen
+	 *
 	 * @param sign - The Sign TileEntity to edit
 	 */
 	@OnlyIn(Dist.CLIENT)
@@ -128,6 +134,7 @@ public final class NetworkUtil {
 
 	/**
 	 * Send a packet to the client to redirect them to another server
+	 *
 	 * @param address - The address to connect to
 	 */
 	public static void redirectToServer(ServerPlayerEntity player, String address) {
@@ -136,6 +143,7 @@ public final class NetworkUtil {
 
 	/**
 	 * Send a packet to all clients to redirect them to another server
+	 *
 	 * @param address - The address to connect to
 	 */
 	public static void redirectAllToServer(String address) {

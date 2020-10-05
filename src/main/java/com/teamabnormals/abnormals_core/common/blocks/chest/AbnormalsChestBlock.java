@@ -14,13 +14,13 @@ import net.minecraft.world.IBlockReader;
 public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
 	public final String modid;
 	public final String type;
-	
+
 	public AbnormalsChestBlock(String modid, String type, Properties props) {
 		super(props, () -> ACTileEntities.CHEST.get());
 		this.modid = modid;
 		this.type = type;
 	}
-	
+
 	@Override
 	public boolean isFlammable(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
 		return false;
@@ -35,7 +35,7 @@ public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
 	public String getChestName() {
 		return type;
 	}
-	
+
 	@Override
 	public String getModid() {
 		return modid;

@@ -9,12 +9,12 @@ import net.minecraft.tileentity.TileEntityType;
 
 public class AbnormalsBeehiveTileEntity extends BeehiveTileEntity {
 	public AbnormalsBeehiveTileEntity() {
-        super();
-    }
-	
+		super();
+	}
+
 	@Nonnull
-    @Override
-    public TileEntityType<?> getType() {
-        return ACTileEntities.BEEHIVE.get();
-    }
+	@Override
+	public TileEntityType<?> getType() {
+		return ACTileEntities.BEEHIVE.get();
+	}
 }

@@ -20,18 +20,18 @@ public class AbnormalsBeehiveBlock extends BeehiveBlock {
 	public AbnormalsBeehiveBlock(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Nullable
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		return ACTileEntities.BEEHIVE.get().create();
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.BEEHIVE, group, items);
 	}
-	
+
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.with(FACING, rot.rotate(state.get(FACING)));

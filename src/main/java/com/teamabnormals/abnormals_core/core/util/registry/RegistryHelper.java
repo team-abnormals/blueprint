@@ -19,16 +19,17 @@ import javax.annotation.Nonnull;
 /**
  * A class that works as a parent holder to children {@link ISubRegistryHelper}s.
  * <p>
- *     A map is stored inside this that maps a {@link IForgeRegistry} to a {@link ISubRegistryHelper} to get the child {@link ISubRegistryHelper} for a specific {@link IForgeRegistry}.
- *     A value put for a key in this map is a {@link ISubRegistryHelper} with the same parameterized type as the key.
+ * A map is stored inside this that maps a {@link IForgeRegistry} to a {@link ISubRegistryHelper} to get the child {@link ISubRegistryHelper} for a specific {@link IForgeRegistry}.
+ * A value put for a key in this map is a {@link ISubRegistryHelper} with the same parameterized type as the key.
  * </p>
  * Use the {@link #putSubHelper(IForgeRegistry, ISubRegistryHelper)} method to put a {@link ISubRegistryHelper} for a {@link IForgeRegistry}.
+ *
  * @author SmellyModder (Luke Tonon)
  */
 public class RegistryHelper {
 	private final Map<IForgeRegistry<?>, ISubRegistryHelper<?>> subHelpers = Maps.newHashMap();
 	protected final String modId;
-	
+
 	protected RegistryHelper(String modId) {
 		this.modId = modId;
 	}
@@ -42,6 +43,7 @@ public class RegistryHelper {
 
 	/**
 	 * Creates a {@link ResourceLocation} for a string prefixed with the mod id.
+	 *
 	 * @param name - The string to prefix.
 	 * @return A {@link ResourceLocation} for a string prefixed with the mod id
 	 */
@@ -51,9 +53,10 @@ public class RegistryHelper {
 
 	/**
 	 * Puts a {@link ISubRegistryHelper} for a {@link IForgeRegistry}.
-	 * @param registry - The {@link IForgeRegistry} to map the key to.
+	 *
+	 * @param registry  - The {@link IForgeRegistry} to map the key to.
 	 * @param subHelper - The {@link ISubRegistryHelper} to be mapped.
-	 * @param <K> The type of {@link IForgeRegistry}
+	 * @param <K>       The type of {@link IForgeRegistry}
 	 */
 	protected <K extends IForgeRegistryEntry<K>> void putSubHelper(IForgeRegistry<K> registry, ISubRegistryHelper<K> subHelper) {
 		this.subHelpers.put(registry, subHelper);
@@ -107,6 +110,7 @@ public class RegistryHelper {
 
 	/**
 	 * Registers all the mapped {@link ISubRegistryHelper}s.
+	 *
 	 * @param eventBus - The {@link IEventBus} to register the {@link ISubRegistryHelper}s to.
 	 */
 	public void register(IEventBus eventBus) {
@@ -123,7 +127,8 @@ public class RegistryHelper {
 
 		/**
 		 * Puts a {@link ISubRegistryHelper} for a {@link IForgeRegistry}.
-		 * @param registry - The {@link IForgeRegistry} to map the key to.
+		 *
+		 * @param registry  - The {@link IForgeRegistry} to map the key to.
 		 * @param subHelper - The {@link ISubRegistryHelper} to be mapped.
 		 */
 		public <T extends IForgeRegistryEntry<T>, S extends ISubRegistryHelper<T>> Builder putSubHelper(IForgeRegistry<T> registry, S subHelper) {

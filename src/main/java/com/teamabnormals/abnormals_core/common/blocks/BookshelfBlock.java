@@ -17,10 +17,10 @@ public class BookshelfBlock extends Block {
 	public float getEnchantPowerBonus(BlockState state, IWorldReader world, BlockPos pos) {
 		return 1.0F;
 	}
-	
+
 	@Override
 	public int getFlammability(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
 		return 60;
 	}
-	
+
 }

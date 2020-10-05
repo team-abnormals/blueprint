@@ -15,6 +15,9 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
+/**
+ * @author SmellyModder (Luke Tonon)
+ */
 public final class ACAndRecipeCondition implements ICondition {
 	private final ResourceLocation location;
 	private final List<ICondition> children;
@@ -64,8 +67,8 @@ public final class ACAndRecipeCondition implements ICondition {
 				} else {
 					children.add(condition);
 				}
-            }
-            return new ACAndRecipeCondition(this.location, children);
+			}
+			return new ACAndRecipeCondition(this.location, children);
 		}
 
 		@Override

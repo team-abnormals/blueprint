@@ -12,21 +12,24 @@ import java.util.Set;
  * This can effectively be used on any object type, but the groundwork must be done yourself.
  * If you wish to have this be used on a type of object other than an entity take a look at how this interface is used for the entity tracking system.
  * <p> This is Mixin'd into {@link net.minecraft.entity.Entity} so casting an {@link net.minecraft.entity.Entity} to it is safe. </p>
+ *
  * @author SmellyModder (Luke Tonon)
  */
 public interface IDataManager {
 	/**
 	 * Sets a value for a {@link TrackedData}.
+	 *
 	 * @param trackedData The {@link TrackedData} to the the value for.
-	 * @param value The value to set.
-	 * @param <T> The type of value.
+	 * @param value       The value to set.
+	 * @param <T>         The type of value.
 	 */
 	<T> void setValue(TrackedData<T> trackedData, T value);
 
 	/**
 	 * Gets a value for a {@link TrackedData}.
+	 *
 	 * @param trackedData The {@link TrackedData} to get the value for.
-	 * @param <T> The type of value.
+	 * @param <T>         The type of value.
 	 */
 	<T> T getValue(TrackedData<T> trackedData);
 

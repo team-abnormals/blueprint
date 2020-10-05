@@ -23,8 +23,9 @@ import java.util.function.Supplier;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for items. This contains some useful registering methods for items.
- * @see AbstractSubRegistryHelper
+ *
  * @author SmellyModder (Luke Tonon)
+ * @see AbstractSubRegistryHelper
  */
 public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	public final List<RegistryObject<AbnormalsSpawnEggItem>> spawnEggs = Lists.newArrayList();
@@ -39,7 +40,8 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Registers an {@link Item}
-	 * @param name - The name for the item
+	 *
+	 * @param name     - The name for the item
 	 * @param supplier - A {@link Supplier} containing the {@link Item}
 	 * @return A {@link RegistryObject} containing the {@link Item}
 	 */
@@ -49,10 +51,11 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Creates and registers a compat {@link Item}
-	 * @param modId - The mod id of the mod this item is compatible for, set to "indev" for dev tests
-	 * @param name - The name for the item
+	 *
+	 * @param modId      - The mod id of the mod this item is compatible for, set to "indev" for dev tests
+	 * @param name       - The name for the item
 	 * @param properties - The item's properties
-	 * @param group - The {@link ItemGroup} for the {@link Item}
+	 * @param group      - The {@link ItemGroup} for the {@link Item}
 	 * @return A {@link RegistryObject} containing the {@link Item}
 	 */
 	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, ItemGroup group) {
@@ -62,9 +65,10 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Creates and registers a {@link AbnormalsSpawnEggItem}
-	 * @param entityName - The name of the entity this spawn egg spawns
-	 * @param supplier - The supplied {@link EntityType}
-	 * @param primaryColor - The egg's primary color
+	 *
+	 * @param entityName     - The name of the entity this spawn egg spawns
+	 * @param supplier       - The supplied {@link EntityType}
+	 * @param primaryColor   - The egg's primary color
 	 * @param secondaryColor - The egg's secondary color
 	 * @return A {@link RegistryObject} containing the {@link AbnormalsSpawnEggItem}
 	 * @see AbnormalsSpawnEggItem
@@ -77,6 +81,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Creates and registers a {@link AbnormalsBoatItem} and boat type.
+	 *
 	 * @param - The name of the wood, e.g. "oak"
 	 * @param - The {@link Block} for the boat to drop
 	 */
@@ -89,9 +94,10 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Creates and registers a {@link WallOrFloorItem}
+	 *
 	 * @param floorBlock - The floor {@link Block}
-	 * @param wallBlock - The wall {@link Block}
-	 * @param itemGroup - The {@link ItemGroup} for the {@link WallOrFloorItem}
+	 * @param wallBlock  - The wall {@link Block}
+	 * @param itemGroup  - The {@link ItemGroup} for the {@link WallOrFloorItem}
 	 * @return The created {@link WallOrFloorItem}
 	 * @see WallOrFloorItem
 	 */
@@ -101,8 +107,9 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Creates and registers a {@link TallBlockItem}
+	 *
 	 * @param blockForInput - The {@link Block} for the item
-	 * @param itemGroup - The {@link ItemGroup} for the {@link TallBlockItem}
+	 * @param itemGroup     - The {@link ItemGroup} for the {@link TallBlockItem}
 	 * @return The created {@link TallBlockItem}
 	 * @see TallBlockItem
 	 */
@@ -112,7 +119,8 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Creates a {@link FuelItem}
-	 * @param burnTime - How long the item will burn (measured in ticks)
+	 *
+	 * @param burnTime  - How long the item will burn (measured in ticks)
 	 * @param itemGroup - The {@link ItemGroup} for the {@link FuelItem}
 	 * @return The created {@link FuelItem}
 	 */
@@ -122,8 +130,9 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Creates a {@link BlockItem} with a specified {@link Block} and {@link ItemGroup}
+	 *
 	 * @param blockForInput - The {@link Block} for the {@link BlockItem}
-	 * @param itemGroup - The {@link ItemGroup} for the {@link BlockItem}, null to have it be in no group
+	 * @param itemGroup     - The {@link ItemGroup} for the {@link BlockItem}, null to have it be in no group
 	 * @return - The BlockItem
 	 */
 	public static BlockItem createSimpleBlockItem(Block blockForInput, @Nullable ItemGroup itemGroup) {
@@ -132,6 +141,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Creates a simple {@link Item.Properties} with a stack size and {@link ItemGroup}
+	 *
 	 * @param stackSize - The item's max stack size
 	 * @param itemGroup - The item's ItemGroup
 	 * @return The simple {@link Item.Properties}
@@ -142,6 +152,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 
 	/**
 	 * Processes all the spawn egg colors, should be registered as an event with lowest priority
+	 *
 	 * @param event - The {@link ColorHandlerEvent.Item} event
 	 */
 	@OnlyIn(Dist.CLIENT)

@@ -11,15 +11,15 @@ import net.minecraft.item.MusicDiscItem;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 
-public class AbnormalsMusicDiscItem extends MusicDiscItem { 
-	
+public class AbnormalsMusicDiscItem extends MusicDiscItem {
+
 	public AbnormalsMusicDiscItem(int comparatorValueIn, Supplier<SoundEvent> soundIn, Item.Properties builder) {
 		super(comparatorValueIn, soundIn, builder);
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this, Items.MUSIC_DISC_PIGSTEP, group, items);
 	}
-	
+
 }

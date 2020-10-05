@@ -11,8 +11,8 @@ import java.util.Map;
  * This interface should only be used on the server side.
  * This main purpose of this interface is for storing global data for a Minecraft Save.
  *
- * @see net.minecraft.world.storage.WorldSavedData
  * @author SmellyModder (Luke Tonon)
+ * @see net.minecraft.world.storage.WorldSavedData
  */
 public interface GlobalStorage {
 	Map<ResourceLocation, GlobalStorage> STORAGES = new HashMap<>();
@@ -20,11 +20,12 @@ public interface GlobalStorage {
 	/**
 	 * Adds a {@link GlobalStorage} to the {@link #STORAGES} map and returns the {@link GlobalStorage}.
 	 * Use this to have your {@link GlobalStorage} be saved and loaded.
-	 * @param key - The id of the storage.
+	 *
+	 * @param key     - The id of the storage.
 	 * @param storage - The {@link GlobalStorage} to add to the {@link #STORAGES} map.
-	 * @param <S> - The type of {@link GlobalStorage}.
-	 * @throws IllegalStateException if the storage is created after {@link GlobalStorageManager} has loaded its NBT.
+	 * @param <S>     - The type of {@link GlobalStorage}.
 	 * @return - The supplied {@link GlobalStorage}.
+	 * @throws IllegalStateException if the storage is created after {@link GlobalStorageManager} has loaded its NBT.
 	 */
 	static <S extends GlobalStorage> S createStorage(ResourceLocation key, S storage) {
 		if (GlobalStorageManager.isLoaded()) {
@@ -36,12 +37,14 @@ public interface GlobalStorage {
 
 	/**
 	 * Called when saving this {@link GlobalStorage} to NBT.
+	 *
 	 * @return - The serialized NBT data of this {@link GlobalStorage}.
 	 */
 	CompoundNBT toTag();
 
 	/**
 	 * Called when loading the saved NBT data for this {@link GlobalStorage}.
+	 *
 	 * @param tag - The deserialized NBT data of this {@link GlobalStorage}.
 	 */
 	void fromTag(CompoundNBT tag);

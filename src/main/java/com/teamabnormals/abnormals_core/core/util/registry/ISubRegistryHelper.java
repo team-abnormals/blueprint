@@ -6,8 +6,9 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
  * An interface for 'sub' registry helpers used in {@link RegistryHelper}.
- * @author SmellyModder (Luke Tonon)
+ *
  * @param <T> The type of {@link IForgeRegistryEntry} this is for.
+ * @author SmellyModder (Luke Tonon)
  */
 public interface ISubRegistryHelper<T extends IForgeRegistryEntry<T>> {
 	/**
@@ -22,6 +23,7 @@ public interface ISubRegistryHelper<T extends IForgeRegistryEntry<T>> {
 
 	/**
 	 * Should ideally register {@link #getDeferredRegister()}.
+	 *
 	 * @param eventBus The event bus to register this to.
 	 */
 	void register(IEventBus eventBus);

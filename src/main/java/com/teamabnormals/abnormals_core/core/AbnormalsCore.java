@@ -57,27 +57,27 @@ public final class AbnormalsCore {
 	public static final String NETWORK_PROTOCOL = "AC1";
 	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper.Builder(MODID).build();
-	
+
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))
-		.networkProtocolVersion(() -> NETWORK_PROTOCOL)
-		.clientAcceptedVersions(NETWORK_PROTOCOL::equals)
-		.serverAcceptedVersions(NETWORK_PROTOCOL::equals)
-		.simpleChannel();
+			.networkProtocolVersion(() -> NETWORK_PROTOCOL)
+			.clientAcceptedVersions(NETWORK_PROTOCOL::equals)
+			.serverAcceptedVersions(NETWORK_PROTOCOL::equals)
+			.simpleChannel();
 
 	public AbnormalsCore() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ChunkLoaderEvents());
-		
+
 		this.setupMessages();
-		
+
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
 		BannerManager.RECIPE_SERIALIZERS.register(modEventBus);
 
 		REGISTRY_HELPER.getEntitySubHelper().register(modEventBus);
 		REGISTRY_HELPER.getTileEntitySubHelper().register(modEventBus);
-		
+
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
 			if (config.getSpec() == ACConfig.COMMON_SPEC) {
@@ -89,11 +89,11 @@ public final class AbnormalsCore {
 			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
 			modEventBus.addListener(this::clientSetup);
 		});
-		
+
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
 	}
-    
+
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
 			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
@@ -103,16 +103,16 @@ public final class AbnormalsCore {
 		});
 		ChunkLoaderCapability.register();
 	}
-    
+
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(final FMLClientSetupEvent event) {
 		RenderingRegistry.registerEntityRenderingHandler(ACEntities.BOAT.get(), AbnormalsBoatRenderer::new);
-		
+
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
 	}
-	
+
 	private void setupMessages() {
 		int id = -1;
 

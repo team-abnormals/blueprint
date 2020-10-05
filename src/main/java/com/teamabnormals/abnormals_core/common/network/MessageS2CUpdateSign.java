@@ -17,13 +17,14 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * Update message for the signs
+ *
  * @author SmellyModder(Luke Tonon)
  */
 public final class MessageS2CUpdateSign {
 	private BlockPos signPos;
 	private String topLine, secondLine, thirdLine, bottomLine;
 	private int color;
-	
+
 	public MessageS2CUpdateSign(BlockPos signPos, String topLine, String secondLine, String thirdLine, String bottomLine, int color) {
 		this.signPos = signPos;
 		this.topLine = topLine;
@@ -32,7 +33,7 @@ public final class MessageS2CUpdateSign {
 		this.bottomLine = bottomLine;
 		this.color = color;
 	}
-	
+
 	public void serialize(PacketBuffer buf) {
 		buf.writeBlockPos(this.signPos);
 
@@ -40,14 +41,14 @@ public final class MessageS2CUpdateSign {
 		buf.writeString(this.secondLine);
 		buf.writeString(this.thirdLine);
 		buf.writeString(this.bottomLine);
-		
+
 		buf.writeInt(this.color);
 	}
-	
+
 	public static MessageS2CUpdateSign deserialize(PacketBuffer buf) {
 		return new MessageS2CUpdateSign(buf.readBlockPos(), buf.readString(), buf.readString(), buf.readString(), buf.readString(), buf.readInt());
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public static void handle(MessageS2CUpdateSign message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
@@ -58,14 +59,14 @@ public final class MessageS2CUpdateSign {
 				if (world.isBlockLoaded(blockpos)) {
 					TileEntity tileentity = world.getTileEntity(blockpos);
 					if (!(tileentity instanceof AbnormalsSignTileEntity)) return;
-	
+
 					AbnormalsSignTileEntity signtileentity = (AbnormalsSignTileEntity) tileentity;
 
 					signtileentity.setText(0, new StringTextComponent(TextFormatting.getTextWithoutFormattingCodes(message.topLine)));
 					signtileentity.setText(1, new StringTextComponent(TextFormatting.getTextWithoutFormattingCodes(message.secondLine)));
 					signtileentity.setText(2, new StringTextComponent(TextFormatting.getTextWithoutFormattingCodes(message.thirdLine)));
 					signtileentity.setText(3, new StringTextComponent(TextFormatting.getTextWithoutFormattingCodes(message.bottomLine)));
-					
+
 					signtileentity.setTextColor(DyeColor.byId(message.color));
 				}
 			});

@@ -52,7 +52,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 		compound.putString("Color", this.textColor.getTranslationKey());
 		return compound;
 	}
-	
+
 	@Override
 	public void read(BlockState state, CompoundNBT compound) {
 		super.read(state, compound);
@@ -64,7 +64,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 			ITextComponent itextcomponent = ITextComponent.Serializer.getComponentFromJson(s.isEmpty() ? "\"\"" : s);
 			if (this.world instanceof ServerWorld) {
 				try {
-					this.signText[i] = TextComponentUtils.func_240645_a_(this.getCommandSource((ServerPlayerEntity)null), itextcomponent, (Entity)null, 0);
+					this.signText[i] = TextComponentUtils.func_240645_a_(this.getCommandSource((ServerPlayerEntity) null), itextcomponent, (Entity) null, 0);
 				} catch (CommandSyntaxException var6) {
 					this.signText[i] = itextcomponent;
 				}
@@ -95,7 +95,7 @@ public class AbnormalsSignTileEntity extends TileEntity {
 
 		return this.renderText[line];
 	}
-	   
+
 	@Nullable
 	public SUpdateTileEntityPacket getUpdatePacket() {
 		return new SUpdateTileEntityPacket(this.pos, 100, this.getUpdateTag());
@@ -126,29 +126,29 @@ public class AbnormalsSignTileEntity extends TileEntity {
 	public void setPlayer(PlayerEntity playerIn) {
 		this.player = playerIn;
 	}
-	
+
 	public PlayerEntity getPlayer() {
 		return this.player;
 	}
-	
-	public boolean executeCommand(PlayerEntity playerIn) {
-		for (ITextComponent itextcomponent: this.signText) {
-            Style style = itextcomponent == null ? null : itextcomponent.getStyle();
-            if (style != null && style.getClickEvent() != null) {
-                ClickEvent clickevent = style.getClickEvent();
-                if (clickevent.getAction() == ClickEvent.Action.RUN_COMMAND) {
-                    playerIn.getServer().getCommandManager().handleCommand(this.getCommandSource((ServerPlayerEntity) playerIn), clickevent.getValue());
-                }
-            }
-        }
 
-        return true;
-    }
+	public boolean executeCommand(PlayerEntity playerIn) {
+		for (ITextComponent itextcomponent : this.signText) {
+			Style style = itextcomponent == null ? null : itextcomponent.getStyle();
+			if (style != null && style.getClickEvent() != null) {
+				ClickEvent clickevent = style.getClickEvent();
+				if (clickevent.getAction() == ClickEvent.Action.RUN_COMMAND) {
+					playerIn.getServer().getCommandManager().handleCommand(this.getCommandSource((ServerPlayerEntity) playerIn), clickevent.getValue());
+				}
+			}
+		}
+
+		return true;
+	}
 
 	public CommandSource getCommandSource(@Nullable ServerPlayerEntity playerIn) {
-    	String s = playerIn == null ? "Sign" : playerIn.getName().getString();
-    	ITextComponent itextcomponent = (ITextComponent)(playerIn == null ? new StringTextComponent("Sign") : playerIn.getDisplayName());
-    	return new CommandSource(ICommandSource.DUMMY, new Vector3d((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D), Vector2f.ZERO, (ServerWorld) this.world, 2, s, itextcomponent, this.world.getServer(), playerIn);
+		String s = playerIn == null ? "Sign" : playerIn.getName().getString();
+		ITextComponent itextcomponent = (ITextComponent) (playerIn == null ? new StringTextComponent("Sign") : playerIn.getDisplayName());
+		return new CommandSource(ICommandSource.DUMMY, new Vector3d((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D), Vector2f.ZERO, (ServerWorld) this.world, 2, s, itextcomponent, this.world.getServer(), playerIn);
 	}
 
 	public DyeColor getTextColor() {

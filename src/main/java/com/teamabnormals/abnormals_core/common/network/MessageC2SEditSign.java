@@ -18,12 +18,13 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * Message for updating edited sign text from the client to the server
+ *
  * @author - SmellyModder(Luke Tonon)
  */
 public final class MessageC2SEditSign {
 	private BlockPos signPos;
 	private String topLine, secondLine, thirdLine, bottomLine;
-	
+
 	public MessageC2SEditSign(BlockPos signPos, String topLine, String secondLine, String thirdLine, String bottomLine) {
 		this.signPos = signPos;
 		this.topLine = topLine;
@@ -31,7 +32,7 @@ public final class MessageC2SEditSign {
 		this.thirdLine = thirdLine;
 		this.bottomLine = bottomLine;
 	}
-	
+
 	public void serialize(PacketBuffer buf) {
 		buf.writeBlockPos(this.signPos);
 
@@ -40,11 +41,11 @@ public final class MessageC2SEditSign {
 		buf.writeString(this.thirdLine);
 		buf.writeString(this.bottomLine);
 	}
-	
+
 	public static MessageC2SEditSign deserialize(PacketBuffer buf) {
 		return new MessageC2SEditSign(buf.readBlockPos(), buf.readString(32767), buf.readString(32767), buf.readString(32767), buf.readString(32767));
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public static void handle(MessageC2SEditSign message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
@@ -52,14 +53,14 @@ public final class MessageC2SEditSign {
 			context.enqueueWork(() -> {
 				ServerPlayerEntity player = context.getSender();
 				player.markPlayerActive();
-				
+
 				ServerWorld world = player.getServerWorld();
 				BlockPos blockpos = message.signPos;
 				if (world.isBlockLoaded(blockpos)) {
 					BlockState blockstate = world.getBlockState(blockpos);
 					TileEntity tileentity = world.getTileEntity(blockpos);
 					if (!(tileentity instanceof AbnormalsSignTileEntity)) return;
-	
+
 					AbnormalsSignTileEntity signtileentity = (AbnormalsSignTileEntity) tileentity;
 					if (!signtileentity.getIsEditable() || signtileentity.getPlayer() != player) {
 						return;
@@ -72,7 +73,7 @@ public final class MessageC2SEditSign {
 
 					signtileentity.markDirty();
 					world.notifyBlockUpdate(blockpos, blockstate, blockstate, 3);
-					
+
 					NetworkUtil.updateSignText(signtileentity.getPos(), signtileentity.signText[0], signtileentity.signText[1], signtileentity.signText[2], signtileentity.signText[3], signtileentity.getTextColor());
 				}
 			});

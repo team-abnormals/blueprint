@@ -20,14 +20,14 @@ import net.minecraft.util.NonNullList;
 public class AbnormalsSpawnEggItem extends SpawnEggItem {
 	private Supplier<EntityType<?>> entityType;
 
-	public AbnormalsSpawnEggItem(Supplier<EntityType<?>> entityType, int primaryColor, int secondaryColor, Properties properties){
+	public AbnormalsSpawnEggItem(Supplier<EntityType<?>> entityType, int primaryColor, int secondaryColor, Properties properties) {
 		super(null, primaryColor, secondaryColor, properties);
 		this.entityType = entityType;
 		DispenserBlock.registerDispenseBehavior(this, new SpawnEggDispenseBehavior());
 	}
 
 	@Override
-	public EntityType<?> getType(CompoundNBT compound){
+	public EntityType<?> getType(CompoundNBT compound) {
 		if (compound != null && compound.contains("EntityTag", 10)) {
 			CompoundNBT entityTag = compound.getCompound("EntityTag");
 
@@ -37,7 +37,7 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 		}
 		return this.entityType.get();
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this, Items.ZOMBIFIED_PIGLIN_SPAWN_EGG, group, items);

@@ -10,11 +10,11 @@ import net.minecraft.potion.Effect;
 import net.minecraft.util.NonNullList;
 
 public class AbnormalsFlowerBlock extends FlowerBlock {
-	
+
 	public AbnormalsFlowerBlock(Effect stewEffect, int stewEffectDuration, Properties properties) {
-        super(stewEffect, stewEffectDuration, properties);
-    }
-	
+		super(stewEffect, stewEffectDuration, properties);
+	}
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WITHER_ROSE, group, items);

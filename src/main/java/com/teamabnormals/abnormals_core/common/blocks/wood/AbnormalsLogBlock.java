@@ -32,7 +32,7 @@ public class AbnormalsLogBlock extends RotatedPillarBlock {
 		super(properties);
 		this.block = strippedBlock;
 	}
-	
+
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
 		ItemStack stack = player.getHeldItem(hand);
@@ -48,7 +48,7 @@ public class AbnormalsLogBlock extends RotatedPillarBlock {
 		}
 		return ActionResultType.PASS;
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_STEM, group, items);

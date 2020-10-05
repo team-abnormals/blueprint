@@ -12,7 +12,7 @@ public class WoodTrapDoorBlock extends TrapDoorBlock {
 	public WoodTrapDoorBlock(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_TRAPDOOR, group, items);

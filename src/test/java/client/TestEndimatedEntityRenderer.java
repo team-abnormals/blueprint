@@ -16,9 +16,9 @@ public final class TestEndimatedEntityRenderer extends LivingRenderer<TestEndima
 	});
 
 	public TestEndimatedEntityRenderer(EntityRendererManager renderManager) {
-        super(renderManager, new TestEndimatedEntityModel<>(), 0.0F);
-    }
-	
+		super(renderManager, new TestEndimatedEntityModel<>(), 0.0F);
+	}
+
 	@Override
 	public ResourceLocation getEntityTexture(TestEndimatedEntity entity) {
 		return SKIN_HELPER.getSkinForEntityOrElse(entity, TEXTURE);

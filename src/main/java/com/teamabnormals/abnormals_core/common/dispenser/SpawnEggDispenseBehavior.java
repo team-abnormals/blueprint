@@ -14,9 +14,9 @@ public final class SpawnEggDispenseBehavior extends DefaultDispenseItemBehavior 
 	@Override
 	public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 		Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-		EntityType<?> entitytype = ((SpawnEggItem)stack.getItem()).getType(stack.getTag());
-		entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
-        stack.shrink(1);
-        return stack;
+		EntityType<?> entitytype = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
+		entitytype.spawn(source.getWorld(), stack, (PlayerEntity) null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+		stack.shrink(1);
+		return stack;
 	}
 }

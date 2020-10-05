@@ -21,22 +21,22 @@ import net.minecraft.util.ResourceLocation;
 public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
 	private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
 	private final ResourceLocation id;
-	
+
 	public EmptyTrigger(ResourceLocation id) {
 		this.id = id;
 	}
-	
+
 	@Override
 	public ResourceLocation getId() {
 		return this.id;
 	}
-	
+
 	@Override
 	public void addListener(PlayerAdvancements playerAdvancements, Listener<Instance> listener) {
 		Listeners listeners = this.listeners.computeIfAbsent(playerAdvancements, Listeners::new);
 		listeners.add(listener);
 	}
-	
+
 	@Override
 	public void removeListener(PlayerAdvancements playerAdvancements, Listener<Instance> listener) {
 		Listeners listeners = this.listeners.get(playerAdvancements);
@@ -47,43 +47,43 @@ public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instan
 			}
 		}
 	}
-	
+
 	@Override
 	public void removeAllListeners(PlayerAdvancements playerAdvancements) {
 		this.listeners.remove(playerAdvancements);
 	}
-	
+
 	@Override
 	public Instance deserialize(JsonObject object, ConditionArrayParser conditions) {
 		return new Instance(this.id);
 	}
-	
+
 	public void trigger(ServerPlayerEntity player) {
 		Listeners listeners = this.listeners.get(player.getAdvancements());
 		if (listeners != null) {
 			listeners.trigger();
 		}
 	}
-	
+
 	public static class Instance implements ICriterionInstance {
 		private final ResourceLocation id;
-		
+
 		Instance(ResourceLocation id) {
 			super();
 			this.id = id;
 		}
-		
+
 		@Override
 		public ResourceLocation getId() {
 			return this.id;
 		}
-		
+
 		@Override
 		public JsonObject serialize(ConditionArraySerializer conditions) {
 			return new JsonObject();
 		}
 	}
-	
+
 	static class Listeners {
 		private final Set<Listener<Instance>> listeners = new HashSet<>();
 		private final PlayerAdvancements advancements;
@@ -99,7 +99,7 @@ public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instan
 		public void remove(Listener<Instance> listener) {
 			this.listeners.remove(listener);
 		}
-		
+
 		public boolean isEmpty() {
 			return this.listeners.isEmpty();
 		}

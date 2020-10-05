@@ -19,11 +19,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class AbnormalsSignItem extends WallOrFloorItem {
-	
+
 	public AbnormalsSignItem(Block floorBlockIn, Block wallBlockIn, Item.Properties propertiesIn) {
 		super(floorBlockIn, wallBlockIn, propertiesIn);
 	}
-	
+
 	protected boolean onBlockPlaced(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
 		boolean flag = super.onBlockPlaced(pos, world, player, stack, state);
 		if (!world.isRemote && !flag && player != null) {
@@ -31,10 +31,10 @@ public class AbnormalsSignItem extends WallOrFloorItem {
 		}
 		return flag;
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this, Items.WARPED_SIGN, group, items);
 	}
-	
+
 }

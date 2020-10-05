@@ -5,5 +5,5 @@ public interface IChestBlock {
 
     String getChestName();
 
-	String getModid();
+    String getModid();
 }

@@ -11,7 +11,7 @@ import net.minecraft.util.NonNullList;
 
 public class InjectedBlockItem extends BlockItem {
 	private final Item followItem;
-	
+
 	public InjectedBlockItem(Item followItem, Block block, Properties builder) {
 		super(block, builder);
 		this.followItem = followItem;

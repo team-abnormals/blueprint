@@ -12,7 +12,7 @@ public class WoodSlabBlock extends SlabBlock {
 	public WoodSlabBlock(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_SLAB, group, items);

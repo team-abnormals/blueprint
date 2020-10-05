@@ -7,8 +7,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for sounds. This contains some useful registering methods for sounds.
- * @see AbstractSubRegistryHelper
+ *
  * @author SmellyModder (Luke Tonon)
+ * @see AbstractSubRegistryHelper
  */
 public class SoundSubRegistryHelper extends AbstractSubRegistryHelper<SoundEvent> {
 
@@ -22,6 +23,7 @@ public class SoundSubRegistryHelper extends AbstractSubRegistryHelper<SoundEvent
 
 	/**
 	 * Creates and registers a {@link SoundEvent}.
+	 *
 	 * @param name - The sound's name.
 	 * @return A {@link RegistryObject} containing the created {@link SoundEvent}.
 	 */

@@ -12,7 +12,7 @@ public class WoodFenceBlock extends FenceBlock {
 	public WoodFenceBlock(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_FENCE, group, items);

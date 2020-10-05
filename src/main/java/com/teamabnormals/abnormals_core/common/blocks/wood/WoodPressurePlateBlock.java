@@ -12,7 +12,7 @@ public class WoodPressurePlateBlock extends AbnormalsPressurePlateBlock {
 	public WoodPressurePlateBlock(Sensitivity sensitivityIn, Properties propertiesIn) {
 		super(sensitivityIn, propertiesIn);
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_PRESSURE_PLATE, group, items);

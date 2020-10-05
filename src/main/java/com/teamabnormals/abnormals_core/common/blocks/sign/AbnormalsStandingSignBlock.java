@@ -32,7 +32,7 @@ public class AbnormalsStandingSignBlock extends AbnormalsAbstractSignBlock {
 
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		FluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
-		return this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double)((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(WATERLOGGED, Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER));
+		return this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double) ((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(WATERLOGGED, Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER));
 	}
 
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
@@ -42,7 +42,7 @@ public class AbnormalsStandingSignBlock extends AbnormalsAbstractSignBlock {
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.with(ROTATION, rot.rotate(state.get(ROTATION), 16));
 	}
-	
+
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
 		return state.with(ROTATION, mirrorIn.mirrorRotation(state.get(ROTATION), 16));
 	}

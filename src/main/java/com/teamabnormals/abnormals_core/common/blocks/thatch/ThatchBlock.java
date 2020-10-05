@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ThatchBlock extends Block {
-	
+
 	public ThatchBlock(Properties properties) {
 		super(properties);
 	}
@@ -16,12 +16,12 @@ public class ThatchBlock extends Block {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
-	    return 1.0F;
+		return 1.0F;
 	}
 
 	@Override
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-	    return true;
+		return true;
 	}
 
 }

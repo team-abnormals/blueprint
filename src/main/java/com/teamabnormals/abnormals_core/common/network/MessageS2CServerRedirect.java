@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 /**
  * Allows servers to redirect clients to another server.
+ *
  * @author Jackson
  */
 public final class MessageS2CServerRedirect {

@@ -12,7 +12,7 @@ public class WoodDoorBlock extends DoorBlock {
 	public WoodDoorBlock(Properties builder) {
 		super(builder);
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_DOOR, group, items);

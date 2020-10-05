@@ -27,6 +27,7 @@ import java.util.Set;
  * </p>
  * <p> Another important detail is this system can be applied to any other object, but you must do the groundwork yourself. </p>
  * <p> To register a {@link TrackedData} use {@link #registerData(ResourceLocation, TrackedData)} during the common setup of your mod. </p>
+ *
  * @author SmellyModder (Luke Tonon)
  */
 public enum TrackedDataManager {
@@ -43,7 +44,8 @@ public enum TrackedDataManager {
 	/**
 	 * Registers a {@link TrackedData} for a {@link ResourceLocation} key.
 	 * Call this in the common setup of your mod.
-	 * @param key The key to register the {@link TrackedData} for.
+	 *
+	 * @param key         The key to register the {@link TrackedData} for.
 	 * @param trackedData The {@link TrackedData} to register.
 	 */
 	public synchronized void registerData(ResourceLocation key, TrackedData<?> trackedData) {
@@ -57,10 +59,11 @@ public enum TrackedDataManager {
 
 	/**
 	 * Sets a value for a {@link TrackedData} for an {@link Entity}.
-	 * @param entity The entity to set the value for.
+	 *
+	 * @param entity      The entity to set the value for.
 	 * @param trackedData The {@link TrackedData} to set the value for.
-	 * @param value The value to set for the {@link TrackedData}.
-	 * @param <T> The type of value.
+	 * @param value       The value to set for the {@link TrackedData}.
+	 * @param <T>         The type of value.
 	 */
 	public <T> void setValue(Entity entity, TrackedData<T> trackedData, T value) {
 		if (!this.dataMap.containsValue(trackedData)) {
@@ -71,9 +74,10 @@ public enum TrackedDataManager {
 
 	/**
 	 * Gets a value for a {@link TrackedData} for an {@link Entity}.
-	 * @param entity The entity to set the value from.
+	 *
+	 * @param entity      The entity to set the value from.
 	 * @param trackedData The {@link TrackedData} to get the value for.
-	 * @param <T> The type of value to get.
+	 * @param <T>         The type of value to get.
 	 * @return The value gotten from the {@link TrackedData} from the {@link Entity}.
 	 */
 	public <T> T getValue(Entity entity, TrackedData<T> trackedData) {
@@ -85,6 +89,7 @@ public enum TrackedDataManager {
 
 	/**
 	 * Gets a {@link TrackedData} by a {@link ResourceLocation}.
+	 *
 	 * @param resourceLocation The {@link ResourceLocation} to lookup.
 	 * @return The {@link TrackedData} registered for the supplied {@link ResourceLocation}.
 	 */
@@ -95,6 +100,7 @@ public enum TrackedDataManager {
 
 	/**
 	 * Gets the {@link ResourceLocation} key for a {@link TrackedData}.
+	 *
 	 * @param trackedData The {@link TrackedData} to lookup.
 	 * @return The {@link ResourceLocation} key for the registered {@link TrackedData}.
 	 */
@@ -105,6 +111,7 @@ public enum TrackedDataManager {
 
 	/**
 	 * Gets a {@link TrackedData} by its registry id.
+	 *
 	 * @param id The id to lookup.
 	 * @return The {@link TrackedData} for the supplied id.
 	 */
@@ -115,6 +122,7 @@ public enum TrackedDataManager {
 
 	/**
 	 * Gets the id of a {@link TrackedData}.
+	 *
 	 * @param trackedData The {@link TrackedData} to get the id for.
 	 * @return The id of the supplied id.
 	 */

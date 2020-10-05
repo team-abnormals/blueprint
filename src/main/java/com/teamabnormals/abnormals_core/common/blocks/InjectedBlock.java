@@ -15,7 +15,7 @@ public class InjectedBlock extends Block {
 		super(properties);
 		this.followItem = followItem;
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this.asItem(), this.followItem, group, items);

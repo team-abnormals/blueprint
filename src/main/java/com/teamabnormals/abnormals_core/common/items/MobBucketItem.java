@@ -38,7 +38,7 @@ public class MobBucketItem extends BucketItem {
 			this.placeEntity((ServerWorld) world, stack, pos);
 		}
 	}
-	
+
 	protected void playEmptySound(@Nullable PlayerEntity player, IWorld worldIn, BlockPos pos) {
 		worldIn.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY_FISH, SoundCategory.NEUTRAL, 1.0F, 1.0F);
 	}
@@ -46,10 +46,10 @@ public class MobBucketItem extends BucketItem {
 	protected void placeEntity(ServerWorld world, ItemStack stack, BlockPos pos) {
 		Entity entity = this.entityType.get().spawn(world, stack, null, pos, SpawnReason.BUCKET, true, false);
 		if (entity != null) {
-			((BucketableWaterMobEntity)entity).setFromBucket(true);
+			((BucketableWaterMobEntity) entity).setFromBucket(true);
 		}
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this, Items.TROPICAL_FISH_BUCKET, group, items);

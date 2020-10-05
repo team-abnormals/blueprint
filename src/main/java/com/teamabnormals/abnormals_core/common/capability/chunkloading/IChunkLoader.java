@@ -7,7 +7,10 @@ import net.minecraft.util.math.BlockPos;
  */
 public interface IChunkLoader {
 	void addPos(BlockPos pos);
+
 	void removePos(BlockPos pos);
+
 	void tick();
+
 	boolean containsPos(BlockPos pos);
 }

@@ -7,7 +7,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ThatchSlabBlock extends SlabBlock{
+public class ThatchSlabBlock extends SlabBlock {
 	public ThatchSlabBlock(Properties properties) {
 		super(properties);
 	}
@@ -15,11 +15,11 @@ public class ThatchSlabBlock extends SlabBlock{
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
-	    return 1.0F;
+		return 1.0F;
 	}
 
 	@Override
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-	    return true;
+		return true;
 	}
 }

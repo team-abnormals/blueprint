@@ -10,6 +10,7 @@ import java.util.UUID;
 /**
  * This class contains the built-in {@link IDataProcessor}s.
  * Use these fields for some primitive types or basic types. Feel free to make PRs to add more of these!
+ *
  * @author SmellyModder (Luke Tonon)
  */
 public final class DataProcessors {

@@ -68,7 +68,7 @@ public class AbnormalsEditSignScreen extends Screen {
 	public void onClose() {
 		this.minecraft.keyboardListener.enableRepeatEvents(false);
 		NetworkUtil.setNewSignText(this.tileSign.getPos(), this.tileSign.getText(0), this.tileSign.getText(1), this.tileSign.getText(2), this.tileSign.getText(3));
-		
+
 		this.tileSign.setEditable(true);
 	}
 
@@ -98,7 +98,7 @@ public class AbnormalsEditSignScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(int firstKey, int secondKey, int thirdKey) {
-		if(firstKey == 265) {
+		if (firstKey == 265) {
 			this.editLine = this.editLine - 1 & 3;
 			this.textInputUtil.moveCursorToEnd();
 			return true;
@@ -110,7 +110,7 @@ public class AbnormalsEditSignScreen extends Screen {
 			return true;
 		}
 	}
-	
+
 	@Override
 	public void render(MatrixStack matrixstack, int buttonR, int buttonG, float buttonB) {
 		RenderHelper.setupGuiFlatDiffuseLighting();
@@ -137,9 +137,9 @@ public class AbnormalsEditSignScreen extends Screen {
 		}
 
 		matrixstack.pop();
-		matrixstack.translate(0.0D, (double)0.33333334F, (double)0.046666667F);
+		matrixstack.translate(0.0D, (double) 0.33333334F, (double) 0.046666667F);
 		matrixstack.scale(0.010416667F, -0.010416667F, 0.010416667F);
-		
+
 		int i = this.tileSign.getTextColor().getTextColor();
 		int j = this.textInputUtil.getEndIndex();
 		int k = this.textInputUtil.getStartIndex();
@@ -153,13 +153,13 @@ public class AbnormalsEditSignScreen extends Screen {
 					s = this.font.bidiReorder(s);
 				}
 
-				float f3 = (float)(-this.minecraft.fontRenderer.getStringWidth(s) / 2);
-				this.minecraft.fontRenderer.func_238411_a_(s, f3, (float)(i1 * 10 - this.field_238846_r_.length * 5), i, false, matrix4f, irendertypebuffer$impl, false, 0, 15728880, false);
+				float f3 = (float) (-this.minecraft.fontRenderer.getStringWidth(s) / 2);
+				this.minecraft.fontRenderer.func_238411_a_(s, f3, (float) (i1 * 10 - this.field_238846_r_.length * 5), i, false, matrix4f, irendertypebuffer$impl, false, 0, 15728880, false);
 				if (i1 == this.editLine && j >= 0 && flag1) {
 					int j1 = this.minecraft.fontRenderer.getStringWidth(s.substring(0, Math.max(Math.min(j, s.length()), 0)));
 					int k1 = j1 - this.minecraft.fontRenderer.getStringWidth(s) / 2;
 					if (j >= s.length()) {
-						this.minecraft.fontRenderer.func_238411_a_("_", (float)k1, (float)l, i, false, matrix4f, irendertypebuffer$impl, false, 0, 15728880, false);
+						this.minecraft.fontRenderer.func_238411_a_("_", (float) k1, (float) l, i, false, matrix4f, irendertypebuffer$impl, false, 0, 15728880, false);
 					}
 				}
 			}
@@ -171,10 +171,10 @@ public class AbnormalsEditSignScreen extends Screen {
 			String s1 = field_238846_r_[i3];
 			if (s1 != null && i3 == this.editLine && k >= 0) {
 				int j3 = this.minecraft.fontRenderer.getStringWidth(s1.substring(0, Math.max(Math.min(j, s1.length()), 0)));
-	            int k3 = j3 - this.minecraft.fontRenderer.getStringWidth(s1) / 2;
-	            if (flag1 && j < s1.length()) {
-	            	fill(matrixstack, k3, l - 1, k3 + 1, l + 9, -16777216 | i);
-	            }
+				int k3 = j3 - this.minecraft.fontRenderer.getStringWidth(s1) / 2;
+				if (flag1 && j < s1.length()) {
+					fill(matrixstack, k3, l - 1, k3 + 1, l + 9, -16777216 | i);
+				}
 
 				if (k != j) {
 					int l3 = Math.min(j, k);
@@ -189,10 +189,10 @@ public class AbnormalsEditSignScreen extends Screen {
 					RenderSystem.enableColorLogicOp();
 					RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 					bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-					bufferbuilder.pos(matrix4f, (float)k2, (float)(l + 9), 0.0F).color(0, 0, 255, 255).endVertex();
-					bufferbuilder.pos(matrix4f, (float)l2, (float)(l + 9), 0.0F).color(0, 0, 255, 255).endVertex();
-					bufferbuilder.pos(matrix4f, (float)l2, (float)l, 0.0F).color(0, 0, 255, 255).endVertex();
-					bufferbuilder.pos(matrix4f, (float)k2, (float)l, 0.0F).color(0, 0, 255, 255).endVertex();
+					bufferbuilder.pos(matrix4f, (float) k2, (float) (l + 9), 0.0F).color(0, 0, 255, 255).endVertex();
+					bufferbuilder.pos(matrix4f, (float) l2, (float) (l + 9), 0.0F).color(0, 0, 255, 255).endVertex();
+					bufferbuilder.pos(matrix4f, (float) l2, (float) l, 0.0F).color(0, 0, 255, 255).endVertex();
+					bufferbuilder.pos(matrix4f, (float) k2, (float) l, 0.0F).color(0, 0, 255, 255).endVertex();
 					bufferbuilder.finishDrawing();
 					WorldVertexBufferUploader.draw(bufferbuilder);
 					RenderSystem.disableColorLogicOp();
@@ -204,5 +204,5 @@ public class AbnormalsEditSignScreen extends Screen {
 		matrixstack.pop();
 		RenderHelper.setupGui3DDiffuseLighting();
 		super.render(matrixstack, buttonR, buttonG, buttonB);
-   }
+	}
 }

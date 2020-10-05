@@ -11,8 +11,8 @@ import net.minecraftforge.common.util.Constants;
 /**
  * Handles saving registered {@link GlobalStorage}s.
  *
- * @see net.minecraft.world.storage.WorldSavedData
  * @author SmellyModder (Luke Tonon)
+ * @see net.minecraft.world.storage.WorldSavedData
  */
 public final class GlobalStorageManager extends WorldSavedData {
 	private static final String KEY = AbnormalsCore.MODID + "_storage";
