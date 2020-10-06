@@ -23,9 +23,13 @@ import java.util.function.Function;
 
 @Mixin(EditSignScreen.class)
 public class EditSignScreenMixin {
+	@Shadow
+	@Final
+	private SignTileEntity tileSign;
 
-	@Shadow @Final private SignTileEntity tileSign;
-	@Shadow @Final private SignTileEntityRenderer.SignModel signModel;
+	@Shadow
+	@Final
+	private SignTileEntityRenderer.SignModel signModel;
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/tileentity/SignTileEntityRenderer;getMaterial(Lnet/minecraft/block/Block;)Lnet/minecraft/client/renderer/model/RenderMaterial;"))
 	public RenderMaterial changeTexture(Block blockIn) {

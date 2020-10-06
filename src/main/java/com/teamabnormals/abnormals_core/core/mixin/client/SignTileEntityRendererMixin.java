@@ -25,15 +25,16 @@ import java.util.function.Function;
 
 @Mixin(SignTileEntityRenderer.class)
 public abstract class SignTileEntityRendererMixin {
+	@Shadow
+	@Final
+	private SignTileEntityRenderer.SignModel model;
 
-	@Shadow @Final private SignTileEntityRenderer.SignModel model;
+	private BlockState state;
 
 	@Shadow
 	public static RenderMaterial getMaterial(Block blockIn) {
 		return null;
 	}
-
-	private BlockState state;
 
 	@Inject(method = "render", at = @At("HEAD"))
 	public void captureState(SignTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn, CallbackInfo ci) {
