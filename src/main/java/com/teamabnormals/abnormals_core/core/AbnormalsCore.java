@@ -1,40 +1,35 @@
 package com.teamabnormals.abnormals_core.core;
 
-import java.util.Map;
-import java.util.Set;
-
-import com.teamabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
-import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
-import net.minecraft.nbt.CompoundNBT;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
-import com.teamabnormals.abnormals_core.client.tile.*;
+import com.teamabnormals.abnormals_core.client.tile.AbnormalsChestTileEntityRenderer;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.teamabnormals.abnormals_core.common.capability.chunkloading.*;
 import com.teamabnormals.abnormals_core.common.network.*;
 import com.teamabnormals.abnormals_core.common.network.entity.*;
 import com.teamabnormals.abnormals_core.common.network.particle.*;
 import com.teamabnormals.abnormals_core.common.world.biome.AbnormalsBiome;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
 import com.teamabnormals.abnormals_core.core.library.Test;
 import com.teamabnormals.abnormals_core.core.library.api.BannerManager;
 import com.teamabnormals.abnormals_core.core.library.api.IAddToBiomes;
-import com.teamabnormals.abnormals_core.core.library.api.conditions.*;
+import com.teamabnormals.abnormals_core.core.library.api.conditions.ACAndRecipeCondition;
+import com.teamabnormals.abnormals_core.core.library.api.conditions.QuarkFlagRecipeCondition;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry.LootInjector;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.SignTileEntityRenderer;
 import net.minecraft.loot.LootTables;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.PointOfInterestType;
@@ -58,6 +53,11 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Map;
+import java.util.Set;
 
 //TODO: update package to com.minecraftabnormals.abnormals_core
 @SuppressWarnings("deprecation")
@@ -140,7 +140,7 @@ public class AbnormalsCore {
 		
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ExampleTileEntityRegistry.SIGN.get(), SignTileEntityRenderer::new);
 	}
 	
 	@Test
@@ -171,21 +171,6 @@ public class AbnormalsCore {
 		CHANNEL.messageBuilder(MessageS2CEndimation.class, id++)
 		.encoder(MessageS2CEndimation::serialize).decoder(MessageS2CEndimation::deserialize)
 		.consumer(MessageS2CEndimation::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageSOpenSignEditor.class, id++)
-		.encoder(MessageSOpenSignEditor::serialize).decoder(MessageSOpenSignEditor::deserialize)
-		.consumer(MessageSOpenSignEditor::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageC2SEditSign.class, id++)
-		.encoder(MessageC2SEditSign::serialize).decoder(MessageC2SEditSign::deserialize)
-		.consumer(MessageC2SEditSign::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageS2CUpdateSign.class, id++)
-		.encoder(MessageS2CUpdateSign::serialize).decoder(MessageS2CUpdateSign::deserialize)
-		.consumer(MessageS2CUpdateSign::handle)
 		.add();
 		
 		CHANNEL.messageBuilder(MessageS2CTeleportEntity.class, id++)
