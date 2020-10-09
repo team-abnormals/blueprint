@@ -58,7 +58,7 @@ public final class EndimationInstructions {
 				if (!this.map.containsKey(name)) {
 					return DataResult.error("Unknown Endimation Instruction: " + name);
 				}
-				return DataResult.success(pair.mapFirst(string -> this.map.get(string)), this.lifecycle);
+				return DataResult.success(pair.mapFirst(this.map::get), this.lifecycle);
 			});
 		}
 	}
