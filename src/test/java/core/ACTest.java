@@ -3,6 +3,7 @@ package core;
 import client.TestEndimatedEntityRenderer;
 import com.teamabnormals.abnormals_core.common.world.modification.BiomeFeatureModifier;
 import com.teamabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
+import com.teamabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
 import com.teamabnormals.abnormals_core.common.world.modification.BiomeSpawnsModifier;
 import com.teamabnormals.abnormals_core.common.world.storage.GlobalStorage;
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
@@ -74,8 +75,8 @@ public final class ACTest {
 			GlobalEntityTypeAttributes.put(TestEntities.COW.get(), CowEntity.func_234188_eI_().create());
 			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::canAnimalSpawn);
 		});
-		BiomeModificationManager.INSTANCE.addModifier(BiomeFeatureModifier.createFeatureAdder((biomeRegistryKey, biome) -> biomeRegistryKey == Biomes.PLAINS, GenerationStage.Decoration.VEGETAL_DECORATION, () -> Features.BIRCH.withPlacement(Placement.DARK_OAK_TREE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG))));
-		BiomeModificationManager.INSTANCE.addModifier(BiomeSpawnsModifier.createSpawnAdder((biomeRegistryKey, biome) -> biomeRegistryKey == Biomes.SAVANNA, EntityClassification.CREATURE, TestEntities.COW::get, 12, 10, 20));
+		BiomeModificationManager.INSTANCE.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.PLAINS), GenerationStage.Decoration.VEGETAL_DECORATION, () -> Features.BIRCH.withPlacement(Placement.DARK_OAK_TREE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG))));
+		BiomeModificationManager.INSTANCE.addModifier(BiomeSpawnsModifier.createSpawnAdder(BiomeModificationPredicates.forBiomeKey(Biomes.SAVANNA), EntityClassification.CREATURE, TestEntities.COW::get, 12, 10, 20));
 		BannerManager.addPattern(BannerManager.TEST, Items.CREEPER_SPAWN_EGG);
 		this.registerLootInjectors();
 	}
