@@ -18,7 +18,6 @@ import com.teamabnormals.abnormals_core.common.network.*;
 import com.teamabnormals.abnormals_core.common.network.entity.*;
 import com.teamabnormals.abnormals_core.common.network.particle.*;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
-import com.teamabnormals.abnormals_core.core.api.IAddToBiomes;
 import com.teamabnormals.abnormals_core.core.api.conditions.*;
 import com.teamabnormals.abnormals_core.core.endimator.EndimationDataManager;
 
@@ -96,9 +95,6 @@ public final class AbnormalsCore {
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
-			ForgeRegistries.FEATURES.getValues().stream().filter(feature -> feature instanceof IAddToBiomes).forEach((feature) -> {
-				ForgeRegistries.BIOMES.forEach(((IAddToBiomes) feature).processBiomeAddition());
-			});
 			this.replaceBeehivePOI();
 		});
 		ChunkLoaderCapability.register();

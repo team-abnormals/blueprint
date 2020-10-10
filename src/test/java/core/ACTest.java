@@ -1,6 +1,9 @@
 package core;
 
 import client.TestEndimatedEntityRenderer;
+import com.teamabnormals.abnormals_core.common.world.modification.BiomeFeatureModifier;
+import com.teamabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
+import com.teamabnormals.abnormals_core.common.world.modification.BiomeSpawnsModifier;
 import com.teamabnormals.abnormals_core.common.world.storage.GlobalStorage;
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
@@ -12,15 +15,22 @@ import com.teamabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper
 import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
 import core.registry.TestEntities;
-import core.registry.TestEntitySpawnHelper;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.Features;
+import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -62,8 +72,10 @@ public final class ACTest {
 		DeferredWorkQueue.runLater(() -> {
 			GlobalEntityTypeAttributes.put(TestEntities.ENDIMATED_TEST.get(), CreatureEntity.func_233666_p_().create());
 			GlobalEntityTypeAttributes.put(TestEntities.COW.get(), CowEntity.func_234188_eI_().create());
-			TestEntitySpawnHelper.processSpawnAdditions();
+			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::canAnimalSpawn);
 		});
+		BiomeModificationManager.INSTANCE.addModifier(BiomeFeatureModifier.createFeatureAdder((biomeRegistryKey, biome) -> biomeRegistryKey == Biomes.PLAINS, GenerationStage.Decoration.VEGETAL_DECORATION, () -> Features.BIRCH.withPlacement(Placement.DARK_OAK_TREE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG))));
+		BiomeModificationManager.INSTANCE.addModifier(BiomeSpawnsModifier.createSpawnAdder((biomeRegistryKey, biome) -> biomeRegistryKey == Biomes.SAVANNA, EntityClassification.CREATURE, TestEntities.COW::get, 12, 10, 20));
 		BannerManager.addPattern(BannerManager.TEST, Items.CREEPER_SPAWN_EGG);
 		this.registerLootInjectors();
 	}
