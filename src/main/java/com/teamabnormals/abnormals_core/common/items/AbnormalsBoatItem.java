@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.teamabnormals.abnormals_core.common.entity.AbnormalsBoatEntity;
-import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
+import com.teamabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
@@ -31,6 +31,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class AbnormalsBoatItem extends Item {
+	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.DARK_OAK_BOAT);
 	private static final Predicate<Entity> COLLISION_PREDICATE = EntityPredicates.NOT_SPECTATING.and(Entity::canBeCollidedWith);
 	private final String type;
 
@@ -42,7 +43,7 @@ public class AbnormalsBoatItem extends Item {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this, Items.DARK_OAK_BOAT, group, items);
+		FILLER.fillItem(this, group, items);
 	}
 
 	@Override

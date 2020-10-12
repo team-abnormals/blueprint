@@ -3,9 +3,9 @@ package com.teamabnormals.abnormals_core.common.items;
 import javax.annotation.Nullable;
 
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
-import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
+import com.teamabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class AbnormalsSignItem extends WallOrFloorItem {
+	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_SIGN);
 
 	public AbnormalsSignItem(Block floorBlockIn, Block wallBlockIn, Item.Properties propertiesIn) {
 		super(floorBlockIn, wallBlockIn, propertiesIn);
@@ -34,7 +35,6 @@ public class AbnormalsSignItem extends WallOrFloorItem {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this, Items.WARPED_SIGN, group, items);
+		FILLER.fillItem(this, group, items);
 	}
-
 }

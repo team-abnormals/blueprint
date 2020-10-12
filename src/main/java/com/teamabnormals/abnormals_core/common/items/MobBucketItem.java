@@ -5,8 +5,8 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.teamabnormals.abnormals_core.common.entity.BucketableWaterMobEntity;
-import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
+import com.teamabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class MobBucketItem extends BucketItem {
+	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.TROPICAL_FISH_BUCKET);
 	private final Supplier<EntityType<? extends BucketableWaterMobEntity>> entityType;
 
 	public MobBucketItem(Supplier<EntityType<? extends BucketableWaterMobEntity>> entityType, Supplier<? extends Fluid> supplier, Item.Properties builder) {
@@ -52,6 +53,6 @@ public class MobBucketItem extends BucketItem {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this, Items.TROPICAL_FISH_BUCKET, group, items);
+		FILLER.fillItem(this, group, items);
 	}
 }

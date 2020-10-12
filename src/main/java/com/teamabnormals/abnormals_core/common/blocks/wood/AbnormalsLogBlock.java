@@ -3,8 +3,8 @@ package com.teamabnormals.abnormals_core.common.blocks.wood;
 import java.util.function.Supplier;
 
 import com.teamabnormals.abnormals_core.core.util.BlockUtil;
-import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
+import com.teamabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
@@ -26,6 +26,7 @@ import net.minecraft.world.World;
  * @author SmellyModder(Luke Tonon)
  */
 public class AbnormalsLogBlock extends RotatedPillarBlock {
+	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_STEM);
 	private final Supplier<Block> block;
 
 	public AbnormalsLogBlock(Supplier<Block> strippedBlock, Properties properties) {
@@ -51,6 +52,6 @@ public class AbnormalsLogBlock extends RotatedPillarBlock {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_STEM, group, items);
+		FILLER.fillItem(this.asItem(), group, items);
 	}
 }

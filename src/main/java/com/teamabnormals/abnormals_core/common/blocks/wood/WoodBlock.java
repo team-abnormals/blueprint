@@ -2,8 +2,7 @@ package com.teamabnormals.abnormals_core.common.blocks.wood;
 
 import java.util.function.Supplier;
 
-import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
-
+import com.teamabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
@@ -22,6 +21,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 public class WoodBlock extends RotatedPillarBlock {
+	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_HYPHAE);
 	private final Supplier<Block> block;
 
 	public WoodBlock(Supplier<Block> strippedBlock, Properties properties) {
@@ -41,6 +41,6 @@ public class WoodBlock extends RotatedPillarBlock {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.WARPED_HYPHAE, group, items);
+		FILLER.fillItem(this.asItem(), group, items);
 	}
 }

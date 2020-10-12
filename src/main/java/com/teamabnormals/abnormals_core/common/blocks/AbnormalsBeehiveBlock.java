@@ -3,8 +3,8 @@ package com.teamabnormals.abnormals_core.common.blocks;
 import javax.annotation.Nullable;
 
 import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
-import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
+import com.teamabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
@@ -17,6 +17,8 @@ import net.minecraft.util.Rotation;
 import net.minecraft.world.IBlockReader;
 
 public class AbnormalsBeehiveBlock extends BeehiveBlock {
+	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.BEEHIVE);
+
 	public AbnormalsBeehiveBlock(Properties properties) {
 		super(properties);
 	}
@@ -29,7 +31,7 @@ public class AbnormalsBeehiveBlock extends BeehiveBlock {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), Items.BEEHIVE, group, items);
+		FILLER.fillItem(this.asItem(), group, items);
 	}
 
 	@Override

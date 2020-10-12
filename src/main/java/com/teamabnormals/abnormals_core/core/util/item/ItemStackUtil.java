@@ -1,4 +1,4 @@
-package com.teamabnormals.abnormals_core.core.util;
+package com.teamabnormals.abnormals_core.core.util.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;

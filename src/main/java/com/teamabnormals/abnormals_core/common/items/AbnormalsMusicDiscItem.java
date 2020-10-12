@@ -1,8 +1,8 @@
 package com.teamabnormals.abnormals_core.common.items;
 
 import com.google.common.base.Supplier;
-import com.teamabnormals.abnormals_core.core.util.ItemStackUtil;
 
+import com.teamabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -12,6 +12,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 
 public class AbnormalsMusicDiscItem extends MusicDiscItem {
+	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.MUSIC_DISC_PIGSTEP);
 
 	public AbnormalsMusicDiscItem(int comparatorValueIn, Supplier<SoundEvent> soundIn, Item.Properties builder) {
 		super(comparatorValueIn, soundIn, builder);
@@ -19,7 +20,6 @@ public class AbnormalsMusicDiscItem extends MusicDiscItem {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this, Items.MUSIC_DISC_PIGSTEP, group, items);
+		FILLER.fillItem(this, group, items);
 	}
-
 }
