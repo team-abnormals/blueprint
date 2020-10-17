@@ -38,7 +38,7 @@ public abstract class SignTileEntityRendererMixin {
 
 	@Inject(method = "render", at = @At("HEAD"))
 	public void captureState(SignTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn, CallbackInfo ci) {
-		if(this.state == null) this.state = tileEntityIn.getBlockState();
+		this.state = tileEntityIn.getBlockState();
 	}
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/tileentity/SignTileEntityRenderer;getMaterial(Lnet/minecraft/block/Block;)Lnet/minecraft/client/renderer/model/RenderMaterial;"))
