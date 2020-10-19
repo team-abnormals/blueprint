@@ -5,6 +5,8 @@ import com.teamabnormals.abnormals_core.core.registry.ACEntities;
 import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
 
+import net.minecraft.resources.IResourceManager;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -84,12 +86,17 @@ public final class AbnormalsCore {
 			}
 		});
 
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
-			modEventBus.addListener(this::clientSetup);
-		});
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event ->
+		{
+			IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+			if (resourceManager instanceof IReloadableResourceManager)
+			{
+				((IReloadableResourceManager) resourceManager).addReloadListener(ENDIMATION_DATA_MANAGER);
+			}
+		}));
 
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
+		modEventBus.addListener(this::clientSetup);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
 	}
 
