@@ -24,10 +24,12 @@ import com.teamabnormals.abnormals_core.core.endimator.EndimationDataManager;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -84,8 +86,13 @@ public final class AbnormalsCore {
 			}
 		});
 
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(ENDIMATION_DATA_MANAGER);
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event ->	{
+				IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+				if (resourceManager instanceof IReloadableResourceManager) {
+					((IReloadableResourceManager) resourceManager).addReloadListener(ENDIMATION_DATA_MANAGER);
+				}
+			});
 			modEventBus.addListener(this::clientSetup);
 		});
 
