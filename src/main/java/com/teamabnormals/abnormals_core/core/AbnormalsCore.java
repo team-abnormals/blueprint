@@ -5,8 +5,6 @@ import com.teamabnormals.abnormals_core.core.registry.ACEntities;
 import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
 
-import net.minecraft.resources.IResourceManager;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,6 +21,8 @@ import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.api.conditions.*;
 import com.teamabnormals.abnormals_core.core.endimator.EndimationDataManager;
 
+import net.minecraft.resources.IResourceManager;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
@@ -86,17 +86,17 @@ public final class AbnormalsCore {
 			}
 		});
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event ->
-		{
-			IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-			if (resourceManager instanceof IReloadableResourceManager)
-			{
-				((IReloadableResourceManager) resourceManager).addReloadListener(ENDIMATION_DATA_MANAGER);
-			}
-		}));
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event ->	{
+				IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+				if (resourceManager instanceof IReloadableResourceManager) {
+					((IReloadableResourceManager) resourceManager).addReloadListener(ENDIMATION_DATA_MANAGER);
+				}
+			});
+			modEventBus.addListener(this::clientSetup);
+		});
 
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
-		modEventBus.addListener(this::clientSetup);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
 	}
 
