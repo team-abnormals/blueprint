@@ -73,7 +73,7 @@ public final class LootInjectionRegistry {
 		 * @see #addLootInjector(Set, LootPool)
 		 */
 		public void addLootInjection(String name, int weight, int quality, ResourceLocation... locations) {
-			LootInjectionRegistry.addLootInjector(Sets.newHashSet(locations), this.buildLootBool(name, weight, quality));
+			LootInjectionRegistry.addLootInjector(Sets.newHashSet(locations), this.buildLootPool(name, weight, quality));
 		}
 
 		/**
@@ -96,7 +96,7 @@ public final class LootInjectionRegistry {
 		 * @return The built {@link LootPool} with a name, weight, and quality.
 		 * @see LootPool
 		 */
-		public LootPool buildLootBool(String name, int weight, int quality) {
+		public LootPool buildLootPool(String name, int weight, int quality) {
 			return LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(this.modId, "injections/" + name)).weight(weight).quality(quality)).name(this.modId + name).build();
 		}
 	}
