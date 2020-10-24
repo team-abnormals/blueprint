@@ -146,7 +146,7 @@ public class AbnormalsCore {
 	@Test
 	private void registerLootInjectors() {
 		LootInjector injector = new LootInjector(MODID);
-		injector.registerLootInjection(injector.buildLootBool("test", 1, 0), LootTables.CHESTS_NETHER_BRIDGE, LootTables.CHESTS_JUNGLE_TEMPLE);
+		injector.registerLootInjection(injector.buildLootPool("test", 1, 0), LootTables.CHESTS_NETHER_BRIDGE, LootTables.CHESTS_JUNGLE_TEMPLE);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
