@@ -53,6 +53,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * Creates and registers a compat {@link Item}
 	 *
 	 * @param modId      - The mod id of the mod this item is compatible for, set to "indev" for dev tests
+	 * @param modId2     - The mod id of the second mod this item is compatible for, set to "indev" for dev tests (optional)
 	 * @param name       - The name for the item
 	 * @param properties - The item's properties
 	 * @param group      - The {@link ItemGroup} for the {@link Item}
@@ -60,6 +61,12 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 */
 	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, ItemGroup group) {
 		RegistryObject<Item> item = this.deferredRegister.register(name, () -> new Item(properties.group(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
+		return item;
+	}
+	
+	public RegistryObject<Item> createCompatItem(String modId, String modId2, String name, Item.Properties properties, ItemGroup group) {
+		ItemGroup determinedGroup = (ModList.get().isLoaded(modId) || modId == "indev") && (ModList.get().isLoaded(modId2) || modId2 == "indev") ? group : null;
+		RegistryObject<Item> item = this.deferredRegister.register(name, () -> new Item(properties.group(determinedGroup)));
 		return item;
 	}
 

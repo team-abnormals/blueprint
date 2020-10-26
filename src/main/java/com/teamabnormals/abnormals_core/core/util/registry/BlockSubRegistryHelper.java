@@ -226,6 +226,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * Creates and registers a compat {@link Block}
 	 *
 	 * @param modId    - The mod id of the mod this block is compatible for, set to "indev" for dev tests
+	 * @param modId2   - The mod id of the second mod this block is compatible for, set to "indev" for dev tests (optional)
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
 	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
@@ -236,11 +237,19 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
 		return block;
 	}
+	
+	public <B extends Block> RegistryObject<B> createCompatBlock(String modId, String modId2, String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
+		ItemGroup determinedGroup = (ModList.get().isLoaded(modId) || modId == "indev") && (ModList.get().isLoaded(modId2) || modId2 == "indev") ? group : null;
+		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(determinedGroup)));
+		return block;
+	}
 
 	/**
 	 * Creates and registers a compat {@link Block} with a {@link FuelBlockItem}.
 	 *
-	 * @param modId    - The modId of the mod this block is compatible for, set to "indev" for dev tests
+	 * @param modId    - The mod id of the mod this block is compatible for, set to "indev" for dev tests
+	 * @param modId2   - The mod id of the second mod this block is compatible for, set to "indev" for dev tests (optional)
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
 	 * @param burnTime - How many ticks this fuel block should burn for.
@@ -250,6 +259,13 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String modId, String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().group(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
+		return block;
+	}
+	
+	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String modId, String modId2, String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
+		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
+		ItemGroup determinedGroup = (ModList.get().isLoaded(modId) || modId == "indev") && (ModList.get().isLoaded(modId2) || modId2 == "indev") ? group : null;
+		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().group(determinedGroup)));
 		return block;
 	}
 
