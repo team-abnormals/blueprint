@@ -58,7 +58,7 @@ public class TileEntitySubRegistryHelper extends AbstractSubRegistryHelper<TileE
 	 * @return A filtered array of registered {@link Block}s that are an instance of a {@link Block} class
 	 */
 	public static Block[] collectBlocks(Class<? extends Block> blockClass) {
-		return ForgeRegistries.BLOCKS.getValues().stream().filter(block -> blockClass.isInstance(block)).toArray(Block[]::new);
+		return ForgeRegistries.BLOCKS.getValues().stream().filter(blockClass::isInstance).toArray(Block[]::new);
 	}
 
 }

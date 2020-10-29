@@ -1,27 +1,26 @@
 package com.teamabnormals.abnormals_core.core;
 
-import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
-import com.teamabnormals.abnormals_core.core.registry.ACEntities;
-import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
-import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
+
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.*;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
-import com.teamabnormals.abnormals_core.common.capability.chunkloading.*;
+import com.teamabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderCapability;
+import com.teamabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderEvents;
 import com.teamabnormals.abnormals_core.common.network.*;
 import com.teamabnormals.abnormals_core.common.network.entity.*;
 import com.teamabnormals.abnormals_core.common.network.particle.*;
-import com.teamabnormals.abnormals_core.core.config.ACConfig;
+import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.teamabnormals.abnormals_core.core.api.conditions.*;
+import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.endimator.EndimationDataManager;
+import com.teamabnormals.abnormals_core.core.registry.ACEntities;
+import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
+import com.teamabnormals.abnormals_core.core.util.registry.TileEntitySubRegistryHelper;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
@@ -34,7 +33,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -46,10 +44,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Map;
 
 //TODO: update package to com.minecraftabnormals.abnormals_core
-@SuppressWarnings("deprecation")
 @Mod(AbnormalsCore.MODID)
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AbnormalsCore {
@@ -87,7 +88,7 @@ public final class AbnormalsCore {
 		});
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event ->	{
+			modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event -> {
 				IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
 				if (resourceManager instanceof IReloadableResourceManager) {
 					((IReloadableResourceManager) resourceManager).addReloadListener(ENDIMATION_DATA_MANAGER);
@@ -101,9 +102,7 @@ public final class AbnormalsCore {
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
-		DeferredWorkQueue.runLater(() -> {
-			this.replaceBeehivePOI();
-		});
+		event.enqueueWork(this::replaceBeehivePOI);
 		ChunkLoaderCapability.register();
 	}
 
@@ -131,11 +130,13 @@ public final class AbnormalsCore {
 	}
 
 	private void replaceBeehivePOI() {
-		ImmutableList<Block> BEEHIVES = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> block instanceof AbnormalsBeehiveBlock).collect(ImmutableList.toImmutableList());
 		PointOfInterestType.BEEHIVE.blockStates = Sets.newHashSet(PointOfInterestType.BEEHIVE.blockStates);
-		BEEHIVES.stream().forEach((block) -> block.getStateContainer().getValidStates().forEach(state -> {
-			PointOfInterestType.POIT_BY_BLOCKSTATE.put(state, PointOfInterestType.BEEHIVE);
-			PointOfInterestType.BEEHIVE.blockStates.add(state);
-		}));
+		Map<BlockState, PointOfInterestType> statePointOfInterestMap = PointOfInterestType.POIT_BY_BLOCKSTATE;
+		for (Block block : TileEntitySubRegistryHelper.collectBlocks(AbnormalsBeehiveBlock.class)) {
+			block.getStateContainer().getValidStates().forEach(state -> {
+				statePointOfInterestMap.put(state, PointOfInterestType.BEEHIVE);
+				PointOfInterestType.BEEHIVE.blockStates.add(state);
+			});
+		}
 	}
 }
