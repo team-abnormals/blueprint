@@ -1,14 +1,25 @@
 package com.teamabnormals.abnormals_core.core.util.registry;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsBoatItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.teamabnormals.abnormals_core.common.items.FuelItem;
 import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.TallBlockItem;
+import net.minecraft.item.WallOrFloorItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -16,10 +27,6 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for items. This contains some useful registering methods for items.
@@ -66,15 +73,19 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	/**
 	 * Creates and registers a compat {@link Item}
 	 *
-	 * @param modId      - The mod id of the mod this item is compatible for, set to "indev" for dev tests
-	 * @param modId2     - The mod id of the second mod this item is compatible for, set to "indev" for dev tests
+	 * @param modIdList  - The ArrayList of all the mod ids this item is compatible for
+	 * @param isIndev    - Set to true for dev tests
 	 * @param name       - The name for the item
 	 * @param properties - The item's properties
 	 * @param group      - The {@link ItemGroup} for the {@link Item}
 	 * @return A {@link RegistryObject} containing the {@link Item}
 	 */
-	public RegistryObject<Item> createCompatItem(String modId, String modId2, String name, Item.Properties properties, ItemGroup group) {
-		ItemGroup determinedGroup = (ModList.get().isLoaded(modId) || modId == "indev") && (ModList.get().isLoaded(modId2) || modId2 == "indev") ? group : null;
+	public RegistryObject<Item> createCompatItem(ArrayList<String> modIdList, boolean isIndev, String name, Item.Properties properties, ItemGroup group) {
+		boolean areModsLoaded = true;
+		if (!isIndev)
+			for (String mod : modIdList)
+				areModsLoaded &= ModList.get().isLoaded(mod);
+		ItemGroup determinedGroup = areModsLoaded ? group : null;
 		RegistryObject<Item> item = this.deferredRegister.register(name, () -> new Item(properties.group(determinedGroup)));
 		return item;
 	}
