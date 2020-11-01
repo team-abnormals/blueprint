@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -57,14 +58,19 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	/**
 	 * Creates and registers a compat {@link Item}
 	 *
-	 * @param modId      - The mod id of the mod this item is compatible for, set to "indev" for dev tests
 	 * @param name       - The name for the item
 	 * @param properties - The item's properties
 	 * @param group      - The {@link ItemGroup} for the {@link Item}
+	 * @param modIdList  - The mod ids of the mods this block is compatible for
 	 * @return A {@link RegistryObject} containing the {@link Item}
 	 */
-	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, ItemGroup group) {
-		RegistryObject<Item> item = this.deferredRegister.register(name, () -> new Item(properties.group(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
+	public RegistryObject<Item> createCompatItem(String name, Item.Properties properties, ItemGroup group, String ...modIdList) {
+		boolean areModsLoaded = true;
+		if (FMLEnvironment.production)
+			for (String mod : modIdList)
+				areModsLoaded &= ModList.get().isLoaded(mod);
+		ItemGroup determinedGroup = areModsLoaded ? group : null;
+		RegistryObject<Item> item = this.deferredRegister.register(name, () -> new Item(properties.group(determinedGroup)));
 		return item;
 	}
 
