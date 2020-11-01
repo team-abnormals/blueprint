@@ -54,6 +54,20 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	public <I extends Item> RegistryObject<I> createItem(String name, Supplier<? extends I> supplier) {
 		return this.deferredRegister.register(name, supplier);
 	}
+	
+	/**
+	 * Creates and registers a compat {@link Item}
+	 *
+	 * @param modId      - The mod id of the mod this item is compatible for, set to "indev" for dev tests
+	 * @param name       - The name for the item
+	 * @param properties - The item's properties
+	 * @param group      - The {@link ItemGroup} for the {@link Item}
+	 * @return A {@link RegistryObject} containing the {@link Item}
+	 */
+	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, ItemGroup group) {
+		RegistryObject<Item> item = this.deferredRegister.register(name, () -> new Item(properties.group(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
+		return item;
+	}
 
 	/**
 	 * Creates and registers a compat {@link Item}
@@ -66,9 +80,8 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 */
 	public RegistryObject<Item> createCompatItem(String name, Item.Properties properties, ItemGroup group, String ...modIdList) {
 		boolean areModsLoaded = true;
-		if (FMLEnvironment.production)
-			for (String mod : modIdList)
-				areModsLoaded &= ModList.get().isLoaded(mod);
+		for (String mod : modIdList)
+			areModsLoaded &= ModList.get().isLoaded(mod);
 		ItemGroup determinedGroup = areModsLoaded ? group : null;
 		RegistryObject<Item> item = this.deferredRegister.register(name, () -> new Item(properties.group(determinedGroup)));
 		return item;
