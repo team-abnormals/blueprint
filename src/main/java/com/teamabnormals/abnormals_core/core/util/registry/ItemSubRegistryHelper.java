@@ -1,11 +1,5 @@
 package com.teamabnormals.abnormals_core.core.util.registry;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Lists;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsBoatItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
@@ -27,6 +21,10 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for items. This contains some useful registering methods for items.
@@ -67,26 +65,6 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 */
 	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, ItemGroup group) {
 		RegistryObject<Item> item = this.deferredRegister.register(name, () -> new Item(properties.group(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
-		return item;
-	}
-	
-	/**
-	 * Creates and registers a compat {@link Item}
-	 *
-	 * @param modIdList  - The ArrayList of all the mod ids this item is compatible for
-	 * @param isIndev    - Set to true for dev tests
-	 * @param name       - The name for the item
-	 * @param properties - The item's properties
-	 * @param group      - The {@link ItemGroup} for the {@link Item}
-	 * @return A {@link RegistryObject} containing the {@link Item}
-	 */
-	public RegistryObject<Item> createCompatItem(ArrayList<String> modIdList, boolean isIndev, String name, Item.Properties properties, ItemGroup group) {
-		boolean areModsLoaded = true;
-		if (!isIndev)
-			for (String mod : modIdList)
-				areModsLoaded &= ModList.get().isLoaded(mod);
-		ItemGroup determinedGroup = areModsLoaded ? group : null;
-		RegistryObject<Item> item = this.deferredRegister.register(name, () -> new Item(properties.group(determinedGroup)));
 		return item;
 	}
 
