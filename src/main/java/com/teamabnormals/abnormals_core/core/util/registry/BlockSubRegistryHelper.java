@@ -17,19 +17,13 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.TallBlockItem;
-import net.minecraft.item.WallOrFloorItem;
+import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -228,7 +222,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		this.itemRegister.register(name + "_sign", () -> new AbnormalsSignItem(standing.get(), wall.get(), new Item.Properties().maxStackSize(16).group(ItemGroup.DECORATIONS)));
 		return Pair.of(standing, wall);
 	}
-	
+
 	/**
 	 * Creates and registers a compat {@link Block}
 	 *

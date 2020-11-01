@@ -9,17 +9,12 @@ import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.TallBlockItem;
-import net.minecraft.item.WallOrFloorItem;
+import net.minecraft.item.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -54,7 +49,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	public <I extends Item> RegistryObject<I> createItem(String name, Supplier<? extends I> supplier) {
 		return this.deferredRegister.register(name, supplier);
 	}
-	
+
 	/**
 	 * Creates and registers a compat {@link Item}
 	 *
