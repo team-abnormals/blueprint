@@ -11,7 +11,6 @@ import com.teamabnormals.abnormals_core.common.items.FuelBlockItem;
 import com.teamabnormals.abnormals_core.common.items.InjectedBlockItem;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
