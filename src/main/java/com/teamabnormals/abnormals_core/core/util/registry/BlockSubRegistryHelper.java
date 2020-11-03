@@ -240,19 +240,15 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	/**
 	 * Creates and registers a compat {@link Block}
 	 *
-	 * @param name      - The block's name
-	 * @param supplier  - The supplied {@link Block}
-	 * @param group     - The {@link ItemGroup} for the {@link BlockItem}
-	 * @param modIdList - The mod ids of the mods this block is compatible for
+	 * @param name     - The block's name
+	 * @param supplier - The supplied {@link Block}
+	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param modIds   - The mod ids of the mods this block is compatible for
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
-	public <B extends Block> RegistryObject<B> createCompatBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group, String ...modIdList) {
-		boolean areModsLoaded = true;
-		for (String mod : modIdList)
-			areModsLoaded &= ModList.get().isLoaded(mod);
-		ItemGroup determinedGroup = areModsLoaded ? group : null;
+	public <B extends Block> RegistryObject<B> createCompatBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group, String... modIds) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(determinedGroup)));
+		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(areModsLoaded(modIds) ? group : null)));
 		return block;
 	}
 
@@ -275,20 +271,16 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	/**
 	 * Creates and registers a compat {@link Block} with a {@link FuelBlockItem}.
 	 *
-	 * @param name      - The block's name
-	 * @param supplier  - The supplied {@link Block}
-	 * @param burnTime  - How many ticks this fuel block should burn for
-	 * @param group     - The {@link ItemGroup} for the {@link BlockItem}
-	 * @param modIdList - The mod ids of the mods this block is compatible for
+	 * @param name     - The block's name
+	 * @param supplier - The supplied {@link Block}
+	 * @param burnTime - How many ticks this fuel block should burn for
+	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param modIds   - The mod ids of the mods this block is compatible for
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
-	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group, String ...modIdList) {
-		boolean areModsLoaded = true;
-		for (String mod : modIdList)
-			areModsLoaded &= ModList.get().isLoaded(mod);
-		ItemGroup determinedGroup = areModsLoaded ? group : null;
+	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group, String... modIds) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().group(determinedGroup)));
+		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().group(areModsLoaded(modIds) ? group : null)));
 		return block;
 	}
 	
@@ -319,15 +311,12 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 *
 	 * @param name        - The name for the chest blocks
 	 * @param color       - The {@link MaterialColor} for the chest blocks
-	 * @param modIdList   - The mod ids of the mods this block is compatible for
+	 * @param modIds      - The mod ids of the mods this block is compatible for
 	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link AbnormalsChestBlock} and the {@link AbnormalsTrappedChestBlock}
 	 */
-	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, MaterialColor color, String ...modIdList) {
-		boolean areModsLoaded = true;
-		for (String mod : modIdList)
-			areModsLoaded &= ModList.get().isLoaded(mod);
-		ItemGroup chestGroup = areModsLoaded ? ItemGroup.DECORATIONS : null;
-		ItemGroup trappedChestGroup = areModsLoaded ? ItemGroup.REDSTONE : null;
+	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, MaterialColor color, String... modIds) {
+		ItemGroup chestGroup = areModsLoaded(modIds) ? ItemGroup.DECORATIONS : null;
+		ItemGroup trappedChestGroup = areModsLoaded(modIds) ? ItemGroup.REDSTONE : null;
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
