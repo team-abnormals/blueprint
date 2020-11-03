@@ -27,24 +27,22 @@ public final class DataUtil {
 	}
 
 	public static void registerBlockColor(BlockColors blockColors, IBlockColor color, List<RegistryObject<Block>> blocksIn) {
-		List<RegistryObject<Block>> registryObjects = blocksIn;
-		registryObjects.removeIf(block -> !block.isPresent());
-		if (registryObjects.size() > 0) {
-			Block[] blocks = new Block[registryObjects.size()];
-			for (int i = 0; i < registryObjects.size(); i++) {
-				blocks[i] = registryObjects.get(i).get();
+		blocksIn.removeIf(block -> !block.isPresent());
+		if (blocksIn.size() > 0) {
+			Block[] blocks = new Block[blocksIn.size()];
+			for (int i = 0; i < blocksIn.size(); i++) {
+				blocks[i] = blocksIn.get(i).get();
 			}
 			blockColors.register(color, blocks);
 		}
 	}
 
 	public static void registerBlockItemColor(ItemColors blockColors, IItemColor color, List<RegistryObject<Block>> blocksIn) {
-		List<RegistryObject<Block>> registryObjects = blocksIn;
-		registryObjects.removeIf(block -> !block.isPresent());
-		if (registryObjects.size() > 0) {
-			Block[] blocks = new Block[registryObjects.size()];
-			for (int i = 0; i < registryObjects.size(); i++) {
-				blocks[i] = registryObjects.get(i).get();
+		blocksIn.removeIf(block -> !block.isPresent());
+		if (blocksIn.size() > 0) {
+			Block[] blocks = new Block[blocksIn.size()];
+			for (int i = 0; i < blocksIn.size(); i++) {
+				blocks[i] = blocksIn.get(i).get();
 			}
 			blockColors.register(color, blocks);
 		}
@@ -54,12 +52,11 @@ public final class DataUtil {
 	 * Adds an EnchantmentType to an EnchantmentType array
 	 */
 	public static EnchantmentType[] add(EnchantmentType[] array, EnchantmentType element) {
-		EnchantmentType[] newArray = array;
-		int arrayLength = Array.getLength(newArray);
-		Object newArrayObject = Array.newInstance(newArray.getClass().getComponentType(), arrayLength + 1);
+		int arrayLength = Array.getLength(array);
+		Object newArrayObject = Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
 		System.arraycopy(array, 0, newArrayObject, 0, arrayLength);
-		newArray[newArray.length - 1] = element;
-		return newArray;
+		array[array.length - 1] = element;
+		return array;
 	}
 
 }
