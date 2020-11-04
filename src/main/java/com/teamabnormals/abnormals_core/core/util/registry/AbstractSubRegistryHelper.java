@@ -54,7 +54,7 @@ public abstract class AbstractSubRegistryHelper<T extends IForgeRegistryEntry<T>
 	 *
 	 * @param modIds The mod ids of the mods to check.
 	 */
-	public boolean areModsLoaded(String... modIds) {
+	public static boolean areModsLoaded(String... modIds) {
 		ModList modList = ModList.get();
 		for (String mod : modIds)
 			if (!modList.isLoaded(mod))

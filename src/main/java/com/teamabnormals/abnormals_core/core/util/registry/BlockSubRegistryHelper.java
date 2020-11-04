@@ -315,8 +315,9 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link AbnormalsChestBlock} and the {@link AbnormalsTrappedChestBlock}
 	 */
 	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, MaterialColor color, String... modIds) {
-		ItemGroup chestGroup = areModsLoaded(modIds) ? ItemGroup.DECORATIONS : null;
-		ItemGroup trappedChestGroup = areModsLoaded(modIds) ? ItemGroup.REDSTONE : null;
+		boolean isInGroup = areModsLoaded(modIds);
+		ItemGroup chestGroup = isInGroup ? ItemGroup.DECORATIONS : null;
+		ItemGroup trappedChestGroup = isInGroup ? ItemGroup.REDSTONE : null;
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
