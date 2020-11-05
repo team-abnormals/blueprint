@@ -32,6 +32,10 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 			return;
 
 		RewardHandler.RewardData reward = RewardHandler.REWARDS.get(entity.getUniqueID());
+
+		if(reward.getSlabfish() == null)
+			return;
+
 		RewardHandler.RewardData.SlabfishData slabfish = reward.getSlabfish();
 		ResourceLocation typeLocation = RewardHandler.REWARD_CACHE.getTextureLocation(reward.getTier() >= 4 ? slabfish.getTypeUrl() : defaultTypeUrl);
 		ResourceLocation sweaterLocation = reward.getTier() >= 3 ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getSweaterUrl()) : null;
