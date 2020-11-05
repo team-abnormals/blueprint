@@ -54,30 +54,6 @@ public class RewardHandler {
 
 	private static RewardProperties rewardProperties;
 
-	@SubscribeEvent
-	public static void onEvent(RenderPlayerEvent.Post event) {
-		PlayerEntity player = event.getPlayer();
-		UUID uuid = PlayerEntity.getUUID(player.getGameProfile());
-
-		if (player instanceof AbstractClientPlayerEntity && !RENDERED_CAPES.contains(uuid) && REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
-			AbstractClientPlayerEntity clientPlayer = (AbstractClientPlayerEntity) player;
-			if (clientPlayer.hasPlayerInfo()) {
-				Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = clientPlayer.playerInfo.playerTextures;
-				if(!playerTextures.containsKey(MinecraftProfileTexture.Type.CAPE))
-				{
-					playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
-					playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
-				}
-				RENDERED_CAPES.add(uuid);
-			}
-		}
-	}
-	
-	@SubscribeEvent
-	public static void onEvent(ClientPlayerNetworkEvent.LoggedInEvent event) {
-		NetworkUtil.updateSlabfish(ACConfig.CLIENT.slabfishHat.get());
-	}
-
 	public static void clientSetup(FMLClientSetupEvent event) {
 		OnlineRequest.request(REWARDS_URL, Util.getServerExecutor()).thenAcceptAsync(stream -> {
 			if(stream == null)
@@ -103,6 +79,30 @@ public class RewardHandler {
 
 	public static RewardProperties getRewardProperties() {
 		return rewardProperties;
+	}
+
+	@SubscribeEvent
+	public static void onEvent(RenderPlayerEvent.Post event) {
+		PlayerEntity player = event.getPlayer();
+		UUID uuid = PlayerEntity.getUUID(player.getGameProfile());
+
+		if (player instanceof AbstractClientPlayerEntity && !RENDERED_CAPES.contains(uuid) && REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
+			AbstractClientPlayerEntity clientPlayer = (AbstractClientPlayerEntity) player;
+			if (clientPlayer.hasPlayerInfo()) {
+				Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = clientPlayer.playerInfo.playerTextures;
+				if(!playerTextures.containsKey(MinecraftProfileTexture.Type.CAPE))
+				{
+					playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
+					playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
+				}
+				RENDERED_CAPES.add(uuid);
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onEvent(ClientPlayerNetworkEvent.LoggedInEvent event) {
+		NetworkUtil.updateSlabfish(ACConfig.CLIENT.slabfishHat.get());
 	}
 
 	public static class RewardProperties {
