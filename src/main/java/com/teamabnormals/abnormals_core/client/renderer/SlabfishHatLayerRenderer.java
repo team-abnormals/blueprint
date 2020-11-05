@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
-	public static final ResourceLocation BRUH = MissingTextureSprite.getLocation();
 	private final SlabfishHatModel model;
 
 	public SlabfishHatLayerRenderer(IEntityRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> renderer, SlabfishHatModel slabfishModel) {
@@ -38,19 +37,17 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 		ResourceLocation sweaterLocation = reward.getTier() >= 3 ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getSweaterUrl()) : null;
 		ResourceLocation backpackLocation = reward.getTier() >= 2 ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getBackpackUrl()) : null;
 
-		if(typeLocation != null)
-		{
-			this.model.body.copyModelAngles(this.getEntityModel().bipedHead);
-			this.model.body.render(stack, buffer.getBuffer(RenderType.getEntityCutout(typeLocation)), packedLight, OverlayTexture.NO_OVERLAY);
-		}
+		if(typeLocation == null)
+			return;
 
-		if(sweaterLocation != null) {
-			this.model.sweater.copyModelAngles(this.getEntityModel().bipedHead);
-			this.model.sweater.render(stack, buffer.getBuffer(RenderType.getEntityCutout(sweaterLocation)), packedLight, OverlayTexture.NO_OVERLAY);
-		}
+		this.model.body.copyModelAngles(this.getEntityModel().bipedHead);
+		this.model.body.render(stack, buffer.getBuffer(RenderType.getEntityCutout(typeLocation)), packedLight, OverlayTexture.NO_OVERLAY);
+
+		if(sweaterLocation != null)
+			this.model.body.render(stack, buffer.getBuffer(RenderType.getEntityCutout(sweaterLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 
 		if(backpackLocation != null) {
-			this.model.backpack.copyModelAngles(this.getEntityModel().bipedHead);
+			this.model.backpack.copyModelAngles(this.model.body);
 			this.model.backpack.render(stack, buffer.getBuffer(RenderType.getEntityCutout(backpackLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 		}
 	}
