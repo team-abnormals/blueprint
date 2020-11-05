@@ -1,6 +1,7 @@
 package com.teamabnormals.abnormals_core.core.util.registry;
 
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -46,5 +47,19 @@ public abstract class AbstractSubRegistryHelper<T extends IForgeRegistryEntry<T>
 	@Override
 	public final void register(IEventBus eventBus) {
 		this.getDeferredRegister().register(eventBus);
+	}
+	
+	/**
+	 * Determines whether a group of mods are loaded.
+	 *
+	 * @param modIds The mod ids of the mods to check.
+	 * @return A boolean representing whether or not all the mods passed in are loaded.
+	 */
+	public static boolean areModsLoaded(String... modIds) {
+		ModList modList = ModList.get();
+		for (String mod : modIds)
+			if (!modList.isLoaded(mod))
+				return false;
+		return true;
 	}
 }
