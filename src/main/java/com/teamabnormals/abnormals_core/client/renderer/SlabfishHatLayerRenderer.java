@@ -5,13 +5,13 @@ import com.teamabnormals.abnormals_core.client.RewardHandler;
 import com.teamabnormals.abnormals_core.client.model.SlabfishHatModel;
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
+
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 

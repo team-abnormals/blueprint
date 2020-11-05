@@ -2,10 +2,10 @@ package com.teamabnormals.abnormals_core.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.player.PlayerEntity;
 
 public class SlabfishHatModel extends Model {
 	public final ModelRenderer body;

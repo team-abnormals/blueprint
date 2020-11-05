@@ -1,6 +1,7 @@
 package com.teamabnormals.abnormals_core.client;
 
-import com.google.gson.annotations.SerializedName;
+import io.github.ocelot.sonar.client.util.OnlineImageCache;
+import io.github.ocelot.sonar.common.util.OnlineRequest;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.teamabnormals.abnormals_core.client.model.SlabfishHatModel;
 import com.teamabnormals.abnormals_core.client.renderer.SlabfishHatLayerRenderer;
@@ -8,14 +9,11 @@ import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
-import io.github.ocelot.sonar.client.util.OnlineImageCache;
-import io.github.ocelot.sonar.common.util.OnlineRequest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.LazyValue;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,6 +26,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
