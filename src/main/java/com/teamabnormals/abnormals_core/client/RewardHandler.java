@@ -78,25 +78,6 @@ public class RewardHandler {
 	}
 
 	public static void clientSetup(FMLClientSetupEvent event) {
-//		CompletableFuture.supplyAsync(() -> {
-//			try (CloseableHttpClient client = HttpClients.custom().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11").build())
-//			{
-//				HttpGet get = new HttpGet(REWARDS_URL);
-//				try (CloseableHttpResponse response = client.execute(get))
-//				{
-//					StatusLine statusLine = response.getStatusLine();
-//					if (statusLine.getStatusCode() != 200)
-//						throw new IOException("Failed to connect to '" + REWARDS_URL + "'. " + statusLine.getStatusCode() + " " + statusLine.getReasonPhrase());
-//					return IOUtils.toBufferedInputStream(response.getEntity().getContent());
-//				}
-//			} catch (Exception e) {
-//				LOGGER.error("Failed to get rewards from '" + REWARDS_URL + "'.", e);
-//			}
-//
-//
-//			return null;
-//		}, Util.getServerExecutor())
-
 		OnlineRequest.request(REWARDS_URL, Util.getServerExecutor()).thenAcceptAsync(stream -> {
 			if(stream == null)
 				return;
@@ -113,7 +94,6 @@ public class RewardHandler {
 			} catch (Exception e) {
 				LOGGER.error("Failed to parse rewards.", e);
 			}
-			System.out.println(REWARDS);
 		}, Minecraft.getInstance());
 
 		for(PlayerRenderer renderer : Minecraft.getInstance().getRenderManager().getSkinMap().values())
@@ -136,7 +116,6 @@ public class RewardHandler {
 		}
 
 		public static class SlabfishProperties {
-
 			private final String defaultTypeUrl;
 			private final String typeUrl;
 			private final String sweaterUrl;
@@ -192,7 +171,6 @@ public class RewardHandler {
 		}
 
 		public static class SlabfishData {
-
 			@SerializedName("base")
 			private final String typeUrl;
 			@SerializedName("sweater")
