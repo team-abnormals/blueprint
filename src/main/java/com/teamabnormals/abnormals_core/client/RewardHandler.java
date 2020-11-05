@@ -37,13 +37,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, value = Dist.CLIENT)
 public class RewardHandler {
 	public static final Map<UUID, RewardData> REWARDS = new HashMap<>();
-	public static final OnlineImageCache REWARD_CACHE = new OnlineImageCache(AbnormalsCore.MODID);
+	public static final OnlineImageCache REWARD_CACHE = new OnlineImageCache(AbnormalsCore.MODID, 1, TimeUnit.DAYS);
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = new Gson();
