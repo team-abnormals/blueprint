@@ -8,11 +8,14 @@ import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 
+import io.github.ocelot.sonar.client.util.OnlineImageCache;
+import io.github.ocelot.sonar.common.util.OnlineRequest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.JSONUtils;
+import net.minecraft.util.LazyValue;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,34 +29,30 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, value = Dist.CLIENT)
 public class RewardHandler {
 	public static final Map<UUID, RewardData> REWARDS = new HashMap<>();
+	public static final OnlineImageCache REWARD_CACHE = new OnlineImageCache(AbnormalsCore.MODID);
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = new Gson();
 	private static final String REWARDS_URL = "https://api.minecraftabnormals.com/rewards.json";
 	private static final ResourceLocation CAPE_TEXTURE = new ResourceLocation(AbnormalsCore.MODID, "textures/abnormals_cape.png");
-
 	private static final Set<UUID> RENDERED_CAPES = new HashSet<>();
+
+	private static RewardProperties rewardProperties;
 
 	@SubscribeEvent
 	public static void onEvent(RenderPlayerEvent.Post event) {
@@ -69,6 +68,7 @@ public class RewardHandler {
 					playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
 					playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
 				}
+				RENDERED_CAPES.add(uuid);
 			}
 		}
 	}
@@ -79,29 +79,36 @@ public class RewardHandler {
 	}
 
 	public static void clientSetup(FMLClientSetupEvent event) {
-		CompletableFuture.supplyAsync(() -> {
-			try (CloseableHttpClient client = HttpClients.custom().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11").build())
-			{
-				HttpGet get = new HttpGet(REWARDS_URL);
-				try (CloseableHttpResponse response = client.execute(get))
-				{
-					StatusLine statusLine = response.getStatusLine();
-					if (statusLine.getStatusCode() != 200)
-						throw new IOException("Failed to connect to '" + REWARDS_URL + "'. " + statusLine.getStatusCode() + " " + statusLine.getReasonPhrase());
-					return IOUtils.toBufferedInputStream(response.getEntity().getContent());
-				}
-			} catch (Exception e) {
-				LOGGER.error("Failed to get rewards from '" + REWARDS_URL + "'.", e);
-			}
+//		CompletableFuture.supplyAsync(() -> {
+//			try (CloseableHttpClient client = HttpClients.custom().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11").build())
+//			{
+//				HttpGet get = new HttpGet(REWARDS_URL);
+//				try (CloseableHttpResponse response = client.execute(get))
+//				{
+//					StatusLine statusLine = response.getStatusLine();
+//					if (statusLine.getStatusCode() != 200)
+//						throw new IOException("Failed to connect to '" + REWARDS_URL + "'. " + statusLine.getStatusCode() + " " + statusLine.getReasonPhrase());
+//					return IOUtils.toBufferedInputStream(response.getEntity().getContent());
+//				}
+//			} catch (Exception e) {
+//				LOGGER.error("Failed to get rewards from '" + REWARDS_URL + "'.", e);
+//			}
+//
+//
+//			return null;
+//		}, Util.getServerExecutor())
 
-			return null;
-		}, Util.getServerExecutor()).thenAcceptAsync(stream -> {
+		OnlineRequest.request(REWARDS_URL, Util.getServerExecutor()).thenAcceptAsync(stream -> {
 			if(stream == null)
 				return;
 
 			try (InputStreamReader reader = new InputStreamReader(stream)) {
 				JsonObject object = JSONUtils.fromJson(reader);
 				for(Map.Entry<String, JsonElement> entry : object.entrySet()) {
+					if(entry.getKey().equals("properties")) {
+						rewardProperties = GSON.fromJson(entry.getValue(), RewardProperties.class);
+						continue;
+					}
 					REWARDS.put(UUID.fromString(entry.getKey()), GSON.fromJson(entry.getValue(), RewardData.class));
 				}
 			} catch (Exception e) {
@@ -112,6 +119,53 @@ public class RewardHandler {
 
 		for(PlayerRenderer renderer : Minecraft.getInstance().getRenderManager().getSkinMap().values())
 			renderer.addLayer(new SlabfishHatLayerRenderer(renderer, new SlabfishHatModel()));
+	}
+
+	public static RewardProperties getRewardProperties() {
+		return rewardProperties;
+	}
+
+	public static class RewardProperties {
+		private final SlabfishProperties slabfish;
+
+		public RewardProperties(SlabfishProperties slabfish) {
+			this.slabfish = slabfish;
+		}
+
+		public SlabfishProperties getSlabfishProperties() {
+			return slabfish;
+		}
+
+		public static class SlabfishProperties {
+
+			private final String defaultTypeUrl;
+			private final String typeUrl;
+			private final String sweaterUrl;
+			private final String backpackUrl;
+
+			public SlabfishProperties(String defaultTypeUrl, String typeUrl, String sweaterUrl, String backpackUrl) {
+				this.defaultTypeUrl = defaultTypeUrl;
+				this.typeUrl = typeUrl;
+				this.sweaterUrl = sweaterUrl;
+				this.backpackUrl = backpackUrl;
+			}
+
+			public String getDefaultTypeUrl() {
+				return defaultTypeUrl;
+			}
+
+			public String getTypeUrl() {
+				return typeUrl;
+			}
+
+			public String getSweaterUrl() {
+				return sweaterUrl;
+			}
+
+			public String getBackpackUrl() {
+				return backpackUrl;
+			}
+		}
 	}
 
 	public static class RewardData {
@@ -147,6 +201,10 @@ public class RewardHandler {
 			@SerializedName("backpack")
 			private final String backpackUrl;
 
+			private String typeUrlCache;
+			private String sweaterUrlCache;
+			private String backpackUrlCache;
+
 			public SlabfishData(String typeUrl, String sweaterUrl, String backpackUrl) {
 				this.typeUrl = typeUrl;
 				this.sweaterUrl = sweaterUrl;
@@ -154,15 +212,19 @@ public class RewardHandler {
 			}
 
 			public String getTypeUrl() {
-				return typeUrl;
+				return this.typeUrlCache == null ? this.typeUrlCache = resolveUrl(RewardProperties.SlabfishProperties::getTypeUrl, () -> this.typeUrl) : this.typeUrlCache;
 			}
 
 			public String getSweaterUrl() {
-				return sweaterUrl;
+				return this.sweaterUrlCache == null ? this.sweaterUrlCache = resolveUrl(RewardProperties.SlabfishProperties::getSweaterUrl, () -> this.sweaterUrl) : this.sweaterUrlCache;
 			}
 
 			public String getBackpackUrl() {
-				return backpackUrl;
+				return this.backpackUrlCache == null ? this.backpackUrlCache = resolveUrl(RewardProperties.SlabfishProperties::getBackpackUrl, () -> this.backpackUrl) : this.backpackUrlCache;
+			}
+
+			private static String resolveUrl(Function<RewardProperties.SlabfishProperties, String> baseUrl, Supplier<String> url) {
+				return url.get().startsWith("http") ? url.get() : String.format(baseUrl.apply(rewardProperties.getSlabfishProperties()), url.get());
 			}
 		}
 	}
