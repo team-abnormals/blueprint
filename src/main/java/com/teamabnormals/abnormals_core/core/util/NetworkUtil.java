@@ -1,6 +1,5 @@
 package com.teamabnormals.abnormals_core.core.util;
 
-import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.DirtMessageScreen;
@@ -17,6 +16,7 @@ import com.teamabnormals.abnormals_core.client.screen.AbnormalsEditSignScreen;
 import com.teamabnormals.abnormals_core.common.network.*;
 import com.teamabnormals.abnormals_core.common.network.entity.*;
 import com.teamabnormals.abnormals_core.common.network.particle.*;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.teamabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import com.teamabnormals.abnormals_core.core.endimator.Endimation;
@@ -175,5 +175,12 @@ public final class NetworkUtil {
 
 	public static void updateTrackedData(Entity entity, Set<IDataManager.DataEntry<?>> entries) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CUpdateEntityData(entity.getEntityId(), entries));
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void updateSlabfish(boolean enabled) {
+		if (ClientInfo.getClientPlayer() != null) {
+			AbnormalsCore.CHANNEL.sendToServer(new MessageC2SUpdateSlabfishHat(enabled));
+		}
 	}
 }

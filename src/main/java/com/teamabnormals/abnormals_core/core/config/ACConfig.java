@@ -1,5 +1,6 @@
 package com.teamabnormals.abnormals_core.core.config;
 
+import com.teamabnormals.abnormals_core.client.RewardHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -54,6 +55,20 @@ public final class ACConfig {
 			builder.pop();
 		}
 	}
+
+	public static class Client {
+		public final ConfigValue<Boolean> slabfishHat;
+
+		Client(ForgeConfigSpec.Builder builder) {
+			builder.comment("Client only settings for Abnormals Core.")
+			.push("client");
+
+			slabfishHat = builder
+					.comment("If the Slabfish patron hat should be enabled; Default: True")
+					.translation(makeTranslation("slabfish_hat"))
+					.define("slabfishHat", true);
+		}
+	}
 	
 	private static String makeTranslation(String name) {
 		return "abnormals_core.config." + name;
@@ -61,10 +76,17 @@ public final class ACConfig {
 	
 	public static final ForgeConfigSpec COMMON_SPEC;
 	public static final Common COMMON;
+	public static final ForgeConfigSpec CLIENT_SPEC;
+	public static final Client CLIENT;
+
 	static {
-		final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
-		COMMON_SPEC = specPair.getRight();
-		COMMON = specPair.getLeft();
+		final Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Common::new);
+		COMMON_SPEC = commonSpecPair.getRight();
+		COMMON = commonSpecPair.getLeft();
+
+		final Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Client::new);
+		CLIENT_SPEC = clientSpecPair.getRight();
+		CLIENT = clientSpecPair.getLeft();
 	}
 	
 	public static class ValuesHolder {
