@@ -31,8 +31,9 @@ public class SlabfishHatScreen extends Screen {
 			ForgeConfigSpec.ConfigValue<Boolean> configValue = setting.getConfigValue();
 
 			this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, this.getOptionName(setting, configValue.get()), (button) -> {
-				configValue.set(!configValue.get());
-				button.setMessage(this.getOptionName(setting, configValue.get()));
+				boolean enabled = !configValue.get();
+				configValue.set(enabled);
+				button.setMessage(this.getOptionName(setting, enabled));
 				NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
 			}, (button, stack, mouseX, mouseY) -> this.renderTooltip(stack, this.font.trimStringToWidth(new TranslationTextComponent("abnormals_core.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"), 200), mouseX, mouseY)));
 			++i;
