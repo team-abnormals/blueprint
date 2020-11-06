@@ -34,4 +34,5 @@ public final class PlayerRendererMixin {
 
 		stack.translate(0, 0.5, 0);
 	}
+	
 }

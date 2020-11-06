@@ -126,7 +126,7 @@ public final class RewardHandler {
 		}
 
 		public ForgeConfigSpec.ConfigValue<Boolean> getConfigValue() {
-			return configValue.get();
+			return this.configValue.get();
 		}
 
 		public static byte getConfig() {
@@ -150,10 +150,10 @@ public final class RewardHandler {
 		}
 
 		public SlabfishProperties getSlabfishProperties() {
-			return slabfish;
+			return this.slabfish;
 		}
 
-		public static class SlabfishProperties {
+		public static final class SlabfishProperties {
 			private final String defaultTypeUrl;
 			private final String typeUrl;
 			private final String sweaterUrl;
@@ -167,19 +167,19 @@ public final class RewardHandler {
 			}
 
 			public String getDefaultTypeUrl() {
-				return defaultTypeUrl;
+				return this.defaultTypeUrl;
 			}
 
 			public String getTypeUrl() {
-				return typeUrl;
+				return this.typeUrl;
 			}
 
 			public String getSweaterUrl() {
-				return sweaterUrl;
+				return this.sweaterUrl;
 			}
 
 			public String getBackpackUrl() {
-				return backpackUrl;
+				return this.backpackUrl;
 			}
 		}
 	}
@@ -196,18 +196,18 @@ public final class RewardHandler {
 		}
 
 		public String getUsername() {
-			return username;
+			return this.username;
 		}
 
 		public int getTier() {
-			return tier;
+			return this.tier;
 		}
 
 		public SlabfishData getSlabfish() {
-			return slabfish;
+			return this.slabfish;
 		}
 
-		public static class SlabfishData {
+		public static final class SlabfishData {
 			@SerializedName("type")
 			private final String typeUrl;
 			@SerializedName("sweater")

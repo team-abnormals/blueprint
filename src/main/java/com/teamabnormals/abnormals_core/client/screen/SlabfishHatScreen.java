@@ -16,10 +16,11 @@ import java.util.Locale;
  * @author Jackson
  */
 public class SlabfishHatScreen extends Screen {
+	public static final String SLABFISH_SCREEN_KEY = "abnormals_core.screen.slabfish_settings";
 	private final Screen parent;
 
 	public SlabfishHatScreen(Screen parent) {
-		super(new TranslationTextComponent("abnormals_core.screen.slabfish_settings.title"));
+		super(new TranslationTextComponent(SLABFISH_SCREEN_KEY + ".title"));
 		this.parent = parent;
 	}
 

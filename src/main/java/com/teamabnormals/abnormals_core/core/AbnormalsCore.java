@@ -102,7 +102,7 @@ public final class AbnormalsCore {
 				}
 			});
 			modEventBus.addListener(EventPriority.NORMAL, false, ModConfig.Reloading.class, event -> {
-				if(event.getConfig().getModId().equals(AbnormalsCore.MODID)) NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
+				if (event.getConfig().getModId().equals(AbnormalsCore.MODID)) NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
 			});
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(RewardHandler::clientSetup);

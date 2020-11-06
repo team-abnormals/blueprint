@@ -38,12 +38,11 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 
 		RewardHandler.RewardData.SlabfishData slabfish = reward.getSlabfish();
 		ResourceLocation typeLocation = RewardHandler.REWARD_CACHE.getTextureLocation(reward.getTier() >= 4 && slabfish.getTypeUrl() != null && RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.TYPE) ? slabfish.getTypeUrl() : defaultTypeUrl);
-		ResourceLocation sweaterLocation = reward.getTier() >= 3 && slabfish.getSweaterUrl() != null && RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.SWEATER) ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getSweaterUrl()) : null;
-		ResourceLocation backpackLocation = slabfish.getBackpackUrl() != null && RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.BACKPACK) ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getBackpackUrl()) : null;
-
 		if (typeLocation == null)
 			return;
-
+		
+		ResourceLocation sweaterLocation = reward.getTier() >= 3 && slabfish.getSweaterUrl() != null && RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.SWEATER) ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getSweaterUrl()) : null;
+		ResourceLocation backpackLocation = slabfish.getBackpackUrl() != null && RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.BACKPACK) ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getBackpackUrl()) : null;
 		ModelRenderer body = this.model.body;
 		ModelRenderer backpack = this.model.backpack;
 
@@ -54,7 +53,7 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 			body.render(stack, buffer.getBuffer(RenderType.getEntityCutout(sweaterLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 
 		if (backpackLocation != null) {
-			backpack.copyModelAngles(this.model.body);
+			backpack.copyModelAngles(body);
 			backpack.render(stack, buffer.getBuffer(RenderType.getEntityCutout(backpackLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 		}
 	}

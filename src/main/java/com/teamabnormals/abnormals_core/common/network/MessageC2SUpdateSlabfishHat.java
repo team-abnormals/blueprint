@@ -35,7 +35,7 @@ public final class MessageC2SUpdateSlabfishHat {
 			context.enqueueWork(() -> {
 				ServerPlayerEntity player = context.getSender();
 				if (player instanceof IDataManager)
-					((IDataManager)player).setValue(AbnormalsCore.SLABFISH_SETTINGS, message.setting);
+					((IDataManager) player).setValue(AbnormalsCore.SLABFISH_SETTINGS, message.setting);
 			});
 			context.setPacketHandled(true);
 		}
