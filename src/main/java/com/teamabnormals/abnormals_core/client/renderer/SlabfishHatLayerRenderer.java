@@ -47,7 +47,7 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 		ModelRenderer backpack = this.model.backpack;
 
 		body.copyModelAngles(this.getEntityModel().bipedHead);
-		body.render(stack, buffer.getBuffer(RenderType.getEntityCutout(typeLocation)), packedLight, OverlayTexture.NO_OVERLAY);
+		body.render(stack, buffer.getBuffer(slabfish.isTranslucent() ? RenderType.getEntityTranslucent(typeLocation) : RenderType.getEntityCutout(typeLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 
 		if (sweaterLocation != null)
 			body.render(stack, buffer.getBuffer(RenderType.getEntityCutout(sweaterLocation)), packedLight, OverlayTexture.NO_OVERLAY);
