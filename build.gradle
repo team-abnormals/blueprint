@@ -28,7 +28,7 @@ configurations {
     shade
 }
 
-version = '2.0.7'
+version = '2.0.8'
 group = 'com.minecraftabnormals'
 archivesBaseName = 'Abnormals-Core-1.16.1'
 
