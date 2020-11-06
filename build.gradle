@@ -118,8 +118,8 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.4-35.0.1'
 
-    compileOnly fg.deobf("com.github.Ocelot5836:Sonar:59bc380:api")
-    runtimeOnly fg.deobf("com.github.Ocelot5836:Sonar:59bc380")
+    compileOnly fg.deobf("com.github.Ocelot5836:Sonar:197cd56:api")
+    runtimeOnly fg.deobf("com.github.Ocelot5836:Sonar:197cd56")
     shade "com.github.Ocelot5836:Sonar:59bc380"
 }
 
