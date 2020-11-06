@@ -208,6 +208,7 @@ public final class RewardHandler {
 		}
 
 		public static final class SlabfishData {
+			private final boolean translucent;
 			@SerializedName("type")
 			private final String typeUrl;
 			@SerializedName("sweater")
@@ -219,10 +220,15 @@ public final class RewardHandler {
 			private String sweaterUrlCache;
 			private String backpackUrlCache;
 
-			public SlabfishData(String typeUrl, String sweaterUrl, String backpackUrl) {
+			public SlabfishData(boolean translucent, String typeUrl, String sweaterUrl, String backpackUrl) {
+				this.translucent = translucent;
 				this.typeUrl = typeUrl;
 				this.sweaterUrl = sweaterUrl;
 				this.backpackUrl = backpackUrl;
+			}
+
+			public boolean isTranslucent() {
+				return this.translucent;
 			}
 
 			public String getTypeUrl() {
