@@ -115,4 +115,11 @@ public final class NetworkUtil {
 	public static void updateTrackedData(Entity entity, Set<IDataManager.DataEntry<?>> entries) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CUpdateEntityData(entity.getEntityId(), entries));
 	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void updateSlabfish(byte setting) {
+		if (ClientInfo.getClientPlayer() != null) {
+			AbnormalsCore.CHANNEL.sendToServer(new MessageC2SUpdateSlabfishHat(setting));
+		}
+	}
 }
