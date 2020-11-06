@@ -25,7 +25,15 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 
 	@Override
 	public void render(MatrixStack stack, IRenderTypeBuffer buffer, int packedLight, AbstractClientPlayerEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-		String defaultTypeUrl = RewardHandler.getRewardProperties().getSlabfishProperties().getDefaultTypeUrl();
+		RewardHandler.RewardProperties properties = RewardHandler.getRewardProperties();
+		if (properties == null)
+			return;
+
+		RewardHandler.RewardProperties.SlabfishProperties slabfishProperties = properties.getSlabfishProperties();
+		if (slabfishProperties == null)
+			return;
+		
+		String defaultTypeUrl = slabfishProperties.getDefaultTypeUrl();
 		IDataManager data = (IDataManager) entity;
 
 		if (entity.isInvisible() || entity.isSpectator() || !(RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.ENABLED)) || defaultTypeUrl == null || !RewardHandler.REWARDS.containsKey(entity.getUniqueID()))
