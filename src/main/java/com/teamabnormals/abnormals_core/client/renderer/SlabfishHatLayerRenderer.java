@@ -33,7 +33,7 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 
 		RewardHandler.RewardData reward = RewardHandler.REWARDS.get(entity.getUniqueID());
 
-		if(reward.getSlabfish() == null)
+		if(reward.getSlabfish() == null || reward.getTier() < 2)
 			return;
 
 		RewardHandler.RewardData.SlabfishData slabfish = reward.getSlabfish();
