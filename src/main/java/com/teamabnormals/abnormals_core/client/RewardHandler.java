@@ -208,7 +208,7 @@ public final class RewardHandler {
 		}
 
 		public static class SlabfishData {
-			@SerializedName("base")
+			@SerializedName("type")
 			private final String typeUrl;
 			@SerializedName("sweater")
 			private final String sweaterUrl;
