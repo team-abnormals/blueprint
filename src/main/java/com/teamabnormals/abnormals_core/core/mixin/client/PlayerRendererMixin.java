@@ -19,6 +19,14 @@ public final class PlayerRendererMixin {
 
 	@Inject(method = "renderName", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/matrix/MatrixStack;push()V", shift = At.Shift.AFTER))
 	public void moveName(AbstractClientPlayerEntity entity, ITextComponent name, MatrixStack stack, IRenderTypeBuffer buffer, int packedLight, CallbackInfo ci) {
+		RewardHandler.RewardProperties properties = RewardHandler.getRewardProperties();
+		if (properties == null)
+			return;
+
+		RewardHandler.RewardProperties.SlabfishProperties slabfishProperties = properties.getSlabfishProperties();
+		if (slabfishProperties == null)
+			return;
+
 		if (!RewardHandler.SlabfishSetting.getSetting((IDataManager) entity, RewardHandler.SlabfishSetting.ENABLED))
 			return;
 
@@ -28,7 +36,6 @@ public final class PlayerRendererMixin {
 
 		RewardHandler.RewardData reward = RewardHandler.REWARDS.get(uuid);
 		RewardHandler.RewardData.SlabfishData slabfish = reward.getSlabfish();
-		RewardHandler.RewardProperties.SlabfishProperties slabfishProperties = RewardHandler.getRewardProperties().getSlabfishProperties();
 		int tier = reward.getTier();
 
 		if (slabfish == null || tier < 2 || (slabfish.getTypeUrl() == null && tier > 3 && slabfishProperties.getDefaultTypeUrl() == null) ||  slabfishProperties.getDefaultTypeUrl() == null)
