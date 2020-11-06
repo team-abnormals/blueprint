@@ -20,6 +20,7 @@ public class SlabfishHatScreen extends Screen {
 		this.parent = parent;
 	}
 
+	@Override
 	protected void init() {
 		int i = 0;
 
@@ -43,10 +44,16 @@ public class SlabfishHatScreen extends Screen {
 		}));
 	}
 
+	@Override
 	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(stack);
 		drawCenteredString(stack, this.font, this.title, this.width / 2, 20, 16777215);
 		super.render(stack, mouseX, mouseY, partialTicks);
+	}
+
+	@Override
+	public void closeScreen() {
+		this.getMinecraft().displayGuiScreen(this.parent);
 	}
 
 	private ITextComponent getOptionName(RewardHandler.SlabfishSetting setting, boolean enabled) {
