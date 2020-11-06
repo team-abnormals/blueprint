@@ -28,8 +28,10 @@ public final class PlayerRendererMixin {
 
 		RewardHandler.RewardData reward = RewardHandler.REWARDS.get(uuid);
 		RewardHandler.RewardData.SlabfishData slabfish = reward.getSlabfish();
+		RewardHandler.RewardProperties.SlabfishProperties slabfishProperties = RewardHandler.getRewardProperties().getSlabfishProperties();
+		int tier = reward.getTier();
 
-		if (slabfish == null || reward.getTier() < 2 || (slabfish.getTypeUrl() == null && RewardHandler.getRewardProperties().getSlabfishProperties().getDefaultTypeUrl() == null))
+		if (slabfish == null || tier < 2 || (slabfish.getTypeUrl() == null && tier > 3 && slabfishProperties.getDefaultTypeUrl() == null) ||  slabfishProperties.getDefaultTypeUrl() == null)
 			return;
 
 		stack.translate(0, 0.5, 0);
