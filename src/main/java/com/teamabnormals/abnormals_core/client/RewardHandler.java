@@ -202,7 +202,15 @@ public final class RewardHandler {
 			}
 
 			private static String resolveUrl(Function<RewardProperties.SlabfishProperties, String> baseUrl, Supplier<String> url) {
-				return url.get().startsWith("http") ? url.get() : String.format(baseUrl.apply(rewardProperties.getSlabfishProperties()), url.get());
+				String appliedUrl = baseUrl.apply(rewardProperties.getSlabfishProperties());
+
+				if(url.get() == null)
+					return null;
+
+				if(appliedUrl == null || url.get().startsWith("http"))
+					return url.get();
+
+				return String.format(appliedUrl, url.get());
 			}
 		}
 	}
