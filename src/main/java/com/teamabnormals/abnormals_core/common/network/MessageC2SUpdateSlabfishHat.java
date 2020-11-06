@@ -15,18 +15,18 @@ import java.util.function.Supplier;
  * @author Jackson
  */
 public final class MessageC2SUpdateSlabfishHat {
-	private final boolean enabled;
+	private final byte setting;
 
-	public MessageC2SUpdateSlabfishHat(boolean enabled) {
-		this.enabled = enabled;
+	public MessageC2SUpdateSlabfishHat(byte setting) {
+		this.setting = setting;
 	}
 
 	public void serialize(PacketBuffer buf) {
-		buf.writeBoolean(this.enabled);
+		buf.writeByte(this.setting);
 	}
 
 	public static MessageC2SUpdateSlabfishHat deserialize(PacketBuffer buf) {
-		return new MessageC2SUpdateSlabfishHat(buf.readBoolean());
+		return new MessageC2SUpdateSlabfishHat(buf.readByte());
 	}
 
 	public static void handle(MessageC2SUpdateSlabfishHat message, Supplier<NetworkEvent.Context> ctx) {
@@ -35,13 +35,13 @@ public final class MessageC2SUpdateSlabfishHat {
 			context.enqueueWork(() -> {
 				ServerPlayerEntity player = context.getSender();
 				IDataManager data = (IDataManager) player;
-				if(data != null) data.setValue(AbnormalsCore.SLABFISH_HEAD, message.isEnabled());
+				if(data != null) data.setValue(AbnormalsCore.SLABFISH_SETTINGS, message.getSetting());
 			});
 			context.setPacketHandled(true);
 		}
 	}
 
-	public boolean isEnabled() {
-		return enabled;
+	public byte getSetting() {
+		return setting;
 	}
 }

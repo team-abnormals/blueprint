@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teamabnormals.abnormals_core.client.RewardHandler;
 import com.teamabnormals.abnormals_core.client.model.SlabfishHatModel;
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
-import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -28,7 +27,7 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 		String defaultTypeUrl = RewardHandler.getRewardProperties().getSlabfishProperties().getDefaultTypeUrl();
 		IDataManager data = (IDataManager) entity;
 
-		if (!data.getValue(AbnormalsCore.SLABFISH_HEAD) || defaultTypeUrl == null || !RewardHandler.REWARDS.containsKey(entity.getUniqueID()) || entity.isInvisible() || entity.isSpectator())
+		if (!(RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.ENABLED)) || defaultTypeUrl == null || !RewardHandler.REWARDS.containsKey(entity.getUniqueID()) || entity.isInvisible() || entity.isSpectator())
 			return;
 
 		RewardHandler.RewardData reward = RewardHandler.REWARDS.get(entity.getUniqueID());
@@ -37,9 +36,9 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 			return;
 
 		RewardHandler.RewardData.SlabfishData slabfish = reward.getSlabfish();
-		ResourceLocation typeLocation = RewardHandler.REWARD_CACHE.getTextureLocation(reward.getTier() >= 4 && slabfish.getTypeUrl() != null ? slabfish.getTypeUrl() : defaultTypeUrl);
-		ResourceLocation sweaterLocation = reward.getTier() >= 3 && slabfish.getSweaterUrl() != null ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getSweaterUrl()) : null;
-		ResourceLocation backpackLocation = reward.getTier() >= 2 && slabfish.getBackpackUrl() != null ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getBackpackUrl()) : null;
+		ResourceLocation typeLocation = RewardHandler.REWARD_CACHE.getTextureLocation(reward.getTier() >= 4 && slabfish.getTypeUrl() != null && RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.TYPE) ? slabfish.getTypeUrl() : defaultTypeUrl);
+		ResourceLocation sweaterLocation = reward.getTier() >= 3 && slabfish.getSweaterUrl() != null && RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.SWEATER) ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getSweaterUrl()) : null;
+		ResourceLocation backpackLocation = reward.getTier() >= 2 && slabfish.getBackpackUrl() != null && RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.BACKPACK) ? RewardHandler.REWARD_CACHE.getTextureLocation(slabfish.getBackpackUrl()) : null;
 
 		if(typeLocation == null)
 			return;

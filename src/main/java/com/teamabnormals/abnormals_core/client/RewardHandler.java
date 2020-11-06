@@ -1,5 +1,6 @@
 package com.teamabnormals.abnormals_core.client;
 
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import io.github.ocelot.sonar.client.util.OnlineImageCache;
 import io.github.ocelot.sonar.common.util.OnlineRequest;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -19,6 +20,7 @@ import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -102,7 +104,36 @@ public final class RewardHandler {
 	
 	@SubscribeEvent
 	public static void onEvent(ClientPlayerNetworkEvent.LoggedInEvent event) {
-		NetworkUtil.updateSlabfish(ACConfig.CLIENT.slabfishHat.get());
+		NetworkUtil.updateSlabfish(SlabfishSetting.getConfig());
+	}
+
+	public enum SlabfishSetting {
+		ENABLED(() -> ACConfig.CLIENT.slabfishSettings.enabled),
+		SWEATER(() -> ACConfig.CLIENT.slabfishSettings.sweaterEnabled),
+		BACKPACK(() -> ACConfig.CLIENT.slabfishSettings.backpackEnabled),
+		TYPE(() -> ACConfig.CLIENT.slabfishSettings.typeEnabled);
+
+		private final Supplier<ForgeConfigSpec.ConfigValue<Boolean>> configValue;
+
+		SlabfishSetting(Supplier<ForgeConfigSpec.ConfigValue<Boolean>> configValue) {
+			this.configValue = configValue;
+		}
+
+		public ForgeConfigSpec.ConfigValue<Boolean> getConfigValue() {
+			return configValue.get();
+		}
+
+		public static byte getConfig() {
+			int value = 0;
+			for(SlabfishSetting setting : values())
+				if(setting.getConfigValue().get())
+					value |= 1 << setting.ordinal();
+			return (byte) value;
+		}
+
+		public static boolean getSetting(IDataManager data, SlabfishSetting flag) {
+			return ((data.getValue(AbnormalsCore.SLABFISH_SETTINGS) >> flag.ordinal()) & 1) > 0;
+		}
 	}
 
 	public static class RewardProperties {

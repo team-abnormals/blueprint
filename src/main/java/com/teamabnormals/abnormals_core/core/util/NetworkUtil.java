@@ -178,9 +178,9 @@ public final class NetworkUtil {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void updateSlabfish(boolean enabled) {
+	public static void updateSlabfish(byte setting) {
 		if (ClientInfo.getClientPlayer() != null) {
-			AbnormalsCore.CHANNEL.sendToServer(new MessageC2SUpdateSlabfishHat(enabled));
+			AbnormalsCore.CHANNEL.sendToServer(new MessageC2SUpdateSlabfishHat(setting));
 		}
 	}
 }

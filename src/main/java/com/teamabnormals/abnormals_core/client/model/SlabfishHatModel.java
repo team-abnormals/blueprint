@@ -28,7 +28,7 @@ public class SlabfishHatModel extends Model {
 		leftArm.setRotationPoint(5.0F, -12.0F, -2.0F);
 		this.body.addChild(leftArm);
 		setRotationAngle(leftArm, 0.0F, 0.0F, -0.4363F);
-		leftArm.setTextureOffset(16, 14).addBox(0.0F, 0.0F, -1.5F, 1.0F, 3.0F, 3.0F, 0.0F, false);
+		leftArm.setTextureOffset(16, 14).addBox(0.0F, 0.0F, -1.5F, 1.0F, 3.0F, 3.0F, 0.0F, true);
 
 		ModelRenderer rightLeg = new ModelRenderer(this);
 		rightLeg.setRotationPoint(-2.5F, -8.0F, -1.0F);
@@ -52,7 +52,7 @@ public class SlabfishHatModel extends Model {
 		leftLeg.setRotationPoint(2.5F, -8.0F, -1.0F);
 		this.body.addChild(leftLeg);
 		setRotationAngle(leftLeg, -1.3963F, 0.0F, 0.0F);
-		leftLeg.setTextureOffset(0, 14).addBox(-1.5F, -0.0868F, -3.4924F, 3.0F, 5.0F, 3.0F, 0.0F, false);
+		leftLeg.setTextureOffset(0, 14).addBox(-1.5F, -0.0868F, -3.4924F, 3.0F, 5.0F, 3.0F, 0.0F, true);
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public final class AbnormalsCore {
 	public static final String NETWORK_PROTOCOL = "AC1";
 	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper.Builder(MODID).build();
-	public static final TrackedData<Boolean> SLABFISH_HEAD = TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> true).enablePersistence().build();
+	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(DataProcessors.BYTE, () -> (byte) 8).enablePersistence().build();
 
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))
 			.networkProtocolVersion(() -> NETWORK_PROTOCOL)
@@ -101,7 +101,7 @@ public final class AbnormalsCore {
 				}
 			});
 			modEventBus.addListener(EventPriority.NORMAL, false, ModConfig.Reloading.class, event -> {
-				if(event.getConfig().getModId().equals(AbnormalsCore.MODID)) NetworkUtil.updateSlabfish(ACConfig.CLIENT.slabfishHat.get());
+				if(event.getConfig().getModId().equals(AbnormalsCore.MODID)) NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
 			});
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(RewardHandler::clientSetup);
@@ -115,7 +115,7 @@ public final class AbnormalsCore {
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		event.enqueueWork(this::replaceBeehivePOI);
 		ChunkLoaderCapability.register();
-		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MODID, "slabfish_head"), SLABFISH_HEAD);
+		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MODID, "slabfish_head"), SLABFISH_SETTINGS);
 	}
 
 	@OnlyIn(Dist.CLIENT)

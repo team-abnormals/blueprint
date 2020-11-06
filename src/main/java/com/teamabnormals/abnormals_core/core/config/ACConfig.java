@@ -1,6 +1,5 @@
 package com.teamabnormals.abnormals_core.core.config;
 
-import com.teamabnormals.abnormals_core.client.RewardHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -57,16 +56,46 @@ public final class ACConfig {
 	}
 
 	public static class Client {
-		public final ConfigValue<Boolean> slabfishHat;
+		public final SlabfishSettings slabfishSettings;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Client only settings for Abnormals Core.")
 			.push("client");
 
-			slabfishHat = builder
-					.comment("If the Slabfish patron hat should be enabled; Default: True")
-					.translation(makeTranslation("slabfish_hat"))
-					.define("slabfishHat", true);
+			slabfishSettings = new SlabfishSettings(builder);
+
+			builder.pop();
+		}
+	}
+
+	public static class SlabfishSettings {
+		public final ConfigValue<Boolean> enabled;
+		public final ConfigValue<Boolean> backpackEnabled;
+		public final ConfigValue<Boolean> sweaterEnabled;
+		public final ConfigValue<Boolean> typeEnabled;
+
+		SlabfishSettings(ForgeConfigSpec.Builder builder) {
+			builder.comment("Slabfish patron hat settings.")
+			.push("slabfishSettings");
+
+			enabled = builder
+					.comment("If the slabfish hat should be enabled; Default: True")
+					.translation(makeTranslation("slabfishHat"))
+					.define("enabled", true);
+			backpackEnabled = builder
+					.comment("If the slabfish hat's backpack should be enabled; Default: True")
+					.translation(makeTranslation("slabfishHat.backpack"))
+					.define("backpackEnabled", true);
+			sweaterEnabled = builder
+					.comment("If the slabfish hat's sweater should be enabled; Default: True")
+					.translation(makeTranslation("slabfishHat.sweater"))
+					.define("sweaterEnabled", true);
+			typeEnabled = builder
+					.comment("If the slabfish hat's custom type should be enabled. If false, the default swamp slabfish appears; Default: True")
+					.translation(makeTranslation("slabfishHat.type"))
+					.define("typeEnabled", true);
+
+			builder.pop();
 		}
 	}
 	

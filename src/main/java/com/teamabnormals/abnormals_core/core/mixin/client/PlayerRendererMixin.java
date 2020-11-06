@@ -3,7 +3,6 @@ package com.teamabnormals.abnormals_core.core.mixin.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.teamabnormals.abnormals_core.client.RewardHandler;
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
-import com.teamabnormals.abnormals_core.core.AbnormalsCore;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -20,10 +19,9 @@ public class PlayerRendererMixin {
 
 	@Inject(method = "renderName", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/matrix/MatrixStack;push()V", shift = At.Shift.AFTER))
 	public void moveName(AbstractClientPlayerEntity entity, ITextComponent name, MatrixStack stack, IRenderTypeBuffer buffer, int packedLight, CallbackInfo ci) {
-		IDataManager data = (IDataManager) entity;
 		UUID uuid = entity.getUniqueID();
 
-		if(!data.getValue(AbnormalsCore.SLABFISH_HEAD) || !RewardHandler.REWARDS.containsKey(uuid))
+		if(!RewardHandler.SlabfishSetting.getSetting((IDataManager) entity, RewardHandler.SlabfishSetting.ENABLED) || !RewardHandler.REWARDS.containsKey(uuid))
 			return;
 
 		RewardHandler.RewardData reward = RewardHandler.REWARDS.get(uuid);
