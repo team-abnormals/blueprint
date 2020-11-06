@@ -11,7 +11,8 @@
   ],
   "client": [
     "client.EditSignScreenMixin",
-    "client.SignTileEntityRendererMixin"
+    "client.SignTileEntityRendererMixin",
+    "client.PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

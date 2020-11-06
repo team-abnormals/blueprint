@@ -22,35 +22,79 @@ public final class ACConfig {
 		Common(ForgeConfigSpec.Builder builder) {
 			builder.comment("Common only settings for Abnormals Core, this will affect all depending mods")
 			.push("common");
-			
-			enableQuarkSignEditing = builder
+
+			this.enableQuarkSignEditing = builder
 				.comment("If Quark Sign Editing should be enabled; Default: True")
 				.translation(makeTranslation("quark_sign_editing"))
 				.define("quarkSignEditing", true);
-			
-			signEditingRequiresEmptyHand = builder
+
+			this.signEditingRequiresEmptyHand = builder
 				.comment("If Quark Sign Editing requires an empty hand to edit; Default: False")
 				.translation(makeTranslation("require_empty_hand"))
 				.define("signEditingRequiresEmptyHand", false);
 
 			builder.comment("Compatibility with Quark's poisonous potatoes feature")
 			.push("poisonousPotatoCompat");
-			poisonPotatoCompatEnabled = builder
+			this.poisonPotatoCompatEnabled = builder
 					.comment("If baby mobs can be fed a poisonous potato to stunt their growth when Quark is installed; Default: True")
 					.translation(makeTranslation("poison_potato_compat_enabled"))
 					.define("poisonPotatoCompatEnabled",true);
 
-			poisonEffect = builder
+			this.poisonEffect = builder
 					.comment("If growth stunting should give baby mobs poison; Default: True")
 					.translation(makeTranslation("poison_effect"))
 					.define("poisonEffect",true);
 
-			poisonChance = builder
+			this.poisonChance = builder
 					.comment("The chance to stunt baby mob growth when feeding a poisonous potato; Default: 0.1")
 					.translation(makeTranslation("poison_chance"))
 					.defineInRange("poisonChance",0.1,0,1);
 
 			builder.pop();
+			builder.pop();
+		}
+	}
+
+	public static final class Client {
+		public final SlabfishSettings slabfishSettings;
+
+		Client(ForgeConfigSpec.Builder builder) {
+			builder.comment("Client only settings for Abnormals Core.")
+					.push("client");
+
+			this.slabfishSettings = new SlabfishSettings(builder);
+
+			builder.pop();
+		}
+	}
+
+	public static final class SlabfishSettings {
+		public final ConfigValue<Boolean> enabled;
+		public final ConfigValue<Boolean> backpackEnabled;
+		public final ConfigValue<Boolean> sweaterEnabled;
+		public final ConfigValue<Boolean> typeEnabled;
+
+		SlabfishSettings(ForgeConfigSpec.Builder builder) {
+			builder.comment("Slabfish patron hat settings.")
+					.push("slabfishSettings");
+
+			this.enabled = builder
+					.comment("If the slabfish hat should be enabled; Default: True")
+					.translation(makeTranslation("slabfishHat"))
+					.define("enabled", true);
+			this.backpackEnabled = builder
+					.comment("If the slabfish hat's backpack should be enabled; Default: True")
+					.translation(makeTranslation("slabfishHat.backpack"))
+					.define("backpackEnabled", true);
+			this.sweaterEnabled = builder
+					.comment("If the slabfish hat's sweater should be enabled; Default: True")
+					.translation(makeTranslation("slabfishHat.sweater"))
+					.define("sweaterEnabled", true);
+			this.typeEnabled = builder
+					.comment("If the slabfish hat's custom type should be enabled. If false, the default swamp slabfish appears; Default: True")
+					.translation(makeTranslation("slabfishHat.type"))
+					.define("typeEnabled", true);
+
 			builder.pop();
 		}
 	}
@@ -61,10 +105,17 @@ public final class ACConfig {
 	
 	public static final ForgeConfigSpec COMMON_SPEC;
 	public static final Common COMMON;
+	public static final ForgeConfigSpec CLIENT_SPEC;
+	public static final Client CLIENT;
+	
 	static {
 		final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
 		COMMON_SPEC = specPair.getRight();
 		COMMON = specPair.getLeft();
+
+		final Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Client::new);
+		CLIENT_SPEC = clientSpecPair.getRight();
+		CLIENT = clientSpecPair.getLeft();
 	}
 	
 	public static class ValuesHolder {

@@ -3,6 +3,7 @@ package com.teamabnormals.abnormals_core.core;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.teamabnormals.abnormals_core.client.RewardHandler;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.AbnormalsChestTileEntityRenderer;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
@@ -13,6 +14,7 @@ import com.teamabnormals.abnormals_core.common.network.particle.*;
 import com.teamabnormals.abnormals_core.common.world.biome.AbnormalsBiome;
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
 import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.examples.ExampleEntityRegistry;
 import com.teamabnormals.abnormals_core.core.examples.ExampleTileEntityRegistry;
@@ -23,6 +25,7 @@ import com.teamabnormals.abnormals_core.core.library.api.conditions.ACAndRecipeC
 import com.teamabnormals.abnormals_core.core.library.api.conditions.QuarkFlagRecipeCondition;
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry.LootInjector;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -71,6 +74,7 @@ public class AbnormalsCore {
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MODID);
 	public static final TrackedData<Boolean> TEST_TRACKED_DATA = TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> false).enablePersistence().enableSaving().build();
 	public static final TrackedData<CompoundNBT> TEST_TRACKED_DATA_NBT = TrackedData.Builder.create(DataProcessors.COMPOUND, CompoundNBT::new).enablePersistence().enableSaving().build();
+	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(DataProcessors.BYTE, () -> (byte) 8).enablePersistence().build();
 
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))
 		.networkProtocolVersion(() -> NETWORK_PROTOCOL)
@@ -80,6 +84,7 @@ public class AbnormalsCore {
 
 	public AbnormalsCore() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext context = ModLoadingContext.get();
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ChunkLoaderEvents());
 		
@@ -104,12 +109,17 @@ public class AbnormalsCore {
 
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(this::clientSetup);
+			modEventBus.addListener(RewardHandler::clientSetup);
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
+			modEventBus.addListener(EventPriority.NORMAL, false, ModConfig.Reloading.class, event -> {
+				if (event.getConfig().getModId().equals(AbnormalsCore.MODID)) NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
+			});
 		});
 		
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
-		
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
+
+		context.registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
+		context.registerConfig(ModConfig.Type.CLIENT, ACConfig.CLIENT_SPEC);
 	}
     
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -128,6 +138,7 @@ public class AbnormalsCore {
 //		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MODID, "test_tracked"), TEST_TRACKED_DATA);
 		ChunkLoaderCapability.register();
 //		ExampleEntitySpawnHandler.processSpawnAdditions();
+		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MODID, "slabfish_head"), SLABFISH_SETTINGS);
 	}
     
 	@OnlyIn(Dist.CLIENT)
@@ -197,6 +208,11 @@ public class AbnormalsCore {
 		.encoder(MessageS2CUpdateEntityData::serialize).decoder(MessageS2CUpdateEntityData::deserialize)
 		.consumer(MessageS2CUpdateEntityData::handle)
 		.add();
+
+		CHANNEL.messageBuilder(MessageC2SUpdateSlabfishHat.class, id++)
+				.encoder(MessageC2SUpdateSlabfishHat::serialize).decoder(MessageC2SUpdateSlabfishHat::deserialize)
+				.consumer(MessageC2SUpdateSlabfishHat::handle)
+				.add();
 	}
 	
 	/*
