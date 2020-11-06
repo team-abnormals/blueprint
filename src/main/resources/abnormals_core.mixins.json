@@ -11,6 +11,9 @@
     "TrackedEntityMixin",
     "SpawnEggItemMixin"
   ],
+  "client": [
+    "client.PlayerRendererMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

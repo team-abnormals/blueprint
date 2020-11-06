@@ -2,6 +2,7 @@ package com.teamabnormals.abnormals_core.core;
 
 import com.google.common.collect.Sets;
 
+import com.teamabnormals.abnormals_core.client.RewardHandler;
 import com.teamabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
 import com.teamabnormals.abnormals_core.client.tile.*;
 import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
@@ -10,12 +11,16 @@ import com.teamabnormals.abnormals_core.common.capability.chunkloading.ChunkLoad
 import com.teamabnormals.abnormals_core.common.network.*;
 import com.teamabnormals.abnormals_core.common.network.entity.*;
 import com.teamabnormals.abnormals_core.common.network.particle.*;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.teamabnormals.abnormals_core.core.api.conditions.*;
 import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.registry.ACEntities;
 import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.teamabnormals.abnormals_core.core.util.registry.TileEntitySubRegistryHelper;
 
@@ -59,6 +64,7 @@ public final class AbnormalsCore {
 	public static final String NETWORK_PROTOCOL = "AC1";
 	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper.Builder(MODID).build();
+	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(DataProcessors.BYTE, () -> (byte) 8).enablePersistence().build();
 
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))
 			.networkProtocolVersion(() -> NETWORK_PROTOCOL)
@@ -68,6 +74,7 @@ public final class AbnormalsCore {
 
 	public AbnormalsCore() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext context = ModLoadingContext.get();
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ChunkLoaderEvents());
 
@@ -94,16 +101,22 @@ public final class AbnormalsCore {
 					((IReloadableResourceManager) resourceManager).addReloadListener(ENDIMATION_DATA_MANAGER);
 				}
 			});
+			modEventBus.addListener(EventPriority.NORMAL, false, ModConfig.Reloading.class, event -> {
+				if (event.getConfig().getModId().equals(AbnormalsCore.MODID)) NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
+			});
 			modEventBus.addListener(this::clientSetup);
+			modEventBus.addListener(RewardHandler::clientSetup);
 		});
 
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
+		context.registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
+		context.registerConfig(ModConfig.Type.CLIENT, ACConfig.CLIENT_SPEC);
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		event.enqueueWork(this::replaceBeehivePOI);
 		ChunkLoaderCapability.register();
+		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MODID, "slabfish_head"), SLABFISH_SETTINGS);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -127,6 +140,7 @@ public final class AbnormalsCore {
 		CHANNEL.registerMessage(id++, MessageC2S2CSpawnParticle.class, MessageC2S2CSpawnParticle::serialize, MessageC2S2CSpawnParticle::deserialize, MessageC2S2CSpawnParticle::handle);
 		CHANNEL.registerMessage(id++, MessageS2CServerRedirect.class, MessageS2CServerRedirect::serialize, MessageS2CServerRedirect::deserialize, MessageS2CServerRedirect::handle);
 		CHANNEL.registerMessage(id++, MessageS2CUpdateEntityData.class, MessageS2CUpdateEntityData::serialize, MessageS2CUpdateEntityData::deserialize, MessageS2CUpdateEntityData::handle);
+		CHANNEL.registerMessage(id, MessageC2SUpdateSlabfishHat.class, MessageC2SUpdateSlabfishHat::serialize, MessageC2SUpdateSlabfishHat::deserialize, MessageC2SUpdateSlabfishHat::handle);
 	}
 
 	private void replaceBeehivePOI() {

@@ -10,6 +10,11 @@ buildscript {
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version "4.0.4"
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
@@ -17,6 +22,10 @@ apply plugin: 'org.spongepowered.mixin'
 
 mixin {
     add sourceSets.main, "abnormals_core.refmap.json"
+}
+
+configurations {
+    shade
 }
 
 version = '2.1.0'
@@ -99,6 +108,31 @@ jar {
     }
 }
 
+repositories {
+    maven {
+        url = "https://jitpack.io"
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.4-35.0.1'
+
+    compileOnly fg.deobf("com.github.Ocelot5836:Sonar:4cc95e6:api")
+    runtimeOnly fg.deobf("com.github.Ocelot5836:Sonar:4cc95e6")
+    shade "com.github.Ocelot5836:Sonar:4cc95e6"
 }
+
+shadowJar {
+    configurations = [project.configurations.shade]
+}
+
+reobf {
+    shadowJar {}
+}
+
+artifacts {
+    archives jar
+    archives shadowJar
+}
+
+build.dependsOn reobfShadowJar
