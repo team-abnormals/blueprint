@@ -69,7 +69,7 @@ public final class RewardHandler {
 
 			try (InputStreamReader reader = new InputStreamReader(stream)) {
 				JsonObject object = JSONUtils.fromJson(reader);
-				for(Map.Entry<String, JsonElement> entry : object.entrySet()) {
+				for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
 					if (entry.getKey().equals("properties")) {
 						rewardProperties = GSON.fromJson(entry.getValue(), RewardProperties.class);
 						continue;
