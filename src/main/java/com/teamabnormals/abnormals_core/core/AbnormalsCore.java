@@ -20,6 +20,7 @@ import com.teamabnormals.abnormals_core.core.config.ACConfig;
 import com.teamabnormals.abnormals_core.core.endimator.EndimationDataManager;
 import com.teamabnormals.abnormals_core.core.registry.ACEntities;
 import com.teamabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
 import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.teamabnormals.abnormals_core.core.util.registry.TileEntitySubRegistryHelper;
 
@@ -98,6 +99,9 @@ public final class AbnormalsCore {
 				if (resourceManager instanceof IReloadableResourceManager) {
 					((IReloadableResourceManager) resourceManager).addReloadListener(ENDIMATION_DATA_MANAGER);
 				}
+			});
+			modEventBus.addListener(EventPriority.NORMAL, false, ModConfig.Reloading.class, event -> {
+				if(event.getConfig().getModId().equals(AbnormalsCore.MODID)) NetworkUtil.updateSlabfish(ACConfig.CLIENT.slabfishHat.get());
 			});
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(RewardHandler::clientSetup);
