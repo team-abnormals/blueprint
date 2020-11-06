@@ -94,6 +94,7 @@ artifacts {
 }
 
 jar {
+    classifier = "slim"
     manifest {
         attributes([
                 "Specification-Title": "Abnormals Core",
@@ -124,6 +125,7 @@ dependencies {
 
 shadowJar {
     configurations = [project.configurations.shade]
+    classifier = null
 }
 
 reobf {
