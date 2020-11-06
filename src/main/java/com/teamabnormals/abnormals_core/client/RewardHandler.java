@@ -33,6 +33,7 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Handles the fetching and setup of Team Abnormals rewards.
+ *
+ * @author Jackson
+ */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, value = Dist.CLIENT)
 public final class RewardHandler {
 	public static final Map<UUID, RewardData> REWARDS = new HashMap<>();
@@ -58,13 +64,13 @@ public final class RewardHandler {
 
 	public static void clientSetup(FMLClientSetupEvent event) {
 		OnlineRequest.request(REWARDS_URL, Util.getServerExecutor()).thenAcceptAsync(stream -> {
-			if(stream == null)
+			if (stream == null)
 				return;
 
 			try (InputStreamReader reader = new InputStreamReader(stream)) {
 				JsonObject object = JSONUtils.fromJson(reader);
 				for(Map.Entry<String, JsonElement> entry : object.entrySet()) {
-					if(entry.getKey().equals("properties")) {
+					if (entry.getKey().equals("properties")) {
 						rewardProperties = GSON.fromJson(entry.getValue(), RewardProperties.class);
 						continue;
 					}
@@ -75,10 +81,11 @@ public final class RewardHandler {
 			}
 		}, Minecraft.getInstance());
 
-		for(PlayerRenderer renderer : Minecraft.getInstance().getRenderManager().getSkinMap().values())
+		for (PlayerRenderer renderer : Minecraft.getInstance().getRenderManager().getSkinMap().values())
 			renderer.addLayer(new SlabfishHatLayerRenderer(renderer, new SlabfishHatModel()));
 	}
 
+	@Nullable
 	public static RewardProperties getRewardProperties() {
 		return rewardProperties;
 	}
@@ -88,12 +95,11 @@ public final class RewardHandler {
 		PlayerEntity player = event.getPlayer();
 		UUID uuid = PlayerEntity.getUUID(player.getGameProfile());
 
-		if (player instanceof AbstractClientPlayerEntity && !RENDERED_CAPES.contains(uuid) && REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
+		if (!RENDERED_CAPES.contains(uuid) && REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
 			AbstractClientPlayerEntity clientPlayer = (AbstractClientPlayerEntity) player;
 			if (clientPlayer.hasPlayerInfo()) {
 				Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = clientPlayer.playerInfo.playerTextures;
-				if(!playerTextures.containsKey(MinecraftProfileTexture.Type.CAPE))
-				{
+				if (!playerTextures.containsKey(MinecraftProfileTexture.Type.CAPE)) {
 					playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
 					playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
 				}
@@ -125,8 +131,8 @@ public final class RewardHandler {
 
 		public static byte getConfig() {
 			int value = 0;
-			for(SlabfishSetting setting : values())
-				if(setting.getConfigValue().get())
+			for (SlabfishSetting setting : values())
+				if (setting.getConfigValue().get())
 					value |= 1 << setting.ordinal();
 			return (byte) value;
 		}
@@ -136,7 +142,7 @@ public final class RewardHandler {
 		}
 	}
 
-	public static class RewardProperties {
+	public static final class RewardProperties {
 		private final SlabfishProperties slabfish;
 
 		public RewardProperties(SlabfishProperties slabfish) {
@@ -178,8 +184,7 @@ public final class RewardHandler {
 		}
 	}
 
-	public static class RewardData {
-
+	public static final class RewardData {
 		private final String username;
 		private final int tier;
 		private final SlabfishData slabfish;
@@ -235,10 +240,10 @@ public final class RewardHandler {
 			private static String resolveUrl(Function<RewardProperties.SlabfishProperties, String> baseUrl, Supplier<String> url) {
 				String appliedUrl = baseUrl.apply(rewardProperties.getSlabfishProperties());
 
-				if(url.get() == null)
+				if (url.get() == null)
 					return null;
 
-				if(appliedUrl == null || url.get().startsWith("http"))
+				if (appliedUrl == null || url.get().startsWith("http"))
 					return url.get();
 
 				return String.format(appliedUrl, url.get());

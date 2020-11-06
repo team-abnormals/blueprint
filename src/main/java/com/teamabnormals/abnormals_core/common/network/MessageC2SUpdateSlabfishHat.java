@@ -10,7 +10,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /**
- * Message for updating if the Slabfish hat is enabled.
+ * Message for syncing Slabfish hat customization settings.
  *
  * @author Jackson
  */
@@ -34,14 +34,10 @@ public final class MessageC2SUpdateSlabfishHat {
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
 				ServerPlayerEntity player = context.getSender();
-				IDataManager data = (IDataManager) player;
-				if(data != null) data.setValue(AbnormalsCore.SLABFISH_SETTINGS, message.getSetting());
+				if (player instanceof IDataManager)
+					((IDataManager)player).setValue(AbnormalsCore.SLABFISH_SETTINGS, message.setting);
 			});
 			context.setPacketHandled(true);
 		}
-	}
-
-	public byte getSetting() {
-		return setting;
 	}
 }

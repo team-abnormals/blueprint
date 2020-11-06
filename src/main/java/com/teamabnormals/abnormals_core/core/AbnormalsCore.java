@@ -74,6 +74,7 @@ public final class AbnormalsCore {
 
 	public AbnormalsCore() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext context = ModLoadingContext.get();
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ChunkLoaderEvents());
 
@@ -108,8 +109,8 @@ public final class AbnormalsCore {
 		});
 
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ACConfig.CLIENT_SPEC);
+		context.registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
+		context.registerConfig(ModConfig.Type.CLIENT, ACConfig.CLIENT_SPEC);
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {

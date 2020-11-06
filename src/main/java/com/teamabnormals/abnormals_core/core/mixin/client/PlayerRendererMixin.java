@@ -15,19 +15,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.UUID;
 
 @Mixin(PlayerRenderer.class)
-public class PlayerRendererMixin {
+public final class PlayerRendererMixin {
 
 	@Inject(method = "renderName", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/matrix/MatrixStack;push()V", shift = At.Shift.AFTER))
 	public void moveName(AbstractClientPlayerEntity entity, ITextComponent name, MatrixStack stack, IRenderTypeBuffer buffer, int packedLight, CallbackInfo ci) {
-		UUID uuid = entity.getUniqueID();
+		if (!RewardHandler.SlabfishSetting.getSetting((IDataManager) entity, RewardHandler.SlabfishSetting.ENABLED))
+			return;
 
-		if(!RewardHandler.SlabfishSetting.getSetting((IDataManager) entity, RewardHandler.SlabfishSetting.ENABLED) || !RewardHandler.REWARDS.containsKey(uuid))
+		UUID uuid = entity.getUniqueID();
+		if (!RewardHandler.REWARDS.containsKey(uuid))
 			return;
 
 		RewardHandler.RewardData reward = RewardHandler.REWARDS.get(uuid);
 		RewardHandler.RewardData.SlabfishData slabfish = reward.getSlabfish();
 
-		if(slabfish == null || reward.getTier() < 2 || (slabfish.getTypeUrl() == null && RewardHandler.getRewardProperties().getSlabfishProperties().getDefaultTypeUrl() == null))
+		if (slabfish == null || reward.getTier() < 2 || (slabfish.getTypeUrl() == null && RewardHandler.getRewardProperties().getSlabfishProperties().getDefaultTypeUrl() == null))
 			return;
 
 		stack.translate(0, 0.5, 0);
