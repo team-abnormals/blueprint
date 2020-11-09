@@ -40,20 +40,12 @@ import java.util.Set;
  */
 public final class NetworkUtil {
 	/**
+	 * All other parameters work same as world#addParticle
+	 * Used for adding particles to client worlds from the server side
 	 * @param name - The registry name of the particle
-	 *             All other parameters work same as world#addParticle
-	 *             Used for adding particles to the world from the server side
 	 */
 	public static void spawnParticle(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageS2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
-	}
-
-	/**
-	 * @param name - The registry name of the particle
-	 *             Used for adding particles to all the clients from the client
-	 */
-	public static void spawnParticleC2S2C(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
-		AbnormalsCore.CHANNEL.sendToServer(new MessageC2S2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
 	}
 
 	/**
@@ -85,8 +77,8 @@ public final class NetworkUtil {
 	/**
 	 * Opens the sign editor from the server side
 	 *
-	 * @param player
-	 * @param sign
+	 * @param player The player opening the editor.
+	 * @param sign The sign to open the editor for.
 	 */
 	public static void openSignEditor(PlayerEntity player, AbnormalsSignTileEntity sign) {
 		if (player instanceof ServerPlayerEntity) {

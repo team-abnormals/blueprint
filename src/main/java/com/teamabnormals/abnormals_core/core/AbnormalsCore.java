@@ -137,7 +137,6 @@ public final class AbnormalsCore {
 		CHANNEL.registerMessage(id++, MessageS2CUpdateSign.class, MessageS2CUpdateSign::serialize, MessageS2CUpdateSign::deserialize, MessageS2CUpdateSign::handle);
 		CHANNEL.registerMessage(id++, MessageS2CTeleportEntity.class, MessageS2CTeleportEntity::serialize, MessageS2CTeleportEntity::deserialize, MessageS2CTeleportEntity::handle);
 		CHANNEL.registerMessage(id++, MessageS2CSpawnParticle.class, MessageS2CSpawnParticle::serialize, MessageS2CSpawnParticle::deserialize, MessageS2CSpawnParticle::handle);
-		CHANNEL.registerMessage(id++, MessageC2S2CSpawnParticle.class, MessageC2S2CSpawnParticle::serialize, MessageC2S2CSpawnParticle::deserialize, MessageC2S2CSpawnParticle::handle);
 		CHANNEL.registerMessage(id++, MessageS2CServerRedirect.class, MessageS2CServerRedirect::serialize, MessageS2CServerRedirect::deserialize, MessageS2CServerRedirect::handle);
 		CHANNEL.registerMessage(id++, MessageS2CUpdateEntityData.class, MessageS2CUpdateEntityData::serialize, MessageS2CUpdateEntityData::deserialize, MessageS2CUpdateEntityData::handle);
 		CHANNEL.registerMessage(id, MessageC2SUpdateSlabfishHat.class, MessageC2SUpdateSlabfishHat::serialize, MessageC2SUpdateSlabfishHat::deserialize, MessageC2SUpdateSlabfishHat::handle);
