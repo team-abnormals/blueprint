@@ -1,24 +1,26 @@
 package com.teamabnormals.abnormals_core.core.util.registry;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsBoatItem;
 import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.teamabnormals.abnormals_core.common.items.FuelItem;
 import com.teamabnormals.abnormals_core.core.registry.BoatRegistry;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.*;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -28,7 +30,8 @@ import java.util.function.Supplier;
  * @see AbstractSubRegistryHelper
  */
 public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
-	public final List<RegistryObject<AbnormalsSpawnEggItem>> spawnEggs = Lists.newArrayList();
+	private static final Field EGGS_FIELD = ObfuscationReflectionHelper.findField(SpawnEggItem.class, "field_195987_b");
+	private final Set<AbnormalsSpawnEggItem> spawnEggs = Sets.newHashSet();
 
 	public ItemSubRegistryHelper(RegistryHelper parent, DeferredRegister<Item> deferredRegister) {
 		super(parent, deferredRegister);
@@ -86,16 +89,17 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @see AbnormalsSpawnEggItem
 	 */
 	public RegistryObject<AbnormalsSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<?>> supplier, int primaryColor, int secondaryColor) {
-		RegistryObject<AbnormalsSpawnEggItem> spawnEgg = this.deferredRegister.register(entityName + "_spawn_egg", () -> new AbnormalsSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().group(ItemGroup.MISC)));
-		this.spawnEggs.add(spawnEgg);
+		AbnormalsSpawnEggItem eggItem = new AbnormalsSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().group(ItemGroup.MISC));
+		RegistryObject<AbnormalsSpawnEggItem> spawnEgg = this.deferredRegister.register(entityName + "_spawn_egg", () -> eggItem);
+		this.spawnEggs.add(eggItem);
 		return spawnEgg;
 	}
 
 	/**
 	 * Creates and registers a {@link AbnormalsBoatItem} and boat type.
 	 *
-	 * @param - The name of the wood, e.g. "oak"
-	 * @param - The {@link Block} for the boat to drop
+	 * @param wood - The name of the wood, e.g. "oak"
+	 * @param block - The {@link Block} for the boat to drop
 	 */
 	public RegistryObject<Item> createBoatItem(String wood, RegistryObject<Block> block) {
 		String type = this.parent.getModId() + ":" + wood;
@@ -162,18 +166,20 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 		return new Item.Properties().group(itemGroup).maxStackSize(stackSize);
 	}
 
-	/**
-	 * Processes all the spawn egg colors, should be registered as an event with lowest priority
-	 *
-	 * @param event - The {@link ColorHandlerEvent.Item} event
-	 */
-	@OnlyIn(Dist.CLIENT)
-	public void processSpawnEggColors(ColorHandlerEvent.Item event) {
-		ItemColors colors = event.getItemColors();
-		for (RegistryObject<AbnormalsSpawnEggItem> items : this.spawnEggs) {
-			if (items.isPresent()) {
-				Item item = items.get();
-				colors.register((itemColor, itemsIn) -> ((AbnormalsSpawnEggItem) item).getColor(itemsIn), item);
+	@Override
+	public void register(IEventBus eventBus) {
+		super.register(eventBus);
+		eventBus.addGenericListener(EntityType.class, EventPriority.LOWEST, this::handleSpawnEggMap);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void handleSpawnEggMap(RegistryEvent.Register<EntityType<?>> event) {
+		if (!this.spawnEggs.isEmpty()) {
+			try {
+				Map<EntityType<?>, SpawnEggItem> map = (Map<EntityType<?>, SpawnEggItem>) EGGS_FIELD.get(null);
+				this.spawnEggs.forEach(egg -> map.put(egg.getType(null), egg));
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
 			}
 		}
 	}

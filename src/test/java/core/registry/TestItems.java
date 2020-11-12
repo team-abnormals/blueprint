@@ -15,6 +15,6 @@ public final class TestItems {
 	private static final ItemSubRegistryHelper HELPER = ACTest.REGISTRY_HELPER.getItemSubHelper();
 
 	public static final RegistryObject<Item> ITEM = HELPER.createItem("test", () -> new Item(new Item.Properties().group(ItemGroup.FOOD)));
-	public static final RegistryObject<AbnormalsSpawnEggItem> COW_SPAWN_EGG = HELPER.createSpawnEggItem("test", () -> TestEntities.COW.get(), 100, 200);
+	public static final RegistryObject<AbnormalsSpawnEggItem> COW_SPAWN_EGG = HELPER.createSpawnEggItem("test", TestEntities.COW::get, 100, 200);
 	public static final RegistryObject<Item> BOAT = HELPER.createBoatItem("test", TestBlocks.BLOCK);
 }

@@ -40,12 +40,12 @@ public abstract class AbstractSubRegistryHelper<T extends IForgeRegistryEntry<T>
 	}
 
 	/**
-	 * Registers the {@link #getDeferredRegister()}.
+	 * Registers this {@link AbstractSubRegistryHelper}.
 	 *
 	 * @param eventBus The event bus to register this to.
 	 */
 	@Override
-	public final void register(IEventBus eventBus) {
+	public void register(IEventBus eventBus) {
 		this.getDeferredRegister().register(eventBus);
 	}
 	

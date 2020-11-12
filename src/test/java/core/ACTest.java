@@ -12,7 +12,6 @@ import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedDat
 import com.teamabnormals.abnormals_core.core.annotations.Test;
 import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry;
-import com.teamabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
 import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
 import core.registry.TestEntities;
@@ -34,7 +33,6 @@ import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -62,7 +60,6 @@ public final class ACTest {
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(this::clientSetup);
-			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "tracked_data"), TEST_TRACKED_DATA);
 	}
@@ -83,12 +80,6 @@ public final class ACTest {
 	private void clientSetup(final FMLClientSetupEvent event) {
 		RenderingRegistry.registerEntityRenderingHandler(TestEntities.COW.get(), CowRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(TestEntities.ENDIMATED_TEST.get(), TestEndimatedEntityRenderer::new);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private void registerItemColors(ColorHandlerEvent.Item event) {
-		ItemSubRegistryHelper itemSubRegistryHelper = REGISTRY_HELPER.getItemSubHelper();
-		itemSubRegistryHelper.processSpawnEggColors(event);
 	}
 
 	private void registerLootInjectors() {
