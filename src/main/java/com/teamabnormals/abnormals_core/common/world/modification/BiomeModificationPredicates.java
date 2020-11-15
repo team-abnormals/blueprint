@@ -5,6 +5,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 /**
  * A class for storing some basic predicates for biome modification.
@@ -34,6 +35,17 @@ public final class BiomeModificationPredicates {
 	 */
 	public static BiPredicate<RegistryKey<Biome>, Biome> forBiome(Biome biomeIn) {
 		return (biomeRegistryKey, biome) -> biomeIn == biome;
+	}
+
+	/**
+	 * Creates a {@link BiPredicate} true for a certain {@link Biome}.
+	 * <p>Similar to {@link #forBiome(Biome)}, but modified to work with deferred registry.</p>
+	 *
+	 * @param biomeIn A {@link Supplier} for a {@link Biome}.
+	 * @return A {@link BiPredicate} true for only a certain {@link Biome}
+	 */
+	public static BiPredicate<RegistryKey<Biome>, Biome> forBiome(Supplier<Biome> biomeIn) {
+		return (biomeRegistryKey, biome) -> biomeIn.get() == biome;
 	}
 
 	/**

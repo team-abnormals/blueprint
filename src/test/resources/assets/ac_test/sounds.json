@@ -3,7 +3,7 @@
     {
         "category": "ambient",
         "sounds": [
-        	{ "name": "abnormals_core:ambient/ambience" }
+        	{ "name": "ac_test:ambient/ambience" }
         ]
     }
 }
