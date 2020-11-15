@@ -4,7 +4,7 @@ license="https://github.com/team-abnormals/abnormals-core/blob/main/LICENSE.txt"
 issueTrackerURL="https://github.com/team-abnormals/abnormals-core/issues"
 
 [[mods]]
-    logoFile="logo.png"
+    logoFile="abnormals_core.png"
     modId="abnormals_core"
     version="2.1.0"
     authors="Minecraft Abnormals"
