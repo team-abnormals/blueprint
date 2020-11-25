@@ -20,7 +20,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 /**
- * @author tessdotcpp
+ * @author abigailfails
  * Events for mod compatibility.
  */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
@@ -33,12 +33,12 @@ public final class CompatEvents {
 		ItemStack stack = event.getItemStack();
 		if (target instanceof IAgeableEntity && stack.getItem() == Items.POISONOUS_POTATO && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
 			PlayerEntity player = event.getPlayer();
-			CompoundNBT persistantData = target.getPersistentData();
-			if (((IAgeableEntity) target).getGrowingAge() < 0 && !persistantData.getBoolean(POISON_TAG)) {
+			CompoundNBT persistentData = target.getPersistentData();
+			if (((IAgeableEntity) target).canAge(true) && !persistentData.getBoolean(POISON_TAG)) {
 				if (!event.getWorld().isRemote) {
 					if (target.world.rand.nextDouble() < ACConfig.ValuesHolder.poisonEffectChance()) {
 						target.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.5f, 0.25f);
-						persistantData.putBoolean(POISON_TAG, true);
+						persistentData.putBoolean(POISON_TAG, true);
 						if (ACConfig.ValuesHolder.shouldPoisonEntity()) {
 							((LivingEntity) target).addPotionEffect(new EffectInstance(Effects.POISON, 200));
 						}
@@ -57,7 +57,7 @@ public final class CompatEvents {
 	public static void onUpdateEntity(LivingEvent.LivingUpdateEvent event) {
 		Entity entity = event.getEntity();
 		if (entity instanceof IAgeableEntity && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
-			if (entity.getPersistentData().getBoolean(POISON_TAG)) ((IAgeableEntity) entity).setGrowingAge(-24000);
+			if (entity.getPersistentData().getBoolean(POISON_TAG)) ((IAgeableEntity) entity).resetGrowthProgress();
 		}
 	}
 }
