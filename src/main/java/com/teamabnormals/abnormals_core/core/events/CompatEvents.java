@@ -12,6 +12,7 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -35,20 +36,18 @@ public final class CompatEvents {
 			PlayerEntity player = event.getPlayer();
 			CompoundNBT persistentData = target.getPersistentData();
 			if (((IAgeableEntity) target).canAge(true) && !persistentData.getBoolean(POISON_TAG)) {
-				if (!event.getWorld().isRemote) {
-					if (target.world.rand.nextDouble() < ACConfig.ValuesHolder.poisonEffectChance()) {
-						target.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.5f, 0.25f);
-						persistentData.putBoolean(POISON_TAG, true);
-						if (ACConfig.ValuesHolder.shouldPoisonEntity()) {
-							((LivingEntity) target).addPotionEffect(new EffectInstance(Effects.POISON, 200));
-						}
-					} else {
-						target.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.5f, 0.5f + target.world.rand.nextFloat() / 2);
+				if (target.world.rand.nextDouble() < ACConfig.ValuesHolder.poisonEffectChance()) {
+					target.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.5f, 0.25f);
+					persistentData.putBoolean(POISON_TAG, true);
+					if (ACConfig.ValuesHolder.shouldPoisonEntity()) {
+						((LivingEntity) target).addPotionEffect(new EffectInstance(Effects.POISON, 200));
 					}
 				} else {
-					player.swingArm(event.getHand());
+					target.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.5f, 0.5f + target.world.rand.nextFloat() / 2);
 				}
 				if (!player.isCreative()) stack.shrink(1);
+				event.setCancellationResult(ActionResultType.func_233537_a_(event.getWorld().isRemote()));
+				event.setCanceled(true);
 			}
 		}
 	}
