@@ -1,5 +1,7 @@
 package com.teamabnormals.abnormals_core.core.api;
 
+import net.minecraft.entity.Entity;
+
 /***
  * @author abigailfails
  * Use to make an entity that doesn't extend AgeableEntity compatible with Quark's potato poisoning and
@@ -21,6 +23,7 @@ public interface IAgeableEntity {
     /**
      * Attempts to change the entity's growth stage depending on isGrowingUp.
      * @param isGrowingUp true attempts to grow to a higher stage, false attempts to grow to a lower one.
+     * @return the entity it ages into - if growing is implemented such that this doesn't change, it returns itself
      * */
-    void attemptAging(boolean isGrowingUp);
+    Entity attemptAging(boolean isGrowingUp);
 }
