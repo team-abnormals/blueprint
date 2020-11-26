@@ -14,11 +14,11 @@ public interface IAgeableEntity {
      * */
     void resetGrowthProgress();
 
-    /**
-     * @return whether the entity has another stage it can grow or regress to depending on isGrowingUp.
-     * @param isGrowingUp true checks for a higher growth stage, false checks for a lower one.
-     * */
-    boolean canAge(boolean isGrowingUp);
+/**
+ * @param isGrowingUp true checks for a higher growth stage, false checks for a lower one.
+ * @return whether the entity has another stage it can grow or regress to depending on isGrowingUp.
+ */
+ boolean canAge(boolean isGrowingUp);
 
     /**
      * Attempts to change the entity's growth stage depending on isGrowingUp.
