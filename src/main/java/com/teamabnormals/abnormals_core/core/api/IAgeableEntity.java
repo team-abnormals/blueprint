@@ -22,7 +22,7 @@ public interface IAgeableEntity {
     boolean canAge(boolean growingUp);
 
     /**
-     * Attempts to change the entity's growth stage depending on isGrowingUp.
+     * Attempts to change the entity's growth stage depending on growingUp.
      * @param growingUp True if this should try to grow the entity, or false to try to regress the entity.
      * @return The entity this ages into - if growing is implemented such that this doesn't change, it returns itself.
      */
