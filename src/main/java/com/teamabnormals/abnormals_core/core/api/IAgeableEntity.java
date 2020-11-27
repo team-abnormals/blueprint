@@ -6,7 +6,7 @@ import net.minecraft.entity.LivingEntity;
  * @author abigailfails
  * Use to make a living entity that doesn't extend AgeableEntity compatible with Quark's potato poisoning and
  * Savage & Ravage's Growth & Youth Potions.
- * Implemented class must extend LivingEntity
+ * <p>Classes implementing this must extend {@link LivingEntity}.</p>
  */
 public interface IAgeableEntity {
 
@@ -16,15 +16,15 @@ public interface IAgeableEntity {
     void resetGrowthProgress();
 
     /**
-     * @param isGrowingUp true checks for a higher growth stage, false checks for a lower one.
-     * @return whether the entity has another stage it can grow or regress to depending on isGrowingUp.
+     * @param growingUp True if this should check for a higher growth stage or false for a lower one.
+     * @return If the entity can grow or regress into another stage depending on growingUp.
      */
-    boolean canAge(boolean isGrowingUp);
+    boolean canAge(boolean growingUp);
 
     /**
      * Attempts to change the entity's growth stage depending on isGrowingUp.
-     * @param isGrowingUp true attempts to grow to a higher stage, false attempts to grow to a lower one.
-     * @return the entity it ages into - if growing is implemented such that this doesn't change, it returns itself
+     * @param growingUp True if this should try to grow the entity, or false to try to regress the entity.
+     * @return The entity this ages into - if growing is implemented such that this doesn't change, it returns itself.
      */
-    LivingEntity attemptAging(boolean isGrowingUp);
+    LivingEntity attemptAging(boolean growingUp);
 }
