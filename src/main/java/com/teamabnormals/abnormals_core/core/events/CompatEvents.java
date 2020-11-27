@@ -21,8 +21,9 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 /**
- * @author abigailfails
  * Events for mod compatibility.
+ *
+ * @author abigailfails
  */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
 public final class CompatEvents {

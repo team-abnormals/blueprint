@@ -2,14 +2,14 @@ package com.teamabnormals.abnormals_core.core.api;
 
 import net.minecraft.entity.LivingEntity;
 
-/***
- * @author abigailfails
+/**
  * Use to make a living entity that doesn't extend AgeableEntity compatible with Quark's potato poisoning and
  * Savage & Ravage's Growth & Youth Potions.
  * <p>Classes implementing this must extend {@link LivingEntity}.</p>
+ *
+ * @author abigailfails
  */
 public interface IAgeableEntity {
-
     /**
      * If the entity can grow to a higher stage, resets any progress made towards it (e.g. age timer).
      */
