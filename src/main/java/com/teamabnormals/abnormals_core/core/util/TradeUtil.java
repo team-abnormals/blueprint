@@ -8,6 +8,7 @@ import net.minecraft.item.Items;
 import net.minecraftforge.common.BasicTrade;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
+import net.minecraftforge.fml.ModList;
 
 public final class TradeUtil {
 	public static class AbnormalsTrade extends BasicTrade {
@@ -40,19 +41,35 @@ public final class TradeUtil {
 		}
 	}
 
-	public static void addVillagerTrade(VillagerTradesEvent event, int level, VillagerTrades.ITrade trade) {
-		event.getTrades().get(level).add(trade);
+	public static void addVillagerTrades(VillagerTradesEvent event, int level, VillagerTrades.ITrade... trades) {
+		for (VillagerTrades.ITrade trade : trades) event.getTrades().get(level).add(trade);
 	}
 
-	public static void addVillagerTrade(VillagerTradesEvent event, int level, VillagerProfession profession, VillagerTrades.ITrade trade) {
-		if (event.getType() == profession) addVillagerTrade(event, level, trade);
+	public static void addVillagerTrades(VillagerTradesEvent event, VillagerProfession profession, int level, VillagerTrades.ITrade... trades) {
+		if (event.getType() == profession) addVillagerTrades(event, level, trades);
 	}
 
-	public static void addWandererTrade(WandererTradesEvent event, VillagerTrades.ITrade trade) {
-		event.getGenericTrades().add(trade);
+	public static void addWandererTrades(WandererTradesEvent event, VillagerTrades.ITrade... trades) {
+		for (VillagerTrades.ITrade trade : trades) event.getGenericTrades().add(trade);
 	}
 
-	public static void addRareWandererTrade(WandererTradesEvent event, VillagerTrades.ITrade trade) {
-		event.getRareTrades().add(trade);
+	public static void addRareWandererTrades(WandererTradesEvent event, VillagerTrades.ITrade... trades) {
+		for (VillagerTrades.ITrade trade : trades) event.getRareTrades().add(trade);
+	}
+
+	public static void addCompatVillagerTrades(VillagerTradesEvent event, String modid, int level, VillagerTrades.ITrade... trades) {
+		if (ModList.get().isLoaded(modid)) addVillagerTrades(event, level, trades);
+	}
+
+	public static void addCompatVillagerTrades(VillagerTradesEvent event, String modid, VillagerProfession profession, int level, VillagerTrades.ITrade... trades) {
+		if (ModList.get().isLoaded(modid)) addVillagerTrades(event, profession, level, trades);
+	}
+
+	public static void addCompatWandererTrades(WandererTradesEvent event, String modid, VillagerTrades.ITrade... trades) {
+		if (ModList.get().isLoaded(modid)) addWandererTrades(event, trades);
+	}
+
+	public static void addCompatRareWandererTrades(WandererTradesEvent event, String modid, VillagerTrades.ITrade... trades) {
+		if (ModList.get().isLoaded(modid)) addRareWandererTrades(event, trades);
 	}
 }
