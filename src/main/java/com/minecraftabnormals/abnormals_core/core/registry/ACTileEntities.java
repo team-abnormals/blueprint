@@ -8,7 +8,7 @@ import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsBeehiveT
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
-import com.teamabnormals.abnormals_core.common.tileentity.*;
+import com.minecraftabnormals.abnormals_core.common.tileentity.*;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 
 import com.minecraftabnormals.abnormals_core.core.util.registry.TileEntitySubRegistryHelper;

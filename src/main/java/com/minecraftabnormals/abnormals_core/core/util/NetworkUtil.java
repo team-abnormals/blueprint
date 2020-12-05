@@ -18,9 +18,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.client.screen.AbnormalsEditSignScreen;
-import com.teamabnormals.abnormals_core.common.network.*;
-import com.teamabnormals.abnormals_core.common.network.entity.*;
-import com.teamabnormals.abnormals_core.common.network.particle.*;
+import com.minecraftabnormals.abnormals_core.common.network.*;
+import com.minecraftabnormals.abnormals_core.common.network.entity.*;
+import com.minecraftabnormals.abnormals_core.common.network.particle.*;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
