@@ -4,10 +4,6 @@ import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsAbstractSignBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
-import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsBeehiveTileEntity;
-import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
-import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
-import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.minecraftabnormals.abnormals_core.common.tileentity.*;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 

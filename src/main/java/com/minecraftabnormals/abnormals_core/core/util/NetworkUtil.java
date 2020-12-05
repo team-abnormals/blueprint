@@ -1,10 +1,5 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import com.minecraftabnormals.abnormals_core.common.network.*;
-import com.minecraftabnormals.abnormals_core.common.network.entity.MessageS2CEndimation;
-import com.minecraftabnormals.abnormals_core.common.network.entity.MessageS2CTeleportEntity;
-import com.minecraftabnormals.abnormals_core.common.network.entity.MessageS2CUpdateEntityData;
-import com.minecraftabnormals.abnormals_core.common.network.particle.MessageS2CSpawnParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.DirtMessageScreen;
