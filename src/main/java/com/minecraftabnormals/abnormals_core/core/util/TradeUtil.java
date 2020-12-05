@@ -1,5 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
+import com.minecraftabnormals.abnormals_core.core.util.registry.AbstractSubRegistryHelper;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.item.Item;
@@ -60,16 +61,32 @@ public final class TradeUtil {
 	public static void addCompatVillagerTrades(VillagerTradesEvent event, String modid, int level, VillagerTrades.ITrade... trades) {
 		if (ModList.get().isLoaded(modid)) addVillagerTrades(event, level, trades);
 	}
+	
+	public static void addCompatVillagerTrades(VillagerTradesEvent event, String[] modids, int level, VillagerTrades.ITrade... trades) {
+		if (AbstractSubRegistryHelper.areModsLoaded(modids)) addVillagerTrades(event, level, trades);
+	}
 
 	public static void addCompatVillagerTrades(VillagerTradesEvent event, String modid, VillagerProfession profession, int level, VillagerTrades.ITrade... trades) {
 		if (ModList.get().isLoaded(modid)) addVillagerTrades(event, profession, level, trades);
+	}
+	
+	public static void addCompatVillagerTrades(VillagerTradesEvent event, String[] modids, VillagerProfession profession, int level, VillagerTrades.ITrade... trades) {
+		if (AbstractSubRegistryHelper.areModsLoaded(modids)) addVillagerTrades(event, profession, level, trades);
 	}
 
 	public static void addCompatWandererTrades(WandererTradesEvent event, String modid, VillagerTrades.ITrade... trades) {
 		if (ModList.get().isLoaded(modid)) addWandererTrades(event, trades);
 	}
+	
+	public static void addCompatWandererTrades(WandererTradesEvent event, String[] modids, VillagerTrades.ITrade... trades) {
+		if (AbstractSubRegistryHelper.areModsLoaded(modids)) addWandererTrades(event, trades);
+	}
 
 	public static void addCompatRareWandererTrades(WandererTradesEvent event, String modid, VillagerTrades.ITrade... trades) {
 		if (ModList.get().isLoaded(modid)) addRareWandererTrades(event, trades);
+	}
+	
+	public static void addCompatRareWandererTrades(WandererTradesEvent event, String[] modids, VillagerTrades.ITrade... trades) {
+		if (AbstractSubRegistryHelper.areModsLoaded(modids)) addRareWandererTrades(event, trades);
 	}
 }
