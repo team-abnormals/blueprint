@@ -1,8 +1,8 @@
 package core.registry;
 
-import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
-import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
+import com.minecraftabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
 import core.ACTest;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;

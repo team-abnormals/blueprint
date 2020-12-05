@@ -1,7 +1,7 @@
 package common.entities.ai;
 
-import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import common.entities.TestEndimatedEntity;
 
 @Test

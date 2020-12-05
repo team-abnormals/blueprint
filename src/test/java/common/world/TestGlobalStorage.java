@@ -1,7 +1,7 @@
 package common.world;
 
-import com.teamabnormals.abnormals_core.common.world.storage.GlobalStorage;
-import com.teamabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.common.world.storage.GlobalStorage;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.util.Random;

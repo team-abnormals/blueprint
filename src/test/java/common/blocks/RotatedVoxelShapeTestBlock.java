@@ -1,7 +1,7 @@
 package common.blocks;
 
-import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.util.BlockUtil;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.core.util.BlockUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;

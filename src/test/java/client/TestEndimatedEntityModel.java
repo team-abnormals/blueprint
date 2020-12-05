@@ -2,9 +2,9 @@ package client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
-import com.teamabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import common.entities.TestEndimatedEntity;
 
 @Test

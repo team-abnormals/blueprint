@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.teamabnormals.abnormals_core.core.mixin",
+  "package": "com.minecraftabnormals.abnormals_core.core.mixin",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "refmap": "abnormals_core.refmap.json",

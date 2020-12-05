@@ -1,7 +1,7 @@
 package client;
 
-import com.teamabnormals.abnormals_core.client.EntitySkinHelper;
-import com.teamabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.client.EntitySkinHelper;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import common.entities.TestEndimatedEntity;
 import core.ACTest;
 import net.minecraft.client.renderer.entity.EntityRendererManager;

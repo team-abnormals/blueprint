@@ -1,9 +1,9 @@
 package common.entities;
 
-import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
-import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import core.ACTest;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;

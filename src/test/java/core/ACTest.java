@@ -1,15 +1,15 @@
 package core;
 
 import client.TestEndimatedEntityRenderer;
-import com.teamabnormals.abnormals_core.common.world.modification.*;
-import com.teamabnormals.abnormals_core.common.world.storage.GlobalStorage;
-import com.teamabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
-import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
-import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
-import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.api.banner.BannerManager;
-import com.teamabnormals.abnormals_core.core.registry.LootInjectionRegistry;
-import com.teamabnormals.abnormals_core.core.util.registry.RegistryHelper;
+import com.minecraftabnormals.abnormals_core.common.world.modification.*;
+import com.minecraftabnormals.abnormals_core.common.world.storage.GlobalStorage;
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.core.api.banner.BannerManager;
+import com.minecraftabnormals.abnormals_core.core.registry.LootInjectionRegistry;
+import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
 import core.registry.TestBiomes;
 import core.registry.TestEntities;

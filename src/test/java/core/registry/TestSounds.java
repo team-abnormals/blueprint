@@ -1,7 +1,7 @@
 package core.registry;
 
-import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.util.registry.SoundSubRegistryHelper;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.core.util.registry.SoundSubRegistryHelper;
 
 import core.ACTest;
 import net.minecraft.util.SoundEvent;

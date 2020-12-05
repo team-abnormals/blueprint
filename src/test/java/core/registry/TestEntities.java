@@ -1,7 +1,7 @@
 package core.registry;
 
-import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.util.registry.EntitySubRegistryHelper;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.core.util.registry.EntitySubRegistryHelper;
 import common.entities.TestEndimatedEntity;
 import core.ACTest;
 import net.minecraft.entity.EntityClassification;

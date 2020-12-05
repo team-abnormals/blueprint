@@ -1,9 +1,9 @@
 package common.blocks;
 
-import com.teamabnormals.abnormals_core.common.capability.chunkloading.ChunkLoader;
-import com.teamabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderCapability;
-import com.teamabnormals.abnormals_core.core.annotations.Test;
-import com.teamabnormals.abnormals_core.core.util.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoader;
+import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderCapability;
+import com.minecraftabnormals.abnormals_core.core.annotations.Test;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
