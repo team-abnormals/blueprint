@@ -64,7 +64,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-//TODO: update package to com.minecraftabnormals.abnormals_core
 @Mod(AbnormalsCore.MODID)
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AbnormalsCore {
