@@ -10,6 +10,12 @@ import net.minecraft.entity.LivingEntity;
  * @author abigailfails
  */
 public interface IAgeableEntity {
+    
+    /**
+     * @return If the entity will make any natural progress towards the next stage. If false, potato poisoning will not work.
+     */
+    boolean hasGrowthProgress();
+    
     /**
      * If the entity can grow to a higher stage, resets any progress made towards it (e.g. age timer).
      */
