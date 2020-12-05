@@ -1,7 +1,5 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
-import java.util.Map;
-
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -15,6 +13,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * A class that works as a parent holder to children {@link ISubRegistryHelper}s.
@@ -30,8 +30,22 @@ public class RegistryHelper {
 	private final Map<IForgeRegistry<?>, ISubRegistryHelper<?>> subHelpers = Maps.newHashMap();
 	protected final String modId;
 
-	protected RegistryHelper(String modId) {
+	public RegistryHelper(String modId) {
 		this.modId = modId;
+		this.putDefaultSubHelpers();
+	}
+
+	/**
+	 * Creates a new {@link RegistryHelper} with a specified mod ID and then accepts a consumer onto it.
+	 *
+	 * @param modId    The mod ID for this helper.
+	 * @param consumer A consumer to accept after the helper has been initialized.
+	 * @return A new {@link RegistryHelper} with a specified mod ID that has had a consumer accepted onto it.
+	 */
+	public static RegistryHelper create(String modId, Consumer<RegistryHelper> consumer) {
+		RegistryHelper helper = new RegistryHelper(modId);
+		consumer.accept(helper);
+		return helper;
 	}
 
 	/**
@@ -44,7 +58,7 @@ public class RegistryHelper {
 	/**
 	 * Creates a {@link ResourceLocation} for a string prefixed with the mod id.
 	 *
-	 * @param name - The string to prefix.
+	 * @param name The string to prefix.
 	 * @return A {@link ResourceLocation} for a string prefixed with the mod id
 	 */
 	public ResourceLocation prefix(String name) {
@@ -54,11 +68,11 @@ public class RegistryHelper {
 	/**
 	 * Puts a {@link ISubRegistryHelper} for a {@link IForgeRegistry}.
 	 *
-	 * @param registry  - The {@link IForgeRegistry} to map the key to.
-	 * @param subHelper - The {@link ISubRegistryHelper} to be mapped.
+	 * @param registry  The {@link IForgeRegistry} to map the key to.
+	 * @param subHelper The {@link ISubRegistryHelper} to be mapped.
 	 * @param <K>       The type of {@link IForgeRegistry}
 	 */
-	protected <K extends IForgeRegistryEntry<K>> void putSubHelper(IForgeRegistry<K> registry, ISubRegistryHelper<K> subHelper) {
+	public <K extends IForgeRegistryEntry<K>> void putSubHelper(IForgeRegistry<K> registry, ISubRegistryHelper<K> subHelper) {
 		this.subHelpers.put(registry, subHelper);
 	}
 
@@ -111,36 +125,9 @@ public class RegistryHelper {
 	/**
 	 * Registers all the mapped {@link ISubRegistryHelper}s.
 	 *
-	 * @param eventBus - The {@link IEventBus} to register the {@link ISubRegistryHelper}s to.
+	 * @param eventBus The {@link IEventBus} to register the {@link ISubRegistryHelper}s to.
 	 */
 	public void register(IEventBus eventBus) {
 		this.subHelpers.values().forEach(helper -> helper.register(eventBus));
-	}
-
-	public static class Builder {
-		private final RegistryHelper registryHelper;
-
-		public Builder(String modId) {
-			this.registryHelper = new RegistryHelper(modId);
-			this.registryHelper.putDefaultSubHelpers();
-		}
-
-		/**
-		 * Puts a {@link ISubRegistryHelper} for a {@link IForgeRegistry}.
-		 *
-		 * @param registry  - The {@link IForgeRegistry} to map the key to.
-		 * @param subHelper - The {@link ISubRegistryHelper} to be mapped.
-		 */
-		public <T extends IForgeRegistryEntry<T>, S extends ISubRegistryHelper<T>> Builder putSubHelper(IForgeRegistry<T> registry, S subHelper) {
-			this.registryHelper.putSubHelper(registry, subHelper);
-			return this;
-		}
-
-		/**
-		 * @return The built {@link RegistryHelper}.
-		 */
-		public RegistryHelper build() {
-			return this.registryHelper;
-		}
 	}
 }
