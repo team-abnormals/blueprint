@@ -1,24 +1,24 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url = 'https://dist.creeper.host/Sponge/maven' }
+        maven { url = "https://files.minecraftforge.net/maven" }
+        maven { url = "https://dist.creeper.host/Sponge/maven" }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
     }
 }
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version "4.0.4"
+    id "com.github.johnrengelman.shadow" version "4.0.4"
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
+apply plugin: "net.minecraftforge.gradle"
+apply plugin: "eclipse"
+apply plugin: "maven-publish"
+apply plugin: "org.spongepowered.mixin"
 
 mixin {
     add sourceSets.main, "abnormals_core.refmap.json"
@@ -28,20 +28,20 @@ configurations {
     shade
 }
 
-version = '3.0.0'
-group = 'com.minecraftabnormals'
-archivesBaseName = 'Abnormals-Core-1.16.4'
+version = "${project.minecraft}-${project.modVersion}"
+group = "com.minecraftabnormals"
+archivesBaseName = project.modId
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = "1.8"
 
 minecraft {
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    mappings channel: project.mappingsChannel, version: project.mappings
+    accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
     runs {
         client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
+            workingDirectory project.file("run")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
             arg "-mixin.config=abnormals_core.mixins.json"
             mods {
                 abnormals_core {
@@ -53,9 +53,9 @@ minecraft {
             }
         }
         server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
+            workingDirectory project.file("run")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
             arg "-mixin.config=abnormals_core.mixins.json"
             mods {
                 abnormals_core {
@@ -67,10 +67,10 @@ minecraft {
             }
         }
         data {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'abnormals_core', '--all', '--output', file('src/generated/resources/')
+            workingDirectory project.file("run")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
+            args "--mod", "abnormals_core", "--all", "--output", file("src/generated/resources/")
             mods {
                 abnormals_core {
                     source sourceSets.main
@@ -84,7 +84,7 @@ minecraft {
 }
 
 task deobfJar(type: Jar) {
-    description = 'Creates a JAR containing the non-obfuscated compiled code.'
+    description = "Creates a JAR containing the non-obfuscated compiled code."
     from sourceSets.main.output
     classifier = "deobf"
 }
@@ -97,11 +97,11 @@ jar {
     classifier = "slim"
     manifest {
         attributes([
-                "Specification-Title": "Abnormals Core",
+                "Specification-Title": project.name,
                 "Specification-Vendor": "Team Abnormals",
                 "Specification-Version": "1",
                 "Implementation-Title": project.name,
-                "Implementation-Version": "${version}",
+                "Implementation-Version": project.modVersion,
                 "Implementation-Vendor": "Team Abnormals",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 "MixinConfigs": "abnormals_core.mixins.json"
@@ -116,7 +116,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.4-35.0.1'
+    minecraft "net.minecraftforge:forge:1.16.4-35.0.1"
 
     compileOnly fg.deobf("com.github.Ocelot5836:Sonar:4cc95e6:api")
     runtimeOnly fg.deobf("com.github.Ocelot5836:Sonar:4cc95e6")
