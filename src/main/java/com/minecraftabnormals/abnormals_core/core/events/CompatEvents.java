@@ -33,7 +33,7 @@ public final class CompatEvents {
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
 		Entity target = event.getTarget();
 		ItemStack stack = event.getItemStack();
-		if (target instanceof IAgeableEntity && stack.getItem() == Items.POISONOUS_POTATO && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
+		if (target instanceof IAgeableEntity && ((IAgeableEntity)target).hasGrowthProgress() && stack.getItem() == Items.POISONOUS_POTATO && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
 			PlayerEntity player = event.getPlayer();
 			CompoundNBT persistentData = target.getPersistentData();
 			if (((IAgeableEntity) target).canAge(true) && !persistentData.getBoolean(POISON_TAG)) {
