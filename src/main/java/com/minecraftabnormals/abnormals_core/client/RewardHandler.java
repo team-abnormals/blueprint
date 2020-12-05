@@ -5,7 +5,6 @@ import com.minecraftabnormals.abnormals_core.client.renderer.SlabfishHatLayerRen
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
-import io.github.ocelot.sonar.client.util.OnlineImageCache;
 import io.github.ocelot.sonar.common.util.OnlineRequest;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
@@ -40,7 +39,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -52,7 +50,6 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, value = Dist.CLIENT)
 public final class RewardHandler {
 	public static final Map<UUID, RewardData> REWARDS = new HashMap<>();
-	public static final OnlineImageCache REWARD_CACHE = new OnlineImageCache(AbnormalsCore.MODID, 1, TimeUnit.DAYS);
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = new Gson();

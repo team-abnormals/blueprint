@@ -58,7 +58,7 @@ public class AbnormalsArmorMaterial implements IArmorMaterial {
 
 	@Override
 	public String getName() {
-		return name.toString();
+		return this.name.toString();
 	}
 
 	@Override
