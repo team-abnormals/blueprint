@@ -11,6 +11,12 @@ import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.fml.ModList;
 
 public final class TradeUtil {
+	public static final int NOVICE = 1;
+	public static final int APPRENTICE = 2;
+	public static final int JOURNEYMAN = 3;
+	public static final int EXPERT = 4;
+	public static final int MASTER = 5;
+	
 	public static class AbnormalsTrade extends BasicTrade {
 		public AbnormalsTrade(ItemStack input, ItemStack input2, ItemStack output, int maxTrades, int xp, float priceMult) {
 			super(input, input2, output, maxTrades, xp, priceMult);
