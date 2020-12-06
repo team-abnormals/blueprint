@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -85,6 +86,7 @@ public class RegistryHelper {
 		this.putSubHelper(ForgeRegistries.SOUND_EVENTS, new SoundSubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.TILE_ENTITIES, new TileEntitySubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.ENTITIES, new EntitySubRegistryHelper(this));
+		this.putSubHelper(ForgeRegistries.BIOMES, new BiomeSubRegistryHelper(this));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -122,12 +124,19 @@ public class RegistryHelper {
 		return this.getSubHelper(ForgeRegistries.ENTITIES);
 	}
 
+	@Nonnull
+	public <T extends AbstractSubRegistryHelper<Biome>> T getBiomeSubHelper() {
+		return this.getSubHelper(ForgeRegistries.BIOMES);
+	}
+
 	/**
 	 * Registers all the mapped {@link ISubRegistryHelper}s.
 	 *
 	 * @param eventBus The {@link IEventBus} to register the {@link ISubRegistryHelper}s to.
 	 */
 	public void register(IEventBus eventBus) {
-		this.subHelpers.values().forEach(helper -> helper.register(eventBus));
+		this.subHelpers.values().forEach(helper -> {
+			helper.register(eventBus);
+		});
 	}
 }
