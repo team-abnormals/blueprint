@@ -1,6 +1,5 @@
 package com.minecraftabnormals.abnormals_core.common.blocks;
 
-import com.google.common.base.Supplier;
 import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.item.ItemGroup;
@@ -9,6 +8,8 @@ import net.minecraft.item.Items;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.NonNullList;
+
+import java.util.function.Supplier;
 
 public class AbnormalsFlowerBlock extends FlowerBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WITHER_ROSE);
