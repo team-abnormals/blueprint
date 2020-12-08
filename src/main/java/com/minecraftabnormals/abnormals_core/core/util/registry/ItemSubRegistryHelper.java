@@ -31,7 +31,7 @@ import java.util.function.Supplier;
  */
 public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	private static final Field EGGS_FIELD = ObfuscationReflectionHelper.findField(SpawnEggItem.class, "field_195987_b");
-	private final Set<AbnormalsSpawnEggItem> spawnEggs = Sets.newHashSet();
+	protected final Set<AbnormalsSpawnEggItem> spawnEggs = Sets.newHashSet();
 
 	public ItemSubRegistryHelper(RegistryHelper parent, DeferredRegister<Item> deferredRegister) {
 		super(parent, deferredRegister);
