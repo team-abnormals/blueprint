@@ -18,6 +18,7 @@ public final class AdvancementModifiers {
 	public static final Registry REGISTRY = new Registry();
 
 	public static final ParentModifier PARENT_MODIFIER = register("parent", new ParentModifier());
+	public static final RewardsModifier REWARDS_MODIFIER = register("rewards", new RewardsModifier());
 
 	/**
 	 * Registers an {@link AdvancementModifier} for a given name. This method is safe to call during parallel mod-loading.

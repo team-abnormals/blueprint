@@ -4,6 +4,16 @@
 	{
 	  "type": "parent",
 	  "config": "minecraft:end/root"
+	},
+	{
+	  "type": "rewards",
+	  "config": {
+		"mode": "modify",
+		"experience": 100000,
+		"loot": [
+		  "minecraft:chests/jungle_temple"
+		]
+	  }
 	}
   ]
 }
