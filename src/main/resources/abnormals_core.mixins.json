@@ -8,7 +8,8 @@
     "ServerWorldMixin",
     "TrapDoorBlockMixin",
     "EntityMixin",
-    "TrackedEntityMixin"
+    "TrackedEntityMixin",
+    "AdvancementBuilderMixin"
   ],
   "client": [
     "client.PlayerRendererMixin"

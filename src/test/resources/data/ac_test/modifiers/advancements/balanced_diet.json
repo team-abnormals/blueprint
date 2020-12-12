@@ -1,0 +1,9 @@
+{
+  "advancement": "minecraft:husbandry/balanced_diet",
+  "modifiers": [
+	{
+	  "type": "parent",
+	  "config": "minecraft:end/root"
+	}
+  ]
+}
