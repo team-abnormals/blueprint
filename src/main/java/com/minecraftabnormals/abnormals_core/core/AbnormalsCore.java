@@ -3,7 +3,6 @@ package com.minecraftabnormals.abnormals_core.core;
 import com.google.common.collect.Sets;
 
 import com.minecraftabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModificationManager;
 import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
@@ -63,7 +62,6 @@ public final class AbnormalsCore {
 	public static final String MODID = "abnormals_core";
 	public static final String NETWORK_PROTOCOL = "AC1";
 	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
-	public static final AdvancementModificationManager ADVANCEMENT_MODIFICATION_MANAGER = new AdvancementModificationManager();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MODID);
 	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(DataProcessors.BYTE, () -> (byte) 8).enablePersistence().build();
 

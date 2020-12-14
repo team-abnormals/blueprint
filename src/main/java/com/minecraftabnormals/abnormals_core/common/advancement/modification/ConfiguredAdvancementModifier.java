@@ -1,7 +1,5 @@
 package com.minecraftabnormals.abnormals_core.common.advancement.modification;
 
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.modifiers.AdvancementModifiers;
-import com.mojang.serialization.Codec;
 import net.minecraft.advancements.Advancement;
 
 /**
@@ -10,9 +8,6 @@ import net.minecraft.advancements.Advancement;
  * @author SmellyModder (Luke Tonon)
  */
 public final class ConfiguredAdvancementModifier<C, M extends AdvancementModifier<C>> {
-	public static final Codec<ConfiguredAdvancementModifier<?, ?>> CODEC = AdvancementModifiers.REGISTRY.dispatch(modifier -> {
-		return modifier.modifier;
-	}, AdvancementModifier::getCodec);
 	private final M modifier;
 	private final C config;
 

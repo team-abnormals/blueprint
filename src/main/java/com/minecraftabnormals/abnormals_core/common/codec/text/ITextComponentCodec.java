@@ -237,7 +237,11 @@ public enum ITextComponentCodec implements Codec<ITextComponent> {
 		if (!input.getSiblings().isEmpty()) {
 			ListBuilder<T> siblings = ops.listBuilder();
 			for (ITextComponent sibling : input.getSiblings()) {
-				siblings.add(this.encode(sibling, ops, ops.empty()));
+				DataResult<T> encodedSibling = this.encode(sibling, ops, ops.empty());
+				if (encodedSibling.error().isPresent()) {
+					return DataResult.error(encodedSibling.error().get().message());
+				}
+				siblings.add(encodedSibling);
 			}
 			mapBuilder.add("extra", siblings.build(ops.empty()));
 		}
@@ -252,7 +256,11 @@ public enum ITextComponentCodec implements Codec<ITextComponent> {
 				ListBuilder<T> with = ops.listBuilder();
 				for (Object arg : formatArgs) {
 					if (arg instanceof ITextComponent) {
-						with.add(this.encode((ITextComponent) arg, ops, ops.empty()));
+						DataResult<T> encodedArg = this.encode((ITextComponent) arg, ops, ops.empty());
+						if (encodedArg.error().isPresent()) {
+							return DataResult.error(encodedArg.error().get().message());
+						}
+						with.add(encodedArg);
 					} else {
 						with.add(ops.createString(String.valueOf(arg)));
 					}

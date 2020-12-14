@@ -1,10 +1,11 @@
 package com.minecraftabnormals.abnormals_core.common.advancement.modification.modifiers;
 
+import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
 import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Arrays;
@@ -17,18 +18,26 @@ import java.util.Optional;
  * @author SmellyModder (Luke Tonon)
  */
 public final class RewardsModifier extends AdvancementModifier<RewardsModifier.Config> {
-	private static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> {
-		return instance.group(
-				Mode.CODEC.fieldOf("mode").forGetter(config -> config.mode),
-				Codec.INT.optionalFieldOf("experience").forGetter(config -> config.experience),
-				ResourceLocation.CODEC.listOf().optionalFieldOf("loot").forGetter(config -> config.loot),
-				ResourceLocation.CODEC.listOf().optionalFieldOf("recipes").forGetter(config -> config.loot),
-				ResourceLocation.CODEC.optionalFieldOf("function").forGetter(config -> config.function)
-		).apply(instance, Config::new);
-	});
 
 	public RewardsModifier() {
-		super(CODEC);
+		super(((element, conditionArrayParser) -> {
+			JsonObject object = element.getAsJsonObject();
+			Mode mode = Mode.deserialize(object);
+			Optional<Integer> experience = JSONUtils.hasField(object, "experience") ? Optional.of(JSONUtils.getInt(object, "experience")) : Optional.empty();
+			Optional<List<ResourceLocation>> loot = deserializeResourceList(object, "loot");
+			Optional<List<ResourceLocation>> recipes = deserializeResourceList(object, "recipes");
+			Optional<ResourceLocation> function = JSONUtils.hasField(object, "function") ? Optional.of(new ResourceLocation(JSONUtils.getString(object, "function"))) : Optional.empty();
+			return new Config(mode, experience, loot, recipes, function);
+		}));
+	}
+
+	private static Optional<List<ResourceLocation>> deserializeResourceList(JsonObject object, String key) {
+		if (JSONUtils.hasField(object, key)) {
+			List<ResourceLocation> resourceLocations = Lists.newArrayList();
+			object.getAsJsonArray(key).forEach(element -> resourceLocations.add(new ResourceLocation(element.getAsString())));
+			return Optional.of(resourceLocations);
+		}
+		return Optional.empty();
 	}
 
 	@Override
@@ -79,4 +88,5 @@ public final class RewardsModifier extends AdvancementModifier<RewardsModifier.C
 			this.function = function;
 		}
 	}
+
 }

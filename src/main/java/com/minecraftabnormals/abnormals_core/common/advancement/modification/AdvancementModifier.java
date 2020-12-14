@@ -1,8 +1,11 @@
 package com.minecraftabnormals.abnormals_core.common.advancement.modification;
 
-import com.mojang.serialization.Codec;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.loot.ConditionArrayParser;
+import net.minecraft.util.JSONUtils;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -15,21 +18,23 @@ import java.util.stream.Collectors;
  * @author SmellyModder (Luke Tonon)
  */
 public abstract class AdvancementModifier<C> {
-	private final Codec<ConfiguredAdvancementModifier<C, AdvancementModifier<C>>> codec;
+	private final Deserializer<C> deserializer;
 
-	protected AdvancementModifier(Codec<C> codec) {
-		this.codec = codec.fieldOf("config").xmap((config) -> {
-			return new ConfiguredAdvancementModifier<>(this, config);
-		}, ConfiguredAdvancementModifier::getConfig).codec();
+	protected AdvancementModifier(Deserializer<C> deserializer) {
+		this.deserializer = deserializer;
 	}
 
 	/**
-	 * Gets this modifier's {@link Codec} used for deserializing the config for this modifier.
+	 * Gets this modifier's {@link Deserializer} used for deserializing the config for this modifier.
 	 *
-	 * @return This modifier's {@link Codec} used for deserializing the config for this modifier.
+	 * @return This modifier's {@link Deserializer} used for deserializing the config for this modifier.
 	 */
-	public Codec<ConfiguredAdvancementModifier<C, AdvancementModifier<C>>> getCodec() {
-		return this.codec;
+	public Deserializer<C> getDeserializer() {
+		return this.deserializer;
+	}
+
+	public final ConfiguredAdvancementModifier<C, AdvancementModifier<C>> deserialize(JsonElement config, ConditionArrayParser conditionArrayParser) throws JsonParseException {
+		return new ConfiguredAdvancementModifier<>(this, this.deserializer.deserialize(config, conditionArrayParser));
 	}
 
 	/**
@@ -40,29 +45,33 @@ public abstract class AdvancementModifier<C> {
 	 */
 	public abstract void modify(Advancement.Builder builder, C config);
 
-	protected enum Mode implements IStringSerializable {
+	public enum Mode {
 		MODIFY("modify"),
 		REPLACE("replace");
 
 		private static final Map<String, Mode> VALUES_MAP = Arrays.stream(values()).collect(Collectors.toMap(Mode::getName, (mode) -> mode));
-		public static final Codec<Mode> CODEC = IStringSerializable.createEnumCodec(Mode::values, Mode::getModeByName);
 		private final String name;
 
 		Mode(String name) {
 			this.name = name;
 		}
 
-		public static Mode getModeByName(String name) {
-			return VALUES_MAP.get(name);
+		public static Mode deserialize(JsonObject object) throws JsonParseException {
+			String string = JSONUtils.getString(object, "mode");
+			Mode mode = VALUES_MAP.get(string);
+			if (mode == null) {
+				throw new JsonParseException("Unknown mode type: " + string);
+			}
+			return mode;
 		}
 
 		public String getName() {
 			return this.name;
 		}
+	}
 
-		@Override
-		public String getString() {
-			return this.name;
-		}
+	@FunctionalInterface
+	protected interface Deserializer<C> {
+		C deserialize(JsonElement element, ConditionArrayParser conditionArrayParser) throws JsonParseException;
 	}
 }

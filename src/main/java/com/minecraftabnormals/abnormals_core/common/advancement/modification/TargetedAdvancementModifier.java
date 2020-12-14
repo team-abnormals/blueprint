@@ -1,7 +1,5 @@
 package com.minecraftabnormals.abnormals_core.common.advancement.modification;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -13,12 +11,6 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public final class TargetedAdvancementModifier {
-	public static final Codec<TargetedAdvancementModifier> CODEC = RecordCodecBuilder.create((builder) -> {
-		return builder.group(
-				ResourceLocation.CODEC.fieldOf("advancement").forGetter(modifier -> modifier.target),
-				ConfiguredAdvancementModifier.CODEC.listOf().fieldOf("modifiers").forGetter(modifier -> modifier.configuredModifiers)
-		).apply(builder, TargetedAdvancementModifier::new);
-	});
 	private final ResourceLocation target;
 	private final List<ConfiguredAdvancementModifier<?, ?>> configuredModifiers;
 

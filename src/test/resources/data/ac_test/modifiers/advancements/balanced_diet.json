@@ -27,6 +27,29 @@
 		},
 		"frame": "challenge"
 	  }
+	},
+	{
+	  "type": "criteria",
+	  "config": {
+		"mode": "modify",
+		"criteria": {
+		  "test": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+			  "items": [
+				{
+				  "item": "minecraft:netherite_sword"
+				}
+			  ]
+			}
+		  }
+		},
+		"requirements": [
+		  [
+			"test"
+		  ]
+		]
+	  }
 	}
   ]
 }

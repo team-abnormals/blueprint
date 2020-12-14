@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 public final class ParentModifier extends AdvancementModifier<ResourceLocation> {
 
 	public ParentModifier() {
-		super(ResourceLocation.CODEC);
+		super(((element, conditionArrayParser) -> new ResourceLocation(element.getAsString())));
 	}
 
 	@Override
