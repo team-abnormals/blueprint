@@ -5,14 +5,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * An {@link AdvancementModifier} extension that modifies the rewards of an advancement.
@@ -22,7 +19,7 @@ import java.util.stream.Collectors;
 public final class RewardsModifier extends AdvancementModifier<RewardsModifier.Config> {
 	private static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
-				Config.Mode.CODEC.fieldOf("mode").forGetter(config -> config.mode),
+				Mode.CODEC.fieldOf("mode").forGetter(config -> config.mode),
 				Codec.INT.optionalFieldOf("experience").forGetter(config -> config.experience),
 				ResourceLocation.CODEC.listOf().optionalFieldOf("loot").forGetter(config -> config.loot),
 				ResourceLocation.CODEC.listOf().optionalFieldOf("recipes").forGetter(config -> config.loot),
@@ -36,7 +33,7 @@ public final class RewardsModifier extends AdvancementModifier<RewardsModifier.C
 
 	@Override
 	public void modify(Advancement.Builder builder, Config config) {
-		if (config.mode == Config.Mode.MODIFY) {
+		if (config.mode == Mode.MODIFY) {
 			AdvancementRewards rewards = builder.rewards;
 			AdvancementRewards.Builder rewardsBuilder = new AdvancementRewards.Builder();
 			rewardsBuilder.addExperience(rewards.experience);
@@ -80,34 +77,6 @@ public final class RewardsModifier extends AdvancementModifier<RewardsModifier.C
 			this.loot = loot;
 			this.recipes = recipes;
 			this.function = function;
-		}
-
-		enum Mode implements IStringSerializable {
-			MODIFY("modify"),
-			REPLACE("replace");
-
-			private static final Map<String, Mode> VALUES_MAP = Arrays.stream(values()).collect(Collectors.toMap(Mode::getName, (mode) -> {
-				return mode;
-			}));
-			private static final Codec<Mode> CODEC = IStringSerializable.createEnumCodec(Mode::values, Mode::getModeByName);
-			private final String name;
-
-			Mode(String name) {
-				this.name = name;
-			}
-
-			public static Mode getModeByName(String name) {
-				return VALUES_MAP.get(name);
-			}
-
-			public String getName() {
-				return this.name;
-			}
-
-			@Override
-			public String getString() {
-				return this.name;
-			}
 		}
 	}
 }

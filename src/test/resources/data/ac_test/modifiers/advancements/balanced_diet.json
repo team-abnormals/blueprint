@@ -14,6 +14,19 @@
 		  "minecraft:chests/jungle_temple"
 		]
 	  }
+	},
+	{
+	  "type": "display",
+	  "config": {
+		"mode": "modify",
+		"title": {
+		  "translate": "ac_test.advancements.husbandry.balanced_diet.title"
+		},
+		"description": {
+		  "text": "Momma."
+		},
+		"frame": "challenge"
+	  }
 	}
   ]
 }

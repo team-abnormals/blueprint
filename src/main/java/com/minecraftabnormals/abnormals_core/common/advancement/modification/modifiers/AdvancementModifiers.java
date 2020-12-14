@@ -19,6 +19,7 @@ public final class AdvancementModifiers {
 
 	public static final ParentModifier PARENT_MODIFIER = register("parent", new ParentModifier());
 	public static final RewardsModifier REWARDS_MODIFIER = register("rewards", new RewardsModifier());
+	public static final DisplayInfoModifier DISPLAY_INFO_MODIFIER = register("display", new DisplayInfoModifier());
 
 	/**
 	 * Registers an {@link AdvancementModifier} for a given name. This method is safe to call during parallel mod-loading.
