@@ -5,11 +5,12 @@
   "minVersion": "0.8",
   "refmap": "abnormals_core.refmap.json",
   "mixins": [
-    "ServerWorldMixin",
-    "TrapDoorBlockMixin",
+    "AdvancementBuilderMixin",
     "EntityMixin",
+    "HillsLayerMixin",
+    "ServerWorldMixin",
     "TrackedEntityMixin",
-    "AdvancementBuilderMixin"
+    "TrapDoorBlockMixin"
   ],
   "client": [
     "client.PlayerRendererMixin"
