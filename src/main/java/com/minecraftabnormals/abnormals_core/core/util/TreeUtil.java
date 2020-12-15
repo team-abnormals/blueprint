@@ -35,9 +35,7 @@ public final class TreeUtil {
 	}
 
 	public static boolean isInTag(IWorldGenerationBaseReader world, BlockPos pos, INamedTag<Block> tag) {
-		return world.hasBlockState(pos, (block) -> {
-			return block.isIn(tag);
-		});
+		return world.hasBlockState(pos, (block) -> block.isIn(tag));
 	}
 
 	public static void placeLeafAt(IWorldGenerationReader world, BlockPos pos, Random rand, BaseTreeFeatureConfig config) {
@@ -60,24 +58,18 @@ public final class TreeUtil {
 	}
 
 	public static boolean isLog(IWorldGenerationBaseReader world, BlockPos pos) {
-		return world.hasBlockState(pos, (state) -> {
-			return state.isIn(BlockTags.LOGS);
-		});
+		return world.hasBlockState(pos, (state) -> state.isIn(BlockTags.LOGS));
 	}
 
 	public static boolean isLeaves(IWorldGenerationBaseReader worldIn, BlockPos pos) {
-		return worldIn.hasBlockState(pos, (state) -> {
-			return state.isIn(BlockTags.LEAVES);
-		});
+		return worldIn.hasBlockState(pos, (state) -> state.isIn(BlockTags.LEAVES));
 	}
 
 	public static boolean isAirOrLeaves(IWorldGenerationBaseReader world, BlockPos pos) {
 		if (world instanceof IWorldReader) {
 			return world.hasBlockState(pos, state -> state.canBeReplacedByLeaves((IWorldReader) world, pos));
 		}
-		return world.hasBlockState(pos, (state) -> {
-			return isAir(world, pos) || state.isIn(BlockTags.LEAVES);
-		});
+		return world.hasBlockState(pos, (state) -> isAir(world, pos) || state.isIn(BlockTags.LEAVES));
 	}
 
 	public static void setDirtAt(IWorld world, BlockPos pos) {
