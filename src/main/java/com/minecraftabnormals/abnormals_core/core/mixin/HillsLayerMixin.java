@@ -35,28 +35,19 @@ public abstract class HillsLayerMixin implements IAreaTransformer2, IDimOffset1T
 			return;
 		}
 
-		Field field = ObfuscationReflectionHelper.findField(HillsLayer.class, "field_242940_c");
 		if (k == 0 && l != i) {
-			l = ((Int2IntMap)field.get(Map.class)).getOrDefault(l, i);
+			l = HillsLayer.field_242940_c.getOrDefault(l, i);
 		}
 
 		if (l != i) {
 			int i1 = 0;
-			if (LayerUtil.areBiomesSimilar(area1.getValue(this.getOffsetX(x + 1), this.getOffsetZ(z + 0)), i)) {
-				++i1;
-			}
+			int offsetX = this.getOffsetX(x);
+			int offsetZ = this.getOffsetZ(x);
 
-			if (LayerUtil.areBiomesSimilar(area1.getValue(this.getOffsetX(x + 2), this.getOffsetZ(z + 1)), i)) {
-				++i1;
-			}
-
-			if (LayerUtil.areBiomesSimilar(area1.getValue(this.getOffsetX(x + 0), this.getOffsetZ(z + 1)), i)) {
-				++i1;
-			}
-
-			if (LayerUtil.areBiomesSimilar(area1.getValue(this.getOffsetX(x + 1), this.getOffsetZ(z + 2)), i)) {
-				++i1;
-			}
+			if (LayerUtil.areBiomesSimilar(area1.getValue(offsetX + 1, offsetZ), i)) ++i1;
+			if (LayerUtil.areBiomesSimilar(area1.getValue(offsetX + 2, offsetZ + 1), i)) ++i1;
+			if (LayerUtil.areBiomesSimilar(area1.getValue(offsetX, offsetZ + 1), i)) ++i1;
+			if (LayerUtil.areBiomesSimilar(area1.getValue(offsetX + 1, offsetZ + 2), i)) ++i1;
 
 			if (i1 >= 3) {
 				cir.setReturnValue(l);

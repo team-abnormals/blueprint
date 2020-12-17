@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 public final class DataUtil {
@@ -59,4 +61,13 @@ public final class DataUtil {
 		return array;
 	}
 
+	/**
+	 * Checks if a given ResourceLocation matches a set of RegistryKeys
+	 */
+	public static boolean matchesKeys(ResourceLocation loc, RegistryKey<?>... keys) {
+		for (RegistryKey<?> key : keys)
+			if (key.getLocation().equals(loc))
+				return true;
+		return false;
+	}
 }
