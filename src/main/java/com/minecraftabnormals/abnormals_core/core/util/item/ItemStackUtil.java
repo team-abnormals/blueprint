@@ -5,17 +5,28 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @author SmellyModder (Luke Tonon)
  */
 public final class ItemStackUtil {
+	private static final String[] M_NUMERALS = {"", "M", "MM", "MMM"};
+	private static final String[] C_NUMERALS = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+	private static final String[] X_NUMERALS = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+	private static final String[] I_NUMERALS = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+	private static final Method IN_GROUP_METHOD = ObfuscationReflectionHelper.findMethod(Item.class, "func_194125_a", ItemGroup.class);
+
 	/**
-	 * Searches for a specific item in a {@link NonNullList} of {@link ItemStack} and returns its index
+	 * Searches for a specific item in a {@link NonNullList} of {@link ItemStack} and returns its index.
 	 *
-	 * @param item  - The item to search for
-	 * @param items - The list of ItemStacks
-	 * @return - The index of the specified item in the list, if no item was found returns -1
+	 * @param item  The item to search for.
+	 * @param items The list of {@link ItemStack}s.
+	 * @return The index of the specified item in the list, or -1 if it was not in the list.
 	 */
 	public static int findIndexOfItem(Item item, NonNullList<ItemStack> items) {
 		for (int i = 0; i < items.size(); i++) {
@@ -46,35 +57,32 @@ public final class ItemStackUtil {
 	}
 
 	/**
-	 * Converts an Integer to a String of Roman Numerals; useful for levels
+	 * Converts an Integer to a String of Roman Numerals; useful for levels.
 	 *
-	 * @param number - The Integer to convert
-	 * @return - The String of the Integer converted to Roman Numerals
+	 * @param number The integer to convert.
+	 * @return The integer converted to roman numerals.
 	 */
 	public static String intToRomanNumerals(int number) {
-		String m[] = {"", "M", "MM", "MMM"};
-		String c[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
-		String x[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
-		String i[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
-
-		String thousands = m[number / 1000];
-		String hundereds = c[(number % 1000) / 100];
-		String tens = x[(number % 100) / 10];
-		String ones = i[number % 10];
-
+		String thousands = M_NUMERALS[number / 1000];
+		String hundereds = C_NUMERALS[(number % 1000) / 100];
+		String tens = X_NUMERALS[(number % 100) / 10];
+		String ones = I_NUMERALS[number % 10];
 		return thousands + hundereds + tens + ones;
 	}
 
 	/**
-	 * Searches for if an {@link Item} is present in an {@link ItemGroup} and returns if it is
+	 * Checks if an {@link Item} is in an {@link ItemGroup}.
 	 *
-	 * @param item  - The item searched
-	 * @param group - The group searched
-	 * @return - Whether or not the item is present in the group
+	 * @param item  The {@link Item} to check.
+	 * @param group The {@link ItemGroup} to check.
+	 * @return Whether or not the item is in the {@link ItemGroup}.
 	 */
-	public static boolean isInGroup(Item item, ItemGroup group) {
-		if (item.getCreativeTabs().stream().anyMatch(tab -> tab == group)) return true;
-		ItemGroup itemgroup = item.getGroup();
-		return itemgroup != null && (group == ItemGroup.SEARCH || group == itemgroup);
+	public static boolean isInGroup(Item item, @Nonnull ItemGroup group) {
+		try {
+			return (boolean) IN_GROUP_METHOD.invoke(item, group);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

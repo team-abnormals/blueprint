@@ -46,9 +46,9 @@ public final class AlphabeticalItemGroupFiller implements IItemGroupFiller {
 					if (this.shouldInclude.test(next)) {
 						ResourceLocation nextName = next.getRegistryName();
 						if (nextName == null || itemName.compareTo(nextName.getPath()) > 0) {
-							insert = i;
+							insert = i + 1;
 						} else if (insert == -1) {
-							insert += Math.max(1, i);
+							insert += i + 1;
 						} else {
 							break;
 						}
@@ -57,7 +57,7 @@ public final class AlphabeticalItemGroupFiller implements IItemGroupFiller {
 				if (insert == -1) {
 					items.add(new ItemStack(item));
 				} else {
-					items.add(insert + 1, new ItemStack(item));
+					items.add(insert, new ItemStack(item));
 				}
 			} else {
 				items.add(new ItemStack(item));
