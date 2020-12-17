@@ -47,6 +47,8 @@ public final class AlphabeticalItemGroupFiller implements IItemGroupFiller {
 						ResourceLocation nextName = next.getRegistryName();
 						if (nextName == null || itemName.compareTo(nextName.getPath()) > 0) {
 							insert = i;
+						} else if (insert == -1) {
+							insert += Math.max(1, i);
 						} else {
 							break;
 						}
