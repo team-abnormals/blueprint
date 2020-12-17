@@ -7,11 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
  * Implementation class of {@link IItemGroupFiller} for filling {@link Item}s alphabetically.
+ * <p>{@link #shouldInclude} is used to test what items should be considered when inserting an item at its alphabetical position.</p>
  *
  * @author SmellyModder (Luke Tonon)
  * @see IItemGroupFiller
@@ -40,18 +40,22 @@ public final class AlphabeticalItemGroupFiller implements IItemGroupFiller {
 			ResourceLocation location = item.getRegistryName();
 			if (location != null) {
 				String itemName = location.getPath();
-				Optional<ItemStack> optional = items.stream().filter(stack -> this.shouldInclude.test(stack.getItem())).max((stack1, stack2) -> {
-					ResourceLocation resourceLocation1 = stack1.getItem().getRegistryName();
-					ResourceLocation resourceLocation2 = stack2.getItem().getRegistryName();
-					if (resourceLocation1 != null && resourceLocation2 != null) {
-						return resourceLocation2.getPath().compareTo(itemName) - itemName.compareTo(resourceLocation1.getPath());
+				int insert = -1;
+				for (int i = 0; i < items.size(); i++) {
+					Item next = items.get(i).getItem();
+					if (this.shouldInclude.test(next)) {
+						ResourceLocation nextName = next.getRegistryName();
+						if (nextName == null || itemName.compareTo(nextName.getPath()) > 0) {
+							insert = i;
+						} else {
+							break;
+						}
 					}
-					return 0;
-				});
-				if (optional.isPresent()) {
-					items.add(items.indexOf(optional.get()) + 1, new ItemStack(item));
-				} else {
+				}
+				if (insert == -1) {
 					items.add(new ItemStack(item));
+				} else {
+					items.add(insert + 1, new ItemStack(item));
 				}
 			} else {
 				items.add(new ItemStack(item));
