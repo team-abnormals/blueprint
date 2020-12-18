@@ -9,6 +9,7 @@
     "EntityMixin",
     "HillsLayerMixin",
     "ServerWorldMixin",
+    "SpawnEggItemMixin",
     "TrackedEntityMixin",
     "TrapDoorBlockMixin"
   ],

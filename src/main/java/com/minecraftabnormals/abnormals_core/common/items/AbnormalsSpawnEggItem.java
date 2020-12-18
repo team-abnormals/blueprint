@@ -1,14 +1,10 @@
 package com.minecraftabnormals.abnormals_core.common.items;
 
 import com.minecraftabnormals.abnormals_core.common.dispenser.SpawnEggDispenseBehavior;
-import com.minecraftabnormals.abnormals_core.core.util.item.filling.AlphabeticalItemGroupFiller;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -17,7 +13,6 @@ import java.util.function.Supplier;
  * @author SmellyModder(Luke Tonon)
  */
 public class AbnormalsSpawnEggItem extends SpawnEggItem {
-	private static final AlphabeticalItemGroupFiller FILLER = AlphabeticalItemGroupFiller.forClass(SpawnEggItem.class);
 	private static final String ENTITY_TAG = "EntityTag";
 	private static final String ENTITY_ID_TAG = "id";
 	private final Supplier<EntityType<?>> entityType;
@@ -26,11 +21,6 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 		super(null, primaryColor, secondaryColor, properties);
 		this.entityType = entityType;
 		DispenserBlock.registerDispenseBehavior(this, new SpawnEggDispenseBehavior());
-	}
-
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		FILLER.fillItem(this, group, items);
 	}
 
 	@Override

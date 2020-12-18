@@ -15,6 +15,7 @@ import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.mojang.datafixers.util.Pair;
 import common.world.TestGlobalStorage;
 import core.registry.TestEntities;
+import core.registry.TestItems;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityClassification;
@@ -42,13 +43,16 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Test
 @Mod(ACTest.MOD_ID)
 @Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ACTest {
 	public static final String MOD_ID = "ac_test";
-	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MOD_ID);
+	public static final RegistryHelper REGISTRY_HELPER = RegistryHelper.create(MOD_ID, helper -> {
+		helper.putSubHelper(ForgeRegistries.ITEMS, new TestItems.Helper(helper));
+	});
 	public static final TestGlobalStorage TEST_GLOBAL_STORAGE = GlobalStorage.createStorage(new ResourceLocation(MOD_ID, "test_storage"), new TestGlobalStorage());
 	public static final BannerPattern TEST_BANNER_PATTERN = BannerManager.createPattern("mca", "test", "tst");
 	public static final TrackedData<Boolean> TEST_TRACKED_DATA = TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> false).enableSaving().enablePersistence().build();

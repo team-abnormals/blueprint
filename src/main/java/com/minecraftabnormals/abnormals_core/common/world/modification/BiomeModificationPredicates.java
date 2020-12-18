@@ -3,7 +3,9 @@ package com.minecraftabnormals.abnormals_core.common.world.modification;
 import com.google.common.collect.Sets;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeDictionary;
 
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
@@ -25,6 +27,16 @@ public final class BiomeModificationPredicates {
 	 */
 	public static BiPredicate<RegistryKey<Biome>, Biome> forBiomeKey(RegistryKey<Biome> biomeKey) {
 		return (biomeRegistryKey, biome) -> biomeRegistryKey == biomeKey;
+	}
+
+	/**
+	 * Creates a {@link BiPredicate} true for any {@link Biome} {@link RegistryKey} in a set of {@link RegistryKey}s.
+	 *
+	 * @param biomeKeys A set of {@link RegistryKey}s to test.
+	 * @return A {@link BiPredicate} true for any {@link Biome} {@link RegistryKey} in a set of {@link RegistryKey}s.
+	 */
+	public static BiPredicate<RegistryKey<Biome>, Biome> forBiomeKeys(Set<RegistryKey<Biome>> biomeKeys) {
+		return (biomeRegistryKey, biome) -> biomeKeys.contains(biomeRegistryKey);
 	}
 
 	/**
@@ -66,5 +78,51 @@ public final class BiomeModificationPredicates {
 	 */
 	public static BiPredicate<RegistryKey<Biome>, Biome> forCategory(Biome.Category... categories) {
 		return (biomeRegistryKey, biome) -> Sets.newHashSet(categories).contains(biome.getCategory());
+	}
+
+	/**
+	 * Creates a {@link BiPredicate} that's true if a biome key contains a specified {@link BiomeDictionary.Type}.
+	 *
+	 * @param type A {@link BiomeDictionary.Type} to test.
+	 * @return A {@link BiPredicate} that's true if a biome key contains a specified {@link BiomeDictionary.Type}.
+	 */
+	public static BiPredicate<RegistryKey<Biome>, Biome> forType(BiomeDictionary.Type type) {
+		return (biomeRegistryKey, biome) -> BiomeDictionary.hasType(biomeRegistryKey, type);
+	}
+
+	/**
+	 * Creates a {@link BiPredicate} that's true if a biome key contains all of the {@link BiomeDictionary.Type}s specified in an array of {@link BiomeDictionary.Type}s.
+	 *
+	 * @param types An array of {@link BiomeDictionary.Type}s to test.
+	 * @return A {@link BiPredicate} that's true if a biome key contains all of the {@link BiomeDictionary.Type}s specified in an array of {@link BiomeDictionary.Type}s.
+	 */
+	public static BiPredicate<RegistryKey<Biome>, Biome> forTypes(BiomeDictionary.Type... types) {
+		return (biomeRegistryKey, biome) -> {
+			Set<BiomeDictionary.Type> dictTypes = BiomeDictionary.getTypes(biomeRegistryKey);
+			for (BiomeDictionary.Type type : types) {
+				if (!dictTypes.contains(type)) {
+					return false;
+				}
+			}
+			return true;
+		};
+	}
+
+	/**
+	 * Creates a {@link BiPredicate} that's true if a biome key contains one of the {@link BiomeDictionary.Type}s specified in an array of {@link BiomeDictionary.Type}s.
+	 *
+	 * @param types An array of {@link BiomeDictionary.Type}s to test.
+	 * @return A {@link BiPredicate} that's true if a biome key contains one of the {@link BiomeDictionary.Type}s specified in an array of {@link BiomeDictionary.Type}s.
+	 */
+	public static BiPredicate<RegistryKey<Biome>, Biome> forAnyType(BiomeDictionary.Type... types) {
+		return (biomeRegistryKey, biome) -> {
+			Set<BiomeDictionary.Type> dictTypes = BiomeDictionary.getTypes(biomeRegistryKey);
+			for (BiomeDictionary.Type type : types) {
+				if (dictTypes.contains(type)) {
+					return true;
+				}
+			}
+			return false;
+		};
 	}
 }
