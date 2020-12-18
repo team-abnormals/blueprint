@@ -1,0 +1,55 @@
+{
+  "advancement": "minecraft:husbandry/balanced_diet",
+  "modifiers": [
+	{
+	  "type": "parent",
+	  "config": "minecraft:end/root"
+	},
+	{
+	  "type": "rewards",
+	  "config": {
+		"mode": "modify",
+		"experience": 100000,
+		"loot": [
+		  "minecraft:chests/jungle_temple"
+		]
+	  }
+	},
+	{
+	  "type": "display",
+	  "config": {
+		"mode": "modify",
+		"title": {
+		  "translate": "ac_test.advancements.husbandry.balanced_diet.title"
+		},
+		"description": {
+		  "text": "Momma."
+		},
+		"frame": "challenge"
+	  }
+	},
+	{
+	  "type": "criteria",
+	  "config": {
+		"mode": "modify",
+		"criteria": {
+		  "test": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+			  "items": [
+				{
+				  "item": "minecraft:netherite_sword"
+				}
+			  ]
+			}
+		  }
+		},
+		"requirements": [
+		  [
+			"test"
+		  ]
+		]
+	  }
+	}
+  ]
+}

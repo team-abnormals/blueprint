@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * @see AbstractSubRegistryHelper
  */
 public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
-	private final DeferredRegister<Item> itemRegister;
+	protected final DeferredRegister<Item> itemRegister;
 
 	public BlockSubRegistryHelper(RegistryHelper parent) {
 		this(parent, parent.getSubHelper(ForgeRegistries.ITEMS).getDeferredRegister(), DeferredRegister.create(ForgeRegistries.BLOCKS, parent.getModId()));

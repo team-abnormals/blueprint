@@ -1,6 +1,5 @@
 package com.minecraftabnormals.abnormals_core.client.renderer;
 
-import com.google.common.base.Supplier;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.minecraftabnormals.abnormals_core.client.tile.AbnormalsChestTileEntityRenderer;
 
@@ -13,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
 public class ChestItemRenderer<T extends TileEntity> extends ItemStackTileEntityRenderer {

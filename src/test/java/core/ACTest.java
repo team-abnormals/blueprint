@@ -1,6 +1,7 @@
 package core;
 
 import client.TestEndimatedEntityRenderer;
+import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.common.world.modification.*;
 import com.minecraftabnormals.abnormals_core.common.world.storage.GlobalStorage;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
@@ -11,10 +12,8 @@ import com.minecraftabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.minecraftabnormals.abnormals_core.core.registry.LootInjectionRegistry;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
-import core.registry.TestBiomes;
 import core.registry.TestEntities;
-import core.registry.TestSounds;
-import net.minecraft.client.audio.BackgroundMusicTracks;
+import core.registry.TestItems;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityClassification;
@@ -23,15 +22,12 @@ import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.BiomeAmbience;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.MoodSoundAmbience;
-import net.minecraft.world.biome.ParticleEffectAmbience;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.Features;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
@@ -45,13 +41,16 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Test
 @Mod(ACTest.MOD_ID)
 @Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ACTest {
 	public static final String MOD_ID = "ac_test";
-	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper.Builder(MOD_ID).build();
+	public static final RegistryHelper REGISTRY_HELPER = RegistryHelper.create(MOD_ID, helper -> {
+		helper.putSubHelper(ForgeRegistries.ITEMS, new TestItems.Helper(helper));
+	});
 	public static final TestGlobalStorage TEST_GLOBAL_STORAGE = GlobalStorage.createStorage(new ResourceLocation(MOD_ID, "test_storage"), new TestGlobalStorage());
 	public static final BannerPattern TEST_BANNER_PATTERN = BannerManager.createPattern("mca", "test", "tst");
 	public static final TrackedData<Boolean> TEST_TRACKED_DATA = TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> false).enableSaving().enablePersistence().build();
@@ -61,7 +60,6 @@ public final class ACTest {
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 
 		REGISTRY_HELPER.register(modEventBus);
-		TestBiomes.BIOMES.register(modEventBus);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(this::clientSetup);
@@ -79,7 +77,8 @@ public final class ACTest {
 		BiomeModificationManager instance = BiomeModificationManager.INSTANCE;
 		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.PLAINS), GenerationStage.Decoration.VEGETAL_DECORATION, () -> Features.BIRCH.withPlacement(Placement.DARK_OAK_TREE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG))));
 		instance.addModifier(BiomeSpawnsModifier.createSpawnAdder(BiomeModificationPredicates.forBiomeKey(Biomes.SAVANNA), EntityClassification.CREATURE, TestEntities.COW::get, 12, 10, 20));
-		instance.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(BiomeModificationPredicates.forBiome(TestBiomes.TEST_AMBIENCE), () -> new BiomeAmbience.Builder().setWaterColor(415924).setWaterFogColor(329011).setFogColor(1268463).withSkyColor(1).setParticle(new ParticleEffectAmbience(ParticleTypes.ENCHANT, 0.00725F)).setAmbientSound(TestSounds.AMBIENCE_TEST.get()).setMoodSound(new MoodSoundAmbience(TestSounds.AMBIENCE_TEST.get(), 6000, 8, 2.0D)).setMusic(BackgroundMusicTracks.DRAGON_FIGHT_MUSIC).build()));
+		instance.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), Sets.newHashSet(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> Features.END_ISLAND));
+		instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStage.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
 
 		BannerManager.addPattern(BannerManager.TEST, Items.CREEPER_SPAWN_EGG);
 		this.registerLootInjectors();

@@ -195,12 +195,12 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	}
 
 	public static final class SpawnInfo {
-		private final Supplier<EntityType<?>> type;
+		private final Supplier<? extends EntityType<?>> type;
 		private final int weight;
 		private final int minCount;
 		private final int maxCount;
 
-		public SpawnInfo(Supplier<EntityType<?>> type, int weight, int minCount, int maxCount) {
+		public SpawnInfo(Supplier<? extends EntityType<?>> type, int weight, int minCount, int maxCount) {
 			this.type = type;
 			this.weight = weight;
 			this.minCount = minCount;

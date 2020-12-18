@@ -5,7 +5,9 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.DecoratedFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 
 import java.util.List;
@@ -79,7 +81,11 @@ public final class BiomeFeatureModifier extends BiomeModifier {
 		return new BiomeFeatureModifier(shouldModify, context -> {
 			BiomeGenerationSettingsBuilder settingsBuilder = context.event.getGeneration();
 			for (GenerationStage.Decoration stage : stages) {
-				settingsBuilder.getFeatures(stage).removeIf(configuredFeatureSupplier -> configuredFeatureSupplier.get().feature == featureSupplier.get());
+				Feature<?> toRemove = featureSupplier.get();
+				settingsBuilder.getFeatures(stage).removeIf(configuredFeatureSupplier -> {
+					IFeatureConfig config = configuredFeatureSupplier.get().config;
+					return config instanceof DecoratedFeatureConfig && toRemove == ((DecoratedFeatureConfig) config).feature.get().feature;
+				});
 			}
 		});
 	}
@@ -98,7 +104,10 @@ public final class BiomeFeatureModifier extends BiomeModifier {
 			featureSuppliers.forEach(featureSupplier -> features.add(featureSupplier.get()));
 			BiomeGenerationSettingsBuilder settingsBuilder = context.event.getGeneration();
 			for (GenerationStage.Decoration stage : stages) {
-				settingsBuilder.getFeatures(stage).removeIf(configuredFeatureSupplier -> features.contains(configuredFeatureSupplier.get().feature));
+				settingsBuilder.getFeatures(stage).removeIf(configuredFeatureSupplier -> {
+					IFeatureConfig config = configuredFeatureSupplier.get().config;
+					return config instanceof DecoratedFeatureConfig && features.contains(((DecoratedFeatureConfig) config).feature.get().feature);
+				});
 			}
 		});
 	}
@@ -115,11 +124,13 @@ public final class BiomeFeatureModifier extends BiomeModifier {
 	public static BiomeFeatureModifier createFeatureReplacer(BiPredicate<RegistryKey<Biome>, Biome> shouldModify, Set<GenerationStage.Decoration> stages, Supplier<Feature<?>> toReplace, Supplier<ConfiguredFeature<?, ?>> replacer) {
 		return new BiomeFeatureModifier(shouldModify, context -> {
 			BiomeGenerationSettingsBuilder settingsBuilder = context.event.getGeneration();
+			Feature<?> replace = toReplace.get();
 			for (GenerationStage.Decoration stage : stages) {
 				Set<Supplier<ConfiguredFeature<?, ?>>> toRemove = Sets.newHashSet();
 				List<Supplier<ConfiguredFeature<?, ?>>> features = settingsBuilder.getFeatures(stage);
 				for (Supplier<ConfiguredFeature<?, ?>> configuredFeatureSupplier : features) {
-					if (configuredFeatureSupplier.get().feature == toReplace) {
+					IFeatureConfig config = configuredFeatureSupplier.get().config;
+					if (config instanceof DecoratedFeatureConfig && ((DecoratedFeatureConfig) config).feature.get().feature == replace) {
 						toRemove.add(configuredFeatureSupplier);
 					}
 				}
@@ -149,7 +160,8 @@ public final class BiomeFeatureModifier extends BiomeModifier {
 				Set<Supplier<ConfiguredFeature<?, ?>>> toRemove = Sets.newHashSet();
 				List<Supplier<ConfiguredFeature<?, ?>>> configuredFeatures = settingsBuilder.getFeatures(stage);
 				for (Supplier<ConfiguredFeature<?, ?>> configuredFeatureSupplier : configuredFeatures) {
-					if (features.contains(configuredFeatureSupplier.get().feature)) {
+					IFeatureConfig config = configuredFeatureSupplier.get().config;
+					if (config instanceof DecoratedFeatureConfig && features.contains(((DecoratedFeatureConfig) config).feature.get().feature)) {
 						toRemove.add(configuredFeatureSupplier);
 					}
 				}

@@ -62,7 +62,7 @@ public final class AbnormalsCore {
 	public static final String MODID = "abnormals_core";
 	public static final String NETWORK_PROTOCOL = "AC1";
 	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
-	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper.Builder(MODID).build();
+	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MODID);
 	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(DataProcessors.BYTE, () -> (byte) 8).enablePersistence().build();
 
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))

@@ -60,7 +60,7 @@ function patchCreateTitle(instructions) {
             instructions.insertBefore(insn, new VarInsnNode(Opcodes.ILOAD, 1));
             instructions.insertBefore(insn, new MethodInsnNode(
                 Opcodes.INVOKESTATIC,
-                "com/teamabnormals/abnormals_core/core/util/ACHooks",
+                "com/minecraftabnormals/abnormals_core/core/util/ACHooks",
                 "addSlabfishButton",
                 "(Lnet/minecraft/client/gui/screen/CustomizeSkinScreen;I)V",
                 false
