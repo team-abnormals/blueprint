@@ -64,10 +64,10 @@ public final class ItemStackUtil {
 	 */
 	public static String intToRomanNumerals(int number) {
 		String thousands = M_NUMERALS[number / 1000];
-		String hundereds = C_NUMERALS[(number % 1000) / 100];
+		String hundreds = C_NUMERALS[(number % 1000) / 100];
 		String tens = X_NUMERALS[(number % 100) / 10];
 		String ones = I_NUMERALS[number % 10];
-		return thousands + hundereds + tens + ones;
+		return thousands + hundreds + tens + ones;
 	}
 
 	/**
