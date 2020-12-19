@@ -6,7 +6,9 @@
   "refmap": "abnormals_core.refmap.json",
   "mixins": [
     "AdvancementBuilderMixin",
+    "EndBiomeProviderMixin",
     "EntityMixin",
+    "HillsLayerMixin",
     "ServerWorldMixin",
     "SpawnEggItemMixin",
     "TrackedEntityMixin",

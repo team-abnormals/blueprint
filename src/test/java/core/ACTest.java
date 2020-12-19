@@ -10,7 +10,9 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.Track
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.minecraftabnormals.abnormals_core.core.registry.LootInjectionRegistry;
+import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
+import com.mojang.datafixers.util.Pair;
 import common.world.TestGlobalStorage;
 import core.registry.TestEntities;
 import core.registry.TestItems;
@@ -69,6 +71,7 @@ public final class ACTest {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
+			BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
 			GlobalEntityTypeAttributes.put(TestEntities.ENDIMATED_TEST.get(), CreatureEntity.func_233666_p_().create());
 			GlobalEntityTypeAttributes.put(TestEntities.COW.get(), CowEntity.func_234188_eI_().create());
 			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::canAnimalSpawn);
@@ -80,6 +83,7 @@ public final class ACTest {
 		instance.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), Sets.newHashSet(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> Features.END_ISLAND));
 		instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStage.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
 
+		BiomeUtil.addEndBiome(Biomes.ICE_SPIKES, 7);
 		BannerManager.addPattern(BannerManager.TEST, Items.CREEPER_SPAWN_EGG);
 		this.registerLootInjectors();
 	}

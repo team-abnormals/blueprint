@@ -11,7 +11,6 @@ import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEnti
  */
 public abstract class EndimationInstruction<IS extends EndimationInstruction<?>> {
 	public static final Codec<EndimationInstruction<?>> CODEC = EndimationInstructions.REGISTRY.dispatchStable(instruction -> instruction, EndimationInstruction::codecFor);
-	
 	private final Codec<IS> codec;
 	
 	public EndimationInstruction(Codec<IS> codec) {
