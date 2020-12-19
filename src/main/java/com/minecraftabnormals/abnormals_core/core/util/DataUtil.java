@@ -1,8 +1,5 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;
@@ -13,7 +10,12 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
+
+import java.lang.reflect.Array;
+import java.util.List;
 
 public final class DataUtil {
 
@@ -59,4 +61,15 @@ public final class DataUtil {
 		return array;
 	}
 
+	/**
+	 * Checks if a given {@link ResourceLocation} matches at least one location of a {@link RegistryKey} in set of {@link RegistryKey}s.
+	 *
+	 * @return If a given {@link ResourceLocation} matches at least one location of a {@link RegistryKey} in set of {@link RegistryKey}s.
+	 */
+	public static boolean matchesKeys(ResourceLocation loc, RegistryKey<?>... keys) {
+		for (RegistryKey<?> key : keys)
+			if (key.getLocation().equals(loc))
+				return true;
+		return false;
+	}
 }
