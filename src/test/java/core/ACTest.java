@@ -83,6 +83,7 @@ public final class ACTest {
 		instance.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), Sets.newHashSet(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> Features.END_ISLAND));
 		instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStage.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
 
+		BiomeUtil.addEndBiome(Biomes.ICE_SPIKES, 7);
 		BannerManager.addPattern(BannerManager.TEST, Items.CREEPER_SPAWN_EGG);
 		this.registerLootInjectors();
 	}

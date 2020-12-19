@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.INoiseRandom;
 
 import javax.annotation.Nonnull;
@@ -21,10 +22,16 @@ import java.util.Map;
  */
 public final class BiomeUtil {
 	private static final Map<RegistryKey<Biome>, WeightedNoiseList<RegistryKey<Biome>>> HILL_BIOME_MAP = new HashMap<>();
+	private static final WeightedNoiseList<RegistryKey<Biome>> END_BIOMES = new WeightedNoiseList<>();
+
+	static {
+		addEndBiome(Biomes.END_MIDLANDS, 15);
+	}
 
 	/**
 	 * Adds hill variants to the given {@link Biome} {@link RegistryKey}.
 	 * <p>Each entry is given a weight to allow variants to appear more often than others.</p>
+	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
 	 * @param biome A {@link Biome} {@link RegistryKey} to add hill variants to.
 	 * @param hills An array of pairs containing a {@link Biome} {@link RegistryKey} and a weight.
@@ -38,6 +45,17 @@ public final class BiomeUtil {
 	}
 
 	/**
+	 * Adds an end biome to generate with a given weight.
+	 * <p>This method is safe to call during parallel mod loading.</p>
+	 *
+	 * @param key A {@link Biome} {@link RegistryKey} to add.
+	 * @param weight The weight for the {@link Biome}.
+	 */
+	public static synchronized void addEndBiome(RegistryKey<Biome> key, int weight) {
+		END_BIOMES.add(key, weight);
+	}
+
+	/**
 	 * Gets a random hill variant for a given {@link Biome} {@link RegistryKey}.
 	 *
 	 * @param biome  A {@link Biome} {@link RegistryKey} to get a random hill variant for.
@@ -48,6 +66,16 @@ public final class BiomeUtil {
 	public static RegistryKey<Biome> getHillBiome(RegistryKey<Biome> biome, INoiseRandom random) {
 		WeightedNoiseList<RegistryKey<Biome>> list = HILL_BIOME_MAP.get(biome);
 		return list != null ? list.get(random) : null;
+	}
+
+	/**
+	 * Gets a random end biome for a given {@link INoiseRandom}.
+	 *
+	 * @param random An {@link INoiseRandom} to use for randomly picking an end biome.
+	 * @return A random end biome for a given {@link INoiseRandom}.
+	 */
+	public static RegistryKey<Biome> getEndBiome(INoiseRandom random) {
+		return END_BIOMES.get(random);
 	}
 
 	/**
