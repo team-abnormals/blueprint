@@ -1,37 +1,104 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
+import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.WeightedList;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.INoiseRandom;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
- * @author - bageldotjpg
+ * A utility class for biomes.
+ *
+ * @author bageldotjpg
+ * @author SmellyModder (Luke Tonon)
  */
 public final class BiomeUtil {
-	private static final Map<RegistryKey<Biome>, WeightedList<RegistryKey<Biome>>> HILL_BIOME_MAP = new HashMap<>();
-	private static final Random RANDOM = new Random();
+	private static final Map<RegistryKey<Biome>, WeightedNoiseList<RegistryKey<Biome>>> HILL_BIOME_MAP = new HashMap<>();
 
 	/**
-	 * Adds hill variants to the given biomes
-	 * Each entry is given a weight to allow variants to appear more often than others
+	 * Adds hill variants to the given {@link Biome} {@link RegistryKey}.
+	 * <p>Each entry is given a weight to allow variants to appear more often than others.</p>
+	 *
+	 * @param biome A {@link Biome} {@link RegistryKey} to add hill variants to.
+	 * @param hills An array of pairs containing a {@link Biome} {@link RegistryKey} and a weight.
 	 */
-	public static void addHillBiome(RegistryKey<Biome> biome, Pair<RegistryKey<Biome>, Integer>... hills) {
-		for (Pair<RegistryKey<Biome>, Integer> hill : hills)
-			HILL_BIOME_MAP.computeIfAbsent(biome, (k) -> new WeightedList<>()).func_226313_a_(hill.getFirst(), hill.getSecond());
+	@SafeVarargs
+	public static synchronized void addHillBiome(RegistryKey<Biome> biome, Pair<RegistryKey<Biome>, Integer>... hills) {
+		WeightedNoiseList<RegistryKey<Biome>> list = HILL_BIOME_MAP.computeIfAbsent(biome, (key) -> new WeightedNoiseList<>());
+		for (Pair<RegistryKey<Biome>, Integer> hill : hills) {
+			list.add(hill.getFirst(), hill.getSecond());
+		}
 	}
 
 	/**
-	 * Gets a hill variant for the given biome
+	 * Gets a random hill variant for a given {@link Biome} {@link RegistryKey}.
+	 *
+	 * @param biome  A {@link Biome} {@link RegistryKey} to get a random hill variant for.
+	 * @param random An {@link INoiseRandom} to randomly pick the hill variant.
+	 * @return A random hill variant for a given {@link Biome} {@link RegistryKey}, or null if there are no hill variants for the given {@link Biome} {@link RegistryKey}.
 	 */
-	public static RegistryKey<Biome> getHillBiome(RegistryKey<Biome> biome) {
-		if (HILL_BIOME_MAP.containsKey(biome)) {
-			return HILL_BIOME_MAP.get(biome).func_226318_b_(RANDOM);
+	@Nullable
+	public static RegistryKey<Biome> getHillBiome(RegistryKey<Biome> biome, INoiseRandom random) {
+		WeightedNoiseList<RegistryKey<Biome>> list = HILL_BIOME_MAP.get(biome);
+		return list != null ? list.get(random) : null;
+	}
+
+	/**
+	 * A weighted list that randomly picks entries based on a given {@link INoiseRandom}.
+	 *
+	 * @param <T> The type of values to store.
+	 * @author SmellyModder (Luke Tonon)
+	 */
+	public static final class WeightedNoiseList<T> {
+		private final List<Pair<T, Integer>> entries = Lists.newArrayList();
+		private int totalWeight;
+
+		/**
+		 * Adds a value with a given weight.
+		 *
+		 * @param value  A value to add.
+		 * @param weight The weight of the value to add.
+		 */
+		public void add(@Nonnull T value, int weight) {
+			this.totalWeight += weight;
+			this.entries.add(Pair.of(value, weight));
 		}
-		return null;
+
+		/**
+		 * Gets a value randomly based on a given {@link INoiseRandom}.
+		 *
+		 * @param random A {@link INoiseRandom} to get the value randomly with.
+		 * @return A random value based on a given {@link INoiseRandom}.
+		 */
+		@Nonnull
+		public T get(INoiseRandom random) {
+			Iterator<Pair<T, Integer>> iterator = this.entries.iterator();
+			T value;
+			int randomTotal = random.random(this.totalWeight);
+			do {
+				Pair<T, Integer> entry = iterator.next();
+				value = entry.getFirst();
+				randomTotal -= entry.getSecond();
+			}
+			while (randomTotal >= 0);
+			return value;
+		}
+
+		/**
+		 * Gets this weighted list's {@link #entries}.
+		 *
+		 * @return This weighted list's {@link #entries}.
+		 */
+		@Nonnull
+		public List<Pair<T, Integer>> getEntries() {
+			return this.entries;
+		}
 	}
 }
