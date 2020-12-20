@@ -80,8 +80,16 @@ public final class DataUtil {
 	}
 
 	/**
-	 * <p>Registers a {@link IDispenseItemBehavior} that will perform the new behavior if the condition is met and the behavior that was already in the registry if not.</p>
+	 * <p>Registers a {@link IDispenseItemBehavior} that will perform the new behavior if the condition is met
+	 * and the behavior that was already in the registry if not.</p><br>
 	 * This works even if multiple mods add new behavior to the same item.
+	 *
+	 * @param item the {@link Item} to register the {@code newBehavior} for.
+	 * @param condition a {@link BiPredicate} that takes {@link IBlockSource} and {@link ItemStack} arguments,
+	 *                  returning true if the {@code newBehavior} should be performed. Ideally, this should be implemented
+	 *                  such that the predicate only passes if the new behavior will be 'successful,' avoiding
+	 *                  problems with failure sounds.
+	 * @param newBehavior the {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
 	 *
 	 * @author abigailfails
 	 *
