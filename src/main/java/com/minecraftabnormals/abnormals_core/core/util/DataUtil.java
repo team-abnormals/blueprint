@@ -76,12 +76,12 @@ public final class DataUtil {
 	}
 
 	/**
-	 * <p>Registers a {@link IDispenseItemBehavior} that will perform the new behavior if the condition is met
-	 * and the behavior that was already in the registry if not.</p>
+	 * <p>Registers a {@link IDispenseItemBehavior} that will perform the new behavior if the condition is met and the behavior that was already in the registry if not.</p>
 	 * This works even if multiple mods add new behavior to the same item.
 	 *
 	 * @author abigailfails
-	 * */
+	 *
+	 */
 	public static void registerConditionalDispenseBehavior(Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior newBehavior) {
 		IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.get(item);
 		DispenserBlock.registerDispenseBehavior(item, (source, stack) -> {
