@@ -80,8 +80,7 @@ public final class DataUtil {
 	}
 
 	/**
-	 * <p>Registers a {@link IDispenseItemBehavior} that will perform the new behavior if the condition is met
-	 * and the behavior that was already in the registry if not.</p><br>
+	 * <p>Registers a {@link IDispenseItemBehavior} that will perform the new behavior if the condition is met and the behavior that was already in the registry if not.</p><br>
 	 * This works even if multiple mods add new behavior to the same item.
 	 *
 	 * @param item the {@link Item} to register the {@code newBehavior} for.
