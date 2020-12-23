@@ -142,7 +142,7 @@ public final class BlockUtil {
 	 * @return The {@link BlockState} at the position in front of the dispenser's output face.
 	 * @see #dispenserOffsetPos(IBlockSource source)
 	 * */
-	public static BlockState stateAtOffsetPos(IBlockSource source) {
+	public static BlockState stateAtDispenserOffsetPos(IBlockSource source) {
 		return source.getWorld().getBlockState(dispenserOffsetPos(source));
 	}
 
@@ -156,7 +156,7 @@ public final class BlockUtil {
 	 * @return The {@link List}<{@link Entity}> of entities at the position in front of the dispenser's output face.
 	 * @see #dispenserOffsetPos(IBlockSource source)
 	 * */
-	public static List<Entity> entitiesAtOffsetPos(IBlockSource source, Class<Entity> entityType) {
+	public static List<Entity> entitiesAtDispenserOffsetPos(IBlockSource source, Class<Entity> entityType) {
 		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(dispenserOffsetPos(source)));
 	}
 }
