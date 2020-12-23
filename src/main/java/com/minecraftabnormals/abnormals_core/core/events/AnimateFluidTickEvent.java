@@ -1,5 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.events;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -45,8 +46,15 @@ public final class AnimateFluidTickEvent extends Event {
         return this.random;
     }
 
-    public static boolean onAnimateFluidTick(World world, BlockPos pos, FluidState state, Random random) {
-        return MinecraftForge.EVENT_BUS.post(new AnimateFluidTickEvent(world, pos, state, random));
+    /**
+     * Fires the {@link AnimateFluidTickEvent} for a given {@link FluidState}, {@link World}, {@link BlockPos} and {@link Random}.
+     * @param world The {@link World} that the {@code state} is in.
+     * @param pos The {@link BlockPos} that the {@code state} is at.
+     * @param state  The {@link FluidState} that {@link net.minecraft.fluid.Fluid#animateTick Fluid.animateTick()} is being fired for.
+     * @param rand The {@link Random} to be used for randomizing particle placement.
+     */
+    public static boolean onAnimateFluidTick(World world, BlockPos pos, FluidState state, Random rand) {
+        return MinecraftForge.EVENT_BUS.post(new AnimateFluidTickEvent(world, pos, state, rand));
     }
 
     @Override

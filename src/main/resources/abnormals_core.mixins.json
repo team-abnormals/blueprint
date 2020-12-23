@@ -9,11 +9,11 @@
     "EndBiomeProviderMixin",
     "EntityMixin",
     "HillsLayerMixin",
+    "IFluidMixin",
     "ServerWorldMixin",
     "SpawnEggItemMixin",
     "TrackedEntityMixin",
-    "TrapDoorBlockMixin",
-    "IFluidMixin"
+    "TrapDoorBlockMixin"
   ],
   "client": [
     "client.ClientWorldMixin",
