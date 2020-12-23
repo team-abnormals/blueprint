@@ -8,13 +8,13 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
- * This event is fired when an {@link Entity} walks on top of a block. Cancelling it
- * prevents {@link net.minecraft.block.Block#onEntityWalk Block.onEntityWalk()} in the block's class from being called.
+ * This event is fired when an {@link Entity} walks on top of a block. 
+ * <p>Cancelling this event will prevent {@link net.minecraft.block.Block#onEntityWalk Block.onEntityWalk()} in the block's class from being called.</p>
  *
  * @author abigailfails
  */
 @Cancelable
-public class EntityWalkEvent extends Event {
+public final class EntityWalkEvent extends Event {
     private final World world;
     private final BlockPos pos;
     private final Entity entity;
@@ -26,15 +26,15 @@ public class EntityWalkEvent extends Event {
     }
 
     public World getWorld() {
-        return world;
+        return this.world;
     }
 
     public BlockPos getPos() {
-        return pos;
+        return this.pos;
     }
 
     public Entity getEntity() {
-        return entity;
+        return this.entity;
     }
 
     public static boolean onEntityWalk(World world, BlockPos pos, Entity entity) {

@@ -11,5 +11,6 @@ import java.util.Random;
 
 @Mixin(Fluid.class)
 public interface IFluidMixin {
-    @Invoker void callAnimateTick(World worldIn, BlockPos pos, FluidState state, Random random);
+    @Invoker
+    void callAnimateTick(World worldIn, BlockPos pos, FluidState state, Random random);
 }

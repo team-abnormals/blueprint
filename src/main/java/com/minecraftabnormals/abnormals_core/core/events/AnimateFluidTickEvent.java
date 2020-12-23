@@ -10,17 +10,18 @@ import net.minecraftforge.eventbus.api.Event;
 import java.util.Random;
 
 /**
- * This event is fired before {@link net.minecraft.fluid.Fluid#animateTick  Fluid.animateTick()}. Canceling it
- * prevents the original method from being called.
+ * This event is fired before {@link net.minecraft.fluid.Fluid#animateTick  Fluid.animateTick()}. 
+ * <p>Canceling this event will prevent the original method from being called.</p>
  *
  * @author abigailfails
  */
 @Cancelable
-public class AnimateFluidTickEvent extends Event {
+public final class AnimateFluidTickEvent extends Event {
     private final World world;
     private final BlockPos pos;
     private final FluidState state;
     private final Random random;
+    
     public AnimateFluidTickEvent(World world, BlockPos pos, FluidState state, Random random) {
         this.world = world;
         this.pos = pos;
@@ -29,19 +30,19 @@ public class AnimateFluidTickEvent extends Event {
     }
 
     public World getWorld() {
-        return world;
+        return this.world;
     }
 
     public BlockPos getPos() {
-        return pos;
+        return this.pos;
     }
 
     public FluidState getState() {
-        return state;
+        return this.state;
     }
 
     public Random getRandom() {
-        return random;
+        return this.random;
     }
 
     public static boolean onAnimateFluidTick(World world, BlockPos pos, FluidState state, Random random) {

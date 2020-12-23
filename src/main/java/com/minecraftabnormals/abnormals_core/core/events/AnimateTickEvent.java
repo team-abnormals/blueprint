@@ -10,13 +10,13 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import java.util.Random;
 
 /**
- * This event is fired before {@link net.minecraft.block.Block#animateTick Block.animateTick()}. Canceling it
- * prevents the original method from being called.
+ * This event is fired before {@link net.minecraft.block.Block#animateTick Block.animateTick()}. 
+ * <p>Canceling this event will prevent the original method from being called.</p>
  *
  * @author abigailfails
  */
 @Cancelable
-public class AnimateTickEvent extends BlockEvent {
+public final class AnimateTickEvent extends BlockEvent {
     private final Random random;
 
     public AnimateTickEvent(BlockState state, World world, BlockPos pos, Random rand) {
@@ -25,7 +25,7 @@ public class AnimateTickEvent extends BlockEvent {
     }
 
     public Random getRandom() {
-        return random;
+        return this.random;
     }
 
     public static boolean onAnimateTick(BlockState state, World world, BlockPos pos, Random rand) {

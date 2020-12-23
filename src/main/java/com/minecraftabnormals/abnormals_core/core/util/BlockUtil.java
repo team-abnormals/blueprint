@@ -130,9 +130,10 @@ public final class BlockUtil {
 	 * @return The position in front of the dispenser's output face.
 	 *
 	 * @author abigailfails
-	 * */
+	 *
+	 */
 	public static BlockPos dispenserOffsetPos(IBlockSource source) {
-		return source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+		return source.getBlockPos().offset(source.getBlockState().get(DirectionalBlock.FACING));
 	}
 
 	/**
@@ -141,22 +142,24 @@ public final class BlockUtil {
 	 * @param source The {@link IBlockSource} to get the position from.
 	 * @return The {@link BlockState} at the position in front of the dispenser's output face.
 	 * @see #dispenserOffsetPos(IBlockSource source)
-	 * */
-	public static BlockState stateAtDispenserOffsetPos(IBlockSource source) {
+	 *
+	 */
+	public static BlockState getStateAtDispenserOffset(IBlockSource source) {
 		return source.getWorld().getBlockState(dispenserOffsetPos(source));
 	}
 
 	/**
-	 * Gets the {@link List}<{@link Entity}> of entities at the position in front of a dispenser.
+	 * Gets a {@link List} of entities at the position in front of a dispenser.
 	 *
 	 * @param source The {@link IBlockSource} to get the position from.
 	 * @param entityType The class extending {@link Entity} to search for. Set to {@code Entity.class} to get all
 	 *                   entities, regardless of type.
 	 *
-	 * @return The {@link List}<{@link Entity}> of entities at the position in front of the dispenser's output face.
+	 * @return A {@link List} of entities at the position in front of the dispenser's output face.
 	 * @see #dispenserOffsetPos(IBlockSource source)
-	 * */
-	public static List<Entity> entitiesAtDispenserOffsetPos(IBlockSource source, Class<Entity> entityType) {
+	 *
+	 */
+	public static List<Entity> getEntitiesAtDispenserOffset(IBlockSource source, Class<Entity> entityType) {
 		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(dispenserOffsetPos(source)));
 	}
 }
