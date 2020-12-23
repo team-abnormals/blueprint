@@ -131,7 +131,6 @@ public final class BlockUtil {
 	 * @return The position in front of the dispenser's output face.
 	 *
 	 * @author abigailfails
-	 *
 	 */
 	public static BlockPos offsetPos(IBlockSource source) {
 		return source.getBlockPos().offset(source.getBlockState().get(DirectionalBlock.FACING));
@@ -143,7 +142,6 @@ public final class BlockUtil {
 	 * @param source The {@link IBlockSource} to get the position from.
 	 * @return The {@link BlockState} at the offset position.
 	 * @see #offsetPos(IBlockSource source)
-	 *
 	 */
 	public static BlockState getStateAtOffsetPos(IBlockSource source) {
 		return source.getWorld().getBlockState(offsetPos(source));
@@ -153,12 +151,10 @@ public final class BlockUtil {
 	 * Gets a {@link List} of entities at the position returned by {@link #offsetPos(IBlockSource source)}.
 	 *
 	 * @param source The {@link IBlockSource} to get the position from.
-	 * @param entityType The class extending {@link Entity} to search for. Set to {@code Entity.class} to get all
-	 *                   entities, regardless of type.
+	 * @param entityType The class extending {@link Entity} to search for. Set to {@code Entity.class} to get all entities, regardless of type.
 	 *
 	 * @return A {@link List} of entities at the at the offset position.
 	 * @see #offsetPos(IBlockSource source)
-	 *
 	 */
 	public static List<Entity> getEntitiesAtOffsetPos(IBlockSource source, Class<Entity> entityType) {
 		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(offsetPos(source)));

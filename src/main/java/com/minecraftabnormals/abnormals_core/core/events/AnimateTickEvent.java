@@ -32,7 +32,7 @@ public final class AnimateTickEvent extends BlockEvent {
 
     /**
      * Fires the {@link AnimateTickEvent} for a given {@link BlockState}, {@link World}, {@link BlockPos} and {@link Random}.
-     * @param state  The {@link BlockState} that {@link net.minecraft.block.Block#animateTick Block.animateTick()} is being fired for.
+     * @param state The {@link BlockState} that {@link net.minecraft.block.Block#animateTick Block.animateTick()} is being fired for.
      * @param world The {@link World} that the {@code state} is in.
      * @param pos The {@link BlockPos} that the {@code state} is at.
      * @param rand The {@link Random} to be used for randomizing particle placement.
