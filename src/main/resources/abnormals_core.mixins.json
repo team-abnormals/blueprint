@@ -12,9 +12,11 @@
     "ServerWorldMixin",
     "SpawnEggItemMixin",
     "TrackedEntityMixin",
-    "TrapDoorBlockMixin"
+    "TrapDoorBlockMixin",
+    "IFluidMixin"
   ],
   "client": [
+    "client.ClientWorldMixin",
     "client.PlayerRendererMixin"
   ],
   "injectors": {

@@ -6,6 +6,9 @@ import java.util.function.UnaryOperator;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.Property;
 import net.minecraft.tags.FluidTags;
@@ -117,5 +120,43 @@ public final class BlockUtil {
 					return BBRotation.LEFT;
 			}
 		}
+	}
+
+	/**
+	 * <p>Gets the {@link BlockPos} in front of a dispenser.</p>
+	 * {@link BlockState#getBlock() source.getBlockState().getBlock()} must return an instance of {@link DispenserBlock}.
+	 *
+	 * @param source The {@link IBlockSource} to get the position from.
+	 * @return The position in front of the dispenser's output face.
+	 *
+	 * @author abigailfails
+	 * */
+	public static BlockPos dispenserOffsetPos(IBlockSource source) {
+		return source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+	}
+
+	/**
+	 * Gets the {@link BlockState} at the position in front of a dispenser.
+	 *
+	 * @param source The {@link IBlockSource} to get the position from.
+	 * @return The {@link BlockState} at the position in front of the dispenser's output face.
+	 * @see #dispenserOffsetPos(IBlockSource source)
+	 * */
+	public static BlockState stateAtOffsetPos(IBlockSource source) {
+		return source.getWorld().getBlockState(dispenserOffsetPos(source));
+	}
+
+	/**
+	 * Gets the {@link List}<{@link Entity}> of entities at the position in front of a dispenser.
+	 *
+	 * @param source The {@link IBlockSource} to get the position from.
+	 * @param entityType The class extending {@link Entity} to search for. Set to {@code Entity.class} to get all
+	 *                   entities, regardless of type.
+	 *
+	 * @return The {@link List}<{@link Entity}> of entities at the position in front of the dispenser's output face.
+	 * @see #dispenserOffsetPos(IBlockSource source)
+	 * */
+	public static List<Entity> entitiesAtOffsetPos(IBlockSource source, Class<Entity> entityType) {
+		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(dispenserOffsetPos(source)));
 	}
 }
