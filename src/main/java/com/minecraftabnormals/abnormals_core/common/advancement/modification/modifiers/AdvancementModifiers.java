@@ -18,6 +18,7 @@ public final class AdvancementModifiers {
 	public static final RewardsModifier REWARDS_MODIFIER = register("rewards", new RewardsModifier());
 	public static final DisplayInfoModifier DISPLAY_INFO_MODIFIER = register("display", new DisplayInfoModifier());
 	public static final CriteriaModifier CRITERIA_MODIFIER = register("criteria", new CriteriaModifier());
+	public static final IndexedRequirementsModifier INDEXED_REQUIREMENTS_MODIFIER = register("indexed_requirements", new IndexedRequirementsModifier());
 
 	/**
 	 * Registers an {@link AdvancementModifier} for a given name. This method is safe to call during parallel mod-loading.
