@@ -12,6 +12,7 @@
     "ServerWorldMixin",
     "SpawnEggItemMixin",
     "TrackedEntityMixin",
+    "TrapDoorBlockMixin",
     "IFluidMixin"
   ],
   "client": [
