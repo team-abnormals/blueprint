@@ -7,7 +7,6 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.SyncT
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import com.minecraftabnormals.abnormals_core.core.events.AnimateTickEvent;
 import com.minecraftabnormals.abnormals_core.core.events.EntityWalkEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
