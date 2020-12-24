@@ -1,8 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.events;
 
-import net.minecraft.advancements.Advancement;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
