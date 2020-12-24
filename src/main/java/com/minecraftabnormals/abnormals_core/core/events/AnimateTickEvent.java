@@ -1,8 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.events;
 
-import net.minecraft.advancements.Advancement;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,7 +10,7 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import java.util.Random;
 
 /**
- * This event is fired before {@link net.minecraft.block.Block#animateTick Block.animateTick()}. 
+ * This event is fired before {@link net.minecraft.block.Block#animateTick Block.animateTick()}.
  * <p>Canceling this event will prevent the original method from being called.</p>
  *
  * @author abigailfails

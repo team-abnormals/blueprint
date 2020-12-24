@@ -1,6 +1,5 @@
 package com.minecraftabnormals.abnormals_core.core.events;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -11,7 +10,7 @@ import net.minecraftforge.eventbus.api.Event;
 import java.util.Random;
 
 /**
- * This event is fired before {@link net.minecraft.fluid.Fluid#animateTick  Fluid.animateTick()}. 
+ * This event is fired before {@link net.minecraft.fluid.Fluid#animateTick  Fluid.animateTick()}.
  * <p>Canceling this event will prevent the original method from being called.</p>
  *
  * @author abigailfails

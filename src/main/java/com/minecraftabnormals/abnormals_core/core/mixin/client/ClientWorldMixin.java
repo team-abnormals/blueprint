@@ -2,7 +2,7 @@ package com.minecraftabnormals.abnormals_core.core.mixin.client;
 
 import com.minecraftabnormals.abnormals_core.core.events.AnimateFluidTickEvent;
 import com.minecraftabnormals.abnormals_core.core.events.AnimateTickEvent;
-import com.minecraftabnormals.abnormals_core.core.mixin.IFluidMixin;
+import com.minecraftabnormals.abnormals_core.core.mixin.FluidInvokerMixin;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
@@ -27,7 +27,7 @@ public final class ClientWorldMixin {
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;animateTick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)V"), method = "animateTick(IIIILjava/util/Random;ZLnet/minecraft/util/math/BlockPos$Mutable;)V")
     private void animateFluidTick(FluidState state, World world, BlockPos pos, Random random) {
         if (!AnimateFluidTickEvent.onAnimateFluidTick(world, pos, state, random)) {
-            ((IFluidMixin) state.getFluid()).callAnimateTick(world, pos, state, random);
+            ((FluidInvokerMixin) state.getFluid()).callAnimateTick(world, pos, state, random);
         }
     }
 }

@@ -8,7 +8,7 @@
     "AdvancementBuilderMixin",
     "EndBiomeProviderMixin",
     "EntityMixin",
-    "FluidAccessorMixin",
+    "FluidInvokerMixin",
     "HillsLayerMixin",
     "ItemInvokerMixin",
     "ServerWorldMixin",
