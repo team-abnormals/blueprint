@@ -7,16 +7,21 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.SyncT
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
+import com.minecraftabnormals.abnormals_core.core.events.AnimateTickEvent;
+import com.minecraftabnormals.abnormals_core.core.events.EntityWalkEvent;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -124,6 +129,13 @@ public final class EntityMixin implements IDataManager {
 					AbnormalsCore.LOGGER.warn("Received NBT for unknown Tracked Data: {}", id);
 				}
 			});
+		}
+	}
+
+	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onEntityWalk(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V"))
+	private void onEntityWalk(Block block, World world, BlockPos pos, Entity entity) {
+		if (!EntityWalkEvent.onEntityWalk(world, pos, entity)) {
+			block.onEntityWalk(world, pos, entity);
 		}
 	}
 }

@@ -8,6 +8,7 @@
     "AdvancementBuilderMixin",
     "EndBiomeProviderMixin",
     "EntityMixin",
+    "FluidAccessorMixin",
     "HillsLayerMixin",
     "ItemInvokerMixin",
     "ServerWorldMixin",
@@ -16,6 +17,7 @@
     "TrapDoorBlockMixin"
   ],
   "client": [
+    "client.ClientWorldMixin",
     "client.PlayerRendererMixin"
   ],
   "injectors": {
