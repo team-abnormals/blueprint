@@ -6,7 +6,7 @@ issueTrackerURL="https://github.com/minecraftabnormals/Abnormals-Core/issues"
 [[mods]]
     logoFile="logo.png"
     modId="abnormals_core"
-    version="2.0.8"
+    version="2.0.9"
     authors="Minecraft Abnormals"
     credits="SmellyModder (Luke Tonon), bageldotjpg, and Jackson"
     displayName="Abnormals Core"
