@@ -1,15 +1,13 @@
 package com.minecraftabnormals.abnormals_core.core.util.item;
 
+import com.minecraftabnormals.abnormals_core.core.mixin.ItemInvokerMixin;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * @author SmellyModder (Luke Tonon)
@@ -19,7 +17,6 @@ public final class ItemStackUtil {
 	private static final String[] C_NUMERALS = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
 	private static final String[] X_NUMERALS = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
 	private static final String[] I_NUMERALS = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
-	private static final Method IN_GROUP_METHOD = ObfuscationReflectionHelper.findMethod(Item.class, "func_194125_a", ItemGroup.class);
 
 	/**
 	 * Searches for a specific item in a {@link NonNullList} of {@link ItemStack} and returns its index.
@@ -78,11 +75,6 @@ public final class ItemStackUtil {
 	 * @return Whether or not the item is in the {@link ItemGroup}.
 	 */
 	public static boolean isInGroup(Item item, @Nonnull ItemGroup group) {
-		try {
-			return (boolean) IN_GROUP_METHOD.invoke(item, group);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return ((ItemInvokerMixin) item).callIsInGroup(group);
 	}
 }
