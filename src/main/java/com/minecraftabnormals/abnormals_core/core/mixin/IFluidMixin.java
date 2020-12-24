@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import java.util.Random;
 
 @Mixin(Fluid.class)
-public interface IFluidMixin {
+public interface FluidAccessorMixin {
     @Invoker
     void callAnimateTick(World worldIn, BlockPos pos, FluidState state, Random random);
 }
