@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import java.util.Random;
 
 /**
- * This event is fired before {@link net.minecraft.block.Block#animateTick Block.animateTick()}. 
+ * This event is fired before {@link net.minecraft.block.Block#animateTick Block.animateTick()}.
  * <p>Canceling this event will prevent the original method from being called.</p>
  *
  * @author abigailfails

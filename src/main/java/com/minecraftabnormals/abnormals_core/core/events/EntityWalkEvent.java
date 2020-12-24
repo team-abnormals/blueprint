@@ -1,6 +1,5 @@
 package com.minecraftabnormals.abnormals_core.core.events;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -8,10 +7,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
-import java.util.Random;
 
 /**
- * This event is fired when an {@link Entity} walks on top of a block. 
+ * This event is fired when an {@link Entity} walks on top of a block.
  * <p>Cancelling this event will prevent {@link net.minecraft.block.Block#onEntityWalk Block.onEntityWalk()} in the block's class from being called.</p>
  *
  * @author abigailfails
