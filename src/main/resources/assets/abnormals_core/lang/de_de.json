@@ -1,0 +1,17 @@
+{
+	"abnormals_core.config.quark_sign_editing": "Schild herausgeben",
+	"abnormals_core.config.require_empty_hand": "Schild herausgeben braucht einen leeren Hand",
+	"abnormals_core.config.slabfish_hat.enabled": "Slabfishhut",
+	"abnormals_core.config.slabfish_hat.enabled.tooltip": "Den Slabfishhutes umschalten. Für Patrons des Levels 2+ verfügbar.",
+	"abnormals_core.config.slabfish_hat.sweater": "Pulli",
+	"abnormals_core.config.slabfish_hat.sweater.tooltip": "Den Pulli des Slabfishhutes umschalten. Für Patrons des Levels 2+ verfügbar.",
+	"abnormals_core.config.slabfish_hat.backpack": "Rucksack",
+	"abnormals_core.config.slabfish_hat.backpack.tooltip": "Den Rucksack des Slabfishhutes umschalten. Für Patrons des Levels 3+ verfügbar.",
+	"abnormals_core.config.slabfish_hat.type": "Typ",
+	"abnormals_core.config.slabfish_hat.type.tooltip": "Den Typ des Slabfishhutes umschalten. Für Patrons des Levels 4+ verfügbar.",
+	"abnormals_core.screen.slabfish_settings": "Slabfisheinstellungen...",
+	"abnormals_core.screen.slabfish_settings.title": "Slabfisheinstellungen",
+	"abnormals_core.screen.slabfish_settings.tooltip": "Einstellungen für den Slabfishhut der Patrons des Team Abnormals. Werde Patron auf %s.",
+	"abnormals_core.message.redirect": "Umleiten",
+	"entity.abnormals_core.boat": "Boot"
+}
