@@ -14,16 +14,22 @@ import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionBrewing;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.function.BiPredicate;
 
 public final class DataUtil {
+	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "func_193357_a", Potion.class, Item.class, Potion.class);
 
 	public static void registerFlammable(Block block, int encouragement, int flammability) {
 		FireBlock fire = (FireBlock) Blocks.FIRE;
@@ -32,6 +38,14 @@ public final class DataUtil {
 
 	public static void registerCompostable(IItemProvider item, float chance) {
 		ComposterBlock.CHANCES.put(item.asItem(), chance);
+	}
+
+	public static void addMix(Potion input, Item reactant, Potion result) {
+		try {
+			ADD_MIX_METHOD.invoke(null, input, reactant, result);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			throw new IllegalStateException("Failed to add mix for " + result.getRegistryName() + " from " + reactant.getRegistryName(), e);
+		}
 	}
 
 	public static void registerBlockColor(BlockColors blockColors, IBlockColor color, List<RegistryObject<Block>> blocksIn) {
