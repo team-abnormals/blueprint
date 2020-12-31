@@ -1,8 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.advancement;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
@@ -105,7 +103,10 @@ public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instan
 		}
 
 		public void trigger() {
-			this.listeners.forEach(listener -> listener.grantCriterion(this.advancements));
+			List<Listener<Instance>> listenerList = new ArrayList<>(this.listeners);
+			for (Listener<Instance> instanceListener : listenerList) {
+				instanceListener.grantCriterion(this.advancements);
+			}
 		}
 	}
 }

@@ -1,0 +1,21 @@
+{
+  "advancement": "minecraft:husbandry/obtain_netherite_hoe",
+  "modifiers": [
+	{
+	  "type": "criteria",
+	  "config": {
+		"mode": "replace",
+		"criteria": {
+		  "test": {
+			"trigger": "ac_test:empty_test"
+		  }
+		},
+		"requirements": [
+		  [
+			"test"
+		  ]
+		]
+	  }
+	}
+  ]
+}

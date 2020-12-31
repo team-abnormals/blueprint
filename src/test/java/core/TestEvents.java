@@ -3,11 +3,13 @@ package core;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.util.TradeUtil;
 import core.registry.TestItems;
+import core.registry.TestTriggers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -26,6 +28,10 @@ public final class TestEvents {
 	public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
 		Entity entity = event.getTarget();
 		if (!entity.world.isRemote && (entity instanceof CowEntity || entity instanceof PlayerEntity)) {
+			PlayerEntity player = event.getPlayer();
+			if (player instanceof ServerPlayerEntity) {
+				TestTriggers.EMPTY_TEST.trigger((ServerPlayerEntity) player);
+			}
 			TrackedDataManager.INSTANCE.setValue(entity, ACTest.TEST_TRACKED_DATA, true);
 		}
 	}
