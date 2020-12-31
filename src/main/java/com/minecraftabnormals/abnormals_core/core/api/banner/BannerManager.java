@@ -23,8 +23,6 @@ public final class BannerManager {
 
 	public static final Map<IRegistryDelegate<Item>, BannerPattern> PATTERNS = new LinkedHashMap<>();
 
-	public static final BannerPattern TEST = createPattern("mca", "test", "tst");
-
 	/**
 	 * Adds a banner pattern, with one prefix for both the name and ID.
 	 * Example: BannerManager.createPattern("mca", "test", "tst");
