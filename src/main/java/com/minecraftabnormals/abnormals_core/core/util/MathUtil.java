@@ -104,6 +104,19 @@ public final class MathUtil {
 	}
 
 	/**
+	 * Interpolates two {@link Vector3d}s.
+	 *
+	 * @param prev    The previous vector.
+	 * @param current The current vector.
+	 * @param ptc     The partial ticks to use for scaling the difference vector.
+	 * @return A {@link Vector3d} containing the interpolated values of the given vectors.
+	 * @see MathHelper#lerp(float, float, float)
+	 */
+	public static Vector3d lerp(Vector3d prev, Vector3d current, float ptc) {
+		return prev.add(current.subtract(prev).scale(ptc));
+	}
+
+	/**
 	 * An functional interface representing a computable equation with respect to x.
 	 */
 	@FunctionalInterface
