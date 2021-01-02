@@ -124,9 +124,9 @@ public final class DataUtil {
 	 * */
 	public static void addToJigsawPattern(ResourceLocation toAdd, JigsawPiece newPiece, int weight) {
 		JigsawPattern oldPool = WorldGenRegistries.JIGSAW_POOL.getOrDefault(toAdd);
-		if(oldPool != null) {
+		if (oldPool != null) {
 			oldPool.rawTemplates.add(Pair.of(newPiece, weight));
-			for(int i=0; i<weight; i++) {
+			for (int i=0; i<weight; i++) {
 				oldPool.jigsawPieces.add(newPiece);
 			}
 		}
