@@ -143,7 +143,7 @@ public final class BlockUtil {
 	 * @return The {@link BlockState} at the offset position.
 	 * @see #offsetPos(IBlockSource source)
 	 */
-	public static BlockState stateAtOffsetPos(IBlockSource source) {
+	public static BlockState getStateAtOffsetPos(IBlockSource source) {
 		return source.getWorld().getBlockState(offsetPos(source));
 	}
 
@@ -156,7 +156,7 @@ public final class BlockUtil {
 	 * @return A {@link List} of entities at the at the offset position.
 	 * @see #offsetPos(IBlockSource source)
 	 */
-	public static List<Entity> entitiesAtOffsetPos(IBlockSource source, Class<Entity> entityType) {
+	public static List<Entity> getEntitiesAtOffsetPos(IBlockSource source, Class<Entity> entityType) {
 		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(offsetPos(source)));
 	}
 }
