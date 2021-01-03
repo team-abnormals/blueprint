@@ -2,6 +2,7 @@ package com.minecraftabnormals.abnormals_core.core.util;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import net.minecraft.block.Block;
@@ -158,5 +159,19 @@ public final class BlockUtil {
 	 */
 	public static List<Entity> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends Entity> entityType) {
 		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(offsetPos(source)));
+	}
+
+	/**
+	 * Gets a {@link List} of entities that match a {@link Predicate} at the position returned by {@link #offsetPos(IBlockSource source)}.
+	 *
+	 * @param source The {@link IBlockSource} to get the position from.
+	 * @param entityType The class extending {@link Entity} to search for. Set to {@code Entity.class} to get all entities, regardless of type.
+	 * @param predicate The predicate with type parameter extending {@link Entity} to check against.
+	 *
+	 * @return A {@link List} of entities at the at the offset position.
+	 * @see #offsetPos(IBlockSource source)
+	 */
+	public static List<Entity> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends Entity> entityType, Predicate<? super Entity> predicate) {
+		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(offsetPos(source)), predicate);
 	}
 }
