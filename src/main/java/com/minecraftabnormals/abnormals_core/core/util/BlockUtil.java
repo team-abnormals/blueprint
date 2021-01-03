@@ -156,7 +156,7 @@ public final class BlockUtil {
 	 * @return A {@link List} of entities at the at the offset position.
 	 * @see #offsetPos(IBlockSource source)
 	 */
-	public static List<Entity> getEntitiesAtOffsetPos(IBlockSource source, Class<Entity> entityType) {
+	public static List<Entity> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends Entity> entityType) {
 		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(offsetPos(source)));
 	}
 }
