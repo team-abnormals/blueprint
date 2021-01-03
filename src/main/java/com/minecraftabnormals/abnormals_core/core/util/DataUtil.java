@@ -1,5 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;
@@ -19,6 +20,9 @@ import net.minecraft.potion.PotionBrewing;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -109,5 +113,25 @@ public final class DataUtil {
 		DispenserBlock.registerDispenseBehavior(item, (source, stack) -> {
 			return condition.test(source, stack) ? newBehavior.dispense(source, stack) : oldBehavior.dispense(source, stack);
 		});
+	}
+
+	/**
+	 * Adds a new {@link JigsawPiece} to a pre-existing {@link JigsawPattern}.
+	 *
+	 * @param toAdd The {@link ResourceLocation} of the pattern to insert the new piece into.
+	 * @param newPiece The {@link JigsawPiece} to insert into {@code toAdd}.
+	 * @param weight The probability weight of {@code newPiece}.
+	 *
+	 * @author abigailfails
+	 */
+	public static void addToJigsawPattern(ResourceLocation toAdd, JigsawPiece newPiece, int weight) {
+		JigsawPattern oldPool = WorldGenRegistries.JIGSAW_POOL.getOrDefault(toAdd);
+		if (oldPool != null) {
+			oldPool.rawTemplates.add(Pair.of(newPiece, weight));
+			List<JigsawPiece> jigsawPieces = oldPool.jigsawPieces;
+			for (int i = 0; i < weight; i++) {
+				jigsawPieces.add(newPiece);
+			}
+		}
 	}
 }
