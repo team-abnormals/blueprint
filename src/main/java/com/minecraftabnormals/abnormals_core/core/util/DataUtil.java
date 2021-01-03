@@ -110,7 +110,9 @@ public final class DataUtil {
 	 */
 	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior newBehavior) {
 		IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.get(item);
-		DispenserBlock.registerDispenseBehavior(item, (source, stack) -> condition.test(source, stack) ? newBehavior.dispense(source, stack) : oldBehavior.dispense(source, stack));
+		DispenserBlock.registerDispenseBehavior(item, (source, stack) -> {
+			return condition.test(source, stack) ? newBehavior.dispense(source, stack) : oldBehavior.dispense(source, stack);
+		});
 	}
 
 	/**
