@@ -149,29 +149,29 @@ public final class BlockUtil {
 	}
 
 	/**
-	 * Gets a {@link List} of entities at the position returned by {@link #offsetPos(IBlockSource source)}.
+	 * Gets a {@link List} of type {@link T} at the position returned by {@link #offsetPos(IBlockSource source)}.
 	 *
 	 * @param source The {@link IBlockSource} to get the position from.
-	 * @param entityType The class extending {@link Entity} to search for. Set to {@code Entity.class} to get all entities, regardless of type.
+	 * @param entityType The class extending {@link T} to search for. Set to {@code Entity.class} to get all entities, regardless of type.
 	 *
 	 * @return A {@link List} of entities at the at the offset position.
 	 * @see #offsetPos(IBlockSource source)
 	 */
-	public static List<Entity> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends Entity> entityType) {
+	public static<T extends Entity> List<T> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends T> entityType) {
 		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(offsetPos(source)));
 	}
 
 	/**
-	 * Gets a {@link List} of entities that match a {@link Predicate} at the position returned by {@link #offsetPos(IBlockSource source)}.
+	 * Gets a {@link List} of type {@link T} that match a {@link Predicate} at the position returned by {@link #offsetPos(IBlockSource source)}.
 	 *
 	 * @param source The {@link IBlockSource} to get the position from.
-	 * @param entityType The class extending {@link Entity} to search for. Set to {@code Entity.class} to get all entities, regardless of type.
-	 * @param predicate The predicate with type parameter extending {@link Entity} to check against.
+	 * @param entityType The class extending {@link T} to search for. Set to {@code Entity.class} to get all entities, regardless of type.
+	 * @param predicate The predicate that takes a superclass of {@link T} as an argument to check against.
 	 *
-	 * @return A {@link List} of entities at the offset position.
+	 * @return A {@link List} of entities at the at the offset position.
 	 * @see #offsetPos(IBlockSource source)
 	 */
-	public static List<Entity> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends Entity> entityType, Predicate<? super Entity> predicate) {
+	public static<T extends Entity> List<T> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends T> entityType, Predicate<? super T> predicate) {
 		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(offsetPos(source)), predicate);
 	}
 }
