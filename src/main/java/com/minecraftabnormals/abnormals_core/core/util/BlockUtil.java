@@ -168,7 +168,7 @@ public final class BlockUtil {
 	 * @param entityType The class extending {@link Entity} to search for. Set to {@code Entity.class} to get all entities, regardless of type.
 	 * @param predicate The predicate with type parameter extending {@link Entity} to check against.
 	 *
-	 * @return A {@link List} of entities at the at the offset position.
+	 * @return A {@link List} of entities at the offset position.
 	 * @see #offsetPos(IBlockSource source)
 	 */
 	public static List<Entity> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends Entity> entityType, Predicate<? super Entity> predicate) {

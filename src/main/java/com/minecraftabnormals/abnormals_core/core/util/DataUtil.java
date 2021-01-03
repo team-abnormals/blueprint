@@ -123,7 +123,6 @@ public final class DataUtil {
 	 * @param weight The probability weight of {@code newPiece}.
 	 *
 	 * @author abigailfails
-	 *
 	 */
 	public static void addToJigsawPattern(ResourceLocation toAdd, JigsawPiece newPiece, int weight) {
 		JigsawPattern oldPool = WorldGenRegistries.JIGSAW_POOL.getOrDefault(toAdd);
