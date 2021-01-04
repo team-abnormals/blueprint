@@ -5,7 +5,7 @@ license = "https://github.com/team-abnormals/abnormals-core/blob/main/LICENSE.tx
 
 [[mods]]
     modId = "abnormals_core"
-    version = "3.0.5"
+    version = "3.0.6"
     logoFile = "abnormals_core.png"
     authors = "Team Abnormals"
     credits = "SmellyModder (Luke Tonon), bageldotjpg, and Jackson"
