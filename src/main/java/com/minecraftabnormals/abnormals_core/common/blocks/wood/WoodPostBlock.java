@@ -16,7 +16,7 @@ import net.minecraft.world.IBlockReader;
 
 public class WoodPostBlock extends Block implements IWaterLoggable {
 	private static final VoxelShape SHAPE = Block.makeCuboidShape(6F, 0F, 6F, 10F, 16F, 10F);
-	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+	private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	
 	public WoodPostBlock(Properties properties) {
 		super(properties);
