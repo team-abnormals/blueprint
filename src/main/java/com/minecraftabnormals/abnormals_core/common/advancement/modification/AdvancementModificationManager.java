@@ -17,6 +17,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -101,7 +102,14 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 			if (config == null) {
 				throw new JsonParseException("Missing 'config' element!");
 			}
-			advancementModifiers.add(modifier.deserialize(config, conditionArrayParser));
+			boolean conditionsMet = true;
+			if (JSONUtils.hasField(entry, "conditions")) {
+				if (!CraftingHelper.processConditions(JSONUtils.getJsonArray(entry, "conditions"))) {
+					AbnormalsCore.LOGGER.info("Skipped advancement modifier \"" + type + "\" for advancement \"" + advancement + "\" as its conditions were not met");
+					conditionsMet = false;
+				}
+			}
+			if (conditionsMet) advancementModifiers.add(modifier.deserialize(config, conditionArrayParser));
 		});
 		return new TargetedAdvancementModifier(advancement, advancementModifiers);
 	}

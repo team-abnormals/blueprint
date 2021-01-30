@@ -7,6 +7,11 @@
 	},
 	{
 	  "type": "rewards",
+	  "conditions": [
+		  {
+			  "type": "forge:true"
+		  }
+	  ],
 	  "config": {
 		"mode": "modify",
 		"experience": 100000,
@@ -17,6 +22,11 @@
 	},
 	{
 	  "type": "display",
+	  "conditions": [
+		  {
+			  "type": "forge:true"
+		  }
+	  ],
 	  "config": {
 		"mode": "modify",
 		"title": {
@@ -30,6 +40,11 @@
 	},
 	{
 	  "type": "criteria",
+	  "conditions": [
+		  {
+			  "type": "forge:true"
+		  }
+	  ],
 	  "config": {
 		"mode": "modify",
 		"criteria": {
