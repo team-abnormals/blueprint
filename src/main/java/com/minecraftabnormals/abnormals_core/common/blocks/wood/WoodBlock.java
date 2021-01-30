@@ -1,24 +1,20 @@
 package com.minecraftabnormals.abnormals_core.common.blocks.wood;
 
-import java.util.function.Supplier;
-
+import com.minecraftabnormals.abnormals_core.core.util.BlockUtil;
 import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
+
+import java.util.function.Supplier;
 
 public class WoodBlock extends RotatedPillarBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_HYPHAE);
@@ -30,13 +26,10 @@ public class WoodBlock extends RotatedPillarBlock {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-		if (player.getHeldItem(hand).getItem() instanceof AxeItem) {
-			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-			world.setBlockState(pos, this.block.get().getDefaultState().with(AXIS, state.get(AXIS)));
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
+	public BlockState getToolModifiedState(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, ToolType toolType) {
+		if (toolType == ToolType.AXE)
+			return block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().getDefaultState()) : null;
+		return super.getToolModifiedState(state, world, pos, player, stack, toolType);
 	}
 
 	@Override
