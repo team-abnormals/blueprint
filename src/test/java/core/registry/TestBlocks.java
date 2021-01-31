@@ -7,7 +7,7 @@ import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappe
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.wood.WoodPostBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.wood.StrippedWoodPostBlock;
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.util.registry.BlockSubRegistryHelper;
 import common.blocks.ChunkLoadTestBlock;
@@ -38,5 +38,5 @@ public final class TestBlocks {
 
 	public static final RegistryObject<Block> LOG_BLOCK = HELPER.createBlock("log_block", () -> new AbnormalsLogBlock(() -> Blocks.STRIPPED_ACACIA_LOG, AbstractBlock.Properties.create(Material.WOOD, MaterialColor.ADOBE)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> BEEHIVE = HELPER.createBlock("example_beehive", () -> new AbnormalsBeehiveBlock(Block.Properties.from(Blocks.DIRT)), ItemGroup.DECORATIONS);
-	public static final RegistryObject<Block> POST = HELPER.createBlock("post", () -> new WoodPostBlock(Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POST = HELPER.createBlock("post", () -> new StrippedWoodPostBlock(Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
 }
