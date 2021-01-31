@@ -102,14 +102,11 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 			if (config == null) {
 				throw new JsonParseException("Missing 'config' element!");
 			}
-			boolean conditionsMet = true;
-			if (JSONUtils.hasField(entry, "conditions")) {
-				if (!CraftingHelper.processConditions(JSONUtils.getJsonArray(entry, "conditions"))) {
-					AbnormalsCore.LOGGER.info("Skipped advancement modifier \"" + type + "\" for advancement \"" + advancement + "\" as its conditions were not met");
-					conditionsMet = false;
-				}
+			if (!JSONUtils.hasField(entry, "conditions") || CraftingHelper.processConditions(JSONUtils.getJsonArray(entry, "conditions"))) {
+			                advancementModifiers.add(modifier.deserialize(config, conditionArrayParser));
+			} else {
+			      AbnormalsCore.LOGGER.info("Skipped advancement modifier \"" + type + "\" for advancement \"" + advancement + "\" as its conditions were not met");
 			}
-			if (conditionsMet) advancementModifiers.add(modifier.deserialize(config, conditionArrayParser));
 		});
 		return new TargetedAdvancementModifier(advancement, advancementModifiers);
 	}
