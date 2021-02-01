@@ -94,19 +94,17 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 		modifiers.forEach(element -> {
 			JsonObject entry = element.getAsJsonObject();
 			String type = JSONUtils.getString(entry, "type");
-			AdvancementModifier<?> modifier = AdvancementModifiers.getModifier(type);
-			if (modifier == null) {
-				throw new JsonParseException("Unknown Advancement Modifier type: " + type);
-			}
-			JsonElement config = entry.get("config");
-			if (config == null) {
-				throw new JsonParseException("Missing 'config' element!");
-			}
 			if (!JSONUtils.hasField(entry, "conditions") || CraftingHelper.processConditions(JSONUtils.getJsonArray(entry, "conditions"))) {
-			                advancementModifiers.add(modifier.deserialize(config, conditionArrayParser));
-			} else {
-			      AbnormalsCore.LOGGER.info("Skipped advancement modifier \"" + type + "\" for advancement \"" + advancement + "\" as its conditions were not met");
-			}
+				AdvancementModifier<?> modifier = AdvancementModifiers.getModifier(type);
+				if (modifier == null) {
+					throw new JsonParseException("Unknown Advancement Modifier type: " + type);
+				}
+				JsonElement config = entry.get("config");
+				if (config == null) {
+					throw new JsonParseException("Missing 'config' element!");
+				}
+				advancementModifiers.add(modifier.deserialize(config, conditionArrayParser));
+			} else AbnormalsCore.LOGGER.info("Skipped advancement modifier \"" + type + "\" for advancement \"" + advancement + "\" as its conditions were not met");
 		});
 		return new TargetedAdvancementModifier(advancement, advancementModifiers);
 	}
