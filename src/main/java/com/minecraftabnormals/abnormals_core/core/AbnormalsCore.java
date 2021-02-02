@@ -10,6 +10,7 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.Track
 import com.minecraftabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.abnormals_core.client.RewardHandler;
 import com.minecraftabnormals.abnormals_core.client.tile.*;
@@ -81,6 +82,7 @@ public final class AbnormalsCore {
 
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
+		DataUtil.registerBooleanConfigCondition(AbnormalsCore.MODID, true, ACConfig.COMMON, ACConfig.CLIENT, ACConfig.CLIENT.slabfishSettings);
 		BannerManager.RECIPE_SERIALIZERS.register(modEventBus);
 
 		REGISTRY_HELPER.getEntitySubHelper().register(modEventBus);

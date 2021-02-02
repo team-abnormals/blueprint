@@ -1,5 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
+import com.minecraftabnormals.abnormals_core.core.api.conditions.BooleanConfigCondition;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -23,13 +24,21 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiPredicate;
 
 public final class DataUtil {
@@ -133,5 +142,88 @@ public final class DataUtil {
 				jigsawPieces.add(newPiece);
 			}
 		}
+	}
+
+	/**
+	 * <h2>Function</h2>
+	 * Registers a {link BooleanConfigCondition.Serializer} under the name {@code "<modId>:config"} that accepts
+	 * the names of the {@link ForgeConfigSpec.ConfigValue ForgeConfigSpec.ConfigValue&lt;Boolean&gt;}
+	 * fields in {@code configObjects} as arguments  (formatted into snake case if {@code convertToSnakeCase} is true).
+	 *
+	 * <p>This method allows you to make crafting recipes, advancement modifiers, etc. check whether a specific config
+	 * field is true before loading without having to hardcode new condition classes for specific cases. It's essentially
+	 * a wrapper for {@link CraftingHelper#register(IConditionSerializer)} and should be called during common setup accordingly.</p><br>
+	 *
+	 * <h2>Implementation</h2>
+	 * <p>All the objects in {@code configObjects} are mapped to the simple names of their class.
+	 * This means the lowest-down name in the package tree, for example:<br>
+	 * {@code com.minecraftabnormals.abnormals_core.core.config.ACConfig$Common} becomes {@code Common}.</p>
+	 *
+	 * <p>Similarly, all the {@link ForgeConfigSpec.ConfigValue ForgeConfigSpec.ConfigValue&lt;Boolean&gt;} fields in
+	 * the classes in {@code configObjects} are mapped to their names.</p>
+	 *
+	 * <p>If {@code convertToSnakeCase} is true, these names are converted into snake case (e.g. {@code slabfishSettings})
+	 * would become {@code slabfish_settings} for consistency with the rest of the JSON format.</p>
+	 *
+	 * <p>The stored names are used to target config fields from JSON files. When defining a condition with<br>
+	 * {@code "type:" "<modId>:config"}<br>
+	 * you use the {@code "config"} argument to specify the config <i>class</i> to target, and the {@code "name"}
+	 * argument to specify the config <i>field</i> to target.</p>
+	 *
+	 * <p>For example, in a config condition created under the id {@code abnormals_core}, targeting the
+	 * {@link com.minecraftabnormals.abnormals_core.core.config.ACConfig.Common} class and the
+	 * {@code signEditingRequiresEmptyHand} field, the syntax would be like this:</p>
+	 *
+	 * <pre>{@code
+	 * "conditions": [
+	 *   {
+	 *     "type": "abnormals_core:config"
+	 *     "config": "common"
+	 *     "name": "sign_editing_requires_empty_hand"
+	 *   }
+	 * ]
+	 * }</pre>
+	 *
+	 * <p><i>While only the name of the config class is shown in JSON, it does still map to an actual object.
+	 * When a condition is tested, {@link Field#get(Object)} is called passing in the mapped object.</i></p>
+	 *
+	 * @param modId the mod ID to register the condition under
+	 * @param convertToSnakeCase if true, the accepted values for {@code config} and {@code name} in JSON files are
+	 *                           converted to snake case first
+	 * @param configObjects the list of objects to get config fields from
+	 *
+	 * @author abigailfails
+	 * */
+	public static void registerBooleanConfigCondition(String modId, boolean convertToSnakeCase, Object... configObjects) {
+		Map<String, Object> newConfigObjects = new HashMap<>();
+		Map<String, Field> newConfigFields = new HashMap<>();
+		Arrays.asList(configObjects).forEach(cfg -> {
+			newConfigObjects.put(snakeCase(cfg.getClass().getSimpleName()), cfg);
+			Arrays.stream(cfg.getClass().getDeclaredFields()).filter(f -> ForgeConfigSpec.ConfigValue.class.isAssignableFrom(f.getType()) && ((ParameterizedType) f.getGenericType()).getActualTypeArguments()[0] == Boolean.class).forEach(f -> {
+				f.setAccessible(true);
+				newConfigFields.put(convertToSnakeCase ? snakeCase(f.getName()) : f.getName(), f);
+			});
+		});
+		CraftingHelper.register(new BooleanConfigCondition.Serializer(modId, newConfigFields, newConfigObjects));
+	}
+
+	/**
+	 * Converts {@code PascalCase} or {@code camelCase} strings to a {@code snake_case} format.
+	 * <p>Can insert underscores between a lowercase letter and a capital letter <b>or</b> a number,
+	 * or alternatively between a capital letter and a number.</p>
+	 * <p>e.g:<br>
+	 *        fgaAbc -> fga_abc  <br>
+	 *        era09  -> era_09   <br>
+	 *        kiAN0  -> ki_an_0  <br>
+	 *        sy70p  -> sy_70p   <br>
+	 *        sy70P  -> sy_70_p  </p>
+	 *
+	 * @param string the string to format
+	 * @return {@code string}, formatted into snake case
+	 *
+	 * @author abigailfails
+	 * */
+	public static String snakeCase(String string) {
+		return string.replaceAll("((?<=[a-z])([A-Z]|[0-9]))|((?<=[0-9])[A-Z])|((?<=[A-Z])[0-9])", "_$0").toLowerCase();
 	}
 }

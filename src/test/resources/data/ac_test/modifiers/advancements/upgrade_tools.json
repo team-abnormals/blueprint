@@ -1,0 +1,20 @@
+{
+  "advancement": "story/upgrade_tools",
+  "modifiers": [
+    {
+      "type": "display",
+      "conditions": [
+        {
+          "type": "abnormals_core:config",
+          "config": "slabfish_settings",
+          "name": "backpack_enabled",
+          "opposite": true
+        }
+      ],
+      "mode": "modify",
+      "description": {
+        "text": "You turned the slabfish backpack off !!!! Curious..."
+      }
+    }
+  ]
+}
