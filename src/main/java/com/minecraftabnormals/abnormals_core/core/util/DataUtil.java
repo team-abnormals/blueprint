@@ -146,7 +146,7 @@ public final class DataUtil {
 
 	/**
 	 * <h2>Function</h2>
-	 * Registers a {link BooleanConfigCondition.Serializer} under the name {@code "<modId>:config"} that accepts
+	 * Registers a {link BooleanConfigCondition.Serializer} under the name {@code "[modId]:config"} that accepts
 	 * the names of the {@link ForgeConfigSpec.ConfigValue ForgeConfigSpec.ConfigValue&lt;Boolean&gt;}
 	 * fields in {@code configObjects} as arguments  (formatted into snake case if {@code convertToSnakeCase} is true).
 	 *
@@ -166,7 +166,7 @@ public final class DataUtil {
 	 * would become {@code slabfish_settings} for consistency with the rest of the JSON format.</p>
 	 *
 	 * <p>The stored names are used to target config fields from JSON files. When defining a condition with<br>
-	 * {@code "type:" "<modId>:config"}<br>
+	 * {@code "type:" "[modId]:config"}<br>
 	 * you use the {@code "config"} argument to specify the config <i>class</i> to target, and the {@code "name"}
 	 * argument to specify the config <i>field</i> to target.</p>
 	 *
