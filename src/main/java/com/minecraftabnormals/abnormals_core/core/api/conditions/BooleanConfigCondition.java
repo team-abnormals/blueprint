@@ -78,6 +78,7 @@ public class BooleanConfigCondition implements ICondition {
         public void write(JsonObject json, BooleanConfigCondition value) {
             json.addProperty("config", value.configObjectName);
             json.addProperty("name", value.configFieldName);
+            if (value.isInverted) json.addProperty("inverted", true);
         }
 
         @Override
