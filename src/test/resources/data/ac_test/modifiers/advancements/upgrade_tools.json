@@ -8,12 +8,14 @@
           "type": "abnormals_core:config",
           "config": "slabfish_settings",
           "name": "backpack_enabled",
-          "opposite": true
+          "inverted": true
         }
       ],
-      "mode": "modify",
-      "description": {
-        "text": "You turned the slabfish backpack off !!!! Curious..."
+      "config": {
+        "mode": "modify",
+        "description": {
+          "text": "You have turned off the slabfish backpack... Shocking!!"
+        }
       }
     }
   ]
