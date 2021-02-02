@@ -146,13 +146,13 @@ public final class DataUtil {
 
 	/**
 	 * <h2>Function</h2>
-	 * Registers a {link BooleanConfigCondition.Serializer} under the name {@code "[modId]:config"} that accepts
-	 * the names of the {@link ForgeConfigSpec.ConfigValue ForgeConfigSpec.ConfigValue&lt;Boolean&gt;}
-	 * fields in {@code configObjects} as arguments  (formatted into snake case if {@code convertToSnakeCase} is true).
-	 *
-	 * <p>This method allows you to make crafting recipes, advancement modifiers, etc. check whether a specific config
+	 * This method allows you to make crafting recipes, advancement modifiers, etc. check whether a specific config
 	 * field is true before loading without having to hardcode new condition classes for specific cases. It's essentially
-	 * a wrapper for {@link CraftingHelper#register(IConditionSerializer)} and should be called during common setup accordingly.</p><br>
+	 * a wrapper for {@link CraftingHelper#register(IConditionSerializer)} and should be called during common setup accordingly.
+	 *
+	 * <p>Specifically, it registers a {link BooleanConfigCondition.Serializer} under the name {@code "[modId]:config"}
+	 * that accepts the names of the {@link ForgeConfigSpec.ConfigValue ForgeConfigSpec.ConfigValue&lt;Boolean&gt;}
+	 * fields in {@code configObjects} as arguments  (formatted into snake case if {@code convertToSnakeCase} is true).</p><br>
 	 *
 	 * <h2>Implementation</h2>
 	 * <p>All the objects in {@code configObjects} are mapped to the simple names of their class.
