@@ -36,7 +36,7 @@ public class ItemStackBuilder {
 	 * Sets the stack's count.
 	 *
 	 * @return This builder.
-	 * @see ItemStack#setCount(int).
+	 * @see ItemStack#setCount(int)
 	 */
 	public ItemStackBuilder setCount(int count) {
 		this.stack.setCount(count);
@@ -48,7 +48,7 @@ public class ItemStackBuilder {
 	 *
 	 * @param amount Amount to grow the stack by.
 	 * @return This builder.
-	 * @see ItemStack#grow(int).
+	 * @see ItemStack#grow(int)
 	 */
 	public ItemStackBuilder grow(int amount) {
 		this.stack.grow(amount);
@@ -60,7 +60,7 @@ public class ItemStackBuilder {
 	 *
 	 * @param amount Amount to shrink the stack by.
 	 * @return This builder.
-	 * @see ItemStack#shrink(int).
+	 * @see ItemStack#shrink(int)
 	 */
 	public ItemStackBuilder shrink(int amount) {
 		this.stack.shrink(amount);
@@ -94,7 +94,7 @@ public class ItemStackBuilder {
 	 *
 	 * @param text The name to set.
 	 * @return This builder.
-	 * @see ItemStack#setDisplayName(ITextComponent).
+	 * @see ItemStack#setDisplayName(ITextComponent)
 	 */
 	public ItemStackBuilder setName(@Nullable ITextComponent text) {
 		this.stack.setDisplayName(text);
@@ -127,7 +127,7 @@ public class ItemStackBuilder {
 	 * @param modifier  The {@link AttributeModifier} to apply to the {@link Attribute}.
 	 * @param slot      The slot for when the {@link AttributeModifier} should be applied.
 	 * @return This builder.
-	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
+	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType)
 	 */
 	public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, @Nullable EquipmentSlotType slot) {
 		this.stack.addAttributeModifier(attribute, modifier, slot);
@@ -141,8 +141,8 @@ public class ItemStackBuilder {
 	 * @param modifier  The {@link AttributeModifier} to apply to the {@link Attribute}.
 	 * @param slots     The slots for when the {@link AttributeModifier} should be applied.
 	 * @return This builder.
-	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
-	 * @see #addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
+	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType)
+	 * @see ItemStackBuilder#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType)
 	 */
 	public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, EquipmentSlotType... slots) {
 		for (EquipmentSlotType slot : slots) {

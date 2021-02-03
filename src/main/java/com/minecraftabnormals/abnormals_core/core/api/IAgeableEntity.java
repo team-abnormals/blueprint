@@ -4,7 +4,7 @@ import net.minecraft.entity.LivingEntity;
 
 /**
  * Use to make a living entity that doesn't extend AgeableEntity compatible with Quark's potato poisoning and
- * Savage & Ravage's Growth & Youth Potions.
+ * Savage &amp; Ravage's Growth and Youth Potions.
  * <p>Classes implementing this must extend {@link LivingEntity}.</p>
  *
  * @author abigailfails

@@ -100,10 +100,11 @@ public class EntitySkinHelper<E extends Entity> {
 	}
 
 	/**
-	 * Gets the skin texture {@link ResourceLocation} for an entity or defaults to {@param otherSkinTexture} if skin couldn't be looked up.
+	 * Gets the skin texture {@link ResourceLocation} for an entity or defaults to {@code otherSkinTexture} if skin couldn't be looked up.
 	 *
-	 * @param entity - The entity to get the skin for.
-	 * @return The skin texture {@link ResourceLocation} for an entity or {@param otherSkinTexture} if null.
+	 * @param entity The entity to get the skin for.
+	 * @param otherSkinTexture The skin texture to default to.
+	 * @return The skin texture {@link ResourceLocation} for an entity or {@code otherSkinTexture} if null.
 	 */
 	@Nonnull
 	public ResourceLocation getSkinForEntityOrElse(E entity, ResourceLocation otherSkinTexture) {

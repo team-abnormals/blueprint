@@ -19,13 +19,13 @@ import java.util.Map;
  * {@link DataUtil#registerBooleanConfigCondition(String, boolean, Object...)} which automatically handles mapping
  * config fields to JSON string arguments.
  *
- * <p>Takes the arguments:
+ * <p>Takes the arguments:</p>
  * <ul>
  *   <li>{@code config}   - the config class to find the field in</li>
  *   <li>{@code name}     - the name of the field to get the value of</li>
  *   <li>{@code inverted} - whether the condition should be inverted, so it will pass if the config field is false instead.
  *                          Inclusion is optional.</li>
- * </ul></p>
+ * </ul>
  *
  * @see DataUtil#registerBooleanConfigCondition(String, boolean, Object...)
  * @author abigailfails

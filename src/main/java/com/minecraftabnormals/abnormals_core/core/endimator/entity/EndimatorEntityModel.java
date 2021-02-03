@@ -44,7 +44,7 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	}
 
 	/**
-	 * Adds a {@link EndimatorModelRenderer} to the {@link #savedBoxes} list to be used in {@link EndimatorEntityModel#setDefaultBoxValues} & {@link EndimatorEntityModel#revertBoxesToDefaultValues}.
+	 * Adds a {@link EndimatorModelRenderer} to the {@link #savedBoxes} list to be used in {@link EndimatorEntityModel#setDefaultBoxValues()} &amp; {@link EndimatorEntityModel#revertBoxesToDefaultValues}.
 	 *
 	 * @param box The {@link EndimatorModelRenderer} to be added to the list.
 	 */
