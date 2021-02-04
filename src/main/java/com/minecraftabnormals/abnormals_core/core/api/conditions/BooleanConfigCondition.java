@@ -29,7 +29,6 @@ import java.util.Map;
  *
  * @see DataUtil#registerBooleanConfigCondition(String, boolean, Object...)
  * @author abigailfails
- *
  */
 public class BooleanConfigCondition implements ICondition {
     private final Field configField;
@@ -47,7 +46,6 @@ public class BooleanConfigCondition implements ICondition {
         this.configFieldName = configFieldName;
         this.isInverted = isInverted;
     }
-
 
     @Override
     public ResourceLocation getID() {
