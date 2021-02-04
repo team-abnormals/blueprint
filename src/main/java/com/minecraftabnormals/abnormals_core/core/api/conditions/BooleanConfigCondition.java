@@ -29,7 +29,8 @@ import java.util.Map;
  *
  * @see DataUtil#registerBooleanConfigCondition(String, boolean, Object...)
  * @author abigailfails
- * */
+ *
+ */
 public class BooleanConfigCondition implements ICondition {
     private final Field configField;
     private final Object configObject;
@@ -50,13 +51,13 @@ public class BooleanConfigCondition implements ICondition {
 
     @Override
     public ResourceLocation getID() {
-        return location;
+        return this.location;
     }
 
     @Override
     public boolean test() {
         try {
-            return isInverted != ((ForgeConfigSpec.BooleanValue) configField.get(configObject)).get();
+            return this.isInverted != ((ForgeConfigSpec.BooleanValue) configField.get(configObject)).get();
         } catch (IllegalAccessException e) {
             AbnormalsCore.LOGGER.error("Cannot access field \"" + configField.getName() + "\" for config condition \"" + this.getID() + "\"");
             return false;

@@ -193,7 +193,8 @@ public final class DataUtil {
 	 * @param configObjects The list of objects to get config fields from. These need to have unique names.
 	 *
 	 * @author abigailfails
-	 * */
+	 *
+	 */
 	public static void registerBooleanConfigCondition(String modId, boolean convertToSnakeCase, Object... configObjects) {
 		Map<String, Object> newConfigObjects = new HashMap<>();
 		Map<String, Field> newConfigFields = new HashMap<>();
@@ -222,7 +223,8 @@ public final class DataUtil {
 	 * @return {@code string}, formatted into snake case
 	 *
 	 * @author abigailfails
-	 * */
+	 *
+	 */
 	public static String snakeCase(String string) {
 		return string.replaceAll("((?<=[a-z])([A-Z]|[0-9]))|((?<=[0-9])[A-Z])|((?<=[A-Z])[0-9])", "_$0").toLowerCase();
 	}
