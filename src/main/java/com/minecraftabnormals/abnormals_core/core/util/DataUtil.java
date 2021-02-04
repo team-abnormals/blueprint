@@ -145,14 +145,14 @@ public final class DataUtil {
 	}
 
 	/**
-	 * <h2>Function</h2>
-	 * This method allows you to make crafting recipes, advancement modifiers, etc. check whether a specific config
-	 * field is true before loading without having to hardcode new condition classes for specific cases. It's essentially
-	 * a wrapper for {@link CraftingHelper#register(IConditionSerializer)} and should be called during common setup accordingly.
-	 *
-	 * <p>Specifically, it registers a {link BooleanConfigCondition.Serializer} under the name {@code "[modId]:config"}
+	 * Registers a {@link BooleanConfigCondition.Serializer} under the name {@code "[modId]:config"}
 	 * that accepts the names of the {@link ForgeConfigSpec.ConfigValue ForgeConfigSpec.ConfigValue&lt;Boolean&gt;}
-	 * fields in {@code configObjects} as arguments  (formatted into snake case if {@code convertToSnakeCase} is true).</p><br>
+	 * fields in {@code configObjects} as arguments  (formatted into snake case if {@code convertToSnakeCase} is true).
+	 * <br><br>
+	 * <h2>Function</h2>
+	 * <p>This method allows you to make crafting recipes, advancement modifiers, etc. check whether a specific config
+	 * field is true before loading without having to hardcode new condition classes for specific cases. It's essentially
+	 * a wrapper for {@link CraftingHelper#register(IConditionSerializer)} and should be called during common setup accordingly.</p>
 	 *
 	 * <h2>Implementation</h2>
 	 * <p>All the objects in {@code configObjects} are mapped to the simple names of their class.
@@ -162,15 +162,15 @@ public final class DataUtil {
 	 * <p>Similarly, all the {@link ForgeConfigSpec.ConfigValue ForgeConfigSpec.ConfigValue&lt;Boolean&gt;} fields in
 	 * the classes in {@code configObjects} are mapped to their names.</p>
 	 *
-	 * <p>If {@code convertToSnakeCase} is true, these names are converted into snake case (e.g. {@code slabfishSettings})
-	 * would become {@code slabfish_settings} for consistency with the rest of the JSON format.</p>
+	 * <p>If {@code convertToSnakeCase} is true, these names are converted into snake case (e.g. {@code slabfishSettings}
+	 * would become {@code slabfish_settings}) for consistency with the JSON format.</p>
 	 *
 	 * <p>The stored names are used to target config fields from JSON files. When defining a condition with<br>
-	 * {@code "type:" "[modId]:config"}<br>
+	 * {@code "type": "[modId]:config"}<br>
 	 * you use the {@code "config"} argument to specify the config <i>class</i> to target, and the {@code "name"}
 	 * argument to specify the config <i>field</i> to target.</p>
 	 *
-	 * <p>For example, in a config condition created under the id {@code abnormals_core}, targeting the
+	 * <p>For example, in a config condition created under the id {@code abnormals_core} with {@code convertToSnakeCase} as true, targeting the
 	 * {@link com.minecraftabnormals.abnormals_core.core.config.ACConfig.Common} class and the
 	 * {@code signEditingRequiresEmptyHand} field, the syntax would be like this:</p>
 	 *
@@ -187,10 +187,10 @@ public final class DataUtil {
 	 * <p><i>While only the name of the config class is shown in JSON, it does still map to an actual object.
 	 * When a condition is tested, {@link Field#get(Object)} is called passing in the mapped object.</i></p>
 	 *
-	 * @param modId the mod ID to register the condition under
-	 * @param convertToSnakeCase if true, the accepted values for {@code config} and {@code name} in JSON files are
+	 * @param modId The mod ID to register the condition under
+	 * @param convertToSnakeCase If true, the accepted values for {@code config} and {@code name} in JSON files are
 	 *                           converted to snake case first
-	 * @param configObjects the list of objects to get config fields from
+	 * @param configObjects The list of objects to get config fields from. These need to have unique names.
 	 *
 	 * @author abigailfails
 	 * */
