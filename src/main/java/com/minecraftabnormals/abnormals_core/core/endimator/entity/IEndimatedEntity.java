@@ -3,9 +3,8 @@ package com.minecraftabnormals.abnormals_core.core.endimator.entity;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 
 /**
- * Interface used for animation, should be implemented on entities that plan to use Endimator.
- * <p>{@link EndimatedEntity} is an example of how this interface should be set up.</p>
- * @see EndimatedEntity
+ * Interface used for animation, should be implemented on entities that plan to use Endimator
+ * @see {@link EndimatedEntity} for an example of how this interface should be set up
  * @author SmellyModder(Luke Tonon)
  */
 public interface IEndimatedEntity {

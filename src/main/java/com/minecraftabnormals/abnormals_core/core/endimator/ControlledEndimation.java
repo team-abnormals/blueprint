@@ -105,7 +105,7 @@ public final class ControlledEndimation {
 	/**
 	 * Writes data about the ControlledEndimation to a CompoundNBT
 	 * Can be used to save data about the animation when the world gets saved and for command use
-	 * Values must be synced(Server -&gt; Client)
+	 * Values must be synced(Server -> Client)
 	 */
 	public CompoundNBT write(CompoundNBT compound) {
 		compound.putInt("Tick", this.tick);
@@ -118,7 +118,7 @@ public final class ControlledEndimation {
 	/**
 	 * Reads data about the ControlledEndimation from a CompoundNBT
 	 * Can be used to save data about the animation when the world gets saved and for command use
-	 * Values must be synced(Server -&gt; Client)
+	 * Values must be synced(Server -> Client)
 	 */
 	public void read(CompoundNBT nbt) {
 		this.tick = nbt.getInt("Tick");
