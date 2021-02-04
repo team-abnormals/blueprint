@@ -64,14 +64,14 @@ public class BooleanConfigCondition implements ICondition {
     }
 
     public static class Serializer implements IConditionSerializer<BooleanConfigCondition> {
-        private static final Hashtable<String, Field> configFields = new Hashtable<>();
-        private static final Hashtable<String, Object> configObjects = new Hashtable<>();
+        private static final Hashtable<String, Field> CONFIG_FIELDS = new Hashtable<>();
+        private static final Hashtable<String, Object> CONFIG_OBJECTS = new Hashtable<>();
         private final ResourceLocation location;
 
         public Serializer(String modId, Map<String, Field> newConfigFields, Map<String, Object> newConfigObjects) {
             this.location = new ResourceLocation(modId, "config");
-            configFields.putAll(newConfigFields);
-            configObjects.putAll(newConfigObjects);
+            CONFIG_FIELDS.putAll(newConfigFields);
+            CONFIG_OBJECTS.putAll(newConfigObjects);
         }
 
         @Override
@@ -88,9 +88,9 @@ public class BooleanConfigCondition implements ICondition {
             if (!json.has("name"))
                 throw new JsonSyntaxException("Missing \"name\", expected to find a string");
             String configObjectName = JSONUtils.getString(json, "config");
-            Object configObject = configObjects.get(configObjectName);
+            Object configObject = CONFIG_OBJECTS.get(configObjectName);
             String configFieldName = JSONUtils.getString(json, "name");
-            Field configField = configFields.get(configFieldName);
+            Field configField = CONFIG_FIELDS.get(configFieldName);
             if (configObject == null)
                 throw new JsonSyntaxException("No config class of name \"" + configObjectName + "\" found");
             if (configField == null)
