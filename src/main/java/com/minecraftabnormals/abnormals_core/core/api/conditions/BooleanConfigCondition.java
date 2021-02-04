@@ -11,7 +11,7 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -64,8 +64,8 @@ public class BooleanConfigCondition implements ICondition {
     }
 
     public static class Serializer implements IConditionSerializer<BooleanConfigCondition> {
-        private static final Map<String, Field> configFields = new HashMap<>();
-        private static final Map<String, Object> configObjects = new HashMap<>();
+        private static final Hashtable<String, Field> configFields = new Hashtable<>();
+        private static final Hashtable<String, Object> configObjects = new Hashtable<>();
         private final ResourceLocation location;
 
         public Serializer(String modId, Map<String, Field> newConfigFields, Map<String, Object> newConfigObjects) {
