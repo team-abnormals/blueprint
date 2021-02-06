@@ -1,9 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.blocks.wood;
 
 import java.util.function.Supplier;
-
 import com.minecraftabnormals.abnormals_core.core.util.BlockUtil;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
