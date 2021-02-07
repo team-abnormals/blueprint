@@ -40,7 +40,7 @@ public class StrippedWoodPostBlock extends Block implements IWaterLoggable {
 		
 		BlockState defaultState = stateContainer.getBaseState().with(WATERLOGGED, false).with(AXIS, Axis.Y);
 		for (BooleanProperty prop : CHAINED)
-			defaultState.with(prop, false);
+			defaultState = defaultState.with(prop, false);
 		this.setDefaultState(defaultState);
 	}
 
@@ -83,7 +83,7 @@ public class StrippedWoodPostBlock extends Block implements IWaterLoggable {
 	}
 	
 	private BlockState getState(World world, BlockPos pos, Axis axis) {
-		BlockState state = getDefaultState().with(WATERLOGGED, world.getFluidState(pos).getFluid() == Fluids.WATER).with(AXIS, axis);
+		BlockState state = this.getDefaultState().with(WATERLOGGED, world.getFluidState(pos).getFluid() == Fluids.WATER).with(AXIS, axis);
 
 		for (Direction d : Direction.values()) {
 			if (d.getAxis() == axis)
