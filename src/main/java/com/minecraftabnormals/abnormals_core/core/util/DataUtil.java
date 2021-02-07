@@ -168,7 +168,7 @@ public final class DataUtil {
 	 * you use the {@code "value"} argument to specify the config value to target.
 	 *
 	 * <p>For example, in a config condition created under the id {@code abnormals_core}
-	 * that checks whether {@code "sign_editing_requires_empty_hand} (the annotated value for the
+	 * that checks whether {@code "sign_editing_requires_empty_hand"} (the annotated value for the
 	 * {@code signEditingRequiresEmptyHand} field) is true, the syntax would be like this:</p>
 	 *
 	 * <pre>{@code
