@@ -84,9 +84,9 @@ public class ConfigValueCondition implements ICondition {
         @Override
         public void write(JsonObject json, ConfigValueCondition value) {
             json.addProperty("value", value.valueID);
-            for (IConfigPredicate condition : value.predicates.keySet()) { //TODO might not work
-                CONFIG_PREDICATE_SERIALIZERS.get(condition.getID()).write(json, condition);
-                JSONUtils.getJsonObject(json, condition.getID().toString()).addProperty("inverted", value.predicates.get(condition));
+            for (IConfigPredicate predicate : value.predicates.keySet()) { //TODO might not work
+                CONFIG_PREDICATE_SERIALIZERS.get(predicate.getID()).write(json, predicate);
+                JSONUtils.getJsonObject(json, predicate.getID().toString()).addProperty("inverted", value.predicates.get(predicate));
             }
             if (value.inverted) json.addProperty("inverted", true);
         }
