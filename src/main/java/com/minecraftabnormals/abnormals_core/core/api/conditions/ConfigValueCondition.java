@@ -1,5 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.api.conditions;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -84,9 +85,11 @@ public class ConfigValueCondition implements ICondition {
         @Override
         public void write(JsonObject json, ConfigValueCondition value) {
             json.addProperty("value", value.valueID);
+            json.add("predicates", new JsonArray());
+            JsonArray predicates = JSONUtils.getJsonArray(json, "predicates");
             for (IConfigPredicate predicate : value.predicates.keySet()) { //TODO might not work
-                CONFIG_PREDICATE_SERIALIZERS.get(predicate.getID()).write(json, predicate);
-                JSONUtils.getJsonObject(json, predicate.getID().toString()).addProperty("inverted", value.predicates.get(predicate));
+                CONFIG_PREDICATE_SERIALIZERS.get(predicate.getID()).write(predicates.getAsJsonObject(), predicate);
+                JSONUtils.getJsonObject(predicates.getAsJsonObject(), predicate.getID().toString()).addProperty("inverted", value.predicates.get(predicate));
             }
             if (value.inverted) json.addProperty("inverted", true);
         }
