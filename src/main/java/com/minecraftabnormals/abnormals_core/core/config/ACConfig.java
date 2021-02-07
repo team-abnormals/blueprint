@@ -1,5 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.config;
 
+import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -7,16 +8,23 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.config.ModConfig;
 
+import java.util.function.Predicate;
+
 /**
  * @author SmellyModder(Luke Tonon)
  */
 public final class ACConfig {
 
 	public static class Common {
+		@ConfigKey("quark_sign_editing_enabled")
 		public final ConfigValue<Boolean> enableQuarkSignEditing;
+		@ConfigKey("sign_editing_requires_empty_hand")
 		public final ConfigValue<Boolean> signEditingRequiresEmptyHand;
+		@ConfigKey("quark_poison_potato_compat_enabled")
 		public final ConfigValue<Boolean> poisonPotatoCompatEnabled;
+		@ConfigKey("potato_poison_effect")
 		public final ConfigValue<Boolean> poisonEffect;
+		@ConfigKey("potato_poison_chance")
 		public final ConfigValue<Double> poisonChance;
 		
 		Common(ForgeConfigSpec.Builder builder) {
@@ -69,9 +77,13 @@ public final class ACConfig {
 	}
 
 	public static final class SlabfishSettings {
+		@ConfigKey("slabfish_hat_enabled")
 		public final ConfigValue<Boolean> enabled;
+		@ConfigKey("slabfish_hat_backpack_enabled")
 		public final ConfigValue<Boolean> backpackEnabled;
+		@ConfigKey("slabfish_hat_sweater_enabled")
 		public final ConfigValue<Boolean> sweaterEnabled;
+		@ConfigKey("slabfish_hat_custom_type_enabled")
 		public final ConfigValue<Boolean> typeEnabled;
 
 		SlabfishSettings(ForgeConfigSpec.Builder builder) {

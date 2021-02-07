@@ -1,6 +1,8 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import com.minecraftabnormals.abnormals_core.core.api.conditions.BooleanConfigCondition;
+import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.IConfigPredicateSerializer;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -34,9 +36,10 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
@@ -145,87 +148,98 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Registers a {@link BooleanConfigCondition.Serializer} under the name {@code "[modId]:config"}
-	 * that accepts the names of the {@link ForgeConfigSpec.ConfigValue ForgeConfigSpec.ConfigValue&lt;Boolean&gt;}
-	 * fields in {@code configObjects} as arguments  (formatted into snake case if {@code convertToSnakeCase} is true).
-	 * <br><br>
+	 * Registers a {@link ConfigValueCondition.Serializer} under the name {@code "[modId]:config"}
+	 * that accepts the values of {@link ConfigKey} annotations for {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}
+	 * fields in the passed-in collection of objects, checking against the annotation's corresponding
+	 * {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} to determine whether the condition should pass.<br><br>
 	 * <h2>Function</h2>
 	 * <p>This method allows you to make crafting recipes, advancement modifiers, etc. check whether a specific config
-	 * field is true before loading without having to hardcode new condition classes for specific cases. It's essentially
-	 * a wrapper for {@link CraftingHelper#register(IConditionSerializer)} and should be called during common setup accordingly.</p>
+	 * field is true/whether it meets specific predicates before loading without having to hardcode new condition classes
+	 * for certain config values. It's essentially a wrapper for {@link CraftingHelper#register(IConditionSerializer)}
+	 * and should be called during common setup accordingly.</p><br><br>
 	 *
 	 * <h2>Implementation</h2>
-	 * <p>All the objects in {@code configObjects} are mapped to the simple names of their class.
-	 * This means the lowest-down name in the package tree, for example:<br>
-	 * {@code com.minecraftabnormals.abnormals_core.core.config.ACConfig$Common} becomes {@code Common}.</p>
-	 *
-	 * <p>Similarly, all the {@link ForgeConfigSpec.ConfigValue ForgeConfigSpec.ConfigValue&lt;Boolean&gt;} fields in
-	 * the classes in {@code configObjects} are mapped to their names.</p>
-	 *
-	 * <p>If {@code convertToSnakeCase} is true, these names are converted into snake case (e.g. {@code slabfishSettings}
-	 * would become {@code slabfish_settings}) for consistency with the JSON format.</p>
-	 *
+	 * <p>All the {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}s in the objects in
+	 * {@code configObjects} with a {@link ConfigKey} annotation are mapped to the string values
+	 * of their field's annotation.
+
 	 * <p>The stored names are used to target config fields from JSON files. When defining a condition with<br>
 	 * {@code "type": "[modId]:config"}<br>
-	 * you use the {@code "config"} argument to specify the config <i>class</i> to target, and the {@code "name"}
-	 * argument to specify the config <i>field</i> to target.</p>
+	 * you use the {@code "value"} argument to specify the config value to target.
 	 *
-	 * <p>For example, in a config condition created under the id {@code abnormals_core} with {@code convertToSnakeCase} as true, targeting the
-	 * {@link com.minecraftabnormals.abnormals_core.core.config.ACConfig.Common} class and the
-	 * {@code signEditingRequiresEmptyHand} field, the syntax would be like this:</p>
+	 * <p>For example, in a config condition created under the id {@code abnormals_core}
+	 * that checks whether {@code "sign_editing_requires_empty_hand} (the annotated value for the
+	 * {@code signEditingRequiresEmptyHand} field) is true, the syntax would be like this:</p>
 	 *
 	 * <pre>{@code
 	 * "conditions": [
 	 *   {
 	 *     "type": "abnormals_core:config"
-	 *     "config": "common"
-	 *     "name": "sign_editing_requires_empty_hand"
+	 *     "value": "sign_editing_requires_empty_hand"
 	 *   }
 	 * ]
 	 * }</pre>
 	 *
-	 * <p><i>While only the name of the config class is shown in JSON, it does still map to an actual object.
-	 * When a condition is tested, {@link Field#get(Object)} is called passing in the mapped object.</i></p>
+	 * <p>Config conditions also accept a {@code predicates} array which defines predicates the config value must match
+	 * before the condition returns true, and a boolean {@code inverted} argument which makes the condition pass if it
+	 * evaluates to false instead of true. If the config value is non-boolean, {@code predicates} is required.
+	 * Each individual predicate also accepts an {@code inverted} argument, as {@code !(A.B) != !A.!B}.</p>
 	 *
-	 * @param modId The mod ID to register the condition under
-	 * @param convertToSnakeCase If true, the accepted values for {@code config} and {@code name} in JSON files are
-	 *                           converted to snake case first
-	 * @param configObjects The list of objects to get config fields from. These need to have unique names.
+	 * <p>For example, you could check whether a the float config value {@code "potato_poison_chance"} is less than
+	 * 0.1 by using the {@code "abnormals_core:greater_than_or_equal_to"} predicate and inverting it. (Of course,
+	 * in this situation it's easier to just use the {@code "abnormals_core:less_than"} predicate, but this is just
+	 * an example used to show the syntax of inverting).</p>
+	 *
+	 * <pre>{@code
+	 * "conditions": [
+	 *   {
+	 *     "type": "abnormals_core:config",
+	 *     "value": "potato_poison_chance",
+	 *     "predicates": [
+	 *       {
+	 *         "type": "abnormals_core:greater_than_or_equal_to",
+	 *         "value": 0.1,
+	 *         "inverted": true
+	 *       }
+	 *     ]
+	 *   }
+	 * ],
+	 * }</pre>
+	 *
+	 * <p>Abnormals Core has pre-made predicates for numeric comparison and checking for equality, but you can create
+	 * custom predicates and register them with {@link DataUtil#registerConfigPredicate(IConfigPredicateSerializer)}.</p>
+	 *
+	 * @param modId The mod ID to register the config condition under. The reason this is required and that you can't just
+	 *              register your values under {@code "abnormals_core:config"} is because there could be duplicate keys
+	 *              between mods.
+	 * @param configObjects The list of objects to get config keys from. The {@link ConfigKey} values must be unique.
 	 *
 	 * @author abigailfails
-	 *
 	 */
-	public static void registerBooleanConfigCondition(String modId, boolean convertToSnakeCase, Object... configObjects) {
-		Map<String, Object> newConfigObjects = new HashMap<>();
-		Map<String, Field> newConfigFields = new HashMap<>();
-		Arrays.asList(configObjects).forEach(cfg -> {
-			newConfigObjects.put(snakeCase(cfg.getClass().getSimpleName()), cfg);
-			Arrays.stream(cfg.getClass().getDeclaredFields()).filter(f -> ForgeConfigSpec.ConfigValue.class.isAssignableFrom(f.getType()) && ((ParameterizedType) f.getGenericType()).getActualTypeArguments()[0] == Boolean.class).forEach(f -> {
-				f.setAccessible(true);
-				newConfigFields.put(convertToSnakeCase ? snakeCase(f.getName()) : f.getName(), f);
-			});
-		});
-		CraftingHelper.register(new BooleanConfigCondition.Serializer(modId, newConfigFields, newConfigObjects));
+	public static void registerConfigCondition(String modId, Object... configObjects) {
+		Hashtable<String, ForgeConfigSpec.ConfigValue<?>> newConfigFields = new Hashtable<>();
+		Arrays.asList(configObjects).forEach(cfg -> Arrays.stream(cfg.getClass().getDeclaredFields()).filter(f -> f.getAnnotation(ConfigKey.class) != null && ForgeConfigSpec.ConfigValue.class.isAssignableFrom(f.getType())).forEach(f -> {
+			f.setAccessible(true);
+			try {
+				newConfigFields.put(f.getAnnotation(ConfigKey.class).value(), (ForgeConfigSpec.ConfigValue<?>) f.get(cfg));
+			} catch (IllegalAccessException ignored) {
+			}
+		}));
+		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, newConfigFields));
 	}
 
 	/**
-	 * Converts {@code PascalCase} or {@code camelCase} strings to a {@code snake_case} format.
-	 * <p>Can insert underscores between a lowercase letter and a capital letter <b>or</b> a number,
-	 * or alternatively between a capital letter and a number.</p>
-	 * <p>e.g:<br>
-	 *        fgaAbc -> fga_abc  <br>
-	 *        era09  -> era_09   <br>
-	 *        kiAN0  -> ki_an_0  <br>
-	 *        sy70p  -> sy_70p   <br>
-	 *        sy70P  -> sy_70_p  </p>
+	 * Registers an {@link IConfigPredicateSerializer} for an
+	 * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.IConfigPredicate}.
 	 *
-	 * @param string the string to format
-	 * @return {@code string}, formatted into snake case
+	 * <p>The predicate takes in a {@link ForgeConfigSpec.ConfigValue} and returns true if it matches specific conditions.</p>
 	 *
-	 * @author abigailfails
-	 *
-	 */
-	public static String snakeCase(String string) {
-		return string.replaceAll("((?<=[a-z])([A-Z]|[0-9]))|((?<=[0-9])[A-Z])|((?<=[A-Z])[0-9])", "_$0").toLowerCase();
+	 * @param serializer The serializer to register.
+	 * */
+	public static void registerConfigPredicate(IConfigPredicateSerializer<?> serializer) {
+		ResourceLocation key = serializer.getID();
+		if (ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.containsKey(key))
+			throw new IllegalStateException("Duplicate config predicate serializer: " + key);
+		ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.put(key, serializer);
 	}
 }

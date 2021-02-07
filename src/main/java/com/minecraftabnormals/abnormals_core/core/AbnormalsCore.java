@@ -8,6 +8,11 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataP
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.api.banner.BannerManager;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.EqualsPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.GreaterThanOrEqualPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.GreaterThanPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.LessThanOrEqualPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.LessThanPredicate;
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
@@ -82,7 +87,14 @@ public final class AbnormalsCore {
 
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
-		DataUtil.registerBooleanConfigCondition(AbnormalsCore.MODID, true, ACConfig.COMMON, ACConfig.CLIENT, ACConfig.CLIENT.slabfishSettings);
+		DataUtil.registerConfigCondition(AbnormalsCore.MODID, ACConfig.COMMON, ACConfig.CLIENT, ACConfig.CLIENT.slabfishSettings);
+		DataUtil.registerConfigPredicate(new EqualsPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new GreaterThanOrEqualPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new GreaterThanPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new LessThanOrEqualPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new LessThanPredicate.Serializer());
+
+
 		BannerManager.RECIPE_SERIALIZERS.register(modEventBus);
 
 		REGISTRY_HELPER.getEntitySubHelper().register(modEventBus);

@@ -6,15 +6,23 @@
       "conditions": [
         {
           "type": "abnormals_core:config",
-          "config": "slabfish_settings",
-          "name": "backpack_enabled",
-          "inverted": true
+          "value": "potato_poison_chance",
+          "predicates": [
+            {
+              "type": "abnormals_core:greater_than_or_equal_to",
+              "value": 0.1,
+              "inverted": true
+            }
+          ]
         }
       ],
       "config": {
         "mode": "modify",
+        "title": {
+          "translate": "ac_test.advancements.husbandry.upgrade_tools.title"
+        },
         "description": {
-          "text": "You have turned off the slabfish backpack... Shocking!!"
+          "text": "You have a lower poison chance than normal!!"
         }
       }
     }

@@ -1,0 +1,28 @@
+{
+  "advancement": "story/obtain_armor",
+  "modifiers": [
+    {
+      "type": "display",
+      "conditions": [
+        {
+          "type": "abnormals_core:config",
+          "value": "slabfish_hat_backpack_enabled",
+          "inverted": true
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "abnormals_core"
+        }
+      ],
+      "config": {
+        "mode": "modify",
+        "title": {
+          "translate": "ac_test.advancements.husbandry.obtain_armor.title"
+        },
+        "description": {
+          "text": "How do you intend to suit up when you have the slabfish backpack turned off !!!!"
+        }
+      }
+    }
+  ]
+}
