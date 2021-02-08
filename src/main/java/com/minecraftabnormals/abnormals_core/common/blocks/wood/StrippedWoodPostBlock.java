@@ -37,7 +37,6 @@ public class StrippedWoodPostBlock extends Block implements IWaterLoggable {
 
 	public StrippedWoodPostBlock(Properties properties) {
 		super(properties);
-
 		BlockState defaultState = stateContainer.getBaseState().with(WATERLOGGED, false).with(AXIS, Axis.Y);
 		for (BooleanProperty prop : CHAINED)
 			defaultState = defaultState.with(prop, false);
