@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 
 @Mixin(LanternBlock.class)
-public class LanternBlockMixin {
+public final class LanternBlockMixin {
 
 	@Inject(method = "isValidPosition", at = @At("RETURN"), cancellable = true)
 	private void isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
