@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.minecraftabnormals.abnormals_core.common.blocks.wood.StrippedWoodPostBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.wood.WoodPostBlock;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LanternBlock;
@@ -17,7 +17,7 @@ public final class LanternBlockMixin {
 
 	@Inject(method = "isValidPosition", at = @At("RETURN"), cancellable = true)
 	private void isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos, CallbackInfoReturnable<Boolean> info) {
-		info.setReturnValue(info.getReturnValue() || (state.get(LanternBlock.HANGING) && worldIn.getBlockState(pos.up()).getBlock() instanceof StrippedWoodPostBlock));
+		info.setReturnValue(info.getReturnValue() || (state.get(LanternBlock.HANGING) && worldIn.getBlockState(pos.up()).getBlock() instanceof WoodPostBlock));
 	}
 
 }
