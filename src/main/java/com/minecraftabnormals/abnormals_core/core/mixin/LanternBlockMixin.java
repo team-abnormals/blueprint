@@ -16,8 +16,8 @@ import net.minecraft.world.IWorldReader;
 public final class LanternBlockMixin {
 
 	@Inject(method = "isValidPosition", at = @At("RETURN"), cancellable = true)
-	private void isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		callbackInfoReturnable.setReturnValue(callbackInfoReturnable.getReturnValue() || (state.get(LanternBlock.HANGING) && worldIn.getBlockState(pos.up()).getBlock() instanceof StrippedWoodPostBlock));
+	private void isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos, CallbackInfoReturnable<Boolean> info) {
+		info.setReturnValue(info.getReturnValue() || (state.get(LanternBlock.HANGING) && worldIn.getBlockState(pos.up()).getBlock() instanceof StrippedWoodPostBlock));
 	}
 
 }
