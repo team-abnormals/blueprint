@@ -81,17 +81,17 @@ public class StrippedWoodPostBlock extends Block implements IWaterLoggable {
 			builder.add(prop);
 	}
 
-	private static BlockState getState(World world, BlockPos pos, Axis axis) {
+	private BlockState getState(World world, BlockPos pos, Axis axis) {
 		BlockState state = this.getDefaultState().with(WATERLOGGED, world.getFluidState(pos).getFluid() == Fluids.WATER).with(AXIS, axis);
 
-		for (Direction d : Direction.values()) {
-			if (d.getAxis() == axis)
+		for (Direction direction : Direction.values()) {
+			if (direction.getAxis() == axis)
 				continue;
 
-			BlockState sideState = world.getBlockState(pos.offset(d));
-			if ((sideState.getBlock() instanceof ChainBlock && sideState.get(BlockStateProperties.AXIS) == d.getAxis()) 
-					|| (d == Direction.DOWN && sideState.getBlock() instanceof LanternBlock && sideState.get(LanternBlock.HANGING)))
-				state = state.with(CHAINED[d.ordinal()], true);
+			BlockState sideState = world.getBlockState(pos.offset(direction));
+			if ((sideState.getBlock() instanceof ChainBlock && sideState.get(BlockStateProperties.AXIS) == direction.getAxis()) 
+					|| (direction == Direction.DOWN && sideState.getBlock() instanceof LanternBlock && sideState.get(LanternBlock.HANGING)))
+				state = state.with(CHAINED[direction.ordinal()], true);
 		}
 
 		return state;
