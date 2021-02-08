@@ -60,9 +60,9 @@ public class WoodPostBlock extends Block implements IWaterLoggable {
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		switch (state.get(AXIS)) {
-		case X: return SHAPE_X;
-		case Y: return SHAPE_Y;
-		default: return SHAPE_Z;
+			case X: return SHAPE_X;
+			case Y: return SHAPE_Y;
+			default: return SHAPE_Z;
 		}
 	}
 
