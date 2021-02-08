@@ -21,9 +21,9 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class StrippedWoodPostBlock extends Block implements IWaterLoggable {
-	private static final VoxelShape SHAPE_X = Block.makeCuboidShape(0F, 6F, 6F, 16F, 10F, 10F);
-	private static final VoxelShape SHAPE_Y = Block.makeCuboidShape(6F, 0F, 6F, 10F, 16F, 10F);
-	private static final VoxelShape SHAPE_Z = Block.makeCuboidShape(6F, 6F, 0F, 10F, 10F, 16F);
+	private static final VoxelShape SHAPE_X = makeCuboidShape(0.0F, 6.0F, 6.0F, 16.0F, 10.0F, 10.0F);
+	private static final VoxelShape SHAPE_Y = makeCuboidShape(6.0F, 0.0F, 6.0F, 10.0F, 16.0F, 10.0F);
+	private static final VoxelShape SHAPE_Z = makeCuboidShape(6.0F, 6.0F, 0.0F, 10.0F, 10.0F, 16.0F);
 	private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	private static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
 	private static final BooleanProperty[] CHAINED = new BooleanProperty[] {
