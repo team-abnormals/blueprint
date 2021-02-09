@@ -1,10 +1,8 @@
-package com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison;
+package com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.IConfigPredicate;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.IConfigPredicateSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 

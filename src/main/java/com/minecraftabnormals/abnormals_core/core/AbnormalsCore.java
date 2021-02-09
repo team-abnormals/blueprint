@@ -8,11 +8,11 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataP
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.api.banner.BannerManager;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.EqualsPredicate;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.GreaterThanOrEqualPredicate;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.GreaterThanPredicate;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.LessThanOrEqualPredicate;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.comparison.LessThanPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.EqualsPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.GreaterThanOrEqualPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.GreaterThanPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.LessThanOrEqualPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.LessThanPredicate;
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
