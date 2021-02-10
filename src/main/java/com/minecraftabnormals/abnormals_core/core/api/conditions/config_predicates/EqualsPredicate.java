@@ -46,12 +46,8 @@ public class EqualsPredicate implements IConfigPredicate {
         @Override
         public EqualsPredicate read(JsonObject json) {
             if (!json.has("value"))
-                throw new JsonSyntaxException("Missing 'value', expected to find a number");
-            try {
-                return new EqualsPredicate(json.get("value").getAsBigDecimal());
-            } catch (NumberFormatException e) {
-                throw new JsonSyntaxException("'value' does not contain a number");
-            }
+                throw new JsonSyntaxException("Missing 'value', expected to find a object");
+            return new EqualsPredicate(json.get("value"));
         }
 
         @Override
