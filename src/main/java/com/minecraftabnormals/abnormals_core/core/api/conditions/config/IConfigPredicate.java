@@ -8,13 +8,13 @@ import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCond
  * A predicate for a {@link ConfigValueCondition}, takes in a
  * {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} and returns a boolean for whether it matches the condition.
  *
- * */
+ */
 public interface IConfigPredicate {
     /**
      * Gets the ID of the predicate that will be checked for when deserializing from JSON (e.g. {@code "abnormals_core:equals"})
      *
      * @return a {@link ResourceLocation} representing the predicate's unique identifier
-     * */
+     */
     ResourceLocation getID();
 
     /**
@@ -27,6 +27,6 @@ public interface IConfigPredicate {
      *
      * @return whether {@code value} meets the predicate
      * @throws IllegalArgumentException if {@code value} is of an invalid type
-     * */
+     */
     boolean test(ForgeConfigSpec.ConfigValue<?> value) throws IllegalArgumentException;
 }
