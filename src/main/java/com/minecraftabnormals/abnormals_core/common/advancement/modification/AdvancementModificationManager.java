@@ -104,7 +104,7 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 					throw new JsonParseException("Missing 'config' element!");
 				}
 				advancementModifiers.add(modifier.deserialize(config, conditionArrayParser));
-			} else AbnormalsCore.LOGGER.info("Skipped advancement modifier '" + type + "' for advancement '" + advancement + "' as its conditions were not met");
+			} else AbnormalsCore.LOGGER.info("Skipped advancement modifier \"" + type + "\" for advancement \"" + advancement + "\" as its conditions were not met");
 		});
 		return new TargetedAdvancementModifier(advancement, advancementModifiers);
 	}
