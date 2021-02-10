@@ -39,7 +39,6 @@ import java.util.Map;
  *
  * @see DataUtil#registerConfigCondition(String, Object...)
  * @author abigailfails
- *
  */
 public class ConfigValueCondition implements ICondition {
     private final ForgeConfigSpec.ConfigValue<?> value;
@@ -55,7 +54,6 @@ public class ConfigValueCondition implements ICondition {
         this.predicates = predicates;
         this.inverted = inverted;
     }
-
 
     @Override
     public ResourceLocation getID() {
