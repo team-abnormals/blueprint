@@ -29,7 +29,7 @@ public class ContainsPredicate implements IConfigPredicate {
     }
 
     public static class Serializer implements IConfigPredicateSerializer<ContainsPredicate> {
-        private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "matches");
+        private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "contains");
 
         @Override
         public void write(JsonObject json, IConfigPredicate value) {
