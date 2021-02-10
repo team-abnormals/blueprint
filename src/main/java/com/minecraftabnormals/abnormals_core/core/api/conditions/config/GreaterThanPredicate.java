@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 
 public class GreaterThanPredicate implements IConfigPredicate {
     private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "greater_than");
-    private final BigDecimal value;
+    private final double value;
 
-    public GreaterThanPredicate(BigDecimal value) {
+    public GreaterThanPredicate(double value) {
         this.value = value;
     }
 
@@ -24,10 +24,9 @@ public class GreaterThanPredicate implements IConfigPredicate {
     @Override
     public boolean test(ForgeConfigSpec.ConfigValue<?> toCompare) {
         try {
-            BigDecimal number = new BigDecimal(toCompare.get().toString());
-            return number.compareTo(value) > 0;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid config value type; must hold a Number");
+            return ((Double) toCompare.get()) > value;
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("Invalid config value type; must hold a double");
         }
     }
 
@@ -45,8 +44,8 @@ public class GreaterThanPredicate implements IConfigPredicate {
             if (!json.has("value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a number");
             try {
-                return new GreaterThanPredicate(json.get("value").getAsBigDecimal());
-            } catch (NumberFormatException e) {
+                return new GreaterThanPredicate(json.get("value").getAsDouble());
+            } catch (ClassCastException|IllegalStateException e) {
                 throw new JsonSyntaxException("'value' does not contain a number");
             }
         }
