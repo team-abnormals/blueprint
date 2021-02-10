@@ -78,12 +78,12 @@ public class WoodPostBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return this.getState(context.getWorld(), context.getPos(), context.getFace().getAxis());
+		return this.getRelevantState(context.getWorld(), context.getPos(), context.getFace().getAxis());
 	}
 
 	@Override
 	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-		BlockState newState = this.getState(worldIn, pos, state.get(AXIS));
+		BlockState newState = this.getRelevantState(worldIn, pos, state.get(AXIS));
 		if (!newState.equals(state))
 			worldIn.setBlockState(pos, newState);
 	}
@@ -102,7 +102,7 @@ public class WoodPostBlock extends Block implements IWaterLoggable {
 		return super.getToolModifiedState(state, world, pos, player, stack, toolType);
 	}
 
-	private BlockState getState(World world, BlockPos pos, Axis axis) {
+	private BlockState getRelevantState(World world, BlockPos pos, Axis axis) {
 		BlockState state = this.getDefaultState().with(WATERLOGGED, world.getFluidState(pos).getFluid() == Fluids.WATER).with(AXIS, axis);
 
 		for (Direction direction : Direction.values()) {
