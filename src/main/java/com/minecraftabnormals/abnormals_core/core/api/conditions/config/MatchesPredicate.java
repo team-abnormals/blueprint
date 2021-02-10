@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class MatchesPredicate implements IConfigPredicate {
-    private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "equals");
+    private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "matches");
     private final String regex;
 
     public MatchesPredicate(String regex) {
