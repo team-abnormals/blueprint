@@ -205,8 +205,9 @@ public final class DataUtil {
 	 * ],
 	 * }</pre>
 	 *
-	 * <p>Abnormals Core has pre-made predicates for numeric comparison and checking for equality, but you can create
-	 * custom predicates and register them with {@link DataUtil#registerConfigPredicate(IConfigPredicateSerializer)}.</p>
+	 * <p>Abnormals Core has pre-made predicates for numeric and string comparison as well as checking for equality,
+	 * but you can create custom predicates and register them with
+	 * {@link DataUtil#registerConfigPredicate(IConfigPredicateSerializer)}.</p>
 	 *
 	 * @param modId The mod ID to register the config condition under. The reason this is required and that you can't just
 	 *              register your values under {@code "abnormals_core:config"} is because there could be duplicate keys
