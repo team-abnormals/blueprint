@@ -1,4 +1,4 @@
-package com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates;
+package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -8,11 +8,11 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.math.BigDecimal;
 
-public class LessThanOrEqualPredicate implements IConfigPredicate {
-    private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "less_than_or_equal_to");
+public class LessThanPredicate implements IConfigPredicate {
+    private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "less_than");
     private final BigDecimal value;
 
-    public LessThanOrEqualPredicate(BigDecimal value) {
+    public LessThanPredicate(BigDecimal value) {
         this.value = value;
     }
 
@@ -25,27 +25,27 @@ public class LessThanOrEqualPredicate implements IConfigPredicate {
     public boolean test(ForgeConfigSpec.ConfigValue<?> toCompare) {
         try {
             BigDecimal number = new BigDecimal(toCompare.get().toString());
-            return number.compareTo(value) <= 0;
+            return number.compareTo(value) < 0;
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid config value type; must hold a Number");
         }
     }
 
-    public static class Serializer implements IConfigPredicateSerializer<LessThanOrEqualPredicate> {
-        private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "less_than_or_equal_to");
+    public static class Serializer implements IConfigPredicateSerializer<LessThanPredicate> {
+        private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "less_than");
 
         @Override
         public void write(JsonObject json, IConfigPredicate value) {
-            if (!(value instanceof LessThanOrEqualPredicate)) throw new IllegalArgumentException("Incompatible predicate type");
-            json.addProperty("value", ((LessThanOrEqualPredicate) value).value);
+            if (!(value instanceof LessThanPredicate)) throw new IllegalArgumentException("Incompatible predicate type");
+            json.addProperty("value", ((LessThanPredicate) value).value);
         }
 
         @Override
-        public LessThanOrEqualPredicate read(JsonObject json) {
+        public LessThanPredicate read(JsonObject json) {
             if (!json.has("value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a number");
             try {
-                return new LessThanOrEqualPredicate(json.get("value").getAsBigDecimal());
+                return new LessThanPredicate(json.get("value").getAsBigDecimal());
             } catch (NumberFormatException e) {
                 throw new JsonSyntaxException("'value' does not contain a number");
             }

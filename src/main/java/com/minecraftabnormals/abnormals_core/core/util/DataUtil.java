@@ -1,8 +1,9 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
+import com.google.common.collect.ImmutableMap;
 import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.IConfigPredicateSerializer;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -32,16 +33,14 @@ import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import javax.management.ImmutableDescriptor;
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiPredicate;
 
 public final class DataUtil {
@@ -217,20 +216,20 @@ public final class DataUtil {
 	 * @author abigailfails
 	 */
 	public static void registerConfigCondition(String modId, Object... configObjects) {
-		Hashtable<String, ForgeConfigSpec.ConfigValue<?>> newConfigFields = new Hashtable<>();
+		HashMap<String, ForgeConfigSpec.ConfigValue<?>> configValues = new HashMap<>();
 		Arrays.asList(configObjects).forEach(cfg -> Arrays.stream(cfg.getClass().getDeclaredFields()).filter(f -> f.getAnnotation(ConfigKey.class) != null && ForgeConfigSpec.ConfigValue.class.isAssignableFrom(f.getType())).forEach(f -> {
 			f.setAccessible(true);
 			try {
-				newConfigFields.put(f.getAnnotation(ConfigKey.class).value(), (ForgeConfigSpec.ConfigValue<?>) f.get(cfg));
+				configValues.put(f.getAnnotation(ConfigKey.class).value(), (ForgeConfigSpec.ConfigValue<?>) f.get(cfg));
 			} catch (IllegalAccessException ignored) {
 			}
 		}));
-		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, newConfigFields));
+		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, ImmutableMap.copyOf(configValues)));
 	}
 
 	/**
 	 * Registers an {@link IConfigPredicateSerializer} for an
-	 * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.IConfigPredicate}.
+	 * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate}.
 	 *
 	 * <p>The predicate takes in a {@link ForgeConfigSpec.ConfigValue} and returns true if it matches specific conditions.</p>
 	 *

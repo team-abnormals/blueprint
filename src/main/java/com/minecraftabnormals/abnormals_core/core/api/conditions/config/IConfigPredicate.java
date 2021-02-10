@@ -1,4 +1,4 @@
-package com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates;
+package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;

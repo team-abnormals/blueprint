@@ -1,7 +1,6 @@
-package com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates;
+package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 
 import com.google.gson.JsonObject;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
 import net.minecraft.util.ResourceLocation;
 
 /**

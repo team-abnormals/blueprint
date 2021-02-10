@@ -1,11 +1,12 @@
 package com.minecraftabnormals.abnormals_core.core.api.conditions;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.IConfigPredicate;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.config_predicates.IConfigPredicateSerializer;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
 import net.minecraft.util.JSONUtils;
@@ -74,12 +75,12 @@ public class ConfigValueCondition implements ICondition {
 
     public static class Serializer implements IConditionSerializer<ConfigValueCondition> {
         public static final Hashtable<ResourceLocation, IConfigPredicateSerializer<?>> CONFIG_PREDICATE_SERIALIZERS = new Hashtable<>();
-        private final Hashtable<String, ForgeConfigSpec.ConfigValue<?>> CONFIG_VALUES;
+        private final ImmutableMap<String, ForgeConfigSpec.ConfigValue<?>> CONFIG_VALUES;
         private final ResourceLocation location;
 
-        public Serializer(String modId, Hashtable<String, ForgeConfigSpec.ConfigValue<?>> newConfigFields) {
+        public Serializer(String modId, ImmutableMap<String, ForgeConfigSpec.ConfigValue<?>> configValues) {
             this.location = new ResourceLocation(modId, "config");
-            CONFIG_VALUES = newConfigFields;
+            CONFIG_VALUES = configValues;
         }
 
         @Override
