@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ContainsPredicate implements IConfigPredicate {
-    private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "equals");
+    private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "contains");
     private final String value;
 
     public ContainsPredicate(String value) {
