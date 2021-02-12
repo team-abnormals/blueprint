@@ -1,0 +1,59 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "extend": "false"
+      },
+      "apply": {
+        "model": "ac_test:block/test_hedge_post"
+      }
+    },
+    {
+      "when": {
+        "extend": "true"
+      },
+      "apply": {
+        "model": "ac_test:block/test_hedge_extend"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "ac_test:block/test_hedge_side",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "ac_test:block/test_hedge_side",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "ac_test:block/test_hedge_side",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "ac_test:block/test_hedge_side",
+        "y": 270,
+        "uvlock": true
+      }
+    }
+  ]
+}

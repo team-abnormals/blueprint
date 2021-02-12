@@ -1,0 +1,32 @@
+{
+    "parent": "minecraft:block/block",
+    "textures": {
+        "particle": "#leaf"
+    },
+    "elements": [
+        {
+            "from": [6, 0, 6],
+            "to": [10, 15, 10],
+            "faces": {
+                "north": {"uv": [6, 1, 10, 16], "texture": "#log"},
+                "east": {"uv": [6, 1, 10, 16], "texture": "#log"},
+                "south": {"uv": [6, 1, 10, 16], "texture": "#log"},
+                "west": {"uv": [6, 1, 10, 16], "texture": "#log"},
+                "up": {"uv": [6, 6, 10, 10], "texture": "#log"},
+                "down": {"uv": [6, 6, 10, 10], "texture": "#log", "cullface": "down"}
+            }
+        },
+        {
+            "from": [2, 2, 2],
+            "to": [14, 16, 14],
+            "faces": {
+                "north": {"uv": [2, 0, 14, 14], "texture": "#leaf", "tintindex": 0},
+                "east": {"uv": [2, 0, 14, 14], "texture": "#leaf", "tintindex": 0},
+                "south": {"uv": [2, 0, 14, 14], "texture": "#leaf", "tintindex": 0},
+                "west": {"uv": [2, 0, 14, 14], "texture": "#leaf", "tintindex": 0},
+                "up": {"uv": [2, 2, 14, 14], "texture": "#leaf", "tintindex": 0},
+                "down": {"uv": [2, 2, 14, 14], "texture": "#leaf", "tintindex": 0}
+            }
+        }
+    ]
+}
