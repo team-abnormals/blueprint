@@ -292,7 +292,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @param color       - The {@link MaterialColor} for the chest blocks.
 	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link AbnormalsChestBlock} and the {@link AbnormalsTrappedChestBlock}
 	 */
-	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, String compatModId, MaterialColor color) {
+	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String compatModId, String name, MaterialColor color) {
 		boolean isModLoaded = ModList.get().isLoaded(compatModId) || compatModId == "indev";
 		ItemGroup chestGroup = isModLoaded ? ItemGroup.DECORATIONS : null;
 		ItemGroup trappedChestGroup = isModLoaded ? ItemGroup.REDSTONE : null;
