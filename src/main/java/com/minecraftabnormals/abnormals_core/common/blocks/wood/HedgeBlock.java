@@ -1,4 +1,4 @@
-package com.minecraftabnormals.abnormals_core.common.blocks;
+package com.minecraftabnormals.abnormals_core.common.blocks.wood;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -37,7 +37,7 @@ public class HedgeBlock extends FenceBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return super.getStateForPlacement(context).with(EXTEND, context.getWorld().getBlockState(context.getPos().down()).getBlock().isIn(BlockTags.getCollection().get(new ResourceLocation("quark", "hedges"))));
+		return super.getStateForPlacement(context).with(EXTEND, context.getWorld().getBlockState(context.getPos().down()).getBlock() instanceof HedgeBlock);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class HedgeBlock extends FenceBlock {
 		}
 
 		if(facing == Direction.DOWN)
-			return stateIn.with(EXTEND, facingState.getBlock().isIn(BlockTags.getCollection().get(new ResourceLocation("quark", "hedges"))));
+			return stateIn.with(EXTEND, facingState.getBlock() instanceof HedgeBlock);
 		
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
