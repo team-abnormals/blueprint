@@ -17,6 +17,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -93,15 +94,17 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 		modifiers.forEach(element -> {
 			JsonObject entry = element.getAsJsonObject();
 			String type = JSONUtils.getString(entry, "type");
-			AdvancementModifier<?> modifier = AdvancementModifiers.getModifier(type);
-			if (modifier == null) {
-				throw new JsonParseException("Unknown Advancement Modifier type: " + type);
-			}
-			JsonElement config = entry.get("config");
-			if (config == null) {
-				throw new JsonParseException("Missing 'config' element!");
-			}
-			advancementModifiers.add(modifier.deserialize(config, conditionArrayParser));
+			if (!JSONUtils.hasField(entry, "conditions") || CraftingHelper.processConditions(JSONUtils.getJsonArray(entry, "conditions"))) {
+				AdvancementModifier<?> modifier = AdvancementModifiers.getModifier(type);
+				if (modifier == null) {
+					throw new JsonParseException("Unknown Advancement Modifier type: " + type);
+				}
+				JsonElement config = entry.get("config");
+				if (config == null) {
+					throw new JsonParseException("Missing 'config' element!");
+				}
+				advancementModifiers.add(modifier.deserialize(config, conditionArrayParser));
+			} else AbnormalsCore.LOGGER.info("Skipped advancement modifier \"" + type + "\" for advancement \"" + advancement + "\" as its conditions were not met");
 		});
 		return new TargetedAdvancementModifier(advancement, advancementModifiers);
 	}

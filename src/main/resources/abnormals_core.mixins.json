@@ -11,6 +11,7 @@
     "FluidInvokerMixin",
     "HillsLayerMixin",
     "ItemInvokerMixin",
+    "LanternBlockMixin",
     "ServerWorldMixin",
     "SpawnEggItemMixin",
     "TrackedEntityMixin",

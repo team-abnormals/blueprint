@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.entity.ai.brain.task.GiveHeroGiftsTask;
+import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -71,6 +73,13 @@ public final class DataUtil {
 				blocks[i] = blocksIn.get(i).get();
 			}
 			blockColors.register(color, blocks);
+		}
+	}
+
+	public static void registerVillagerGift(VillagerProfession profession) {
+		ResourceLocation name = profession.getRegistryName();
+		if (name != null) {
+			GiveHeroGiftsTask.GIFTS.put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
 		}
 	}
 

@@ -189,7 +189,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public RegistryObject<AbnormalsChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
 		RegistryObject<AbnormalsChestBlock> block = this.deferredRegister.register(name + "_chest", () -> new AbnormalsChestBlock(this.parent.getModId(), name, properties));
-		this.itemRegister.register(name + "_chest", () -> new FuelBlockItem(block.get(), 300, new Item.Properties().group(group).setISTER(() -> chestISTER(false))));
+		this.itemRegister.register(name + "_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER(false))));
 		return block;
 	}
 
@@ -203,7 +203,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
 		RegistryObject<AbnormalsTrappedChestBlock> block = this.deferredRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.parent.getModId(), name, properties));
-		this.itemRegister.register(name + "_trapped_chest", () -> new FuelBlockItem(block.get(), 300, new Item.Properties().group(group).setISTER(() -> chestISTER(true))));
+		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER(true))));
 		return block;
 	}
 
@@ -301,8 +301,8 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String trappedChestName = name + "_trapped_chest";
 		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId, name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
 		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId, name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
-		this.itemRegister.register(chestName, () -> new BlockItem(chest.get(), new Item.Properties().group(chestGroup).setISTER(() -> chestISTER(false))));
-		this.itemRegister.register(trappedChestName, () -> new BlockItem(trappedChest.get(), new Item.Properties().group(trappedChestGroup).setISTER(() -> chestISTER(true))));
+		this.itemRegister.register(chestName, () -> new FuelBlockItem(chest.get(), 300, new Item.Properties().group(chestGroup).setISTER(() -> chestISTER(false))));
+		this.itemRegister.register(trappedChestName, () -> new FuelBlockItem(trappedChest.get(), 300, new Item.Properties().group(trappedChestGroup).setISTER(() -> chestISTER(true))));
 		return Pair.of(chest, trappedChest);
 	}
 
@@ -323,8 +323,8 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String trappedChestName = name + "_trapped_chest";
 		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId, name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
 		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId, name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
-		this.itemRegister.register(chestName, () -> new BlockItem(chest.get(), new Item.Properties().group(chestGroup).setISTER(() -> chestISTER(false))));
-		this.itemRegister.register(trappedChestName, () -> new BlockItem(trappedChest.get(), new Item.Properties().group(trappedChestGroup).setISTER(() -> chestISTER(true))));
+		this.itemRegister.register(chestName, () -> new FuelBlockItem(chest.get(), 300, new Item.Properties().group(chestGroup).setISTER(() -> chestISTER(false))));
+		this.itemRegister.register(trappedChestName, () -> new FuelBlockItem(trappedChest.get(), 300, new Item.Properties().group(trappedChestGroup).setISTER(() -> chestISTER(true))));
 		return Pair.of(chest, trappedChest);
 	}
 
