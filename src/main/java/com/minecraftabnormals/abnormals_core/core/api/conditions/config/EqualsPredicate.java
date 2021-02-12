@@ -1,6 +1,9 @@
 package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import net.minecraft.util.ResourceLocation;
@@ -31,15 +34,14 @@ public class EqualsPredicate implements IConfigPredicate {
         public void write(JsonObject json, IConfigPredicate value) {
             if (!(value instanceof EqualsPredicate)) throw new IllegalArgumentException("Incompatible predicate type");
             Object object = ((EqualsPredicate) value).value;
-            if (object instanceof String) { //TODO less hardcoding
+            if (object == null) {
+                json.add("value", JsonNull.INSTANCE);
+            } else if (object instanceof String) {
                 json.addProperty("value", (String) object);
             } else if (object instanceof Number) {
                 json.addProperty("value", (Number) object);
-
             } else if (object instanceof Boolean) {
                 json.addProperty("value", (Boolean) object);
-            } else if (object instanceof Character) {
-                json.addProperty("value", (Character) object);
             } else throw new IllegalArgumentException("Predicate value cannot be serialized");
         }
 
@@ -47,7 +49,19 @@ public class EqualsPredicate implements IConfigPredicate {
         public EqualsPredicate read(JsonObject json) {
             if (!json.has("value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a object");
-            return new EqualsPredicate(json.get("value"));
+            Object value;
+            JsonElement element = json.get("value");
+            if (element.isJsonPrimitive()) {
+                JsonPrimitive primitive = element.getAsJsonPrimitive();
+                if (primitive.isNumber()) {
+                    value = primitive.getAsDouble();
+                } else if (primitive.isBoolean()) {
+                    value = primitive.getAsBoolean();
+                } else value = primitive.getAsString();
+            } else if (element.isJsonNull()) {
+                value = null;
+            } else throw new JsonSyntaxException("Cannot deserialize field, not a recognizable type");
+            return new EqualsPredicate(value);
         }
 
         @Override
