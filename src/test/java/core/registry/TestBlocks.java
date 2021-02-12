@@ -8,7 +8,6 @@ import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsStandin
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.wood.WoodPostBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.wood.WoodPostBlock;
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.util.registry.BlockSubRegistryHelper;
 import common.blocks.ChunkLoadTestBlock;
