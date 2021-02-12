@@ -1,4 +1,4 @@
-package com.minecraftabnormals.abnormals_core.common.blocks.wood;
+package com.minecraftabnormals.abnormals_core.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
