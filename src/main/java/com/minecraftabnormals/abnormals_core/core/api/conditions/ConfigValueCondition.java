@@ -84,11 +84,18 @@ public class ConfigValueCondition implements ICondition {
         @Override
         public void write(JsonObject json, ConfigValueCondition value) {
             json.addProperty("value", value.valueID);
-            json.add("predicates", new JsonArray());
-            JsonArray predicates = JSONUtils.getJsonArray(json, "predicates");
-            for (IConfigPredicate predicate : value.predicates.keySet()) { //TODO might not work
-                CONFIG_PREDICATE_SERIALIZERS.get(predicate.getID()).write(predicates.getAsJsonObject(), predicate);
-                JSONUtils.getJsonObject(predicates.getAsJsonObject(), predicate.getID().toString()).addProperty("inverted", value.predicates.get(predicate));
+            if (!value.predicates.isEmpty()) {
+                JsonArray predicates = new JsonArray();
+                json.add("predicates", predicates);
+                for (Map.Entry<IConfigPredicate, Boolean> predicatePair : value.predicates.entrySet()) {
+                    IConfigPredicate predicate = predicatePair.getKey();
+                    ResourceLocation predicateID = predicate.getID();
+                    JsonObject object = new JsonObject();
+                    predicates.add(object);
+                    object.addProperty("type", predicateID.toString());
+                    CONFIG_PREDICATE_SERIALIZERS.get(predicateID).write(object, predicate);
+                    object.addProperty("inverted", predicatePair.getValue());
+                }
             }
             if (value.inverted) json.addProperty("inverted", true);
         }
