@@ -38,13 +38,13 @@ import java.lang.annotation.Target;
  * </p>
  *
  * @author abigailfails
- * */
+ */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigKey {
     /**
      * The string value to look for in JSON when retrieving this field. For config values under the same mod ID, this
      * has to be unique.
-     * */
+     */
     String value();
 }
