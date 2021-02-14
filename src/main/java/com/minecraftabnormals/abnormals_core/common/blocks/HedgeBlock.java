@@ -7,9 +7,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -27,7 +25,7 @@ public class HedgeBlock extends FenceBlock {
 	
 	@Override
 	public boolean canConnect(BlockState state, boolean isSideSolid, Direction direction) {
-		return state.getBlock().isIn(BlockTags.getCollection().get(new ResourceLocation("quark", "hedges")));
+		return state.getBlock() instanceof HedgeBlock;
 	}
 	
 	@Override
