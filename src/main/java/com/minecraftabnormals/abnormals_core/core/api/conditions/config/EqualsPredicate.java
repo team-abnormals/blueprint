@@ -9,6 +9,12 @@ import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+/**
+ * A config predicate that checks whether the value got from a {@link ForgeConfigSpec.ConfigValue} instance is equal to
+ * a stored value. Can deserialize numbers, booleans, strings, and JSON nulls (although this is stored as a non-JSON null)
+ *
+ * @author abigailfails
+ */
 public class EqualsPredicate implements IConfigPredicate {
     private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "equals");
     private final Object value;
@@ -24,7 +30,10 @@ public class EqualsPredicate implements IConfigPredicate {
 
     @Override
     public boolean test(ForgeConfigSpec.ConfigValue<?> toCompare) {
-        return toCompare.get().equals(value);
+        Object compareValue = toCompare.get();
+        if (compareValue != null)
+            return compareValue.equals(value);
+        else return value == null;
     }
 
     public static class Serializer implements IConfigPredicateSerializer<EqualsPredicate> {

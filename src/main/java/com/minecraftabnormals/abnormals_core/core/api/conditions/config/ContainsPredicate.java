@@ -7,6 +7,12 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+/**
+ * A config predicate that checks whether the string got from a {@link ForgeConfigSpec.ConfigValue} instance contains
+ * a stored string. Throws an exception if the config value type is not {@code String}.
+ *
+ * @author abigailfails
+ */
 public class ContainsPredicate implements IConfigPredicate {
     private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "contains");
     private final String value;

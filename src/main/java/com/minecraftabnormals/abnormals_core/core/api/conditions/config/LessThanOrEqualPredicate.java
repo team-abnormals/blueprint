@@ -6,8 +6,12 @@ import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.math.BigDecimal;
-
+/**
+ * A config predicate that checks whether the number got from a {@link ForgeConfigSpec.ConfigValue} instance is less
+ * than or equal to a stored number. Throws an exception if the config value type is not an instance of {@code Number}.
+ *
+ * @author abigailfails
+ */
 public class LessThanOrEqualPredicate implements IConfigPredicate {
     private static final ResourceLocation ID = new ResourceLocation(AbnormalsCore.MODID, "less_than_or_equal_to");
     private final double value;
@@ -24,9 +28,9 @@ public class LessThanOrEqualPredicate implements IConfigPredicate {
     @Override
     public boolean test(ForgeConfigSpec.ConfigValue<?> toCompare) {
         try {
-            return ((Double) toCompare.get()) <= value;
+            return ((Number) toCompare.get()).doubleValue() <= value;
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Invalid config value type; must hold a double");
+            throw new IllegalArgumentException("Invalid config value type; must hold a number");
         }
     }
 
