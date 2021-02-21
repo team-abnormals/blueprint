@@ -44,10 +44,7 @@ public class HedgeBlock extends FenceBlock {
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
 		}
 
-		if(facing == Direction.DOWN)
-			return stateIn.with(EXTEND, facingState.getBlock() instanceof HedgeBlock);
-		
-		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		return facing == Direction.DOWN ? stateIn.with(EXTEND, facingState.getBlock() instanceof HedgeBlock) : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 	
 	@Override
