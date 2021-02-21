@@ -55,5 +55,4 @@ public class HedgeBlock extends FenceBlock {
 		super.fillStateContainer(builder);
 		builder.add(EXTEND);
 	}
-
 }
