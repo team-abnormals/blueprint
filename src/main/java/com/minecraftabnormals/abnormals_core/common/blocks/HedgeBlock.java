@@ -19,7 +19,6 @@ public class HedgeBlock extends FenceBlock {
 
 	public HedgeBlock(Properties properties) {
 		super(properties);
-		
 		this.setDefaultState(this.getDefaultState().with(EXTEND, false));
 	}
 	
