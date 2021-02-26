@@ -1,5 +1,8 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
+import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -25,12 +28,20 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import javax.management.ImmutableDescriptor;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.function.BiPredicate;
 
@@ -142,5 +153,105 @@ public final class DataUtil {
 				jigsawPieces.add(newPiece);
 			}
 		}
+	}
+
+	/**
+	 * Registers a {@link ConfigValueCondition.Serializer} under the name {@code "[modId]:config"}
+	 * that accepts the values of {@link ConfigKey} annotations for {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}
+	 * fields in the passed-in collection of objects, checking against the annotation's corresponding
+	 * {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} to determine whether the condition should pass.<br><br>
+	 * <h2>Function</h2>
+	 * <p>This method allows you to make crafting recipes, advancement modifiers, etc. check whether a specific config
+	 * field is true/whether it meets specific predicates before loading without having to hardcode new condition classes
+	 * for certain config values. It's essentially a wrapper for {@link CraftingHelper#register(IConditionSerializer)}
+	 * and should be called during common setup accordingly.</p><br><br>
+	 *
+	 * <h2>Implementation</h2>
+	 * <p>All the {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}s in the objects in
+	 * {@code configObjects} with a {@link ConfigKey} annotation are mapped to the string values
+	 * of their field's annotation.
+
+	 * <p>The stored names are used to target config fields from JSON files. When defining a condition with<br>
+	 * {@code "type": "[modId]:config"}<br>
+	 * you use the {@code "value"} argument to specify the config value to target.
+	 *
+	 * <p>For example, in a config condition created under the id {@code abnormals_core}
+	 * that checks whether {@code "sign_editing_requires_empty_hand"} (the annotated value for the
+	 * {@code signEditingRequiresEmptyHand} field) is true, the syntax would be like this:</p>
+	 *
+	 * <pre>{@code
+	 * "conditions": [
+	 *   {
+	 *     "type": "abnormals_core:config"
+	 *     "value": "sign_editing_requires_empty_hand"
+	 *   }
+	 * ]
+	 * }</pre>
+	 *
+	 * <p>Config conditions also accept a {@code predicates} array which defines predicates the config value must match
+	 * before the condition returns true, and a boolean {@code inverted} argument which makes the condition pass if it
+	 * evaluates to false instead of true. If the config value is non-boolean, {@code predicates} is required.
+	 * Each individual predicate also accepts an {@code inverted} argument, as {@code !(A.B) != !A.!B}.</p>
+	 *
+	 * <p>For example, you could check whether a the float config value {@code "potato_poison_chance"} is less than
+	 * 0.1 by using the {@code "abnormals_core:greater_than_or_equal_to"} predicate and inverting it. (Of course,
+	 * in this situation it's easier to just use the {@code "abnormals_core:less_than"} predicate, but this is just
+	 * an example used to show the syntax of inverting).</p>
+	 *
+	 * <pre>{@code
+	 * "conditions": [
+	 *   {
+	 *     "type": "abnormals_core:config",
+	 *     "value": "potato_poison_chance",
+	 *     "predicates": [
+	 *       {
+	 *         "type": "abnormals_core:greater_than_or_equal_to",
+	 *         "value": 0.1,
+	 *         "inverted": true
+	 *       }
+	 *     ]
+	 *   }
+	 * ],
+	 * }</pre>
+	 *
+	 * <p>Abnormals Core has pre-made predicates for numeric and string comparison as well as checking for equality,
+	 * but you can create custom predicates and register them with
+	 * {@link DataUtil#registerConfigPredicate(IConfigPredicateSerializer)}.</p>
+	 *
+	 * @param modId The mod ID to register the config condition under. The reason this is required and that you can't just
+	 *              register your values under {@code "abnormals_core:config"} is because there could be duplicate keys
+	 *              between mods.
+	 * @param configObjects The list of objects to get config keys from. The {@link ConfigKey} values must be unique.
+	 *
+	 * @author abigailfails
+	 */
+	public static void registerConfigCondition(String modId, Object... configObjects) {
+		HashMap<String, ForgeConfigSpec.ConfigValue<?>> configValues = new HashMap<>();
+		for (Object object : configObjects) {
+			for (Field field : object.getClass().getDeclaredFields()) {
+				if (field.getAnnotation(ConfigKey.class) != null && ForgeConfigSpec.ConfigValue.class.isAssignableFrom(field.getType())) {
+					field.setAccessible(true);
+					try {
+						configValues.put(field.getAnnotation(ConfigKey.class).value(), (ForgeConfigSpec.ConfigValue<?>) field.get(object));
+					} catch (IllegalAccessException ignored) {}
+				}
+			}
+		}
+		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, configValues));
+	}
+
+	/**
+	 * Registers an {@link IConfigPredicateSerializer} for an
+	 * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate}.
+	 *
+	 * <p>The predicate takes in a {@link ForgeConfigSpec.ConfigValue} and returns true if it matches specific conditions.</p>
+	 *
+	 * @param serializer The serializer to register.
+	 */
+	public static void registerConfigPredicate(IConfigPredicateSerializer<?> serializer) {
+		ResourceLocation key = serializer.getID();
+		if (ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.containsKey(key))
+			throw new IllegalStateException("Duplicate config predicate serializer: " + key);
+		ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.put(key, serializer);
 	}
 }

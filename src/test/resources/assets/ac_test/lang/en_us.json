@@ -2,5 +2,7 @@
 	"abnormals_core.config.quark_sign_editing": "Quark Sign Editing",
 	"abnormals_core.config.require_empty_hand": "Quark Sign Editing Requires Empty Hand",
 	"entity.abnormals_core.boat": "Boat",
-  	"ac_test.advancements.husbandry.balanced_diet.title": "Joe."
+  	"ac_test.advancements.husbandry.balanced_diet.title": "Joe.",
+	"ac_test.advancements.husbandry.upgrade_tools.title": "Hey.",
+	"ac_test.advancements.husbandry.obtain_armor.title": "Hmm..."
 }

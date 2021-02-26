@@ -1,0 +1,30 @@
+{
+  "advancement": "story/upgrade_tools",
+  "modifiers": [
+    {
+      "type": "display",
+      "conditions": [
+        {
+          "type": "abnormals_core:config",
+          "value": "potato_poison_chance",
+          "predicates": [
+            {
+              "type": "abnormals_core:greater_than_or_equal_to",
+              "value": 0.1,
+              "inverted": true
+            }
+          ]
+        }
+      ],
+      "config": {
+        "mode": "modify",
+        "title": {
+          "translate": "ac_test.advancements.husbandry.upgrade_tools.title"
+        },
+        "description": {
+          "text": "You have a lower poison chance than normal!!"
+        }
+      }
+    }
+  ]
+}

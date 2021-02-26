@@ -8,8 +8,16 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataP
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.api.banner.BannerManager;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.ContainsPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.EqualsPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.GreaterThanOrEqualPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.GreaterThanPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.LessThanOrEqualPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.LessThanPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.config.MatchesPredicate;
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.abnormals_core.client.RewardHandler;
 import com.minecraftabnormals.abnormals_core.client.tile.*;
@@ -81,6 +89,15 @@ public final class AbnormalsCore {
 
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
+		DataUtil.registerConfigCondition(AbnormalsCore.MODID, ACConfig.COMMON, ACConfig.CLIENT, ACConfig.CLIENT.slabfishSettings);
+		DataUtil.registerConfigPredicate(new EqualsPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new GreaterThanOrEqualPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new GreaterThanPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new LessThanOrEqualPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new LessThanPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new ContainsPredicate.Serializer());
+		DataUtil.registerConfigPredicate(new MatchesPredicate.Serializer());
+
 		BannerManager.RECIPE_SERIALIZERS.register(modEventBus);
 
 		REGISTRY_HELPER.getEntitySubHelper().register(modEventBus);
