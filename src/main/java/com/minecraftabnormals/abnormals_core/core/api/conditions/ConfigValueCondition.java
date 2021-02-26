@@ -73,10 +73,10 @@ public class ConfigValueCondition implements ICondition {
 
     public static class Serializer implements IConditionSerializer<ConfigValueCondition> {
         public static final Hashtable<ResourceLocation, IConfigPredicateSerializer<?>> CONFIG_PREDICATE_SERIALIZERS = new Hashtable<>();
-        private final ImmutableMap<String, ForgeConfigSpec.ConfigValue<?>> configValues;
+        private final Map<String, ForgeConfigSpec.ConfigValue<?>> configValues;
         private final ResourceLocation location;
 
-        public Serializer(String modId, ImmutableMap<String, ForgeConfigSpec.ConfigValue<?>> configValues) {
+        public Serializer(String modId, Map<String, ForgeConfigSpec.ConfigValue<?>> configValues) {
             this.location = new ResourceLocation(modId, "config");
             this.configValues = configValues;
         }

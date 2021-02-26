@@ -229,7 +229,7 @@ public final class DataUtil {
 				}
 			}
 		}
-		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, ImmutableMap.copyOf(configValues)));
+		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, configValues));
 	}
 
 	/**
