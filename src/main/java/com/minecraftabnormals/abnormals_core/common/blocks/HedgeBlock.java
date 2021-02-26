@@ -7,7 +7,10 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -15,6 +18,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
 public class HedgeBlock extends FenceBlock {
+	public static final ITag<Block> HEDGES = BlockTags.createOptional(new ResourceLocation("quark", "hedges"));
 	private static final BooleanProperty EXTEND = BooleanProperty.create("extend");
 
 	public HedgeBlock(Properties properties) {
@@ -24,7 +28,7 @@ public class HedgeBlock extends FenceBlock {
 	
 	@Override
 	public boolean canConnect(BlockState state, boolean isSideSolid, Direction direction) {
-		return state.getBlock() instanceof HedgeBlock;
+		return state.getBlock().isIn(HEDGES);
 	}
 	
 	@Override
@@ -34,7 +38,7 @@ public class HedgeBlock extends FenceBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return super.getStateForPlacement(context).with(EXTEND, context.getWorld().getBlockState(context.getPos().down()).getBlock() instanceof HedgeBlock);
+		return super.getStateForPlacement(context).with(EXTEND, context.getWorld().getBlockState(context.getPos().down()).getBlock().isIn(HEDGES));
 	}
 
 	@Override
@@ -43,7 +47,7 @@ public class HedgeBlock extends FenceBlock {
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
 		}
 
-		return facing == Direction.DOWN ? stateIn.with(EXTEND, facingState.getBlock() instanceof HedgeBlock) : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		return facing == Direction.DOWN ? stateIn.with(EXTEND, facingState.getBlock().isIn(HEDGES)) : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 	
 	@Override
