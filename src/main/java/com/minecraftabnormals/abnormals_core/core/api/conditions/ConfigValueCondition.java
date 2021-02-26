@@ -1,6 +1,5 @@
 package com.minecraftabnormals.abnormals_core.core.api.conditions;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
