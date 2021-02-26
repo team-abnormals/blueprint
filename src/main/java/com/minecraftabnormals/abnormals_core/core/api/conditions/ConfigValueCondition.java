@@ -73,12 +73,12 @@ public class ConfigValueCondition implements ICondition {
 
     public static class Serializer implements IConditionSerializer<ConfigValueCondition> {
         public static final Hashtable<ResourceLocation, IConfigPredicateSerializer<?>> CONFIG_PREDICATE_SERIALIZERS = new Hashtable<>();
-        private final ImmutableMap<String, ForgeConfigSpec.ConfigValue<?>> CONFIG_VALUES;
+        private final ImmutableMap<String, ForgeConfigSpec.ConfigValue<?>> configValues;
         private final ResourceLocation location;
 
         public Serializer(String modId, ImmutableMap<String, ForgeConfigSpec.ConfigValue<?>> configValues) {
             this.location = new ResourceLocation(modId, "config");
-            CONFIG_VALUES = configValues;
+            this.configValues = configValues;
         }
 
         @Override
@@ -105,7 +105,7 @@ public class ConfigValueCondition implements ICondition {
             if (!json.has("value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a string");
             String name = JSONUtils.getString(json, "value");
-            ForgeConfigSpec.ConfigValue<?> configValue = CONFIG_VALUES.get(name);
+            ForgeConfigSpec.ConfigValue<?> configValue = configValues.get(name);
             if (configValue == null)
                 throw new JsonSyntaxException("No config value of name '" + name + "' found");
             Map<IConfigPredicate, Boolean> predicates = new HashMap<>();

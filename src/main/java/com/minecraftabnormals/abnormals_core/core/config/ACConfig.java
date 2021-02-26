@@ -8,8 +8,6 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.config.ModConfig;
 
-import java.util.function.Predicate;
-
 /**
  * @author SmellyModder(Luke Tonon)
  */

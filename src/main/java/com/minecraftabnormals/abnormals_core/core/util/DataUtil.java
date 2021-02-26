@@ -35,6 +35,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.management.ImmutableDescriptor;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -218,13 +219,16 @@ public final class DataUtil {
 	 */
 	public static void registerConfigCondition(String modId, Object... configObjects) {
 		HashMap<String, ForgeConfigSpec.ConfigValue<?>> configValues = new HashMap<>();
-		Arrays.asList(configObjects).forEach(cfg -> Arrays.stream(cfg.getClass().getDeclaredFields()).filter(f -> f.getAnnotation(ConfigKey.class) != null && ForgeConfigSpec.ConfigValue.class.isAssignableFrom(f.getType())).forEach(f -> {
-			f.setAccessible(true);
-			try {
-				configValues.put(f.getAnnotation(ConfigKey.class).value(), (ForgeConfigSpec.ConfigValue<?>) f.get(cfg));
-			} catch (IllegalAccessException ignored) {
+		for (Object object : configObjects) {
+			for (Field field : object.getClass().getDeclaredFields()) {
+				if (field.getAnnotation(ConfigKey.class) != null && ForgeConfigSpec.ConfigValue.class.isAssignableFrom(field.getType())) {
+					field.setAccessible(true);
+					try {
+						configValues.put(field.getAnnotation(ConfigKey.class).value(), (ForgeConfigSpec.ConfigValue<?>) field.get(object));
+					} catch (IllegalAccessException ignored) {}
+				}
 			}
-		}));
+		}
 		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, ImmutableMap.copyOf(configValues)));
 	}
 

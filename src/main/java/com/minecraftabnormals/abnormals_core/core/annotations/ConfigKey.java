@@ -1,5 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.annotations;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -39,13 +40,15 @@ import java.lang.annotation.Target;
  *
  * @author abigailfails
  */
- @Documented
+@Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigKey {
     /**
      * The string value to look for in JSON when retrieving this field. For config values under the same mod ID, this
      * has to be unique.
+     *
+     * @return the string key for this config value
      */
     String value();
 }

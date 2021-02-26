@@ -6,7 +6,8 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Serializer for an {@link IConfigPredicate}, generating a value from JSON or writing to json from a value.
  *
- * <p>The allowed arguments depends on the specific predicate, but 'inverted' will always be parsed as meaning "take the opposite of the predicate's return value"</p>
+ * <p>The allowed arguments depends on the specific predicate, but the 'inverted' argument is handled outside of its
+ * serializer and will always be parsed as meaning "take the opposite of the predicate's return value"</p>
  *
  * @param <T> The {@link IConfigPredicate} type to serialize
  */
