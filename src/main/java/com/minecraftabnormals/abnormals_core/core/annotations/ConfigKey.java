@@ -39,6 +39,7 @@ import java.lang.annotation.Target;
  *
  * @author abigailfails
  */
+ @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigKey {

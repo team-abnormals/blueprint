@@ -235,7 +235,7 @@ public final class DataUtil {
 	 * <p>The predicate takes in a {@link ForgeConfigSpec.ConfigValue} and returns true if it matches specific conditions.</p>
 	 *
 	 * @param serializer The serializer to register.
-	 * */
+	 */
 	public static void registerConfigPredicate(IConfigPredicateSerializer<?> serializer) {
 		ResourceLocation key = serializer.getID();
 		if (ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.containsKey(key))

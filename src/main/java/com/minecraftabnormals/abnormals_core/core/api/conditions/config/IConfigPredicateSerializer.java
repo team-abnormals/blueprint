@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
  *
  * <p>The allowed arguments depends on the specific predicate, but 'inverted' will always be parsed as meaning "take the opposite of the predicate's return value"</p>
  *
- * @param <T> the {@link IConfigPredicate} type to serialize
+ * @param <T> The {@link IConfigPredicate} type to serialize
  */
 public interface IConfigPredicateSerializer<T extends IConfigPredicate> {
     /**
