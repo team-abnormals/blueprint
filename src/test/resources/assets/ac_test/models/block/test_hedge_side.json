@@ -1,0 +1,6 @@
+{
+  "parent": "abnormals_core:block/hedge_side",
+  "textures": {
+    "leaf": "minecraft:block/dirt"
+  }
+}

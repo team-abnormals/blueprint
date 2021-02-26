@@ -2,6 +2,7 @@ package core.registry;
 
 import com.mojang.datafixers.util.Pair;
 import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.HedgeBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
@@ -40,4 +41,5 @@ public final class TestBlocks {
 	public static final RegistryObject<Block> BEEHIVE = HELPER.createBlock("example_beehive", () -> new AbnormalsBeehiveBlock(Block.Properties.from(Blocks.DIRT)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> TEST_STRIPPED_POST = HELPER.createBlock("test_stripped_post", () -> new WoodPostBlock(Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> TEST_POST = HELPER.createBlock("test_post", () -> new WoodPostBlock(TEST_STRIPPED_POST, Block.Properties.from(Blocks.DIRT)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> TEST_HEDGE = HELPER.createBlock("test_hedge", () -> new HedgeBlock(Block.Properties.from(Blocks.DIRT)), ItemGroup.DECORATIONS);
 }

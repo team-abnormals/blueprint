@@ -1,0 +1,17 @@
+{
+    "textures": {
+        "particle": "#leaf"
+    },
+    "elements": [
+        {
+            "from": [2, 2, 0],
+            "to": [14, 16, 2],
+            "faces": {
+                "east": {"uv": [0, 0, 2, 14], "rotation": 180, "texture": "#leaf", "tintindex": 0},
+                "west": {"uv": [0, 0, 2, 14], "texture": "#leaf", "tintindex": 0},
+                "up": {"uv": [0, 1, 2, 15], "rotation": 270, "texture": "#leaf", "tintindex": 0},
+                "down": {"uv": [0, 1, 2, 15], "rotation": 270, "texture": "#leaf", "tintindex": 0}
+            }
+        }
+    ]
+}
