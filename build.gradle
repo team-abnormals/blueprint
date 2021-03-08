@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         maven { url = "https://files.minecraftforge.net/maven" }
-        maven { url = "https://dist.creeper.host/Sponge/maven" }
+        maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
         jcenter()
         mavenCentral()
     }
@@ -125,6 +125,7 @@ jar {
 
 shadowJar {
     configurations = [project.configurations.shade]
+    relocate 'io.github.ocelot', 'com.minecraftabnormals.abnormals_core.lib.sonar'
     classifier = null
 }
 

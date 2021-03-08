@@ -51,6 +51,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -160,12 +161,14 @@ public final class AbnormalsCore {
 
 	private void replaceBeehivePOI() {
 		PointOfInterestType.BEEHIVE.blockStates = Sets.newHashSet(PointOfInterestType.BEEHIVE.blockStates);
-		Map<BlockState, PointOfInterestType> statePointOfInterestMap = PointOfInterestType.POIT_BY_BLOCKSTATE;
-		for (Block block : TileEntitySubRegistryHelper.collectBlocks(AbnormalsBeehiveBlock.class)) {
-			block.getStateContainer().getValidStates().forEach(state -> {
-				statePointOfInterestMap.put(state, PointOfInterestType.BEEHIVE);
-				PointOfInterestType.BEEHIVE.blockStates.add(state);
-			});
+		Map<BlockState, PointOfInterestType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PointOfInterestType.class, null, "field_221073_u");
+		if (statePointOfInterestMap != null) {
+			for (Block block : TileEntitySubRegistryHelper.collectBlocks(AbnormalsBeehiveBlock.class)) {
+				block.getStateContainer().getValidStates().forEach(state -> {
+					statePointOfInterestMap.put(state, PointOfInterestType.BEEHIVE);
+					PointOfInterestType.BEEHIVE.blockStates.add(state);
+				});
+			}
 		}
 	}
 }
