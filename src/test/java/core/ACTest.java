@@ -15,6 +15,7 @@ import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.mojang.datafixers.util.Pair;
 import common.world.TestGlobalStorage;
 import core.registry.TestEntities;
+import core.registry.TestFeatures;
 import core.registry.TestItems;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.entity.CreatureEntity;
@@ -31,6 +32,7 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.Features;
+import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
@@ -62,6 +64,7 @@ public final class ACTest {
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 
 		REGISTRY_HELPER.register(modEventBus);
+		TestFeatures.FEATURES.register(modEventBus);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(this::clientSetup);
@@ -82,6 +85,7 @@ public final class ACTest {
 		instance.addModifier(BiomeSpawnsModifier.createSpawnAdder(BiomeModificationPredicates.forBiomeKey(Biomes.SAVANNA), EntityClassification.CREATURE, TestEntities.COW::get, 12, 10, 20));
 		instance.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), Sets.newHashSet(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> Features.END_ISLAND));
 		instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStage.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
+		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.ICE_SPIKES), GenerationStage.Decoration.UNDERGROUND_DECORATION, () -> TestFeatures.TEST_SPLINE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).chance(3)));
 
 		BiomeUtil.addEndBiome(Biomes.ICE_SPIKES, 7);
 		BannerManager.addPattern(BannerManager.createPattern("mca", "test", "tst"), Items.CREEPER_SPAWN_EGG);
