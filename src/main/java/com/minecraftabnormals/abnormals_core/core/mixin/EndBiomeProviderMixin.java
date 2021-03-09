@@ -1,6 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.mixin;
 
 import com.minecraftabnormals.abnormals_core.common.world.gen.ACLayerUtil;
+import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
@@ -61,7 +62,7 @@ public abstract class EndBiomeProviderMixin extends BiomeProvider {
 			info.setReturnValue(this.theEndBiome);
 		} else {
 			float noise = EndBiomeProvider.getRandomNoise(this.generator, i * 2 + 1, j * 2 + 1);
-			Biome biome = this.noiseBiomeLayer.func_242936_a(this.lookupRegistry, x, z);
+			Biome biome = getNoiseBiome(x, z);
 			boolean isChorus = biome == this.endMidlandsBiome;
 			if (noise > 40.0F) {
 				info.setReturnValue(isChorus ? this.endHighlandsBiome : biome);
@@ -71,5 +72,15 @@ public abstract class EndBiomeProviderMixin extends BiomeProvider {
 				info.setReturnValue(noise < -20.0F ? this.smallEndIslandsBiome : isChorus ? this.endBarrensBiome : biome);
 			}
 		}
+	}
+
+	private Biome getNoiseBiome(int x, int z) {
+		int biomeID = this.noiseBiomeLayer.field_215742_b.getValue(x, z);
+		Biome biome = this.lookupRegistry.getByValue(biomeID);
+		if (biome == null) {
+			AbnormalsCore.LOGGER.warn("Unknown end biome id: {}", biomeID);
+			return this.endMidlandsBiome;
+		}
+		return biome;
 	}
 }
