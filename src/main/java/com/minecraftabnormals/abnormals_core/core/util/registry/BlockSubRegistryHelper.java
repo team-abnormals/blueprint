@@ -1,5 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
+import com.minecraftabnormals.abnormals_core.client.ChestManager;
 import com.minecraftabnormals.abnormals_core.client.renderer.ChestItemRenderer;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
@@ -188,7 +189,9 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @return A {@link RegistryObject} containing the created {@link AbnormalsChestBlock}
 	 */
 	public RegistryObject<AbnormalsChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
-		RegistryObject<AbnormalsChestBlock> block = this.deferredRegister.register(name + "_chest", () -> new AbnormalsChestBlock(this.parent.getModId(), name, properties));
+		String modId = this.parent.getModId();
+		RegistryObject<AbnormalsChestBlock> block = this.deferredRegister.register(name + "_chest", () -> new AbnormalsChestBlock(modId + ":" + name, properties));
+		ChestManager.putChestInfo(modId, name, false);
 		this.itemRegister.register(name + "_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER(false))));
 		return block;
 	}
@@ -202,7 +205,9 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @return A {@link RegistryObject} containing the created {@link AbnormalsTrappedChestBlock}
 	 */
 	public RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
-		RegistryObject<AbnormalsTrappedChestBlock> block = this.deferredRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(this.parent.getModId(), name, properties));
+		String modId = this.parent.getModId();
+		RegistryObject<AbnormalsTrappedChestBlock> block = this.deferredRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", properties));
+		ChestManager.putChestInfo(modId, name, true);
 		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER(true))));
 		return block;
 	}
@@ -299,10 +304,12 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
-		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId, name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
-		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId, name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId + ":" + name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
 		this.itemRegister.register(chestName, () -> new FuelBlockItem(chest.get(), 300, new Item.Properties().group(chestGroup).setISTER(() -> chestISTER(false))));
 		this.itemRegister.register(trappedChestName, () -> new FuelBlockItem(trappedChest.get(), 300, new Item.Properties().group(trappedChestGroup).setISTER(() -> chestISTER(true))));
+		ChestManager.putChestInfo(modId, name, false);
+		ChestManager.putChestInfo(modId, name, true);
 		return Pair.of(chest, trappedChest);
 	}
 
@@ -321,10 +328,12 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
-		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId, name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
-		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId, name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId + ":" + name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
 		this.itemRegister.register(chestName, () -> new FuelBlockItem(chest.get(), 300, new Item.Properties().group(chestGroup).setISTER(() -> chestISTER(false))));
 		this.itemRegister.register(trappedChestName, () -> new FuelBlockItem(trappedChest.get(), 300, new Item.Properties().group(trappedChestGroup).setISTER(() -> chestISTER(true))));
+		ChestManager.putChestInfo(modId, name, false);
+		ChestManager.putChestInfo(modId, name, true);
 		return Pair.of(chest, trappedChest);
 	}
 

@@ -12,12 +12,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
-	public final String modid;
 	public final String type;
 
-	public AbnormalsChestBlock(String modid, String type, Properties props) {
+	public AbnormalsChestBlock(String type, Properties props) {
 		super(props, () -> ACTileEntities.CHEST.get());
-		this.modid = modid;
 		this.type = type;
 	}
 
@@ -32,17 +30,7 @@ public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
 	}
 
 	@Override
-	public String getChestName() {
+	public String getChestType() {
 		return type;
-	}
-
-	@Override
-	public String getModid() {
-		return modid;
-	}
-
-	@Override
-	public boolean isTrapped() {
-		return false;
 	}
 }

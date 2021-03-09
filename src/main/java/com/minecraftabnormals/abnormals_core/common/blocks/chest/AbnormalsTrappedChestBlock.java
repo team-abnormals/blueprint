@@ -17,12 +17,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
 
 public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBlock {
-	public final String modid;
 	public final String type;
 
-	public AbnormalsTrappedChestBlock(String modid, String type, Properties props) {
+	public AbnormalsTrappedChestBlock(String type, Properties props) {
 		super(props, () -> ACTileEntities.TRAPPED_CHEST.get());
-		this.modid = modid;
 		this.type = type;
 	}
 
@@ -37,13 +35,8 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	}
 
 	@Override
-	public String getChestName() {
-		return type;
-	}
-
-	@Override
-	public String getModid() {
-		return modid;
+	public String getChestType() {
+		return this.type;
 	}
 
 	@Override
@@ -64,10 +57,5 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	@Override
 	public int getStrongPower(BlockState p_176211_1_, IBlockReader p_176211_2_, BlockPos p_176211_3_, Direction p_176211_4_) {
 		return p_176211_4_ == Direction.UP ? p_176211_1_.getWeakPower(p_176211_2_, p_176211_3_, p_176211_4_) : 0;
-	}
-
-	@Override
-	public boolean isTrapped() {
-		return true;
 	}
 }
