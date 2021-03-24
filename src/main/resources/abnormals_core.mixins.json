@@ -19,6 +19,7 @@
   ],
   "client": [
     "client.ClientWorldMixin",
+    "client.CustomizeSkinScreenMixin",
     "client.PlayerRendererMixin"
   ],
   "injectors": {
