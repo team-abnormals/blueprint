@@ -20,7 +20,8 @@
   "client": [
     "client.ClientWorldMixin",
     "client.CustomizeSkinScreenMixin",
-    "client.PlayerRendererMixin"
+    "client.PlayerRendererMixin",
+    "client.MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

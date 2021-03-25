@@ -96,6 +96,8 @@ public final class ACTest {
 	private void clientSetup(final FMLClientSetupEvent event) {
 		RenderingRegistry.registerEntityRenderingHandler(TestEntities.COW.get(), CowRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(TestEntities.ENDIMATED_TEST.get(), TestEndimatedEntityRenderer::new);
+
+		BiomeUtil.markEndBiomeCustomMusic(new ResourceLocation("ice_spikes"));
 	}
 
 	private void registerLootInjectors() {

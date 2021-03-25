@@ -3,6 +3,7 @@ package com.minecraftabnormals.abnormals_core.core.util;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.INoiseRandom;
@@ -10,9 +11,11 @@ import net.minecraft.world.gen.INoiseRandom;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A utility class for biomes.
@@ -23,6 +26,7 @@ import java.util.Map;
 public final class BiomeUtil {
 	private static final Map<RegistryKey<Biome>, WeightedNoiseList<RegistryKey<Biome>>> HILL_BIOME_MAP = new HashMap<>();
 	private static final WeightedNoiseList<RegistryKey<Biome>> END_BIOMES = new WeightedNoiseList<>();
+	private static final Set<ResourceLocation> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
 
 	static {
 		addEndBiome(Biomes.END_MIDLANDS, 15);
@@ -48,11 +52,22 @@ public final class BiomeUtil {
 	 * Adds an end biome to generate with a given weight.
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
-	 * @param key A {@link Biome} {@link RegistryKey} to add.
+	 * @param key    A {@link Biome} {@link RegistryKey} to add.
 	 * @param weight The weight for the {@link Biome}.
 	 */
 	public static synchronized void addEndBiome(RegistryKey<Biome> key, int weight) {
 		END_BIOMES.add(key, weight);
+	}
+
+	/**
+	 * Marks the {@link ResourceLocation} belonging to a {@link Biome} to have it play its music in the end.
+	 * <p>The music for biomes in the end is hardcoded, and this gets around that.</p>
+	 * <p>This method is safe to call during parallel mod loading.</p>
+	 *
+	 * @param biomeName The {@link ResourceLocation} belonging to a {@link Biome} to have it play its music in the end.
+	 */
+	public static synchronized void markEndBiomeCustomMusic(ResourceLocation biomeName) {
+		CUSTOM_END_MUSIC_BIOMES.add(biomeName);
 	}
 
 	/**
@@ -76,6 +91,16 @@ public final class BiomeUtil {
 	 */
 	public static RegistryKey<Biome> getEndBiome(INoiseRandom random) {
 		return END_BIOMES.get(random);
+	}
+
+	/**
+	 * Checks if a {@link ResourceLocation} belonging to a {@link Biome} should have the {@link Biome} plays its custom music in the end.
+	 *
+	 * @param biomeName The {@link ResourceLocation} belonging to a {@link Biome} to check.
+	 * @return If a {@link ResourceLocation} belonging to a {@link Biome} should have the {@link Biome} plays its custom music in the end.
+	 */
+	public static boolean shouldPlayCustomEndMusic(ResourceLocation biomeName) {
+		return CUSTOM_END_MUSIC_BIOMES.contains(biomeName);
 	}
 
 	/**
