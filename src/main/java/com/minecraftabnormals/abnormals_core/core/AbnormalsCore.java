@@ -7,7 +7,6 @@ import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
-import com.minecraftabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.ContainsPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.EqualsPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.GreaterThanOrEqualPredicate;
@@ -98,8 +97,6 @@ public final class AbnormalsCore {
 		DataUtil.registerConfigPredicate(new LessThanPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new ContainsPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new MatchesPredicate.Serializer());
-
-		BannerManager.RECIPE_SERIALIZERS.register(modEventBus);
 
 		REGISTRY_HELPER.getEntitySubHelper().register(modEventBus);
 		REGISTRY_HELPER.getTileEntitySubHelper().register(modEventBus);

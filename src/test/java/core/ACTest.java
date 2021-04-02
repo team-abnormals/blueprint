@@ -8,7 +8,6 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataP
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
-import com.minecraftabnormals.abnormals_core.core.api.banner.BannerManager;
 import com.minecraftabnormals.abnormals_core.core.registry.LootInjectionRegistry;
 import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
@@ -23,9 +22,7 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
-import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
@@ -56,7 +53,6 @@ public final class ACTest {
 		helper.putSubHelper(ForgeRegistries.ITEMS, new TestItems.Helper(helper));
 	});
 	public static final TestGlobalStorage TEST_GLOBAL_STORAGE = GlobalStorage.createStorage(new ResourceLocation(MOD_ID, "test_storage"), new TestGlobalStorage());
-	public static final BannerPattern TEST_BANNER_PATTERN = BannerManager.createPattern("mca", "test", "tst");
 	public static final TrackedData<Boolean> TEST_TRACKED_DATA = TrackedData.Builder.create(DataProcessors.BOOLEAN, () -> false).enableSaving().enablePersistence().build();
 
 	public ACTest() {
@@ -88,7 +84,6 @@ public final class ACTest {
 		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.ICE_SPIKES), GenerationStage.Decoration.UNDERGROUND_DECORATION, () -> TestFeatures.TEST_SPLINE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).chance(3)));
 
 		BiomeUtil.addEndBiome(Biomes.ICE_SPIKES, 7);
-		BannerManager.addPattern(BannerManager.createPattern("mca", "test", "tst"), Items.CREEPER_SPAWN_EGG);
 		this.registerLootInjectors();
 	}
 
