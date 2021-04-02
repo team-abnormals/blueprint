@@ -30,7 +30,7 @@ import java.util.Map;
  * <ul>
  *   <li>{@code value}      - the name of the config value to check against, defined by its corresponding {@link ConfigKey} annotation</li>
  *   <li>{@code predicates} - an array of JSON objects that deserialize to an {@link IConfigPredicate}, which prevent
- *                            the condition from passing if one of more of yhem return false. Optional if {@code value}
+ *                            the condition from passing if one of more of them return false. Optional if {@code value}
  *                            maps to a boolean {@link ForgeConfigSpec.ConfigValue}.</li>
  *   <li>{@code inverted}   - whether the condition should be inverted, so it will pass if {@code predicates} return false instead.
  *                            Inclusion is optional.</li>
