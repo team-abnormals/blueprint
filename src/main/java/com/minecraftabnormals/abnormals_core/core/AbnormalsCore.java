@@ -33,7 +33,10 @@ import com.minecraftabnormals.abnormals_core.core.util.registry.TileEntitySubReg
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.WoodType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Atlases;
+import net.minecraft.client.renderer.tileentity.SignTileEntityRenderer;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -61,7 +64,9 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Mod(AbnormalsCore.MODID)
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -72,6 +77,7 @@ public final class AbnormalsCore {
 	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MODID);
 	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(DataProcessors.BYTE, () -> (byte) 8).enablePersistence().build();
+	public static final Set<WoodType> WOOD_TYPES = new HashSet<>();
 
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))
 			.networkProtocolVersion(() -> NETWORK_PROTOCOL)
@@ -139,16 +145,18 @@ public final class AbnormalsCore {
 
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), SignTileEntityRenderer::new);
+
+		event.enqueueWork(() -> {
+			for (WoodType type : WOOD_TYPES)
+				Atlases.addWoodType(type);
+		});
 	}
 
 	private void setupMessages() {
 		int id = -1;
 
 		CHANNEL.registerMessage(id++, MessageS2CEndimation.class, MessageS2CEndimation::serialize, MessageS2CEndimation::deserialize, MessageS2CEndimation::handle);
-		CHANNEL.registerMessage(id++, MessageSOpenSignEditor.class, MessageSOpenSignEditor::serialize, MessageSOpenSignEditor::deserialize, MessageSOpenSignEditor::handle);
-		CHANNEL.registerMessage(id++, MessageC2SEditSign.class, MessageC2SEditSign::serialize, MessageC2SEditSign::deserialize, MessageC2SEditSign::handle);
-		CHANNEL.registerMessage(id++, MessageS2CUpdateSign.class, MessageS2CUpdateSign::serialize, MessageS2CUpdateSign::deserialize, MessageS2CUpdateSign::handle);
 		CHANNEL.registerMessage(id++, MessageS2CTeleportEntity.class, MessageS2CTeleportEntity::serialize, MessageS2CTeleportEntity::deserialize, MessageS2CTeleportEntity::handle);
 		CHANNEL.registerMessage(id++, MessageS2CSpawnParticle.class, MessageS2CSpawnParticle::serialize, MessageS2CSpawnParticle::deserialize, MessageS2CSpawnParticle::handle);
 		CHANNEL.registerMessage(id++, MessageS2CServerRedirect.class, MessageS2CServerRedirect::serialize, MessageS2CServerRedirect::deserialize, MessageS2CServerRedirect::handle);

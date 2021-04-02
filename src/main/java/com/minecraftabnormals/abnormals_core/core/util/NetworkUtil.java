@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import com.minecraftabnormals.abnormals_core.client.screen.AbnormalsEditSignScreen;
 import com.minecraftabnormals.abnormals_core.common.network.*;
 import com.minecraftabnormals.abnormals_core.common.network.entity.*;
 import com.minecraftabnormals.abnormals_core.common.network.particle.*;
@@ -72,56 +71,6 @@ public final class NetworkUtil {
 			AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CEndimation(entity.getEntityId(), ArrayUtils.indexOf(entity.getEndimations(), endimationToPlay)));
 			entity.setPlayingEndimation(endimationToPlay);
 		}
-	}
-
-	/**
-	 * Opens the sign editor from the server side
-	 *
-	 * @param player The player opening the editor.
-	 * @param sign The sign to open the editor for.
-	 */
-	public static void openSignEditor(PlayerEntity player, AbnormalsSignTileEntity sign) {
-		if (player instanceof ServerPlayerEntity) {
-			sign.setPlayer(player);
-			AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageSOpenSignEditor(player.getUniqueID(), sign.getPos()));
-		}
-	}
-
-	/**
-	 * Send a packet to the server to set the sign's text
-	 *
-	 * @param signPos    - The sign's position
-	 * @param topLine    - Top Line Sign Text
-	 * @param secondLine - Second Line Sign Text
-	 * @param thirdLine  - Third Line Sign Text
-	 * @param bottomLine - Bottom Line Sign Text
-	 */
-	public static void setNewSignText(BlockPos signPos, ITextComponent topLine, ITextComponent secondLine, ITextComponent thirdLine, ITextComponent bottomLine) {
-		AbnormalsCore.CHANNEL.sendToServer(new MessageC2SEditSign(signPos, topLine.getString(), secondLine.getString(), thirdLine.getString(), bottomLine.getString()));
-	}
-
-	/**
-	 * Send a packet to the server to update the sign's text
-	 *
-	 * @param signPos    - The sign's position
-	 * @param topLine    - Top Line Sign Text
-	 * @param secondLine - Second Line Sign Text
-	 * @param thirdLine  - Third Line Sign Text
-	 * @param bottomLine - Bottom Line Sign Text
-	 * @param color      - The color to update on the sign
-	 */
-	public static void updateSignText(BlockPos signPos, ITextComponent topLine, ITextComponent secondLine, ITextComponent thirdLine, ITextComponent bottomLine, DyeColor color) {
-		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageS2CUpdateSign(signPos, topLine.getString(), secondLine.getString(), thirdLine.getString(), bottomLine.getString(), color.getId()));
-	}
-
-	/**
-	 * Opens the sign screen
-	 *
-	 * @param sign - The Sign TileEntity to edit
-	 */
-	@OnlyIn(Dist.CLIENT)
-	public static void openSignScreen(AbnormalsSignTileEntity sign) {
-		ClientInfo.MINECRAFT.displayGuiScreen(new AbnormalsEditSignScreen(sign));
 	}
 
 	/**
