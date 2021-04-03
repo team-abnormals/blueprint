@@ -7,6 +7,7 @@ import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
+import com.minecraftabnormals.abnormals_core.core.api.SignManager;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.ContainsPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.EqualsPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.GreaterThanOrEqualPredicate;
@@ -147,10 +148,7 @@ public final class AbnormalsCore {
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), SignTileEntityRenderer::new);
 
-		event.enqueueWork(() -> {
-			for (WoodType type : WOOD_TYPES)
-				Atlases.addWoodType(type);
-		});
+		event.enqueueWork(SignManager::setupAtlas);
 	}
 
 	private void setupMessages() {
