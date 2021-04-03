@@ -65,9 +65,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Mod(AbnormalsCore.MODID)
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -78,7 +76,6 @@ public final class AbnormalsCore {
 	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MODID);
 	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(DataProcessors.BYTE, () -> (byte) 8).enablePersistence().build();
-	public static final Set<WoodType> WOOD_TYPES = new HashSet<>();
 
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MODID, "net"))
 			.networkProtocolVersion(() -> NETWORK_PROTOCOL)

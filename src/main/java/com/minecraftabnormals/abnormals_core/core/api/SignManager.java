@@ -8,8 +8,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SignManager {
-    public static final Set<WoodType> WOOD_TYPES = new HashSet<>();
+public final class SignManager {
+    private static final Set<WoodType> WOOD_TYPES = new HashSet<>();
 
     @OnlyIn(Dist.CLIENT)
     public static void setupAtlas() {

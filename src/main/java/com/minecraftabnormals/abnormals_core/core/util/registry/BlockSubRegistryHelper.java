@@ -9,7 +9,6 @@ import com.minecraftabnormals.abnormals_core.common.items.FuelBlockItem;
 import com.minecraftabnormals.abnormals_core.common.items.InjectedBlockItem;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
-import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.api.SignManager;
 import com.mojang.datafixers.util.Pair;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
