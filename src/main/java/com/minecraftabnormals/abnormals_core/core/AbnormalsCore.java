@@ -7,6 +7,7 @@ import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
+import com.minecraftabnormals.abnormals_core.core.api.SignManager;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.ContainsPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.EqualsPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.GreaterThanOrEqualPredicate;
@@ -34,6 +35,7 @@ import com.minecraftabnormals.abnormals_core.core.util.registry.TileEntitySubReg
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.SignTileEntityRenderer;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -139,16 +141,15 @@ public final class AbnormalsCore {
 
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), AbnormalsSignTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), SignTileEntityRenderer::new);
+
+		event.enqueueWork(SignManager::setupAtlas);
 	}
 
 	private void setupMessages() {
 		int id = -1;
 
 		CHANNEL.registerMessage(id++, MessageS2CEndimation.class, MessageS2CEndimation::serialize, MessageS2CEndimation::deserialize, MessageS2CEndimation::handle);
-		CHANNEL.registerMessage(id++, MessageSOpenSignEditor.class, MessageSOpenSignEditor::serialize, MessageSOpenSignEditor::deserialize, MessageSOpenSignEditor::handle);
-		CHANNEL.registerMessage(id++, MessageC2SEditSign.class, MessageC2SEditSign::serialize, MessageC2SEditSign::deserialize, MessageC2SEditSign::handle);
-		CHANNEL.registerMessage(id++, MessageS2CUpdateSign.class, MessageS2CUpdateSign::serialize, MessageS2CUpdateSign::deserialize, MessageS2CUpdateSign::handle);
 		CHANNEL.registerMessage(id++, MessageS2CTeleportEntity.class, MessageS2CTeleportEntity::serialize, MessageS2CTeleportEntity::deserialize, MessageS2CTeleportEntity::handle);
 		CHANNEL.registerMessage(id++, MessageS2CSpawnParticle.class, MessageS2CSpawnParticle::serialize, MessageS2CSpawnParticle::deserialize, MessageS2CSpawnParticle::handle);
 		CHANNEL.registerMessage(id++, MessageS2CServerRedirect.class, MessageS2CServerRedirect::serialize, MessageS2CServerRedirect::deserialize, MessageS2CServerRedirect::handle);

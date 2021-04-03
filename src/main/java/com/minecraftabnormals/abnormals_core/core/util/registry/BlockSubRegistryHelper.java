@@ -5,21 +5,21 @@ import com.minecraftabnormals.abnormals_core.client.renderer.ChestItemRenderer;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
-import com.minecraftabnormals.abnormals_core.common.items.AbnormalsSignItem;
 import com.minecraftabnormals.abnormals_core.common.items.FuelBlockItem;
 import com.minecraftabnormals.abnormals_core.common.items.InjectedBlockItem;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
+import com.minecraftabnormals.abnormals_core.core.api.SignManager;
 import com.mojang.datafixers.util.Pair;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
+import net.minecraft.block.WoodType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
@@ -213,17 +213,17 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers a {@link AbnormalsStandingSignBlock} and a {@link AbnormalsWallSignBlock} with an {@link AbnormalsSignItem}.
+	 * Creates and registers a {@link AbnormalsStandingSignBlock} and a {@link AbnormalsWallSignBlock} with a {@link SignItem}.
 	 *
 	 * @param name  - The name for the sign blocks
 	 * @param color - The {@link MaterialColor} for the sign blocks.
 	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link AbnormalsStandingSignBlock} and the {@link AbnormalsWallSignBlock}
 	 */
 	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color) {
-		ResourceLocation texture = new ResourceLocation(this.parent.getModId(), "textures/entity/signs/" + name + ".png");
-		RegistryObject<AbnormalsStandingSignBlock> standing = this.deferredRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.create(Material.WOOD).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD), texture));
-		RegistryObject<AbnormalsWallSignBlock> wall = this.deferredRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.create(Material.WOOD, color).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD).lootFrom(standing.get()), texture));
-		this.itemRegister.register(name + "_sign", () -> new AbnormalsSignItem(standing.get(), wall.get(), new Item.Properties().maxStackSize(16).group(ItemGroup.DECORATIONS)));
+		WoodType type = SignManager.registerWoodType(WoodType.create(this.parent.getModId() + ":" + name));
+		RegistryObject<AbnormalsStandingSignBlock> standing = this.deferredRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.create(Material.WOOD).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD), type));
+		RegistryObject<AbnormalsWallSignBlock> wall = this.deferredRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.create(Material.WOOD, color).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD).lootFrom(standing.get()), type));
+		this.itemRegister.register(name + "_sign", () -> new SignItem(new Item.Properties().maxStackSize(16).group(ItemGroup.DECORATIONS), standing.get(), wall.get()));
 		return Pair.of(standing, wall);
 	}
 
