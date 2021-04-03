@@ -15,12 +15,17 @@ public class AbnormalsArmorMaterial implements IArmorMaterial {
 	private final int maxDamageFactor;
 	private final int[] damageReductionAmountArray;
 	private final int enchantability;
-	private final SoundEvent soundEvent;
+	private final Supplier<SoundEvent> soundEvent;
 	private final float toughness;
 	private final float knockbackResistance;
 	private final LazyValue<Ingredient> repairMaterial;
-
+	
+	@Deprecated
 	public AbnormalsArmorMaterial(ResourceLocation name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, SoundEvent soundEvent, float toughness, float knockbackResistance, Supplier<Ingredient> repairMaterial) {
+		this(name, maxDamageFactor, damageReductionAmountArray, enchantability, () -> soundEvent, toughness, knockbackResistance, repairMaterial);
+	}
+
+	public AbnormalsArmorMaterial(ResourceLocation name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, Supplier<SoundEvent> soundEvent, float toughness, float knockbackResistance, Supplier<Ingredient> repairMaterial) {
 		this.name = name;
 		this.maxDamageFactor = maxDamageFactor;
 		this.damageReductionAmountArray = damageReductionAmountArray;
@@ -48,7 +53,7 @@ public class AbnormalsArmorMaterial implements IArmorMaterial {
 
 	@Override
 	public SoundEvent getSoundEvent() {
-		return this.soundEvent;
+		return this.soundEvent.get();
 	}
 
 	@Override
