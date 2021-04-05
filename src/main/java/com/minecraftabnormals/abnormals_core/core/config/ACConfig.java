@@ -62,11 +62,18 @@ public final class ACConfig {
 	}
 
 	public static final class Client {
+		@ConfigKey("smooth_sky_color_enabled")
+		public final ConfigValue<Boolean> enableSmoothSkyColor;
 		public final SlabfishSettings slabfishSettings;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Client only settings for Abnormals Core.")
 			.push("client");
+
+			this.enableSmoothSkyColor = builder
+					.comment("If sky color transition should be smooth; Default: True")
+					.translation(makeTranslation("smooth_sky_color"))
+					.define("smoothSkyColor", true);
 
 			this.slabfishSettings = new SlabfishSettings(builder);
 
@@ -134,6 +141,7 @@ public final class ACConfig {
 		private static boolean poisonPotatoCompatEnabled;
 		private static boolean poisonEffect;
 		private static double poisonChance;
+		private static boolean smoothSkyColorEnabled;
 
 		public static void updateCommonValuesFromConfig(ModConfig config) {
 			quarkSignEditing = ACConfig.COMMON.enableQuarkSignEditing.get();
@@ -141,6 +149,10 @@ public final class ACConfig {
 			poisonPotatoCompatEnabled = ACConfig.COMMON.poisonPotatoCompatEnabled.get();
 			poisonEffect = ACConfig.COMMON.poisonEffect.get();
 			poisonChance = ACConfig.COMMON.poisonChance.get();
+		}
+
+		public static void updateClientValuesFromConfig(ModConfig config) {
+			smoothSkyColorEnabled = ACConfig.CLIENT.enableSmoothSkyColor.get();
 		}
 
 		public static boolean isQuarkSignEditingEnabled() {
@@ -161,6 +173,10 @@ public final class ACConfig {
 
 		public static double poisonEffectChance() {
 			return poisonChance;
+		}
+
+		public static boolean isSmoothSkyColorEnabled() {
+			return smoothSkyColorEnabled;
 		}
 	}
 
