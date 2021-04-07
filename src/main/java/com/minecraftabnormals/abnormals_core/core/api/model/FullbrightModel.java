@@ -53,7 +53,7 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
 
     private final List<FullbrightBlockPart> elements;
 
-    public FullbrightModel(List<FullbrightBlockPart> list) {
+    private FullbrightModel(List<FullbrightBlockPart> list) {
         this.elements = list;
     }
 
@@ -109,13 +109,13 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
         private final boolean fullbright;
         private final boolean override;
 
-        public FullbrightBlockPartFace(@Nullable Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn, boolean fullbright, boolean override) {
+        private FullbrightBlockPartFace(@Nullable Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn, boolean fullbright, boolean override) {
             super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
             this.fullbright = fullbright;
             this.override = override;
         }
 
-        public static class Deserializer extends BlockPartFace.Deserializer {
+        private static class Deserializer extends BlockPartFace.Deserializer {
             @Override
             public BlockPartFace deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
                 BlockPartFace face = super.deserialize(element, type, context);
@@ -138,12 +138,12 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
     private static class FullbrightBlockPart extends BlockPart {
         private final boolean fullbright;
 
-        public FullbrightBlockPart(Vector3f positionFrom, Vector3f positionTo, Map<Direction, BlockPartFace> mapFaces, @Nullable BlockPartRotation partRotation, boolean shade, boolean fullbright) {
+        private FullbrightBlockPart(Vector3f positionFrom, Vector3f positionTo, Map<Direction, BlockPartFace> mapFaces, @Nullable BlockPartRotation partRotation, boolean shade, boolean fullbright) {
             super(positionFrom, positionTo, mapFaces, partRotation, shade);
             this.fullbright = fullbright;
         }
 
-        public static class Deserializer implements JsonDeserializer<FullbrightBlockPart> {
+        private static class Deserializer implements JsonDeserializer<FullbrightBlockPart> {
             @Override
             public FullbrightBlockPart deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
                 JsonObject object = element.getAsJsonObject();
