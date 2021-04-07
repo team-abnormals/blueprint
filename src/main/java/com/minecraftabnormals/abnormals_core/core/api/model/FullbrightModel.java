@@ -44,8 +44,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-public class FullbrightModelLoader implements ISimpleModelGeometry<FullbrightModelLoader> {
-    public static final Gson GSON = (new GsonBuilder())
+public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
+    private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(FullbrightBlockPart.class, new FullbrightBlockPart.Deserializer())
             .registerTypeAdapter(FullbrightBlockPartFace.class, new FullbrightBlockPartFace.Deserializer())
             .registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
@@ -53,18 +53,16 @@ public class FullbrightModelLoader implements ISimpleModelGeometry<FullbrightMod
 
     private final List<FullbrightBlockPart> elements;
 
-    public FullbrightModelLoader(List<FullbrightBlockPart> list) {
+    public FullbrightModel(List<FullbrightBlockPart> list) {
         this.elements = list;
     }
 
     @Override
     public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ResourceLocation modelLocation) {
         for (FullbrightBlockPart part : this.elements) {
-            for (Direction direction : part.mapFaces.keySet()) {
-                FullbrightBlockPartFace face = (FullbrightBlockPartFace) part.mapFaces.get(direction);
-                TextureAtlasSprite sprite = spriteGetter.apply(owner.resolveTexture(face.texture));
-
-                BakedQuad quad = BlockModel.makeBakedQuad(part, face, sprite, direction, modelTransform, modelLocation);
+            for (Map.Entry<Direction, BlockPartFace> entry : part.mapFaces.entrySet()) {
+                FullbrightBlockPartFace face = (FullbrightBlockPartFace) entry.getValue();
+                BakedQuad quad = BlockModel.makeBakedQuad(part, face, spriteGetter.apply(owner.resolveTexture(face.texture)), entry.getKey(), modelTransform, modelLocation);
                 if ((!face.override && part.fullbright) || (face.override && face.fullbright))
                     LightUtil.setLightData(quad, 0xF000F0);
 
@@ -89,35 +87,27 @@ public class FullbrightModelLoader implements ISimpleModelGeometry<FullbrightMod
         return textures;
     }
 
-    public static class Loader implements IModelLoader<FullbrightModelLoader> {
-        public static final FullbrightModelLoader.Loader INSTANCE = new FullbrightModelLoader.Loader();
-
-        private Loader() {}
+    public enum Loader implements IModelLoader<FullbrightModel> {
+        INSTANCE;
 
         @Override
         public void onResourceManagerReload(IResourceManager manager) {}
 
         @Override
-        public FullbrightModelLoader read(JsonDeserializationContext context, JsonObject model) {
-            List<FullbrightBlockPart> list = this.getModelElements(model);
-            return new FullbrightModelLoader(list);
-        }
-
-        private List<FullbrightBlockPart> getModelElements(JsonObject model) {
+        public FullbrightModel read(JsonDeserializationContext context, JsonObject model) {
             List<FullbrightBlockPart> list = Lists.newArrayList();
             if (model.has("elements")) {
                 for (JsonElement jsonelement : JSONUtils.getJsonArray(model, "elements")) {
                     list.add(GSON.fromJson(jsonelement, FullbrightBlockPart.class));
                 }
             }
-
-            return list;
+            return new FullbrightModel(list);
         }
     }
 
-    public static class FullbrightBlockPartFace extends BlockPartFace {
-        public boolean fullbright;
-        public boolean override;
+    private static class FullbrightBlockPartFace extends BlockPartFace {
+        private final boolean fullbright;
+        private final boolean override;
 
         public FullbrightBlockPartFace(@Nullable Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn, boolean fullbright, boolean override) {
             super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
@@ -139,14 +129,14 @@ public class FullbrightModelLoader implements ISimpleModelGeometry<FullbrightMod
                         face.texture,
                         face.blockFaceUV,
                         JSONUtils.getBoolean(object, "fullbright", false),
-                        object.has("fullbright") && JSONUtils.isBoolean(object, "fullbright")
+                        object.has("fullbright")
                 );
             }
         }
     }
 
-    public static class FullbrightBlockPart extends BlockPart {
-        public boolean fullbright;
+    private static class FullbrightBlockPart extends BlockPart {
+        private final boolean fullbright;
 
         public FullbrightBlockPart(Vector3f positionFrom, Vector3f positionTo, Map<Direction, BlockPartFace> mapFaces, @Nullable BlockPartRotation partRotation, boolean shade, boolean fullbright) {
             super(positionFrom, positionTo, mapFaces, partRotation, shade);
@@ -154,7 +144,7 @@ public class FullbrightModelLoader implements ISimpleModelGeometry<FullbrightMod
         }
 
         public static class Deserializer implements JsonDeserializer<FullbrightBlockPart> {
-        	@Override
+            @Override
             public FullbrightBlockPart deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
                 JsonObject object = element.getAsJsonObject();
                 Vector3f from = this.validateVectorBounds(object, "from");
@@ -233,7 +223,7 @@ public class FullbrightModelLoader implements ISimpleModelGeometry<FullbrightMod
 
             private Vector3f validateVectorBounds(JsonObject object, String name) {
                 Vector3f vector = this.deserializeVec3f(object, name);
-                if (!(vector.getX() < -16.0F) && !(vector.getY() < -16.0F) && !(vector.getZ() < -16.0F) && !(vector.getX() > 32.0F) && !(vector.getY() > 32.0F) && !(vector.getZ() > 32.0F)) {
+                if (vector.getX() >= -16.0F && vector.getY() >= -16.0F && vector.getZ() >= -16.0F && vector.getX() <= 32.0F && vector.getY() <= 32.0F && vector.getZ() <= 32.0F) {
                     return vector;
                 }
 
@@ -247,8 +237,7 @@ public class FullbrightModelLoader implements ISimpleModelGeometry<FullbrightMod
                 }
 
                 float[] vector = new float[3];
-
-                for (int i = 0; i < vector.length; ++i) {
+                for (int i = 0; i < 3; ++i) {
                     vector[i] = JSONUtils.getFloat(vectorJson.get(i), name + "[" + i + "]");
                 }
 

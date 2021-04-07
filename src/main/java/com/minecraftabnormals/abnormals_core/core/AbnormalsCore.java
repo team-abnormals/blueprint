@@ -15,7 +15,7 @@ import com.minecraftabnormals.abnormals_core.core.api.conditions.config.GreaterT
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.LessThanOrEqualPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.LessThanPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.MatchesPredicate;
-import com.minecraftabnormals.abnormals_core.core.api.model.FullbrightModelLoader;
+import com.minecraftabnormals.abnormals_core.core.api.model.FullbrightModel;
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
@@ -154,7 +154,7 @@ public final class AbnormalsCore {
 
 	@OnlyIn(Dist.CLIENT)
 	private void modelSetup(final ModelRegistryEvent event) {
-		ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), FullbrightModelLoader.Loader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), FullbrightModel.Loader.INSTANCE);
 	}
 
 	private void setupMessages() {
