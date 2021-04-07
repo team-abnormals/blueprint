@@ -55,7 +55,6 @@ public final class RewardHandler {
 	private static final Gson GSON = new Gson();
 	private static final String REWARDS_URL = "https://api.minecraftabnormals.com/rewards.json";
 	private static final ResourceLocation CAPE_TEXTURE = new ResourceLocation(AbnormalsCore.MODID, "textures/abnormals_cape.png");
-	private static final Set<UUID> RENDERED_CAPES = new HashSet<>();
 
 	private static RewardProperties rewardProperties;
 
@@ -92,15 +91,12 @@ public final class RewardHandler {
 		PlayerEntity player = event.getPlayer();
 		UUID uuid = PlayerEntity.getUUID(player.getGameProfile());
 
-		if (!RENDERED_CAPES.contains(uuid) && REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
+		if (REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
 			AbstractClientPlayerEntity clientPlayer = (AbstractClientPlayerEntity) player;
-			if (clientPlayer.hasPlayerInfo()) {
+			if (clientPlayer.hasPlayerInfo() && clientPlayer.getLocationCape() == null) {
 				Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = clientPlayer.playerInfo.playerTextures;
-				if (!playerTextures.containsKey(MinecraftProfileTexture.Type.CAPE)) {
-					playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
-					playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
-				}
-				RENDERED_CAPES.add(uuid);
+				playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
+				playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
 			}
 		}
 	}
