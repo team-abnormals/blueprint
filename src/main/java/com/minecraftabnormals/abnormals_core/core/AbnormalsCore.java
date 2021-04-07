@@ -15,6 +15,7 @@ import com.minecraftabnormals.abnormals_core.core.api.conditions.config.GreaterT
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.LessThanOrEqualPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.LessThanPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.MatchesPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.model.FullbrightModelLoader;
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
@@ -43,6 +44,8 @@ import net.minecraft.village.PointOfInterestType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -123,6 +126,7 @@ public final class AbnormalsCore {
 				if (event.getConfig().getModId().equals(AbnormalsCore.MODID)) NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
 			});
 			modEventBus.addListener(this::clientSetup);
+			modEventBus.addListener(this::modelSetup);
 			modEventBus.addListener(RewardHandler::clientSetup);
 		});
 
@@ -146,6 +150,11 @@ public final class AbnormalsCore {
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), SignTileEntityRenderer::new);
 
 		event.enqueueWork(SignManager::setupAtlas);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void modelSetup(final ModelRegistryEvent event) {
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), FullbrightModelLoader.Loader.INSTANCE);
 	}
 
 	private void setupMessages() {
