@@ -25,6 +25,7 @@ import net.minecraft.potion.PotionBrewing;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
@@ -33,6 +34,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.management.ImmutableDescriptor;
 import java.lang.reflect.Array;
@@ -87,6 +89,11 @@ public final class DataUtil {
 		}
 	}
 
+	/**
+	 * Adds a gift loot table to a {@link VillagerProfession}
+	 *
+	 * @param profession The profession that will give a gift
+	 */
 	public static void registerVillagerGift(VillagerProfession profession) {
 		ResourceLocation name = profession.getRegistryName();
 		if (name != null) {
@@ -95,7 +102,62 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Adds an EnchantmentType to an EnchantmentType array
+	 * Changes the localization key of a block
+	 *
+	 * @param block The {@link Block} being re-localized
+	 * @param modid The modid of the mod changing the localization
+	 * @param name  The new name of the block
+	 */
+	public static void changeBlockLocalization(Block block, String modid, String name) {
+		block.translationKey = Util.makeTranslationKey("block", new ResourceLocation(modid, name));
+	}
+
+	/**
+	 * Changes the localization key of a block
+	 * Takes a {@link ResourceLocation}
+	 *
+	 * @param inputMod  The modid of the block being re-localized
+	 * @param input     The name of the block being re-localized
+	 * @param outputMod The modid of the mod changing the localization
+	 * @param output    The new name of the block
+	 */
+	public static void changeBlockLocalization(String inputMod, String input, String outputMod, String output) {
+		Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(inputMod, input));
+		if (block != null)
+			block.translationKey = Util.makeTranslationKey("block", new ResourceLocation(outputMod, output));
+	}
+
+	/**
+	 * Changes the localization key of an item
+	 *
+	 * @param item The {@link Item} being re-localized
+	 * @param modid The modid of the mod changing the localization
+	 * @param name  The new name of the item
+	 */
+	public static void changeItemLocalization(Item item, String modid, String name) {
+		item.translationKey = Util.makeTranslationKey("item", new ResourceLocation(modid, name));
+	}
+
+	/**
+	 * Changes the localization key of an item
+	 * Takes a {@link ResourceLocation}
+	 *
+	 * @param inputMod  The modid of the item being re-localized
+	 * @param input     The name of the item being re-localized
+	 * @param outputMod The modid of the mod changing the localization
+	 * @param output    The new name of the item
+	 */
+	public static void changeItemLocalization(String inputMod, String input, String outputMod, String output) {
+		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(inputMod, input));
+		if (item != null)
+			item.translationKey = Util.makeTranslationKey("item", new ResourceLocation(outputMod, output));
+	}
+
+	/**
+	 * Adds an {@link EnchantmentType} to an EnchantmentType array
+	 *
+	 * @param array   The array being modified
+	 * @param element The enchantment being added
 	 */
 	public static EnchantmentType[] add(EnchantmentType[] array, EnchantmentType element) {
 		int arrayLength = Array.getLength(array);
