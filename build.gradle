@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "4.1.+", changing: true
         classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
     }
 }
@@ -21,7 +21,7 @@ apply plugin: "maven-publish"
 apply plugin: "org.spongepowered.mixin"
 
 mixin {
-    add sourceSets.main, "abnormals_core.refmap.json"
+    add sourceSets.main, "${project.modId}.refmap.json"
 }
 
 configurations {
@@ -42,7 +42,7 @@ minecraft {
             workingDirectory project.file("run")
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
-            arg "-mixin.config=abnormals_core.mixins.json"
+            arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
                 abnormals_core {
                     source sourceSets.main
@@ -56,7 +56,7 @@ minecraft {
             workingDirectory project.file("run")
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
-            arg "-mixin.config=abnormals_core.mixins.json"
+            arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
                 abnormals_core {
                     source sourceSets.main
@@ -70,7 +70,8 @@ minecraft {
             workingDirectory project.file("run")
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
-            args "--mod", "abnormals_core", "--all", "--output", file("src/generated/resources/")
+            property "mixin.env.disableRefMap", "true"
+            args "--mod", project.modId, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources")
             mods {
                 abnormals_core {
                     source sourceSets.main
@@ -111,14 +112,14 @@ jar {
     classifier = "slim"
     manifest {
         attributes([
-                "Specification-Title": project.modName,
-                "Specification-Vendor": "Team Abnormals",
-                "Specification-Version": "1",
-                "Implementation-Title": project.modName,
-                "Implementation-Version": project.modVersion,
-                "Implementation-Vendor": "Team Abnormals",
+                "Specification-Title"     : project.modName,
+                "Specification-Vendor"    : "Team Abnormals",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.modName,
+                "Implementation-Version"  : project.modVersion,
+                "Implementation-Vendor"   : "Team Abnormals",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "abnormals_core.mixins.json"
+                "MixinConfigs"            : project.modId + ".mixins.json"
         ])
     }
 }

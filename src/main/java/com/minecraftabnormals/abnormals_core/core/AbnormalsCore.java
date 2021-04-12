@@ -135,14 +135,13 @@ public final class AbnormalsCore {
 		context.registerConfig(ModConfig.Type.CLIENT, ACConfig.CLIENT_SPEC);
 	}
 
-	private void commonSetup(final FMLCommonSetupEvent event) {
+	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(this::replaceBeehivePOI);
 		ChunkLoaderCapability.register();
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MODID, "slabfish_head"), SLABFISH_SETTINGS);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private void clientSetup(final FMLClientSetupEvent event) {
+	private void clientSetup(FMLClientSetupEvent event) {
 		RenderingRegistry.registerEntityRenderingHandler(ACEntities.BOAT.get(), AbnormalsBoatRenderer::new);
 
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
@@ -152,8 +151,7 @@ public final class AbnormalsCore {
 		event.enqueueWork(SignManager::setupAtlas);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private void modelSetup(final ModelRegistryEvent event) {
+	private void modelSetup(ModelRegistryEvent event) {
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), FullbrightModel.Loader.INSTANCE);
 	}
 

@@ -17,15 +17,15 @@ license = "https://github.com/team-abnormals/abnormals-core/blob/main/LICENSE.tx
     '''
 
 [[dependencies.abnormals_core]]
-    modId = "forge"
+    modId = "minecraft"
     mandatory = true
-    versionRange = "[36.1.0,)"
+    versionRange = "[1.16.5,1.17)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.abnormals_core]]
-    modId = "minecraft"
+    modId = "forge"
     mandatory = true
-    versionRange = "[1.16.5,1.17)"
+    versionRange = "[36.1.0,)"
     ordering = "NONE"
     side = "BOTH"
