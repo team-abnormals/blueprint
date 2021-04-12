@@ -1,6 +1,7 @@
 {
   "required": true,
   "package": "com.minecraftabnormals.abnormals_core.core.mixin",
+  "plugin": "com.minecraftabnormals.abnormals_core.core.mixin.ACMixinPlugin",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "refmap": "abnormals_core.refmap.json",
@@ -18,10 +19,12 @@
     "TrapDoorBlockMixin"
   ],
   "client": [
+    "compat.client.ClientWorldChlorineMixin",
     "client.ClientWorldMixin",
+    "compat.client.ClientWorldVanillaMixin",
     "client.CustomizeSkinScreenMixin",
-    "client.PlayerRendererMixin",
-    "client.MinecraftMixin"
+    "client.MinecraftMixin",
+    "client.PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
