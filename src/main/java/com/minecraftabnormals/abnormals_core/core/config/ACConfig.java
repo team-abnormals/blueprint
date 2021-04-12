@@ -5,7 +5,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.config.ModConfig;
 
 /**
@@ -14,10 +13,6 @@ import net.minecraftforge.fml.config.ModConfig;
 public final class ACConfig {
 
 	public static class Common {
-		@ConfigKey("quark_sign_editing_enabled")
-		public final ConfigValue<Boolean> enableQuarkSignEditing;
-		@ConfigKey("sign_editing_requires_empty_hand")
-		public final ConfigValue<Boolean> signEditingRequiresEmptyHand;
 		@ConfigKey("quark_poison_potato_compat_enabled")
 		public final ConfigValue<Boolean> poisonPotatoCompatEnabled;
 		@ConfigKey("potato_poison_effect")
@@ -28,33 +23,23 @@ public final class ACConfig {
 		Common(ForgeConfigSpec.Builder builder) {
 			builder.comment("Common only settings for Abnormals Core, this will affect all depending mods")
 			.push("common");
-			
-			this.enableQuarkSignEditing = builder
-				.comment("If Quark Sign Editing should be enabled; Default: True")
-				.translation(makeTranslation("quark_sign_editing"))
-				.define("quarkSignEditing", true);
-			
-			this.signEditingRequiresEmptyHand = builder
-				.comment("If Quark Sign Editing requires an empty hand to edit; Default: False")
-				.translation(makeTranslation("require_empty_hand"))
-				.define("signEditingRequiresEmptyHand", false);
 
 			builder.comment("Compatibility with Quark's poisonous potatoes feature")
 			.push("poisonousPotatoCompat");
 			this.poisonPotatoCompatEnabled = builder
 					.comment("If baby mobs can be fed a poisonous potato to stunt their growth when Quark is installed; Default: True")
 					.translation(makeTranslation("poison_potato_compat_enabled"))
-					.define("poisonPotatoCompatEnabled",true);
+					.define("poisonPotatoCompatEnabled", true);
 
 			this.poisonEffect = builder
 					.comment("If growth stunting should give baby mobs poison; Default: True")
 					.translation(makeTranslation("poison_effect"))
-					.define("poisonEffect",true);
+					.define("poisonEffect", true);
 
 			this.poisonChance = builder
 					.comment("The chance to stunt baby mob growth when feeding a poisonous potato; Default: 0.1")
 					.translation(makeTranslation("poison_chance"))
-					.defineInRange("poisonChance",0.1,0,1);
+					.defineInRange("poisonChance", 0.1, 0, 1);
 
 			builder.pop();
 			builder.pop();
@@ -136,16 +121,12 @@ public final class ACConfig {
 	}
 	
 	public static class ValuesHolder {
-		private static boolean quarkSignEditing;
-		private static boolean signEditingRequireEmptyHand;
 		private static boolean poisonPotatoCompatEnabled;
 		private static boolean poisonEffect;
 		private static double poisonChance;
 		private static boolean smoothSkyColorEnabled;
 
 		public static void updateCommonValuesFromConfig(ModConfig config) {
-			quarkSignEditing = ACConfig.COMMON.enableQuarkSignEditing.get();
-			signEditingRequireEmptyHand = ACConfig.COMMON.signEditingRequiresEmptyHand.get();
 			poisonPotatoCompatEnabled = ACConfig.COMMON.poisonPotatoCompatEnabled.get();
 			poisonEffect = ACConfig.COMMON.poisonEffect.get();
 			poisonChance = ACConfig.COMMON.poisonChance.get();
@@ -153,14 +134,6 @@ public final class ACConfig {
 
 		public static void updateClientValuesFromConfig(ModConfig config) {
 			smoothSkyColorEnabled = ACConfig.CLIENT.enableSmoothSkyColor.get();
-		}
-
-		public static boolean isQuarkSignEditingEnabled() {
-			return ModList.get().isLoaded("quark") && quarkSignEditing;
-		}
-
-		public static boolean doesSignEditingRequireEmptyHand() {
-			return signEditingRequireEmptyHand;
 		}
 
 		public static boolean isPoisonPotatoCompatEnabled() {
