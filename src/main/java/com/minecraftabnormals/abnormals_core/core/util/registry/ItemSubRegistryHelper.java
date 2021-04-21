@@ -1,11 +1,13 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
 import com.google.common.collect.Sets;
+import com.minecraftabnormals.abnormals_core.common.dispenser.SpawnEggDispenseBehavior;
 import com.minecraftabnormals.abnormals_core.common.items.AbnormalsBoatItem;
 import com.minecraftabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.minecraftabnormals.abnormals_core.common.items.FuelItem;
 import com.minecraftabnormals.abnormals_core.core.registry.BoatRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.*;
 import net.minecraftforge.event.RegistryEvent;
@@ -14,6 +16,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -170,6 +173,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	public void register(IEventBus eventBus) {
 		super.register(eventBus);
 		eventBus.addGenericListener(EntityType.class, EventPriority.LOWEST, this::handleSpawnEggMap);
+		eventBus.addListener(EventPriority.LOWEST, this::handleSpawnEggDispenserBehaviors);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -181,6 +185,16 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	private void handleSpawnEggDispenserBehaviors(FMLCommonSetupEvent event) {
+		if (!this.spawnEggs.isEmpty()) {
+			event.enqueueWork(() -> {
+				for (AbnormalsSpawnEggItem spawnEggItem : this.spawnEggs) {
+					DispenserBlock.registerDispenseBehavior(spawnEggItem, new SpawnEggDispenseBehavior());
+				}
+			});
 		}
 	}
 }
