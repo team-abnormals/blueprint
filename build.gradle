@@ -2,8 +2,6 @@ buildscript {
     repositories {
         maven { url = "https://files.minecraftforge.net/maven" }
         maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
-        jcenter()
-        mavenCentral()
     }
     dependencies {
         classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "4.1.+", changing: true
@@ -100,12 +98,12 @@ dependencies {
     compileOnly fg.deobf("com.github.Ocelot5836:Sonar:4cc95e6:api")
     runtimeOnly fg.deobf("com.github.Ocelot5836:Sonar:4cc95e6")
     shade "com.github.Ocelot5836:Sonar:4cc95e6"
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 }
 
 repositories {
-    maven {
-        url = "https://jitpack.io"
-    }
+    maven { url = "https://jitpack.io" }
 }
 
 jar {
