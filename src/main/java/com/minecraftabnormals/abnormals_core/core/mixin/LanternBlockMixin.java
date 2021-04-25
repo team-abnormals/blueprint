@@ -17,7 +17,8 @@ public final class LanternBlockMixin {
 
 	@Inject(method = "isValidPosition", at = @At("RETURN"), cancellable = true)
 	private void isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos, CallbackInfoReturnable<Boolean> info) {
-		info.setReturnValue(info.getReturnValue() || (state.get(LanternBlock.HANGING) && worldIn.getBlockState(pos.up()).getBlock() instanceof WoodPostBlock));
+		if (state.get(LanternBlock.HANGING) && worldIn.getBlockState(pos.up()).getBlock() instanceof WoodPostBlock) {
+			info.setReturnValue(true);
+		}
 	}
-
 }
