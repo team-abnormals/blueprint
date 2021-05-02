@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  * @param <C> The type of config object for this modifier.
  * @author SmellyModder (Luke Tonon)
  */
+//TODO: Switch to new modifier system in 1.17
 public abstract class AdvancementModifier<C> {
 	private final Deserializer<C> deserializer;
 
