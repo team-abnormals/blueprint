@@ -117,6 +117,7 @@ public final class TargetedModifier<T, S, D> {
 				}
 			}
 			object.add("config", configuredModifier.serialize(additional));
+			modifiers.add(object);
 		}
 		jsonObject.add("modifiers", modifiers);
 		return jsonObject;
