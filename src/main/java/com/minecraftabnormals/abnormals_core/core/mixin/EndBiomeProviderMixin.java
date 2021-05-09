@@ -7,7 +7,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.biome.provider.EndBiomeProvider;
 import net.minecraft.world.gen.LazyAreaLayerContext;
-import net.minecraft.world.gen.SimplexNoiseGenerator;
 import net.minecraft.world.gen.layer.Layer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,22 +22,13 @@ import java.util.List;
 public abstract class EndBiomeProviderMixin extends BiomeProvider {
 	@Shadow
 	@Final
-	private SimplexNoiseGenerator generator;
-	@Shadow
-	@Final
 	private Registry<Biome> lookupRegistry;
-	@Shadow
-	@Final
-	private Biome theEndBiome;
 	@Shadow
 	@Final
 	private Biome endHighlandsBiome;
 	@Shadow
 	@Final
 	private Biome endMidlandsBiome;
-	@Shadow
-	@Final
-	private Biome smallEndIslandsBiome;
 	@Shadow
 	@Final
 	private Biome endBarrensBiome;
@@ -54,22 +44,13 @@ public abstract class EndBiomeProviderMixin extends BiomeProvider {
 		this.noiseBiomeLayer = ACLayerUtil.createEndBiomeLayer(lookupRegistry, (seedModifier) -> new LazyAreaLayerContext(25, seed, seedModifier));
 	}
 
-	@Inject(at = @At("HEAD"), method = "getNoiseBiome(III)Lnet/minecraft/world/biome/Biome;", cancellable = true)
+	@Inject(at = @At("RETURN"), method = "getNoiseBiome(III)Lnet/minecraft/world/biome/Biome;", cancellable = true)
 	private void addEndBiomes(int x, int y, int z, CallbackInfoReturnable<Biome> info) {
-		int i = x >> 2;
-		int j = z >> 2;
-		if ((long) i * (long) i + (long) j * (long) j <= 4096L) {
-			info.setReturnValue(this.theEndBiome);
-		} else {
-			float noise = EndBiomeProvider.getRandomNoise(this.generator, i * 2 + 1, j * 2 + 1);
-			Biome biome = getNoiseBiome(x, z);
-			boolean isChorus = biome == this.endMidlandsBiome;
-			if (noise > 40.0F) {
-				info.setReturnValue(isChorus ? this.endHighlandsBiome : biome);
-			} else if (noise >= 0.0F) {
-				info.setReturnValue(isChorus ? this.endMidlandsBiome : biome);
-			} else {
-				info.setReturnValue(noise < -20.0F ? this.smallEndIslandsBiome : isChorus ? this.endBarrensBiome : biome);
+		Biome oldBiome = info.getReturnValue();
+		if (oldBiome == this.endHighlandsBiome || oldBiome == this.endMidlandsBiome || oldBiome == this.endBarrensBiome) {
+			Biome newBiome = this.getNoiseBiome(x, z);
+			if (newBiome != this.endMidlandsBiome) {
+				info.setReturnValue(newBiome);
 			}
 		}
 	}
