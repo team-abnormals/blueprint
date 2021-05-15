@@ -2,8 +2,8 @@ package com.minecraftabnormals.abnormals_core.core.util;
 
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.loot.ConfigLootCondition;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigCondition;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
@@ -35,7 +35,6 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -219,7 +218,7 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Registers a {@link ConfigCondition.Serializer} and a {@link ConfigLootCondition.Serializer} under the name {@code "[modId]:config"}
+	 * Registers a {@link ConfigValueCondition.Serializer} and a {@link ConfigLootCondition.Serializer} under the name {@code "[modId]:config"}
 	 * that accepts the values of {@link ConfigKey} annotations for {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}
 	 * fields in the passed-in collection of objects, checking against the annotation's corresponding
 	 * {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} to determine whether the condition should pass.<br><br>
@@ -302,7 +301,7 @@ public final class DataUtil {
 				}
 			}
 		}
-		CraftingHelper.register(new ConfigCondition.Serializer(modId, configValues));
+		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, configValues));
 		Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(AbnormalsCore.MODID, "config"), new LootConditionType(new ConfigLootCondition.Serializer(modId, configValues)));
 	}
 
@@ -316,8 +315,8 @@ public final class DataUtil {
 	 */
 	public static void registerConfigPredicate(IConfigPredicateSerializer<?> serializer) {
 		ResourceLocation key = serializer.getID();
-		if (ConfigCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.containsKey(key))
+		if (ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.containsKey(key))
 			throw new IllegalStateException("Duplicate config predicate serializer: " + key);
-		ConfigCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.put(key, serializer);
+		ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.put(key, serializer);
 	}
 }

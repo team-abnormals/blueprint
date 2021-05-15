@@ -6,9 +6,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSyntaxException;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigCondition;
 import net.minecraft.loot.ILootSerializer;
 import net.minecraft.loot.LootConditionType;
 import net.minecraft.loot.LootContext;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A loot condition that is registered and functions exactly the same way as {@link ConfigCondition}, but for loot tables instead.
+ * A loot condition that is registered and functions exactly the same way as {@link ConfigValueCondition}, but for loot tables instead.
  *
  * @author abigailfails
  */
@@ -78,7 +78,7 @@ public class ConfigLootCondition implements ILootCondition {
                     JsonObject object = new JsonObject();
                     predicates.add(object);
                     object.addProperty("type", predicateID.toString());
-                    ConfigCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.get(predicateID).write(object, predicate);
+                    ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.get(predicateID).write(object, predicate);
                     object.addProperty("inverted", predicatePair.getValue());
                 }
             }
@@ -100,7 +100,7 @@ public class ConfigLootCondition implements ILootCondition {
                         throw new JsonSyntaxException("Predicates must be an array of JsonObjects");
                     JsonObject predicateObject = predicateElement.getAsJsonObject();
                     ResourceLocation type = new ResourceLocation(JSONUtils.getString(predicateObject, "type"));
-                    IConfigPredicateSerializer<?> serializer = ConfigCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.get(type);
+                    IConfigPredicateSerializer<?> serializer = ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.get(type);
                     if (serializer == null)
                         throw new JsonSyntaxException("Unknown predicate type: " + type.toString());
                     predicates.put(serializer.read(predicateObject), predicateObject.has("inverted") && JSONUtils.getBoolean(predicateObject, "inverted"));

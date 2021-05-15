@@ -39,14 +39,14 @@ import java.util.Map;
  * @see DataUtil#registerConfigCondition(String, Object...)
  * @author abigailfails
  */
-public class ConfigCondition implements ICondition {
+public class ConfigValueCondition implements ICondition {
     private final ForgeConfigSpec.ConfigValue<?> value;
     private final String valueID;
     private final Map<IConfigPredicate, Boolean> predicates;
     private final boolean inverted;
     private final ResourceLocation location;
 
-    public ConfigCondition(ResourceLocation location, ForgeConfigSpec.ConfigValue<?> value, String valueID, Map<IConfigPredicate, Boolean> predicates, boolean inverted) {
+    public ConfigValueCondition(ResourceLocation location, ForgeConfigSpec.ConfigValue<?> value, String valueID, Map<IConfigPredicate, Boolean> predicates, boolean inverted) {
         this.location = location;
         this.value = value;
         this.valueID = valueID;
@@ -70,7 +70,7 @@ public class ConfigCondition implements ICondition {
         return this.inverted != returnValue;
     }
 
-    public static class Serializer implements IConditionSerializer<ConfigCondition> {
+    public static class Serializer implements IConditionSerializer<ConfigValueCondition> {
         public static final Hashtable<ResourceLocation, IConfigPredicateSerializer<?>> CONFIG_PREDICATE_SERIALIZERS = new Hashtable<>();
         private final Map<String, ForgeConfigSpec.ConfigValue<?>> configValues;
         private final ResourceLocation location;
@@ -81,7 +81,7 @@ public class ConfigCondition implements ICondition {
         }
 
         @Override
-        public void write(JsonObject json, ConfigCondition value) {
+        public void write(JsonObject json, ConfigValueCondition value) {
             json.addProperty("value", value.valueID);
             if (!value.predicates.isEmpty()) {
                 JsonArray predicates = new JsonArray();
@@ -100,7 +100,7 @@ public class ConfigCondition implements ICondition {
         }
 
         @Override
-        public ConfigCondition read(JsonObject json) {
+        public ConfigValueCondition read(JsonObject json) {
             if (!json.has("value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a string");
             String name = JSONUtils.getString(json, "value");
@@ -122,7 +122,7 @@ public class ConfigCondition implements ICondition {
             } else if (!(configValue.get() instanceof Boolean)) {
                 throw new JsonSyntaxException("Missing 'predicates' for non-boolean config value '" + name + "', expected to find an array");
             }
-            return new ConfigCondition(location, configValue, name, predicates, json.has("inverted") && JSONUtils.getBoolean(json, "inverted"));
+            return new ConfigValueCondition(location, configValue, name, predicates, json.has("inverted") && JSONUtils.getBoolean(json, "inverted"));
         }
 
         @Override

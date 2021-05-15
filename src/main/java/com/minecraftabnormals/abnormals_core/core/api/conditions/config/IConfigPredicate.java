@@ -1,11 +1,11 @@
 package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 
+import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigCondition;
 
 /**
- * A predicate for a {@link ConfigCondition}, takes in a
+ * A predicate for a {@link ConfigValueCondition}, takes in a
  * {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} and returns a boolean for whether it matches the condition.
  *
  */
