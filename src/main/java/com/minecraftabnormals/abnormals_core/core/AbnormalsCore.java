@@ -15,8 +15,11 @@ import com.minecraftabnormals.abnormals_core.core.api.conditions.config.GreaterT
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.LessThanOrEqualPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.LessThanPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.MatchesPredicate;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.ACAndRecipeCondition;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.QuarkFlagRecipeCondition;
 import com.minecraftabnormals.abnormals_core.core.api.model.FullbrightModel;
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
+import com.minecraftabnormals.abnormals_core.core.registry.ACLootConditions;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
@@ -27,7 +30,6 @@ import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.Chun
 import com.minecraftabnormals.abnormals_core.common.network.*;
 import com.minecraftabnormals.abnormals_core.common.network.entity.*;
 import com.minecraftabnormals.abnormals_core.common.network.particle.*;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.*;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.endimator.EndimationDataManager;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
@@ -135,7 +137,10 @@ public final class AbnormalsCore {
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
-		event.enqueueWork(this::replaceBeehivePOI);
+		event.enqueueWork(() -> {
+			this.replaceBeehivePOI();
+			ACLootConditions.registerLootConditions();
+		});
 		ChunkLoaderCapability.register();
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MODID, "slabfish_head"), SLABFISH_SETTINGS);
 	}

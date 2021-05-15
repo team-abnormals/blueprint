@@ -19,7 +19,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 /**
- * A condition that checks against the values of config values annotated with {@link ConfigKey}.
+ * A condition that checks against the values of config values annotated with {@link ConfigKey}. Uses the recipe system,
+ * but is also compatible with advancement modifiers etc.
  *
  * <p>To make your mod's config values compatible with it, annotate them with {@link ConfigKey} taking in the string
  * value that should be used to deserialize the field, then call {@link DataUtil#registerConfigCondition(String, Object...)}
@@ -28,25 +29,24 @@ import java.util.Map;
  *
  * <p>For a condition with type {@code "[modid]:config"}, it takes the arguments:
  * <ul>
- *   <li>{@code value}      - the name of the config value to check against, defined by its corresponding {@link ConfigKey} annotation</li>
+ *   <li>{@code value}      - the name of the config value to check against, defined by its corresponding {@link ConfigKey} annotation.</li>
  *   <li>{@code predicates} - an array of JSON objects that deserialize to an {@link IConfigPredicate}, which prevent
  *                            the condition from passing if one of more of them return false. Optional if {@code value}
  *                            maps to a boolean {@link ForgeConfigSpec.ConfigValue}.</li>
- *   <li>{@code inverted}   - whether the condition should be inverted, so it will pass if {@code predicates} return false instead.
- *                            Inclusion is optional.</li>
+ *   <li>{@code inverted} (optional)   - whether the condition should be inverted, so it will pass if {@code predicates} return false instead.</li>
  * </ul></p>
  *
  * @see DataUtil#registerConfigCondition(String, Object...)
  * @author abigailfails
  */
-public class ConfigValueCondition implements ICondition {
+public class ConfigCondition implements ICondition {
     private final ForgeConfigSpec.ConfigValue<?> value;
     private final String valueID;
     private final Map<IConfigPredicate, Boolean> predicates;
     private final boolean inverted;
     private final ResourceLocation location;
 
-    public ConfigValueCondition(ResourceLocation location, ForgeConfigSpec.ConfigValue<?> value, String valueID, Map<IConfigPredicate, Boolean> predicates, boolean inverted) {
+    public ConfigCondition(ResourceLocation location, ForgeConfigSpec.ConfigValue<?> value, String valueID, Map<IConfigPredicate, Boolean> predicates, boolean inverted) {
         this.location = location;
         this.value = value;
         this.valueID = valueID;
@@ -66,11 +66,11 @@ public class ConfigValueCondition implements ICondition {
             returnValue = this.predicates.keySet().stream().allMatch(c -> this.predicates.get(c) != c.test(value));
         } else if (value.get() instanceof Boolean) {
             returnValue = (Boolean) value.get();
-        } else throw new IllegalStateException("Predicates required for non-boolean ConfigValue, but none found");
+        } else throw new IllegalStateException("Predicates required for non-boolean ConfigLootCondition, but none found");
         return this.inverted != returnValue;
     }
 
-    public static class Serializer implements IConditionSerializer<ConfigValueCondition> {
+    public static class Serializer implements IConditionSerializer<ConfigCondition> {
         public static final Hashtable<ResourceLocation, IConfigPredicateSerializer<?>> CONFIG_PREDICATE_SERIALIZERS = new Hashtable<>();
         private final Map<String, ForgeConfigSpec.ConfigValue<?>> configValues;
         private final ResourceLocation location;
@@ -81,7 +81,7 @@ public class ConfigValueCondition implements ICondition {
         }
 
         @Override
-        public void write(JsonObject json, ConfigValueCondition value) {
+        public void write(JsonObject json, ConfigCondition value) {
             json.addProperty("value", value.valueID);
             if (!value.predicates.isEmpty()) {
                 JsonArray predicates = new JsonArray();
@@ -100,7 +100,7 @@ public class ConfigValueCondition implements ICondition {
         }
 
         @Override
-        public ConfigValueCondition read(JsonObject json) {
+        public ConfigCondition read(JsonObject json) {
             if (!json.has("value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a string");
             String name = JSONUtils.getString(json, "value");
@@ -122,7 +122,7 @@ public class ConfigValueCondition implements ICondition {
             } else if (!(configValue.get() instanceof Boolean)) {
                 throw new JsonSyntaxException("Missing 'predicates' for non-boolean config value '" + name + "', expected to find an array");
             }
-            return new ConfigValueCondition(location, configValue, name, predicates, json.has("inverted") && JSONUtils.getBoolean(json, "inverted"));
+            return new ConfigCondition(location, configValue, name, predicates, json.has("inverted") && JSONUtils.getBoolean(json, "inverted"));
         }
 
         @Override
