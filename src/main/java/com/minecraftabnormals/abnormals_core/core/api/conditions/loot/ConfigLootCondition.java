@@ -71,16 +71,16 @@ public class ConfigLootCondition implements ILootCondition {
             json.addProperty("value", value.valueID);
             if (!value.predicates.isEmpty()) {
                 JsonArray predicates = new JsonArray();
-                json.add("predicates", predicates);
                 for (Map.Entry<IConfigPredicate, Boolean> predicatePair : value.predicates.entrySet()) {
                     IConfigPredicate predicate = predicatePair.getKey();
                     ResourceLocation predicateID = predicate.getID();
                     JsonObject object = new JsonObject();
-                    predicates.add(object);
                     object.addProperty("type", predicateID.toString());
                     ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.get(predicateID).write(object, predicate);
                     object.addProperty("inverted", predicatePair.getValue());
+                    predicates.add(object);
                 }
+                json.add("predicates", predicates);
             }
             if (value.inverted) json.addProperty("inverted", true);
         }
@@ -90,7 +90,7 @@ public class ConfigLootCondition implements ILootCondition {
             if (!json.has("value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a string");
             String name = JSONUtils.getString(json, "value");
-            ForgeConfigSpec.ConfigValue<?> configValue = configValues.get(name);
+            ForgeConfigSpec.ConfigValue<?> configValue = this.configValues.get(name);
             if (configValue == null)
                 throw new JsonSyntaxException("No config value of name '" + name + "' found");
             Map<IConfigPredicate, Boolean> predicates = new HashMap<>();

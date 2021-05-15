@@ -223,10 +223,10 @@ public final class DataUtil {
 	 * fields in the passed-in collection of objects, checking against the annotation's corresponding
 	 * {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} to determine whether the condition should pass.<br><br>
 	 * <h2>Function</h2>
-	 * <p>This method allows you to make crafting recipes, advancement modifiers, loot tables, etc. check whether a specific config
+	 * <p>This method allows you to make crafting recipes, modifiers, loot tables, etc. check whether a specific config
 	 * field is true/whether it meets specific predicates before loading without having to hardcode new condition classes
 	 * for certain config values. It's essentially a wrapper for the condition and loot condition registry methods and
-	 * and should be called during common setup accordingly.</p><br><br>
+	 * should be called during common setup accordingly.</p><br><br>
 	 *
 	 * <h2>Implementation</h2>
 	 * <p>All the {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}s in the objects in
@@ -250,11 +250,11 @@ public final class DataUtil {
 	 * ]
 	 * }</pre>
 	 *
-	 * <p>Config conditions also accept a {@code predicates} array which defines
-	 * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate IConfigPredicate}s the
+	 * <p>Config conditions also accept a {@code predicates} array, which defines
+	 * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate IConfigPredicate}s that the
 	 * config value must match before the condition returns true, and a boolean {@code inverted} argument which makes
 	 * the condition pass if it evaluates to false instead of true. If the config value is non-boolean,
-	 * {@code predicates} is required. Each individual predicate also accepts an {@code inverted} argument (as
+	 * {@code predicates} are required. Each individual predicate also accepts an {@code inverted} argument (as
 	 * {@code !(A.B) != !A.!B}).</p>
 	 *
 	 * <p>For example, you could check whether a the float config value {@code "potato_poison_chance"} is less than

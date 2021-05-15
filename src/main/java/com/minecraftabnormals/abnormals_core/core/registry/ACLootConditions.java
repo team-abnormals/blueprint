@@ -9,8 +9,8 @@ import net.minecraft.util.registry.Registry;
 
 /**
  * @author abigailfails
- * */
-public class ACLootConditions {
+ */
+public final class ACLootConditions {
     public static final ResourceLocation RANDOM_DIFFICULTY_CHANCE = new ResourceLocation(AbnormalsCore.MODID, "random_difficulty_chance");
     public static final ResourceLocation RAID_CHECK = new ResourceLocation(AbnormalsCore.MODID, "raid_check");
 

@@ -42,11 +42,13 @@ public class RaidCheckCondition implements ILootCondition {
 
     public static class Serializer implements ILootSerializer<RaidCheckCondition> {
 
+        @Override
         public void serialize(JsonObject json, RaidCheckCondition condition, JsonSerializationContext context) {
             if (condition.inverted)
                 json.addProperty("inverted", true);
         }
 
+        @Override
         public RaidCheckCondition deserialize(JsonObject json, JsonDeserializationContext context) {
             return new RaidCheckCondition(JSONUtils.getBoolean(json, "inverted", false));
         }
