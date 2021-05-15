@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * A condition that checks against the values of config values annotated with {@link ConfigKey}. Uses the recipe system,
- * but is also compatible with advancement modifiers etc.
+ * but is also compatible with modifiers etc.
  *
  * <p>To make your mod's config values compatible with it, annotate them with {@link ConfigKey} taking in the string
  * value that should be used to deserialize the field, then call {@link DataUtil#registerConfigCondition(String, Object...)}
