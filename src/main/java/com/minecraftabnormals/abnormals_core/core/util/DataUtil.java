@@ -2,6 +2,7 @@ package com.minecraftabnormals.abnormals_core.core.util;
 
 import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.loot.ConfigLootCondition;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
@@ -20,30 +21,28 @@ import net.minecraft.entity.ai.brain.task.GiveHeroGiftsTask;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootConditionType;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionBrewing;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.management.ImmutableDescriptor;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.function.BiPredicate;
 
@@ -218,15 +217,15 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Registers a {@link ConfigValueCondition.Serializer} under the name {@code "[modId]:config"}
+	 * Registers a {@link ConfigValueCondition.Serializer} and a {@link ConfigLootCondition.Serializer} under the name {@code "[modId]:config"}
 	 * that accepts the values of {@link ConfigKey} annotations for {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}
 	 * fields in the passed-in collection of objects, checking against the annotation's corresponding
 	 * {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} to determine whether the condition should pass.<br><br>
 	 * <h2>Function</h2>
-	 * <p>This method allows you to make crafting recipes, advancement modifiers, etc. check whether a specific config
+	 * <p>This method allows you to make crafting recipes, modifiers, loot tables, etc. check whether a specific config
 	 * field is true/whether it meets specific predicates before loading without having to hardcode new condition classes
-	 * for certain config values. It's essentially a wrapper for {@link CraftingHelper#register(IConditionSerializer)}
-	 * and should be called during common setup accordingly.</p><br><br>
+	 * for certain config values. It's essentially a wrapper for the condition and loot condition registry methods and
+	 * should be called during common setup accordingly.</p><br><br>
 	 *
 	 * <h2>Implementation</h2>
 	 * <p>All the {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}s in the objects in
@@ -250,10 +249,12 @@ public final class DataUtil {
 	 * ]
 	 * }</pre>
 	 *
-	 * <p>Config conditions also accept a {@code predicates} array which defines predicates the config value must match
-	 * before the condition returns true, and a boolean {@code inverted} argument which makes the condition pass if it
-	 * evaluates to false instead of true. If the config value is non-boolean, {@code predicates} is required.
-	 * Each individual predicate also accepts an {@code inverted} argument, as {@code !(A.B) != !A.!B}.</p>
+	 * <p>Config conditions also accept a {@code predicates} array, which defines
+	 * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate IConfigPredicate}s that the
+	 * config value must match before the condition returns true, and a boolean {@code inverted} argument which makes
+	 * the condition pass if it evaluates to false instead of true. If the config value is non-boolean,
+	 * {@code predicates} are required. Each individual predicate also accepts an {@code inverted} argument (as
+	 * {@code !(A.B) != !A.!B}).</p>
 	 *
 	 * <p>For example, you could check whether a the float config value {@code "potato_poison_chance"} is less than
 	 * 0.1 by using the {@code "abnormals_core:greater_than_or_equal_to"} predicate and inverting it. (Of course,
@@ -300,11 +301,12 @@ public final class DataUtil {
 			}
 		}
 		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, configValues));
+		Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(modId, "config"), new LootConditionType(new ConfigLootCondition.Serializer(modId, configValues)));
 	}
 
 	/**
 	 * Registers an {@link IConfigPredicateSerializer} for an
-	 * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate}.
+	 * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate IConfigPredicate}.
 	 *
 	 * <p>The predicate takes in a {@link ForgeConfigSpec.ConfigValue} and returns true if it matches specific conditions.</p>
 	 *

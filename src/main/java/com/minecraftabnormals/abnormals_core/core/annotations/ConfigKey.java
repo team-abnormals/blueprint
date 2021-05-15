@@ -1,5 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.annotations;
 
+import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,10 +12,9 @@ import java.lang.annotation.Target;
  * This annotation, when applied to {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue ConfigValue} fields
  * in objects that are passed into the {@code Object...} parameter of
  * {@link com.minecraftabnormals.abnormals_core.core.util.DataUtil#registerConfigCondition(String, Object...) registerConfigCondition},
- * allows the value to be referred to in JSON by a
- * {@link com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition ConfigValueCondition} matching
- * the mod ID passed into {@link com.minecraftabnormals.abnormals_core.core.util.DataUtil#registerConfigCondition(String, Object...) registerConfigCondition},
- * which can then be used to test a condition.
+ * allows the value to be referred to in JSON by a {@link ConfigValueCondition ConfigValueCondition}
+ * or {@link com.minecraftabnormals.abnormals_core.core.api.conditions.loot.ConfigLootCondition ConfigLootCondition} matching
+ * the mod ID passed into {@link com.minecraftabnormals.abnormals_core.core.util.DataUtil#registerConfigCondition(String, Object...) registerConfigCondition}.
  *
  * <p>The {@code value} of this annotation determines what string needs to be specified in a config condition to get the
  * value associated with its field. For example, if you had a class like this:
