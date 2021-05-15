@@ -8,6 +8,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 /**
+ * Registers a few loot conditions made for general use by mods and datapack creators.
+ *
  * @author abigailfails
  */
 public final class ACLootConditions {
