@@ -8,7 +8,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 /**
- * Registers a few loot conditions made for general use by mods and datapack creators.
+ * Registry class for Abnormal Core's built-in loot conditions.
+ *
+ * <p>These conditions can be used by mods and datapacks.</p>
  *
  * @author abigailfails
  */
