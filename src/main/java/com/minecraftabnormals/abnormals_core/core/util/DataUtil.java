@@ -1,6 +1,5 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.loot.ConfigLootCondition;
