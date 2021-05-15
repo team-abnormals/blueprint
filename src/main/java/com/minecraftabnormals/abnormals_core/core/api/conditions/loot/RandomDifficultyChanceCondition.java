@@ -36,8 +36,8 @@ public class RandomDifficultyChanceCondition implements ILootCondition {
 	private final float hardChance;
 
 	public RandomDifficultyChanceCondition(float defaultChance, float peacefulChance, float easyChance, float normalChance, float hardChance) {
-		this.peacefulChance = peacefulChance;
 		this.defaultChance = defaultChance;
+		this.peacefulChance = peacefulChance;
 		this.easyChance = easyChance;
 		this.normalChance = normalChance;
 		this.hardChance = hardChance;
@@ -69,6 +69,7 @@ public class RandomDifficultyChanceCondition implements ILootCondition {
 	}
 
 	public static class Serializer implements ILootSerializer<RandomDifficultyChanceCondition> {
+
 		public void serialize(JsonObject json, RandomDifficultyChanceCondition condition, JsonSerializationContext context) {
 			json.addProperty("default_chance", condition.defaultChance);
 			if (condition.peacefulChance >= 0)
@@ -89,9 +90,8 @@ public class RandomDifficultyChanceCondition implements ILootCondition {
 		}
 
 		private static float getFloatOrMinus1(JsonObject json, String fieldName) {
-			if (json.has(fieldName))
-				return JSONUtils.getFloat(json, fieldName);
-			return -1;
+			return json.has(fieldName) ? JSONUtils.getFloat(json, fieldName) : -1.0F;
 		}
+
 	}
 }
