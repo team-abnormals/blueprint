@@ -302,7 +302,7 @@ public final class DataUtil {
 			}
 		}
 		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, configValues));
-		Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(AbnormalsCore.MODID, "config"), new LootConditionType(new ConfigLootCondition.Serializer(modId, configValues)));
+		Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(modId, "config"), new LootConditionType(new ConfigLootCondition.Serializer(modId, configValues)));
 	}
 
 	/**
