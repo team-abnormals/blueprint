@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 /**
- * Registry class for Abnormal Core's built-in loot conditions.
+ * Registry class for Abnormals Core's built-in loot conditions.
  *
  * <p>These conditions can be used by mods and datapacks.</p>
  *
