@@ -27,5 +27,4 @@ public final class LayerUtilMixin {
             cir.setReturnValue(true);
         }
     }
-    
 }
