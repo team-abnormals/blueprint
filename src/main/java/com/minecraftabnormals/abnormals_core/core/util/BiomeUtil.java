@@ -2,10 +2,10 @@ package com.minecraftabnormals.abnormals_core.core.util;
 
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.abnormals_core.common.world.gen.EdgeBiomeProvider;
-import com.minecraftabnormals.abnormals_core.common.world.gen.ocean.OceanType;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.INoiseRandom;
@@ -29,6 +29,8 @@ public final class BiomeUtil {
 	private static final Map<RegistryKey<Biome>, WeightedNoiseList<RegistryKey<Biome>>> HILL_BIOME_MAP = new HashMap<>();
 	private static final Map<OceanType, WeightedNoiseList<RegistryKey<Biome>>> OCEAN_BIOME_MAP = new HashMap<>();
 	private static final Map<RegistryKey<Biome>, RegistryKey<Biome>> DEEP_OCEAN_BIOME_MAP = new HashMap<>();
+	private static final Set<RegistryKey<Biome>> OCEAN_SET = new HashSet<>();
+	private static final Set<RegistryKey<Biome>> SHALLOW_OCEAN_SET = new HashSet<>();
 	private static final Map<RegistryKey<Biome>, EdgeBiomeProvider> EDGE_BIOME_PROVIDER_MAP = new HashMap<>();
 	private static final WeightedNoiseList<RegistryKey<Biome>> END_BIOMES = new WeightedNoiseList<>();
 	private static final Set<ResourceLocation> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
@@ -39,7 +41,7 @@ public final class BiomeUtil {
 		addOceanBiome(OceanType.COLD, Biomes.COLD_OCEAN, Biomes.DEEP_COLD_OCEAN, 15);
 		addOceanBiome(OceanType.NORMAL, Biomes.OCEAN, Biomes.DEEP_OCEAN, 15);
 		addOceanBiome(OceanType.LUKEWARM, Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, 15);
-		addOceanBiome(OceanType.WARM, Biomes.WARM_OCEAN, 15);
+		addOceanBiome(OceanType.WARM, Biomes.WARM_OCEAN, null, 15);
 	}
 
 	/**
@@ -81,18 +83,6 @@ public final class BiomeUtil {
 	}
 	
 	/**
-	 * Adds an ocean biome to generate with a given weight.
-	 * <p>This method is safe to call during parallel mod loading.</p>
-	 *
-	 * @param type The {@link OceanType} to register the {@link Biome} to.
-	 * @param biome A {@link Biome} {@link RegistryKey} to add.
-	 * @param weight The weight for the {@link Biome}.
-	 */
-	public static synchronized void addOceanBiome(OceanType type, RegistryKey<Biome> biome, int weight) {
-		addOceanBiome(type, biome, null, weight);
-	}
-	
-	/**
 	 * Adds an ocean biome with its deep variant to generate with a given weight.
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
@@ -102,10 +92,12 @@ public final class BiomeUtil {
 	 * @param weight The weight for the {@link Biome}.
 	 */
 	public static synchronized void addOceanBiome(OceanType type, RegistryKey<Biome> biome, @Nullable RegistryKey<Biome> deep, int weight) {
-		WeightedNoiseList<RegistryKey<Biome>> list = OCEAN_BIOME_MAP.computeIfAbsent(type, (key) -> new WeightedNoiseList<>());
-		list.add(biome, weight);
-		if(deep != null) {
+		OCEAN_BIOME_MAP.computeIfAbsent(type, (key) -> new WeightedNoiseList<>()).add(biome, weight);
+		OCEAN_SET.add(biome);
+		SHALLOW_OCEAN_SET.add(biome);
+		if (deep != null) {
 			DEEP_OCEAN_BIOME_MAP.put(biome, deep);
+			OCEAN_SET.add(biome);
 		}
 	}
 	
@@ -182,12 +174,7 @@ public final class BiomeUtil {
 	 * @return If a {@link Biome} {@link RegistryKey} is registered as an ocean {@link Biome}.
 	 */
 	public static boolean isOceanBiome(RegistryKey<Biome> biome) {
-		for (WeightedNoiseList<RegistryKey<Biome>> list : OCEAN_BIOME_MAP.values()) {
-			if (list.getEntries().stream().anyMatch((pair) -> pair.getFirst().equals(biome))) {
-				return true;
-			}
-		}
-		return false;
+		return OCEAN_SET.contains(biome);
 	}
 	
 	/**
@@ -197,14 +184,7 @@ public final class BiomeUtil {
 	 * @return If a {@link Biome} {@link RegistryKey} is registered as an ocean {@link Biome}, but not as a deep variant.
 	 */
 	public static boolean isShallowOceanBiome(RegistryKey<Biome> biome) {
-		for (WeightedNoiseList<RegistryKey<Biome>> list : OCEAN_BIOME_MAP.values()) {
-			if (list.getEntries().stream()
-			.filter((pair) -> DEEP_OCEAN_BIOME_MAP.values().stream().noneMatch((key) -> key.equals(pair.getFirst())))
-			.anyMatch((pair) -> pair.getFirst().equals(biome))) {
-				return true;
-			}
-		}
-		return false;
+		return SHALLOW_OCEAN_SET.contains(biome);
 	}
 	
 	/**
@@ -216,6 +196,16 @@ public final class BiomeUtil {
 	@Nullable
 	public static EdgeBiomeProvider getEdgeBiomeProvider(RegistryKey<Biome> biome) {
 		return EDGE_BIOME_PROVIDER_MAP.get(biome);
+	}
+	
+	/**
+	 * Get the {@link Biome} id given a {@link Biome} {@link RegistryKey}.
+	 * @param biome The {@link Biome} {@link RegistryKey} to get the id of.
+	 * @return The id of the provided {@link Biome} {@link RegistryKey}.
+	 */
+	@SuppressWarnings("deprecation")
+	public static int getId(@Nonnull RegistryKey<Biome> biome) {
+		return WorldGenRegistries.BIOME.getId(WorldGenRegistries.BIOME.getValueForKey(biome));
 	}
 
 	/**
@@ -268,5 +258,12 @@ public final class BiomeUtil {
 		public List<Pair<T, Integer>> getEntries() {
 			return this.entries;
 		}
+	}
+	
+	/**
+	 * The 5 different ocean types that generate in the world.
+	 */
+	public enum OceanType {
+		WARM, LUKEWARM, FROZEN, COLD, NORMAL
 	}
 }

@@ -7,7 +7,6 @@ import net.minecraft.world.gen.INoiseRandom;
 import javax.annotation.Nullable;
 
 public interface EdgeBiomeProvider {
-    
     /**
      * Get the bordering {@link Biome} given the surrounding {@link Biome}s.
      *

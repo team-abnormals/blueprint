@@ -2,7 +2,6 @@ package core;
 
 import client.TestEndimatedEntityRenderer;
 import com.google.common.collect.Sets;
-import com.minecraftabnormals.abnormals_core.common.world.gen.ocean.OceanType;
 import com.minecraftabnormals.abnormals_core.common.world.modification.*;
 import com.minecraftabnormals.abnormals_core.common.world.storage.GlobalStorage;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
@@ -76,7 +75,7 @@ public final class ACTest {
 				}
 				return null;
 			});
-			BiomeUtil.addOceanBiome(OceanType.WARM, TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_WARM_OCEAN, 20);
+			BiomeUtil.addOceanBiome(BiomeUtil.OceanType.WARM, TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_WARM_OCEAN, 20);
 			BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
 			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::canAnimalSpawn);
 		});
