@@ -70,7 +70,7 @@ public final class ACTest {
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
 			BiomeUtil.addEdgeBiome(Biomes.PLAINS, (noise, north, west, south, east) -> {
-				if((!Biomes.PLAINS.equals(north) && !BiomeUtil.isOceanBiome(north)) || (!Biomes.PLAINS.equals(west) && !BiomeUtil.isOceanBiome(west)) || (!Biomes.PLAINS.equals(south) && !BiomeUtil.isOceanBiome(south)) || (!Biomes.PLAINS.equals(east) && !BiomeUtil.isOceanBiome(east))) {
+				if ((!Biomes.PLAINS.equals(north) && !BiomeUtil.isOceanBiome(north)) || (!Biomes.PLAINS.equals(west) && !BiomeUtil.isOceanBiome(west)) || (!Biomes.PLAINS.equals(south) && !BiomeUtil.isOceanBiome(south)) || (!Biomes.PLAINS.equals(east) && !BiomeUtil.isOceanBiome(east))) {
 					return Biomes.SOUL_SAND_VALLEY;
 				}
 				return null;
