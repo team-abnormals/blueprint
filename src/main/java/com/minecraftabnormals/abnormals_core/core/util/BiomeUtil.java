@@ -12,18 +12,15 @@ import net.minecraft.world.gen.INoiseRandom;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * A utility class for biomes.
  *
  * @author bageldotjpg
  * @author SmellyModder (Luke Tonon)
+ * @author ExpensiveKoala
  */
 public final class BiomeUtil {
 	private static final Map<RegistryKey<Biome>, WeightedNoiseList<RegistryKey<Biome>>> HILL_BIOME_MAP = new HashMap<>();
@@ -31,7 +28,7 @@ public final class BiomeUtil {
 	private static final Map<RegistryKey<Biome>, RegistryKey<Biome>> DEEP_OCEAN_BIOME_MAP = new HashMap<>();
 	private static final Set<RegistryKey<Biome>> OCEAN_SET = new HashSet<>();
 	private static final Set<RegistryKey<Biome>> SHALLOW_OCEAN_SET = new HashSet<>();
-	private static final Map<RegistryKey<Biome>, EdgeBiomeProvider> EDGE_BIOME_PROVIDER_MAP = new HashMap<>();
+	private static final Map<RegistryKey<Biome>, PrioritizedNoiseList<EdgeBiomeProvider>> EDGE_BIOME_PROVIDER_MAP = new HashMap<>();
 	private static final WeightedNoiseList<RegistryKey<Biome>> END_BIOMES = new WeightedNoiseList<>();
 	private static final Set<ResourceLocation> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
 
@@ -108,8 +105,8 @@ public final class BiomeUtil {
 	 * @param key A {@link Biome} {@link RegistryKey} to add an {@link EdgeBiomeProvider} for.
 	 * @param provider An {@link EdgeBiomeProvider} to use to determine the biome to border a certain biome.
 	 */
-	public static synchronized void addEdgeBiome(RegistryKey<Biome> key, EdgeBiomeProvider provider) {
-		EDGE_BIOME_PROVIDER_MAP.put(key, provider);
+	public static synchronized void addEdgeBiome(RegistryKey<Biome> key, EdgeBiomeProvider provider, Priority priority) {
+		EDGE_BIOME_PROVIDER_MAP.computeIfAbsent(key, (k) -> new PrioritizedNoiseList<>()).add(provider, priority);
 	}
 
 	/**
@@ -188,14 +185,26 @@ public final class BiomeUtil {
 	}
 	
 	/**
-	 * Get the {@link EdgeBiomeProvider} for the {@link Biome} {@link RegistryKey} if one exists.
+	 * Get the {@link Biome} {@link RegistryKey} from the registered {@link EdgeBiomeProvider}s.
 	 *
-	 * @param biome A {@link Biome} {@link RegistryKey} to retrieve the corresponding {@link EdgeBiomeProvider}
-	 * @return The {@link EdgeBiomeProvider} corresponding to the {@link Biome} {@link RegistryKey}, or null if no {@link EdgeBiomeProvider} has been added.
+	 * @param biome A {@link Biome} {@link RegistryKey} to retrieve the corresponding edge biome of.
+	 * @param random The {@link INoiseRandom} to get the value randomly with.
+	 * @param northBiome The {@link Biome} {@link RegistryKey} to the north.
+	 * @param westBiome The {@link Biome} {@link RegistryKey} to the west.
+	 * @param southBiome The {@link Biome} {@link RegistryKey} to the south.
+	 * @param eastBiome The {@link Biome} {@link RegistryKey} to the east.
+	 * @return The {@link Biome} {@link RegistryKey}, or null if no {@link EdgeBiomeProvider} returns a {@link Biome} {@link RegistryKey}.
 	 */
 	@Nullable
-	public static EdgeBiomeProvider getEdgeBiomeProvider(RegistryKey<Biome> biome) {
-		return EDGE_BIOME_PROVIDER_MAP.get(biome);
+	public static RegistryKey<Biome> getEdgeBiome(RegistryKey<Biome> biome, INoiseRandom random, RegistryKey<Biome> northBiome, RegistryKey<Biome> westBiome, RegistryKey<Biome> southBiome, RegistryKey<Biome> eastBiome) {
+		PrioritizedNoiseList<EdgeBiomeProvider> edgeBiomeProviderList = EDGE_BIOME_PROVIDER_MAP.get(biome);
+		if (edgeBiomeProviderList != null) {
+			Pair<EdgeBiomeProvider, RegistryKey<Biome>> pair = edgeBiomeProviderList.getWithCallback(random, edgeBiomeProvider -> edgeBiomeProvider.getEdgeBiome(random, northBiome, westBiome, southBiome, eastBiome));
+			if (pair != null) {
+				return pair.getSecond();
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -261,9 +270,90 @@ public final class BiomeUtil {
 	}
 	
 	/**
+	 * A list-like class that has its entries prioritized but also capable of being chosen randomly.
+	 * <p>The prioritization is done through mapping out lists and then continuously selecting a random object in the current highest priority list until that object gets validated through a callback {@link Function}.</p>
+	 * <p>This is useful in scenarios where objects are to be chosen randomly, with some objects having a guarantee to be chosen before other objects.</p>
+	 *
+	 * @param <T> The type of values to store.
+	 * @author SmellyModder (Luke Tonon)
+	 */
+	public static final class PrioritizedNoiseList<T> {
+		private static final Object DUMMY_CALLBACK = new Object();
+		private final EnumMap<Priority, List<T>> priorityListMap = new EnumMap<>(Priority.class);
+		
+		/**
+		 * Adds an object to a {@link List} mapped to a given {@link Priority}.
+		 *
+		 * @param value    An object to add.
+		 * @param priority The {@link Priority} of this entry.
+		 */
+		public void add(T value, Priority priority) {
+			this.priorityListMap.computeIfAbsent(priority, priority1 -> new ArrayList<>()).add(value);
+		}
+		
+		/**
+		 * Gets a random entry using a given {@link INoiseRandom} without the use of a callback function.
+		 *
+		 * @param random A {@link INoiseRandom} to select a random entry.
+		 * @return A random entry from the given {@link INoiseRandom}.
+		 */
+		@Nullable
+		public T get(INoiseRandom random) {
+			Pair<T, Object> pair = this.getWithCallback(random, o -> DUMMY_CALLBACK);
+			return pair != null ? pair.getFirst() : null;
+		}
+		
+		/**
+		 * Gets a random entry using a given {@link INoiseRandom} validated through a callback function.
+		 *
+		 * @param random            A {@link INoiseRandom} to select a random entry.
+		 * @param callbackProcessor A callback function to validate a selected entry and return an additional value associated with it.
+		 * @return A {@link Pair} containing a random entry from the given {@link INoiseRandom} and a value associated with the entry.
+		 */
+		@Nullable
+		public <C> Pair<T, C> getWithCallback(INoiseRandom random, Function<T, C> callbackProcessor) {
+			for (List<T> list : this.priorityListMap.values()) {
+				int size = list.size();
+				if (size > 0) {
+					List<T> copy = new ArrayList<>(list);
+					while (size > 0) {
+						int index = random.random(size);
+						T picked = copy.get(index);
+						C callback = callbackProcessor.apply(picked);
+						if (callback != null) {
+							return Pair.of(picked, callback);
+						} else {
+							copy.remove(index);
+							size--;
+						}
+					}
+				}
+			}
+			return null;
+		}
+		
+		/**
+		 * Gets the internal {@link EnumMap} used to prioritize the entries in lists.
+		 *
+		 * @return The internal {@link EnumMap} used to prioritize the entries in lists.
+		 */
+		@Nonnull
+		public EnumMap<Priority, List<T>> getPriorityListMap() {
+			return this.priorityListMap;
+		}
+	}
+	
+	/**
 	 * The 5 different ocean types that generate in the world.
 	 */
 	public enum OceanType {
 		WARM, LUKEWARM, FROZEN, COLD, NORMAL
+	}
+	
+	/**
+	 *
+	 */
+	public enum Priority {
+		HIGHEST, HIGH, NORMAL, LOW, LOWEST
 	}
 }

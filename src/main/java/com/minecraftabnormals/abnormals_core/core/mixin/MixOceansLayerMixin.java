@@ -13,6 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+/**
+ * @author ExpensiveKoala
+ */
 @Mixin(MixOceansLayer.class)
 public final class MixOceansLayerMixin {
     // Inject before if statement checking if deep ocean

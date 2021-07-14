@@ -10,6 +10,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * @author ExpensiveKoala
+ */
 @Mixin(LayerUtil.class)
 public final class LayerUtilMixin {
     @Inject(method = "isOcean", at = @At("HEAD"), cancellable = true)
