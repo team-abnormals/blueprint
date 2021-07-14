@@ -2,7 +2,6 @@ package com.minecraftabnormals.abnormals_core.core.mixin;
 
 import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeRegistry;
 import net.minecraft.world.gen.INoiseRandom;
@@ -19,12 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(HillsLayer.class)
 public abstract class HillsLayerMixin implements IAreaTransformer2, IDimOffset1Transformer {
-	@SuppressWarnings("deprecation")
 	@Inject(method = "apply", at = @At(value = "INVOKE_ASSIGN", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/gen/INoiseRandom;random(I)I"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void transformVariants(INoiseRandom rand, IArea area1, IArea area2, int x, int z, CallbackInfoReturnable<Integer> cir, int i, int j, int k) {
 		RegistryKey<Biome> hill = BiomeUtil.getHillBiome(BiomeRegistry.getKeyFromID(i), rand);
 		if (hill != null) {
-			int l = WorldGenRegistries.BIOME.getId(WorldGenRegistries.BIOME.getValueForKey(hill));
+			int l = BiomeUtil.getId(hill);
 
 			if (k == 0 && l != i) {
 				l = HillsLayer.field_242940_c.getOrDefault(l, i);

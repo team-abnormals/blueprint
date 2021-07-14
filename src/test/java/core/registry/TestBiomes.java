@@ -17,8 +17,14 @@ public final class TestBiomes {
 	public static final BiomeSubRegistryHelper.KeyedBiome TEST_AMBIENCE = HELPER.createBiomeWithModifiers("test_ambience", TestBiomes::createAmbienceBiome, (biomeRegistryObject, biomeModificationManager) -> {
 		biomeModificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(BiomeModificationPredicates.forBiome(biomeRegistryObject), () -> new BiomeAmbience.Builder().setWaterColor(415924).setWaterFogColor(329011).setFogColor(1268463).withSkyColor(1).setParticle(new ParticleEffectAmbience(ParticleTypes.ENCHANT, 0.00725F)).setAmbientSound(TestSounds.AMBIENCE_TEST.get()).setMoodSound(new MoodSoundAmbience(TestSounds.AMBIENCE_TEST.get(), 6000, 8, 2.0D)).setMusic(BackgroundMusicTracks.DRAGON_FIGHT_MUSIC).build()));
 	});
+	
+	public static final BiomeSubRegistryHelper.KeyedBiome TEST_OCEAN = HELPER.createBiome("test_ocean", TestBiomes::createOceanBiome);
 
 	private static Biome createAmbienceBiome() {
 		return (new Biome.Builder()).precipitation(Biome.RainType.RAIN).category(Biome.Category.PLAINS).depth(0.125F).scale(0.05F).temperature(0.8F).downfall(0.4F).setEffects(new BiomeAmbience.Builder().setWaterColor(4159204).setWaterFogColor(329011).setFogColor(12638463).withSkyColor(1).build()).withMobSpawnSettings(new MobSpawnInfo.Builder().copy()).withGenerationSettings((new BiomeGenerationSettings.Builder()).withSurfaceBuilder(ConfiguredSurfaceBuilders.field_244178_j).build()).build();
+	}
+	
+	private static Biome createOceanBiome() {
+		return (new Biome.Builder()).precipitation(Biome.RainType.RAIN).category(Biome.Category.OCEAN).depth(-1.0F).scale(0.15F).temperature(1F).downfall(0.1F).setEffects(new BiomeAmbience.Builder().setWaterColor(4159204).setWaterFogColor(329011).setFogColor(12638463).withSkyColor(1).build()).withMobSpawnSettings(new MobSpawnInfo.Builder().copy()).withGenerationSettings(new BiomeGenerationSettings.Builder().withSurfaceBuilder(ConfiguredSurfaceBuilders.field_244185_q).build()).build();
 	}
 }

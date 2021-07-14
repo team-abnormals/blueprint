@@ -13,6 +13,7 @@ import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.mojang.datafixers.util.Pair;
 import common.world.TestGlobalStorage;
+import core.registry.TestBiomes;
 import core.registry.TestEntities;
 import core.registry.TestFeatures;
 import core.registry.TestItems;
@@ -68,6 +69,19 @@ public final class ACTest {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
+			BiomeUtil.addEdgeBiome(Biomes.PLAINS, (noise, north, west, south, east) -> {
+				if ((!Biomes.PLAINS.equals(north) && !BiomeUtil.isOceanBiome(north)) || (!Biomes.PLAINS.equals(west) && !BiomeUtil.isOceanBiome(west)) || (!Biomes.PLAINS.equals(south) && !BiomeUtil.isOceanBiome(south)) || (!Biomes.PLAINS.equals(east) && !BiomeUtil.isOceanBiome(east))) {
+					return Biomes.SOUL_SAND_VALLEY;
+				}
+				return null;
+			}, BiomeUtil.Priority.NORMAL);
+			BiomeUtil.addEdgeBiome(Biomes.PLAINS, (noise, north, west, south, east) -> {
+				if (!Biomes.PLAINS.equals(north) || !Biomes.PLAINS.equals(west) || !Biomes.PLAINS.equals(south) || !Biomes.PLAINS.equals(east)) {
+					return Biomes.ICE_SPIKES;
+				}
+				return null;
+			}, BiomeUtil.Priority.LOW);
+			BiomeUtil.addOceanBiome(BiomeUtil.OceanType.WARM, TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_WARM_OCEAN, 20);
 			BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
 			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::canAnimalSpawn);
 		});

@@ -12,7 +12,11 @@
     "HillsLayerMixin",
     "ItemInvokerMixin",
     "LanternBlockMixin",
+    "LayerUtilMixin",
+    "MixOceansLayerMixin",
+    "OceanLayerMixin",
     "ServerWorldMixin",
+    "ShoreLayerMixin",
     "SpawnEggItemMixin",
     "TrackedEntityMixin",
     "TrapDoorBlockMixin"
@@ -20,8 +24,8 @@
   "client": [
     "client.ClientWorldMixin",
     "client.CustomizeSkinScreenMixin",
-    "client.PlayerRendererMixin",
-    "client.MinecraftMixin"
+    "client.MinecraftMixin",
+    "client.PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
