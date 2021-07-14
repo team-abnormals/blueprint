@@ -1,10 +1,12 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.abnormals_core.common.world.gen.EdgeBiomeProvider;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
@@ -14,6 +16,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * A utility class for biomes.
@@ -30,6 +33,7 @@ public final class BiomeUtil {
 	private static final Set<RegistryKey<Biome>> SHALLOW_OCEAN_SET = new HashSet<>();
 	private static final Map<RegistryKey<Biome>, PrioritizedNoiseList<EdgeBiomeProvider>> EDGE_BIOME_PROVIDER_MAP = new HashMap<>();
 	private static final WeightedNoiseList<RegistryKey<Biome>> END_BIOMES = new WeightedNoiseList<>();
+	private static final List<Pair<Biome.Attributes, RegistryKey<Biome>>> NETHER_BIOMES = new ArrayList<>();
 	private static final Set<ResourceLocation> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
 
 	static {
@@ -78,14 +82,14 @@ public final class BiomeUtil {
 	public static synchronized void markEndBiomeCustomMusic(ResourceLocation biomeName) {
 		CUSTOM_END_MUSIC_BIOMES.add(biomeName);
 	}
-	
+
 	/**
 	 * Adds an ocean biome with its deep variant to generate with a given weight.
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
-	 * @param type The {@link OceanType} to register the {@link Biome} to.
-	 * @param biome The {@link Biome} {@link RegistryKey} to add.
-	 * @param deep The {@link Biome} {@link RegistryKey} to add as the deep variant.
+	 * @param type   The {@link OceanType} to register the {@link Biome} to.
+	 * @param biome  The {@link Biome} {@link RegistryKey} to add.
+	 * @param deep   The {@link Biome} {@link RegistryKey} to add as the deep variant.
 	 * @param weight The weight for the {@link Biome}.
 	 */
 	public static synchronized void addOceanBiome(OceanType type, RegistryKey<Biome> biome, @Nullable RegistryKey<Biome> deep, int weight) {
@@ -97,16 +101,27 @@ public final class BiomeUtil {
 			OCEAN_SET.add(biome);
 		}
 	}
-	
+
 	/**
 	 * Adds an {@link EdgeBiomeProvider} for a given {@link Biome} {@link RegistryKey}
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
-	 * @param key A {@link Biome} {@link RegistryKey} to add an {@link EdgeBiomeProvider} for.
+	 * @param key      A {@link Biome} {@link RegistryKey} to add an {@link EdgeBiomeProvider} for.
 	 * @param provider An {@link EdgeBiomeProvider} to use to determine the biome to border a certain biome.
 	 */
 	public static synchronized void addEdgeBiome(RegistryKey<Biome> key, EdgeBiomeProvider provider, Priority priority) {
 		EDGE_BIOME_PROVIDER_MAP.computeIfAbsent(key, (k) -> new PrioritizedNoiseList<>()).add(provider, priority);
+	}
+
+	/**
+	 * Adds a biome to generate in the Nether with specific {@link Biome.Attributes}.
+	 * <p>This method is safe to call during parallel mod loading.</p>
+	 *
+	 * @param attributes The {@link Biome.Attributes} to use when generating the biome.
+	 * @param biome      The {@link RegistryKey} of the {@link Biome} to use.
+	 */
+	public static synchronized void addNetherBiome(Biome.Attributes attributes, RegistryKey<Biome> biome) {
+		NETHER_BIOMES.add(Pair.of(attributes, biome));
 	}
 
 	/**
@@ -141,18 +156,18 @@ public final class BiomeUtil {
 	public static boolean shouldPlayCustomEndMusic(ResourceLocation biomeName) {
 		return CUSTOM_END_MUSIC_BIOMES.contains(biomeName);
 	}
-	
+
 	/**
 	 * Gets a random ocean biome for a given {@link OceanType} and {@link INoiseRandom}.
 	 *
-	 * @param type An {@link OceanType} to categorize the ocean temperature.
+	 * @param type   An {@link OceanType} to categorize the ocean temperature.
 	 * @param random An {@link INoiseRandom} to randomly pick the ocean variant.
 	 * @return A random ocean biome for a given {@link OceanType} and {@link INoiseRandom}.
 	 */
 	public static RegistryKey<Biome> getOceanBiome(OceanType type, INoiseRandom random) {
 		return OCEAN_BIOME_MAP.getOrDefault(type, new WeightedNoiseList<>()).get(random);
 	}
-	
+
 	/**
 	 * Get the corresponding deep ocean variant of a {@link Biome} {@link RegistryKey}.
 	 *
@@ -163,7 +178,7 @@ public final class BiomeUtil {
 	public static RegistryKey<Biome> getDeepOceanBiome(RegistryKey<Biome> oceanBiome) {
 		return DEEP_OCEAN_BIOME_MAP.get(oceanBiome);
 	}
-	
+
 	/**
 	 * Check if a {@link Biome} {@link RegistryKey} is an ocean {@link Biome}.
 	 *
@@ -173,7 +188,7 @@ public final class BiomeUtil {
 	public static boolean isOceanBiome(RegistryKey<Biome> biome) {
 		return OCEAN_SET.contains(biome);
 	}
-	
+
 	/**
 	 * Check if a {@link Biome} {@link RegistryKey} is an ocean {@link Biome}, but also not registered as a deep variant.
 	 *
@@ -183,16 +198,16 @@ public final class BiomeUtil {
 	public static boolean isShallowOceanBiome(RegistryKey<Biome> biome) {
 		return SHALLOW_OCEAN_SET.contains(biome);
 	}
-	
+
 	/**
 	 * Get the {@link Biome} {@link RegistryKey} from the registered {@link EdgeBiomeProvider}s.
 	 *
-	 * @param biome A {@link Biome} {@link RegistryKey} to retrieve the corresponding edge biome of.
-	 * @param random The {@link INoiseRandom} to get the value randomly with.
+	 * @param biome      A {@link Biome} {@link RegistryKey} to retrieve the corresponding edge biome of.
+	 * @param random     The {@link INoiseRandom} to get the value randomly with.
 	 * @param northBiome The {@link Biome} {@link RegistryKey} to the north.
-	 * @param westBiome The {@link Biome} {@link RegistryKey} to the west.
+	 * @param westBiome  The {@link Biome} {@link RegistryKey} to the west.
 	 * @param southBiome The {@link Biome} {@link RegistryKey} to the south.
-	 * @param eastBiome The {@link Biome} {@link RegistryKey} to the east.
+	 * @param eastBiome  The {@link Biome} {@link RegistryKey} to the east.
 	 * @return The {@link Biome} {@link RegistryKey}, or null if no {@link EdgeBiomeProvider} returns a {@link Biome} {@link RegistryKey}.
 	 */
 	@Nullable
@@ -206,9 +221,28 @@ public final class BiomeUtil {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Gets an {@link ImmutableList} containing base (vanilla) nether biome data and modded nether biome data.
+	 * <p>This method is only ever called once when the {@link net.minecraft.world.biome.provider.NetherBiomeProvider.Preset#DEFAULT_NETHER_PROVIDER_PRESET} field is loaded.</p>
+	 *
+	 * @param baseBiomes The base list containing nether biome data to merge into one {@link ImmutableList} with modded nether biome data.
+	 * @param registry   A {@link Biome} {@link Registry} to lookup the {@link Biome}s.
+	 * @return An {@link ImmutableList} containing base (vanilla) nether biome data and modded nether biome data.
+	 */
+	public static List<Pair<Biome.Attributes, Supplier<Biome>>> getModifiedNetherBiomes(List<Pair<Biome.Attributes, Supplier<Biome>>> baseBiomes, Registry<Biome> registry) {
+		ImmutableList.Builder<Pair<Biome.Attributes, Supplier<Biome>>> builder = new ImmutableList.Builder<>();
+		builder.addAll(baseBiomes);
+		NETHER_BIOMES.forEach(registryKeyAttributesPair -> {
+			RegistryKey<Biome> biomeRegistryKey = registryKeyAttributesPair.getSecond();
+			builder.add(Pair.of(registryKeyAttributesPair.getFirst(), () -> registry.getOrThrow(biomeRegistryKey)));
+		});
+		return builder.build();
+	}
+
 	/**
 	 * Get the {@link Biome} id given a {@link Biome} {@link RegistryKey}.
+	 *
 	 * @param biome The {@link Biome} {@link RegistryKey} to get the id of.
 	 * @return The id of the provided {@link Biome} {@link RegistryKey}.
 	 */
@@ -268,7 +302,7 @@ public final class BiomeUtil {
 			return this.entries;
 		}
 	}
-	
+
 	/**
 	 * A list-like class that has its entries prioritized but also capable of being chosen randomly.
 	 * <p>The prioritization is done through mapping out lists and then continuously selecting a random object in the current highest priority list until that object gets validated through a callback {@link Function}.</p>
@@ -280,7 +314,7 @@ public final class BiomeUtil {
 	public static final class PrioritizedNoiseList<T> {
 		private static final Object DUMMY_CALLBACK = new Object();
 		private final EnumMap<Priority, List<T>> priorityListMap = new EnumMap<>(Priority.class);
-		
+
 		/**
 		 * Adds an object to a {@link List} mapped to a given {@link Priority}.
 		 *
@@ -290,7 +324,7 @@ public final class BiomeUtil {
 		public void add(T value, Priority priority) {
 			this.priorityListMap.computeIfAbsent(priority, priority1 -> new ArrayList<>()).add(value);
 		}
-		
+
 		/**
 		 * Gets a random entry using a given {@link INoiseRandom} without the use of a callback function.
 		 *
@@ -302,7 +336,7 @@ public final class BiomeUtil {
 			Pair<T, Object> pair = this.getWithCallback(random, o -> DUMMY_CALLBACK);
 			return pair != null ? pair.getFirst() : null;
 		}
-		
+
 		/**
 		 * Gets a random entry using a given {@link INoiseRandom} validated through a callback function.
 		 *
@@ -331,7 +365,7 @@ public final class BiomeUtil {
 			}
 			return null;
 		}
-		
+
 		/**
 		 * Gets the internal {@link EnumMap} used to prioritize the entries in lists.
 		 *
@@ -342,14 +376,14 @@ public final class BiomeUtil {
 			return this.priorityListMap;
 		}
 	}
-	
+
 	/**
 	 * The 5 different ocean types that generate in the world.
 	 */
 	public enum OceanType {
 		WARM, LUKEWARM, FROZEN, COLD, NORMAL
 	}
-	
+
 	/**
 	 * An enum representing 5 different levels of priority.
 	 */
