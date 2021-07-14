@@ -75,6 +75,12 @@ public final class ACTest {
 				}
 				return null;
 			}, BiomeUtil.Priority.NORMAL);
+			BiomeUtil.addEdgeBiome(Biomes.PLAINS, (noise, north, west, south, east) -> {
+				if (!Biomes.PLAINS.equals(north) || !Biomes.PLAINS.equals(west) || !Biomes.PLAINS.equals(south) || !Biomes.PLAINS.equals(east)) {
+					return Biomes.ICE_SPIKES;
+				}
+				return null;
+			}, BiomeUtil.Priority.LOW);
 			BiomeUtil.addOceanBiome(BiomeUtil.OceanType.WARM, TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_WARM_OCEAN, 20);
 			BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
 			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::canAnimalSpawn);

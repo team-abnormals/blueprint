@@ -351,7 +351,7 @@ public final class BiomeUtil {
 	}
 	
 	/**
-	 *
+	 * An enum representing 5 different levels of priority.
 	 */
 	public enum Priority {
 		HIGHEST, HIGH, NORMAL, LOW, LOWEST
