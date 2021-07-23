@@ -20,7 +20,7 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public final class LootPoolEntriesModifier implements ILootModifier<LootPoolEntriesModifier.Config> {
-	public static final Field ENTRIES = ObfuscationReflectionHelper.findField(LootPool.class, "entries");
+	public static final Field ENTRIES = ObfuscationReflectionHelper.findField(LootPool.class, "field_186453_a");
 
 	@SuppressWarnings("unchecked")
 	@Override

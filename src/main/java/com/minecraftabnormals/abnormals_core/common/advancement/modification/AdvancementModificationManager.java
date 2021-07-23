@@ -64,12 +64,12 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 		field.setAccessible(true);
 		SimpleReloadableResourceManager reloadableResourceManager = (SimpleReloadableResourceManager) ((DataPackRegistries) field.get(event)).getResourceManager();
 
-		List<IFutureReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "listeners");
+		List<IFutureReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_199015_d");
 		if (reloadListeners != null) {
 			reloadListeners.add(4, INSTANCE);
 		}
 
-		List<IFutureReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "recentlyRegistered");
+		List<IFutureReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_219539_d");
 		if (initTaskQueue != null) {
 			initTaskQueue.add(4, INSTANCE);
 		}

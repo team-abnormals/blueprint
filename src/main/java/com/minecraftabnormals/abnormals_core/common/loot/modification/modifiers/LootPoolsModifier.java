@@ -18,7 +18,7 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public final class LootPoolsModifier implements ILootModifier<LootPoolsModifier.Config> {
-	public static final Field POOLS = ObfuscationReflectionHelper.findField(LootTable.class, "pools");
+	public static final Field POOLS = ObfuscationReflectionHelper.findField(LootTable.class, "field_186466_c");
 
 	@SuppressWarnings("unchecked")
 	@Override

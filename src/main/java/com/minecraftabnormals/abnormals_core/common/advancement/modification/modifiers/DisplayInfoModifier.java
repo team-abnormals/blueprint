@@ -29,10 +29,10 @@ import com.minecraftabnormals.abnormals_core.common.advancement.modification.Adv
  * @author SmellyModder (Luke Tonon)
  */
 public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoModifier.Config> {
-	private static final Field DISPLAY_INFO_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "display");
-	private static final Field ICON_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "icon");
-	private static final Field BACKGROUND_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "background");
-	private static final Field SHOW_TOAST_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "showToast");
+	private static final Field DISPLAY_INFO_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "field_192063_c");
+	private static final Field ICON_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "field_192301_b");
+	private static final Field BACKGROUND_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "field_192302_c");
+	private static final Field SHOW_TOAST_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "field_193226_f");
 
 	public DisplayInfoModifier() {
 		super(((element, conditionArrayParser) -> {

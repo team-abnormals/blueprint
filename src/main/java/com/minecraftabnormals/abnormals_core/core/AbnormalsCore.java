@@ -172,7 +172,7 @@ public final class AbnormalsCore {
 
 	private void replaceBeehivePOI() {
 		PointOfInterestType.BEEHIVE.matchingStates = Sets.newHashSet(PointOfInterestType.BEEHIVE.matchingStates);
-		Map<BlockState, PointOfInterestType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PointOfInterestType.class, null, "TYPE_BY_STATE");
+		Map<BlockState, PointOfInterestType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PointOfInterestType.class, null, "field_221073_u");
 		if (statePointOfInterestMap != null) {
 			for (Block block : TileEntitySubRegistryHelper.collectBlocks(AbnormalsBeehiveBlock.class)) {
 				block.getStateDefinition().getPossibleStates().forEach(state -> {

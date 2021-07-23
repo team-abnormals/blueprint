@@ -24,7 +24,7 @@ import com.minecraftabnormals.abnormals_core.common.advancement.modification.Adv
  * @author SmellyModder (Luke Tonon)
  */
 public final class CriteriaModifier extends AdvancementModifier<CriteriaModifier.Config> {
-	public static final Field REQUIREMENTS_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "requirements");
+	public static final Field REQUIREMENTS_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "field_192066_f");
 
 	public CriteriaModifier() {
 		super(((element, conditionArrayParser) -> {
