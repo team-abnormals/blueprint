@@ -12,9 +12,9 @@ import net.minecraft.util.math.vector.Vector3d;
 public final class EntityUtil {
 
 	public static RayTraceResult rayTrace(Entity entity, double distance, float delta) {
-		return entity.world.rayTraceBlocks(new RayTraceContext(
+		return entity.level.clip(new RayTraceContext(
 				entity.getEyePosition(delta),
-				entity.getEyePosition(delta).add(entity.getLook(delta).scale(distance)),
+				entity.getEyePosition(delta).add(entity.getViewVector(delta).scale(distance)),
 				RayTraceContext.BlockMode.COLLIDER,
 				RayTraceContext.FluidMode.NONE,
 				entity
@@ -22,7 +22,7 @@ public final class EntityUtil {
 	}
 
 	public static RayTraceResult rayTraceWithCustomDirection(Entity entity, float pitch, float yaw, double distance, float delta) {
-		return entity.world.rayTraceBlocks(new RayTraceContext(
+		return entity.level.clip(new RayTraceContext(
 				entity.getEyePosition(delta),
 				entity.getEyePosition(delta).add(getVectorForRotation(pitch, yaw).scale(distance)),
 				RayTraceContext.BlockMode.COLLIDER,
@@ -32,7 +32,7 @@ public final class EntityUtil {
 	}
 
 	public static RayTraceResult rayTraceUpWithCustomDirection(Entity entity, float pitch, float yaw, double distance, float delta) {
-		return entity.world.rayTraceBlocks(new RayTraceContext(
+		return entity.level.clip(new RayTraceContext(
 				entity.getEyePosition(delta),
 				entity.getEyePosition(delta).add(getUpVectorForRotation(pitch, yaw).scale(distance)),
 				RayTraceContext.BlockMode.COLLIDER,

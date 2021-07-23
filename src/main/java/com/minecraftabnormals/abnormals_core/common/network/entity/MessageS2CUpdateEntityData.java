@@ -44,7 +44,7 @@ public final class MessageS2CUpdateEntityData {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
+				Entity entity = ClientInfo.getClientPlayerWorld().getEntity(message.entityId);
 				if (entity instanceof IDataManager) {
 					message.entries.forEach(dataEntry -> setTrackedValue(entity, dataEntry));
 				}

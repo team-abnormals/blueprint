@@ -83,7 +83,7 @@ public final class ModifierDataProvider<T, S, D> implements IDataProvider {
 	}
 
 	@Override
-	public void act(DirectoryCache directoryCache) {
+	public void run(DirectoryCache directoryCache) {
 		Path outputFolder = this.dataGenerator.getOutputFolder();
 		Set<ResourceLocation> entryNames = Sets.newHashSet();
 		BiFunction<Path, ProviderEntry<T, S, D>, Path> pathResolver = this.pathResolver;

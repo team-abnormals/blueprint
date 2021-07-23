@@ -7,6 +7,8 @@ import net.minecraft.block.WoodType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class AbnormalsStandingSignBlock extends StandingSignBlock implements IAbnormalsSign {
 
 	public AbnormalsStandingSignBlock(Properties properties, WoodType woodType) {

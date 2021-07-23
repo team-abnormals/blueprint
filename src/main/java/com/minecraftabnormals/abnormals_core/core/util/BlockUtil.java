@@ -28,11 +28,11 @@ import net.minecraft.world.World;
 public final class BlockUtil {
 
 	public static boolean isBlockInWater(World world, BlockPos pos) {
-		if (world.getBlockState(pos).getFluidState().isTagged(FluidTags.WATER)) {
+		if (world.getBlockState(pos).getFluidState().is(FluidTags.WATER)) {
 			return true;
 		}
 		for (Direction direction : Direction.values()) {
-			if (world.getFluidState(pos.offset(direction)).isTagged(FluidTags.WATER)) {
+			if (world.getFluidState(pos.relative(direction)).is(FluidTags.WATER)) {
 				return true;
 			}
 		}
@@ -40,10 +40,10 @@ public final class BlockUtil {
 	}
 
 	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos, BlockState state) {
-		ISelectionContext selectionContext = player == null ? ISelectionContext.dummy() : ISelectionContext.forEntity(player);
+		ISelectionContext selectionContext = player == null ? ISelectionContext.empty() : ISelectionContext.of(player);
 		VoxelShape voxelshape = state.getCollisionShape(world, pos, selectionContext);
 		VoxelShape offsetShape = world.getBlockState(pos).getCollisionShape(world, pos);
-		return (offsetShape.isEmpty() || world.getBlockState(pos).getMaterial().isReplaceable()) && state.isValidPosition(world, pos) && world.checkNoEntityCollision(null, voxelshape.withOffset(pos.getX(), pos.getY(), pos.getZ()));
+		return (offsetShape.isEmpty() || world.getBlockState(pos).getMaterial().isReplaceable()) && state.canSurvive(world, pos) && world.isUnobstructed(null, voxelshape.move(pos.getX(), pos.getY(), pos.getZ()));
 	}
 
 	public static SoundEvent getPlaceSound(BlockState state, World world, BlockPos pos, PlayerEntity entity) {
@@ -54,7 +54,7 @@ public final class BlockUtil {
 		for (Direction directions : Direction.values()) {
 			List<Direction> blacklistedDirectionsList = Arrays.asList(blacklistedDirections);
 			if (!blacklistedDirectionsList.contains(directions)) {
-				if (world.getBlockState(pos.offset(directions)).getBlock() == blockToCheck) {
+				if (world.getBlockState(pos.relative(directions)).getBlock() == blockToCheck) {
 					return false;
 				}
 			}
@@ -65,9 +65,9 @@ public final class BlockUtil {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static BlockState transferAllBlockStates(BlockState initial, BlockState after) {
 		BlockState block = after;
-		for (Property property : initial.getBlock().getStateContainer().getProperties()) {
-			if (after.hasProperty(property) && initial.get(property) != null) {
-				block = block.with(property, initial.get(property));
+		for (Property property : initial.getBlock().getStateDefinition().getProperties()) {
+			if (after.hasProperty(property) && initial.getValue(property) != null) {
+				block = block.setValue(property, initial.getValue(property));
 			}
 		}
 		return block;
@@ -105,8 +105,8 @@ public final class BlockUtil {
 		}
 
 		public static BBRotation getRotationForDirection(Direction currentDirection, Direction startingDirection) {
-			int currentIndex = currentDirection.getIndex() - 2;
-			int startingIndex = startingDirection.getIndex() - 2;
+			int currentIndex = currentDirection.get3DDataValue() - 2;
+			int startingIndex = startingDirection.get3DDataValue() - 2;
 			int index = (currentIndex - startingIndex) % 4;
 
 			switch (index) {
@@ -134,7 +134,7 @@ public final class BlockUtil {
 	 * @author abigailfails
 	 */
 	public static BlockPos offsetPos(IBlockSource source) {
-		return source.getBlockPos().offset(source.getBlockState().get(DirectionalBlock.FACING));
+		return source.getPos().relative(source.getBlockState().getValue(DirectionalBlock.FACING));
 	}
 
 	/**
@@ -145,7 +145,7 @@ public final class BlockUtil {
 	 * @see #offsetPos(IBlockSource source)
 	 */
 	public static BlockState getStateAtOffsetPos(IBlockSource source) {
-		return source.getWorld().getBlockState(offsetPos(source));
+		return source.getLevel().getBlockState(offsetPos(source));
 	}
 
 	/**
@@ -158,7 +158,7 @@ public final class BlockUtil {
 	 * @see #offsetPos(IBlockSource source)
 	 */
 	public static<T extends Entity> List<T> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends T> entityType) {
-		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(offsetPos(source)));
+		return source.getLevel().getEntitiesOfClass(entityType, new AxisAlignedBB(offsetPos(source)));
 	}
 
 	/**
@@ -172,6 +172,6 @@ public final class BlockUtil {
 	 * @see #offsetPos(IBlockSource source)
 	 */
 	public static<T extends Entity> List<T> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends T> entityType, Predicate<? super T> predicate) {
-		return source.getWorld().getEntitiesWithinAABB(entityType, new AxisAlignedBB(offsetPos(source)), predicate);
+		return source.getLevel().getEntitiesOfClass(entityType, new AxisAlignedBB(offsetPos(source)), predicate);
 	}
 }

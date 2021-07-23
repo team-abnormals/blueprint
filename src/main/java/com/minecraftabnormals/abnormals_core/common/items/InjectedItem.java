@@ -10,6 +10,8 @@ import net.minecraft.util.NonNullList;
 
 import java.util.Map;
 
+import net.minecraft.item.Item.Properties;
+
 public class InjectedItem extends Item {
 	private static final Map<Item, TargetedItemGroupFiller> FILLER_MAP = Maps.newHashMap();
 	private final Item followItem;
@@ -21,7 +23,7 @@ public class InjectedItem extends Item {
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		FILLER_MAP.get(this.followItem).fillItem(this.asItem(), group, items);
 	}
 }

@@ -13,6 +13,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 /**
  * @author SmellyModder(Luke Tonon)
  */
@@ -36,12 +38,12 @@ public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
 		this.canOwnerTarget = canOwnerTarget;
 		this.targetClass = targetClassIn;
 		this.targetChance = targetChanceIn;
-		this.targetEntitySelector = (new EntityPredicate()).setDistance(this.getTargetDistance()).setCustomPredicate(targetPredicate);
-		this.setMutexFlags(EnumSet.of(Flag.TARGET));
+		this.targetEntitySelector = (new EntityPredicate()).range(this.getFollowDistance()).selector(targetPredicate);
+		this.setFlags(EnumSet.of(Flag.TARGET));
 	}
 
-	public boolean shouldExecute() {
-		if (!this.canOwnerTarget.test(this.goalOwner) || (this.targetChance > 0 && this.goalOwner.getRNG().nextInt(this.targetChance) != 0)) {
+	public boolean canUse() {
+		if (!this.canOwnerTarget.test(this.mob) || (this.targetChance > 0 && this.mob.getRandom().nextInt(this.targetChance) != 0)) {
 			return false;
 		} else {
 			this.findNearestTarget();
@@ -50,19 +52,19 @@ public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
 	}
 
 	protected AxisAlignedBB getTargetableArea(double targetDistance) {
-		return this.goalOwner.getBoundingBox().grow(targetDistance, 4.0D, targetDistance);
+		return this.mob.getBoundingBox().inflate(targetDistance, 4.0D, targetDistance);
 	}
 
 	protected void findNearestTarget() {
 		if (this.targetClass != PlayerEntity.class && this.targetClass != ServerPlayerEntity.class) {
-			this.nearestTarget = this.goalOwner.world.<T>func_225318_b(this.targetClass, this.targetEntitySelector, this.goalOwner, this.goalOwner.getPosX(), this.goalOwner.getPosYEye(), this.goalOwner.getPosZ(), this.getTargetableArea(this.getTargetDistance()));
+			this.nearestTarget = this.mob.level.<T>getNearestLoadedEntity(this.targetClass, this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ(), this.getTargetableArea(this.getFollowDistance()));
 		} else {
-			this.nearestTarget = this.goalOwner.world.getClosestPlayer(this.targetEntitySelector, this.goalOwner, this.goalOwner.getPosX(), this.goalOwner.getPosYEye(), this.goalOwner.getPosZ());
+			this.nearestTarget = this.mob.level.getNearestPlayer(this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
 		}
 	}
 
-	public void startExecuting() {
-		this.goalOwner.setAttackTarget(this.nearestTarget);
-		super.startExecuting();
+	public void start() {
+		this.mob.setTarget(this.nearestTarget);
+		super.start();
 	}
 }

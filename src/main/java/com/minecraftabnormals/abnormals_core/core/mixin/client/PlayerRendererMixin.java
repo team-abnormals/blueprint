@@ -17,7 +17,7 @@ import java.util.UUID;
 @Mixin(PlayerRenderer.class)
 public final class PlayerRendererMixin {
 
-	@Inject(method = "renderName", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/matrix/MatrixStack;push()V", shift = At.Shift.AFTER))
+	@Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/matrix/MatrixStack;pushPose()V", shift = At.Shift.AFTER))
 	public void moveName(AbstractClientPlayerEntity entity, ITextComponent name, MatrixStack stack, IRenderTypeBuffer buffer, int packedLight, CallbackInfo ci) {
 		RewardHandler.RewardProperties properties = RewardHandler.getRewardProperties();
 		if (properties == null)
@@ -30,7 +30,7 @@ public final class PlayerRendererMixin {
 		if (!RewardHandler.SlabfishSetting.getSetting((IDataManager) entity, RewardHandler.SlabfishSetting.ENABLED))
 			return;
 
-		UUID uuid = entity.getUniqueID();
+		UUID uuid = entity.getUUID();
 		if (!RewardHandler.REWARDS.containsKey(uuid))
 			return;
 

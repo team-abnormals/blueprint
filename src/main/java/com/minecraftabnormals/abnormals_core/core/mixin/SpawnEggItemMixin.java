@@ -9,6 +9,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 
+import net.minecraft.item.Item.Properties;
+
 /**
  * This fixes incompatibility issues that occur when other modded spawn eggs are not sorted alphabetically.
  * <p>Also technically a feature.</p>
@@ -22,13 +24,13 @@ public final class SpawnEggItemMixin extends Item {
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (this.isInGroup(group)) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+		if (this.allowdedIn(group)) {
 			ResourceLocation name = this.getRegistryName();
-			if ((name == null || !name.getNamespace().equals("minecraft")) && (group == ItemGroup.MISC || group == ItemGroup.SEARCH)) {
+			if ((name == null || !name.getNamespace().equals("minecraft")) && (group == ItemGroup.TAB_MISC || group == ItemGroup.TAB_SEARCH)) {
 				FILLER.fillItem(this, group, items);
 			} else {
-				super.fillItemGroup(group, items);
+				super.fillItemCategory(group, items);
 			}
 		}
 	}

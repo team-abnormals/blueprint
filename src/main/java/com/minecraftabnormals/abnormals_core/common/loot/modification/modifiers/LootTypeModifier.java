@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
  * @author SmellyModder (Luke Tonon)
  */
 public final class LootTypeModifier implements ILootModifier<LootParameterSet> {
-	private static final Field PARAMETER_SET = ObfuscationReflectionHelper.findField(LootTable.class, "field_216127_d");
+	private static final Field PARAMETER_SET = ObfuscationReflectionHelper.findField(LootTable.class, "paramSet");
 
 	@Override
 	public void modify(LootTableLoadEvent event, LootParameterSet config) {
@@ -44,7 +44,7 @@ public final class LootTypeModifier implements ILootModifier<LootParameterSet> {
 	@Override
 	public LootParameterSet deserialize(JsonElement element, Pair<Gson, LootPredicateManager> additional) throws JsonParseException {
 		String type = element.getAsString();
-		LootParameterSet lootParameterSet = LootParameterSets.getValue(new ResourceLocation(type));
+		LootParameterSet lootParameterSet = LootParameterSets.get(new ResourceLocation(type));
 		if (lootParameterSet != null) {
 			return lootParameterSet;
 		}

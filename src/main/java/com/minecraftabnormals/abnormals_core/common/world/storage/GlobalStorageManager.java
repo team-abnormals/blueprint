@@ -23,7 +23,7 @@ public final class GlobalStorageManager extends WorldSavedData {
 	}
 
 	public static GlobalStorageManager getOrCreate(ServerWorld world) {
-		return world.getSavedData().getOrCreate(GlobalStorageManager::new, KEY);
+		return world.getDataStorage().computeIfAbsent(GlobalStorageManager::new, KEY);
 	}
 
 	public static boolean isLoaded() {
@@ -31,7 +31,7 @@ public final class GlobalStorageManager extends WorldSavedData {
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
+	public CompoundNBT save(CompoundNBT compound) {
 		ListNBT storageList = new ListNBT();
 		GlobalStorage.STORAGES.forEach((key, value) -> {
 			CompoundNBT storageTag = value.toTag();
@@ -43,7 +43,7 @@ public final class GlobalStorageManager extends WorldSavedData {
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
+	public void load(CompoundNBT compound) {
 		loaded = true;
 		ListNBT storageTags = compound.getList("storages", Constants.NBT.TAG_COMPOUND);
 

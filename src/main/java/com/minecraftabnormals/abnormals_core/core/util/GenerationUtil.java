@@ -28,7 +28,7 @@ public final class GenerationUtil {
 	public static final Predicate<BlockState> IS_FLUID(int minLevel, Tag<Fluid> allowedFluids) {
 		return (state) -> {
 			FluidState fluid = state.getFluidState();
-			return !fluid.isEmpty() && fluid.getHeight() >= minLevel && fluid.isTagged(allowedFluids);
+			return !fluid.isEmpty() && fluid.getOwnHeight() >= minLevel && fluid.is(allowedFluids);
 		};
 	}
 
@@ -37,9 +37,9 @@ public final class GenerationUtil {
 		for (int xx = x1; xx <= x2; xx++) {
 			for (int yy = y1; yy <= y2; yy++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					positions.setPos(xx, yy, zz);
+					positions.set(xx, yy, zz);
 					if (canPlace == null || canPlace.test(world.getBlockState(positions))) {
-						world.setBlockState(positions, block, 2);
+						world.setBlock(positions, block, 2);
 					}
 				}
 			}
@@ -51,9 +51,9 @@ public final class GenerationUtil {
 		for (int xx = x1; xx <= x2; xx++) {
 			for (int yy = y1; yy <= y2; yy++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					positions.setPos(xx, yy, zz);
+					positions.set(xx, yy, zz);
 					if (canPlace == null || canPlace.test(world.getBlockState(positions))) {
-						world.setBlockState(positions, BlockPlacementEntry.getRandomState(rand, Arrays.asList(states)), 2);
+						world.setBlock(positions, BlockPlacementEntry.getRandomState(rand, Arrays.asList(states)), 2);
 					}
 				}
 			}
@@ -65,9 +65,9 @@ public final class GenerationUtil {
 		for (int xx = x1; xx <= x2; xx++) {
 			for (int yy = y1; yy <= y2; yy++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					positions.setPos(xx, yy, zz);
+					positions.set(xx, yy, zz);
 					if ((canPlace == null || canPlace.test(world.getBlockState(positions))) && (xx == x2 || zz == z2)) {
-						world.setBlockState(positions, block, 2);
+						world.setBlock(positions, block, 2);
 					}
 				}
 			}
@@ -79,9 +79,9 @@ public final class GenerationUtil {
 		for (int xx = x1; xx <= x2; xx++) {
 			for (int yy = y1; yy <= y2; yy++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					positions.setPos(xx, yy, zz);
+					positions.set(xx, yy, zz);
 					if ((canPlace == null || canPlace.test(world.getBlockState(positions))) && (xx == x2 || zz == z2)) {
-						world.setBlockState(positions, BlockPlacementEntry.getRandomState(rand, Arrays.asList(states)), 2);
+						world.setBlock(positions, BlockPlacementEntry.getRandomState(rand, Arrays.asList(states)), 2);
 					}
 				}
 			}

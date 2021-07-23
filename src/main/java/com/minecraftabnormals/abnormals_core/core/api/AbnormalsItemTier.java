@@ -24,32 +24,32 @@ public class AbnormalsItemTier implements IItemTier {
 	}
 
 	@Override
-	public int getMaxUses() {
+	public int getUses() {
 		return maxUses;
 	}
 
 	@Override
-	public float getEfficiency() {
+	public float getSpeed() {
 		return efficiency;
 	}
 
 	@Override
-	public float getAttackDamage() {
+	public float getAttackDamageBonus() {
 		return attackDamage;
 	}
 
 	@Override
-	public int getHarvestLevel() {
+	public int getLevel() {
 		return harvestLevel;
 	}
 
 	@Override
-	public int getEnchantability() {
+	public int getEnchantmentValue() {
 		return enchantability;
 	}
 
 	@Override
-	public Ingredient getRepairMaterial() {
-		return repairMaterial.getValue();
+	public Ingredient getRepairIngredient() {
+		return repairMaterial.get();
 	}
 }

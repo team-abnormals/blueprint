@@ -56,7 +56,7 @@ public final class ACAndRecipeCondition implements ICondition {
 		@Override
 		public ACAndRecipeCondition read(JsonObject json) {
 			List<ICondition> children = new ArrayList<>();
-			for (JsonElement elements : JSONUtils.getJsonArray(json, "values")) {
+			for (JsonElement elements : JSONUtils.getAsJsonArray(json, "values")) {
 				if (!elements.isJsonObject()) {
 					throw new JsonSyntaxException("And condition values must be an array of JsonObjects");
 				}

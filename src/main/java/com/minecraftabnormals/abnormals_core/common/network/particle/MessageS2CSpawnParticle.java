@@ -33,7 +33,7 @@ public final class MessageS2CSpawnParticle {
 	}
 
 	public void serialize(PacketBuffer buf) {
-		buf.writeString(this.particleName);
+		buf.writeUtf(this.particleName);
 		buf.writeDouble(this.posX);
 		buf.writeDouble(this.posY);
 		buf.writeDouble(this.posZ);
@@ -43,7 +43,7 @@ public final class MessageS2CSpawnParticle {
 	}
 
 	public static MessageS2CSpawnParticle deserialize(PacketBuffer buf) {
-		String particleName = buf.readString();
+		String particleName = buf.readUtf();
 		double posX = buf.readDouble();
 		double posY = buf.readDouble();
 		double posZ = buf.readDouble();

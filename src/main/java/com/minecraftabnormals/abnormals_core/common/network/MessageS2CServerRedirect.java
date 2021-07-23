@@ -22,11 +22,11 @@ public final class MessageS2CServerRedirect {
 	}
 
 	public void serialize(PacketBuffer buf) {
-		buf.writeString(this.connectionAddress);
+		buf.writeUtf(this.connectionAddress);
 	}
 
 	public static MessageS2CServerRedirect deserialize(PacketBuffer buf) {
-		return new MessageS2CServerRedirect(buf.readString());
+		return new MessageS2CServerRedirect(buf.readUtf());
 	}
 
 	public static void handle(MessageS2CServerRedirect message, Supplier<NetworkEvent.Context> ctx) {

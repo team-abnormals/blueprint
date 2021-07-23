@@ -12,17 +12,17 @@ public class TestEndimatedGoal extends EndimatedGoal<TestEndimatedEntity> {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		return this.entity.isInLava();
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.playEndimation();
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return this.isEndimationPlaying();
 	}
 

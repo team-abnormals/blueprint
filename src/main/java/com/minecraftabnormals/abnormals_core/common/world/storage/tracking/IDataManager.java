@@ -98,7 +98,7 @@ public interface IDataManager {
 
 		public void write(PacketBuffer buffer) {
 			buffer.writeVarInt(TrackedDataManager.INSTANCE.getId(this.trackedData));
-			buffer.writeCompoundTag(this.writeValue());
+			buffer.writeNbt(this.writeValue());
 		}
 
 		public static DataEntry<?> read(PacketBuffer buffer) {
@@ -106,7 +106,7 @@ public interface IDataManager {
 			TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(id);
 			Objects.requireNonNull(trackedData, String.format("Tracked Data does not exist for id %o", id));
 			DataEntry<?> entry = new DataEntry<>(trackedData);
-			entry.readValue(buffer.readCompoundTag(), true);
+			entry.readValue(buffer.readNbt(), true);
 			return entry;
 		}
 

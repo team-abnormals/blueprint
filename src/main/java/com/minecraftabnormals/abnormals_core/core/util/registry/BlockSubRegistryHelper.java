@@ -63,7 +63,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group)));
+		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(group)));
 		return block;
 	}
 
@@ -102,7 +102,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().group(group)));
+		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().tab(group)));
 		return block;
 	}
 
@@ -116,7 +116,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createInjectedBlock(String name, Item followItem, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new InjectedBlockItem(followItem, block.get(), new Item.Properties().group(group)));
+		this.itemRegister.register(name, () -> new InjectedBlockItem(followItem, block.get(), new Item.Properties().tab(group)));
 		return block;
 	}
 
@@ -131,7 +131,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createBlockWithISTER(String name, Supplier<? extends B> supplier, Supplier<Callable<ItemStackTileEntityRenderer>> ister, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(ister)));
+		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(group).setISTER(ister)));
 		return block;
 	}
 
@@ -146,7 +146,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createTallBlock(String name, Supplier<? extends B> supplier, ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new TallBlockItem(block.get(), new Item.Properties().group(group)));
+		this.itemRegister.register(name, () -> new TallBlockItem(block.get(), new Item.Properties().tab(group)));
 		return block;
 	}
 
@@ -162,7 +162,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createWallOrFloorBlock(String name, Supplier<? extends B> supplier, Supplier<? extends B> wallSupplier, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new WallOrFloorItem(block.get(), wallSupplier.get(), new Item.Properties().group(group)));
+		this.itemRegister.register(name, () -> new WallOrFloorItem(block.get(), wallSupplier.get(), new Item.Properties().tab(group)));
 		return block;
 	}
 
@@ -176,7 +176,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createRareBlock(String name, Supplier<? extends B> supplier, Rarity rarity, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().rarity(rarity).group(group)));
+		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().rarity(rarity).tab(group)));
 		return block;
 	}
 
@@ -192,7 +192,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String modId = this.parent.getModId();
 		RegistryObject<AbnormalsChestBlock> block = this.deferredRegister.register(name + "_chest", () -> new AbnormalsChestBlock(modId + ":" + name, properties));
 		ChestManager.putChestInfo(modId, name, false);
-		this.itemRegister.register(name + "_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER(false))));
+		this.itemRegister.register(name + "_chest", () -> new BlockItem(block.get(), new Item.Properties().tab(group).setISTER(() -> chestISTER(false))));
 		return block;
 	}
 
@@ -208,7 +208,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String modId = this.parent.getModId();
 		RegistryObject<AbnormalsTrappedChestBlock> block = this.deferredRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", properties));
 		ChestManager.putChestInfo(modId, name, true);
-		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> chestISTER(true))));
+		this.itemRegister.register(name + "_trapped_chest", () -> new BlockItem(block.get(), new Item.Properties().tab(group).setISTER(() -> chestISTER(true))));
 		return block;
 	}
 
@@ -221,9 +221,9 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color) {
 		WoodType type = SignManager.registerWoodType(WoodType.create(this.parent.getModId() + ":" + name));
-		RegistryObject<AbnormalsStandingSignBlock> standing = this.deferredRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.create(Material.WOOD).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD), type));
-		RegistryObject<AbnormalsWallSignBlock> wall = this.deferredRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.create(Material.WOOD, color).doesNotBlockMovement().hardnessAndResistance(1.0F).sound(SoundType.WOOD).lootFrom(standing.get()), type));
-		this.itemRegister.register(name + "_sign", () -> new SignItem(new Item.Properties().maxStackSize(16).group(ItemGroup.DECORATIONS), standing.get(), wall.get()));
+		RegistryObject<AbnormalsStandingSignBlock> standing = this.deferredRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.of(Material.WOOD).noCollission().strength(1.0F).sound(SoundType.WOOD), type));
+		RegistryObject<AbnormalsWallSignBlock> wall = this.deferredRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.of(Material.WOOD, color).noCollission().strength(1.0F).sound(SoundType.WOOD).dropsLike(standing.get()), type));
+		this.itemRegister.register(name + "_sign", () -> new SignItem(new Item.Properties().stacksTo(16).tab(ItemGroup.TAB_DECORATIONS), standing.get(), wall.get()));
 		return Pair.of(standing, wall);
 	}
 
@@ -238,7 +238,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createCompatBlock(String modId, String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
+		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
 		return block;
 	}
 
@@ -253,7 +253,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createCompatBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group, String... modIds) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(areModsLoaded(modIds) ? group : null)));
+		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(areModsLoaded(modIds) ? group : null)));
 		return block;
 	}
 
@@ -269,7 +269,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String modId, String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().group(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
+		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().tab(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
 		return block;
 	}
 	
@@ -285,7 +285,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group, String... modIds) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().group(areModsLoaded(modIds) ? group : null)));
+		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().tab(areModsLoaded(modIds) ? group : null)));
 		return block;
 	}
 	
@@ -299,15 +299,15 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String compatModId, String name, MaterialColor color) {
 		boolean isModLoaded = ModList.get().isLoaded(compatModId) || compatModId == "indev";
-		ItemGroup chestGroup = isModLoaded ? ItemGroup.DECORATIONS : null;
-		ItemGroup trappedChestGroup = isModLoaded ? ItemGroup.REDSTONE : null;
+		ItemGroup chestGroup = isModLoaded ? ItemGroup.TAB_DECORATIONS : null;
+		ItemGroup trappedChestGroup = isModLoaded ? ItemGroup.TAB_REDSTONE : null;
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
-		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId + ":" + name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
-		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
-		this.itemRegister.register(chestName, () -> new FuelBlockItem(chest.get(), 300, new Item.Properties().group(chestGroup).setISTER(() -> chestISTER(false))));
-		this.itemRegister.register(trappedChestName, () -> new FuelBlockItem(trappedChest.get(), 300, new Item.Properties().group(trappedChestGroup).setISTER(() -> chestISTER(true))));
+		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId + ":" + name, Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
+		this.itemRegister.register(chestName, () -> new FuelBlockItem(chest.get(), 300, new Item.Properties().tab(chestGroup).setISTER(() -> chestISTER(false))));
+		this.itemRegister.register(trappedChestName, () -> new FuelBlockItem(trappedChest.get(), 300, new Item.Properties().tab(trappedChestGroup).setISTER(() -> chestISTER(true))));
 		ChestManager.putChestInfo(modId, name, false);
 		ChestManager.putChestInfo(modId, name, true);
 		return Pair.of(chest, trappedChest);
@@ -323,15 +323,15 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, MaterialColor color, String... modIds) {
 		boolean isInGroup = areModsLoaded(modIds);
-		ItemGroup chestGroup = isInGroup ? ItemGroup.DECORATIONS : null;
-		ItemGroup trappedChestGroup = isInGroup ? ItemGroup.REDSTONE : null;
+		ItemGroup chestGroup = isInGroup ? ItemGroup.TAB_DECORATIONS : null;
+		ItemGroup trappedChestGroup = isInGroup ? ItemGroup.TAB_REDSTONE : null;
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
-		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId + ":" + name, Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
-		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.create(Material.WOOD, color).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
-		this.itemRegister.register(chestName, () -> new FuelBlockItem(chest.get(), 300, new Item.Properties().group(chestGroup).setISTER(() -> chestISTER(false))));
-		this.itemRegister.register(trappedChestName, () -> new FuelBlockItem(trappedChest.get(), 300, new Item.Properties().group(trappedChestGroup).setISTER(() -> chestISTER(true))));
+		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId + ":" + name, Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
+		this.itemRegister.register(chestName, () -> new FuelBlockItem(chest.get(), 300, new Item.Properties().tab(chestGroup).setISTER(() -> chestISTER(false))));
+		this.itemRegister.register(trappedChestName, () -> new FuelBlockItem(trappedChest.get(), 300, new Item.Properties().tab(trappedChestGroup).setISTER(() -> chestISTER(true))));
 		ChestManager.putChestInfo(modId, name, false);
 		ChestManager.putChestInfo(modId, name, true);
 		return Pair.of(chest, trappedChest);

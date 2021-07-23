@@ -33,7 +33,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 		if (this.getHealth() <= 0.0F) {
 			Endimation deathEndimation = this.getDeathAnimation();
 			if (deathEndimation != null) {
-				if (this.isServerWorld() && !this.isEndimationPlaying(deathEndimation)) {
+				if (this.isEffectiveAi() && !this.isEndimationPlaying(deathEndimation)) {
 					NetworkUtil.setPlayingAnimationMessage(this, deathEndimation);
 				}
 				this.onEndimatedDeathUpdate(deathEndimation.getAnimationTickDuration());
@@ -44,15 +44,15 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	}
 	
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		if (!this.isWorldRemote() && this.getHurtAnimation() != null && this.isNoEndimationPlaying()) {
 			NetworkUtil.setPlayingAnimationMessage(this, this.getHurtAnimation());
 		}
-		return super.attackEntityFrom(source, amount);
+		return super.hurt(source, amount);
 	}
 	
 	@Override
-	protected void onDeathUpdate() {}
+	protected void tickDeath() {}
 	
 	private void onEndimatedDeathUpdate(int deathAnimationDuration) {
 		if (this.deathTime++ >= deathAnimationDuration - 1) {
@@ -68,7 +68,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	 */
 	protected void addDeathEffects() {
 		for (int i = 0; i < 20; ++i) {
-			this.world.addParticle(ParticleTypes.POOF, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D);
+			this.level.addParticle(ParticleTypes.POOF, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D);
 		}
 	}
 	
@@ -96,7 +96,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	 * @return - Is the world remote; if true: client
 	 */
 	public boolean isWorldRemote() {
-		return this.getEntityWorld().isRemote;
+		return this.getCommandSenderWorld().isClientSide;
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	 * @return - A vector containing the mid-position of the entity's path end location and its current location
 	 */
 	public Vector3d getMoveControllerPathDistance(double pathX, double pathY, double pathZ) {
-		return new Vector3d(pathX - this.getPosX(), pathY - this.getPosY(), pathY - this.getPosY());
+		return new Vector3d(pathX - this.getX(), pathY - this.getY(), pathY - this.getY());
 	}
 	
 	/**

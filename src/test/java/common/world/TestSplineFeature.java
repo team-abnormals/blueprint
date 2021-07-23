@@ -22,18 +22,18 @@ public final class TestSplineFeature extends Feature<NoFeatureConfig> {
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		BlockPos end = pos.add(rand.nextInt(33) - rand.nextInt(33), rand.nextInt(33) - rand.nextInt(33), rand.nextInt(33) - rand.nextInt(33));
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+		BlockPos end = pos.offset(rand.nextInt(33) - rand.nextInt(33), rand.nextInt(33) - rand.nextInt(33), rand.nextInt(33) - rand.nextInt(33));
 		List<Vector3d> points = new ArrayList<>();
-		Vector3d startVec = Vector3d.copy(pos);
-		Vector3d endVec = Vector3d.copy(end);
+		Vector3d startVec = Vector3d.atLowerCornerOf(pos);
+		Vector3d endVec = Vector3d.atLowerCornerOf(end);
 		Vector3d difference = endVec.subtract(startVec);
 		Vector3d normalizedDifference = difference.normalize();
 		Vector3d anchorStart = startVec.subtract(normalizedDifference).add(0, -6, 0);
 		Vector3d anchorEnd = endVec.add(normalizedDifference).add(0, -6, 0);
 		points.add(anchorStart);
 		points.add(startVec);
-		Vector3d offset = UP.crossProduct(normalizedDifference);
+		Vector3d offset = UP.cross(normalizedDifference);
 		double offsetX = offset.x;
 		double offsetZ = offset.z;
 		for (int i = 0; i < 6; i++) {
@@ -42,7 +42,7 @@ public final class TestSplineFeature extends Feature<NoFeatureConfig> {
 		points.add(endVec);
 		points.add(anchorEnd);
 		MathUtil.CatmullRomSpline catmullRomSpline = new MathUtil.CatmullRomSpline(points.toArray(new Vector3d[0]), MathUtil.CatmullRomSpline.SplineType.CENTRIPETAL);
-		int steps = (int) (20 + Math.sqrt(pos.distanceSq(end)) * 4);
+		int steps = (int) (20 + Math.sqrt(pos.distSqr(end)) * 4);
 		BlockPos prevPos = null;
 		for (int i = 0; i < steps; i++) {
 			float progress = i / (float) steps;
@@ -51,7 +51,7 @@ public final class TestSplineFeature extends Feature<NoFeatureConfig> {
 				continue;
 			}
 			prevPos = interpolatedPos;
-			world.setBlockState(interpolatedPos, Blocks.DIAMOND_BLOCK.getDefaultState(), 2);
+			world.setBlock(interpolatedPos, Blocks.DIAMOND_BLOCK.defaultBlockState(), 2);
 		}
 		return true;
 	}

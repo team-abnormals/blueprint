@@ -12,10 +12,10 @@ public final class TestEndimatedEntityModel<E extends TestEndimatedEntity> exten
 	private EndimatorModelRenderer cube;
 
 	public TestEndimatedEntityModel() {
-		this.textureWidth = 64;
-		this.textureHeight = 32;
+		this.texWidth = 64;
+		this.texHeight = 32;
 		this.cube = new EndimatorModelRenderer(this, 0, 0);
-		this.cube.setRotationPoint(0.0F, 16.0F, 0.0F);
+		this.cube.setPos(0.0F, 16.0F, 0.0F);
 		this.cube.addBox(-8.0F, -8.0F, -8.0F, 16, 16, 16, 0.0F);
 		this.cube.setName("cube");
 
@@ -23,15 +23,15 @@ public final class TestEndimatedEntityModel<E extends TestEndimatedEntity> exten
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.cube.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	public void setRotateAngle(EndimatorModelRenderer EndimatorModelRenderer, float x, float y, float z) {
-		EndimatorModelRenderer.rotateAngleX = x;
-		EndimatorModelRenderer.rotateAngleY = y;
-		EndimatorModelRenderer.rotateAngleZ = z;
+		EndimatorModelRenderer.xRot = x;
+		EndimatorModelRenderer.yRot = y;
+		EndimatorModelRenderer.zRot = z;
 	}
 
 	@Override

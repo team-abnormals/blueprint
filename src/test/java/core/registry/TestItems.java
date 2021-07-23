@@ -26,7 +26,7 @@ public final class TestItems {
 		}
 
 		private RegistryObject<Item> createTest() {
-			return this.deferredRegister.register("test", () -> new Item(new Item.Properties().group(ItemGroup.FOOD)));
+			return this.deferredRegister.register("test", () -> new Item(new Item.Properties().tab(ItemGroup.TAB_FOOD)));
 		}
 
 	}

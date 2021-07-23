@@ -45,7 +45,7 @@ public class MatchesPredicate implements IConfigPredicate {
 
         @Override
         public MatchesPredicate read(JsonObject json) {
-            if (!json.has("expression") && !JSONUtils.isString(json, "expression"))
+            if (!json.has("expression") && !JSONUtils.isStringValue(json, "expression"))
                 throw new JsonSyntaxException("Missing 'expression', expected to find a regular expression");
             return new MatchesPredicate(json.get("expression").getAsString());
         }

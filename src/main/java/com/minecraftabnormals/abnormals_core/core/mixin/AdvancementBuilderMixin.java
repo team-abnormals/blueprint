@@ -20,10 +20,10 @@ import java.util.Map;
 public final class AdvancementBuilderMixin {
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	@Inject(at = @At(value = "NEW", target = "net/minecraft/advancements/Advancement$Builder", shift = At.Shift.BEFORE), method = "deserialize", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+	@Inject(at = @At(value = "NEW", target = "net/minecraft/advancements/Advancement$Builder", shift = At.Shift.BEFORE), method = "fromJson", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
 	private static void modifyBuilder(JsonObject json, ConditionArrayParser conditionParser, CallbackInfoReturnable<Advancement.Builder> info, ResourceLocation resourcelocation, DisplayInfo displayinfo, AdvancementRewards advancementrewards, Map map, JsonArray jsonarray, String[][] astring) {
 		Advancement.Builder builder = new Advancement.Builder(resourcelocation, displayinfo, advancementrewards, map, astring);
-		AdvancementBuildingEvent.onBuildingAdvancement(builder, conditionParser.func_234049_a_());
+		AdvancementBuildingEvent.onBuildingAdvancement(builder, conditionParser.getAdvancementId());
 		info.setReturnValue(builder);
 	}
 

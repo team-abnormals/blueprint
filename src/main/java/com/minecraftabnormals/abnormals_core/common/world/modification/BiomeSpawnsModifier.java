@@ -36,7 +36,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	 * @return A {@link BiomeSpawnsModifier} for putting a spawn cost for a {@link EntityType}.
 	 */
 	public static BiomeSpawnsModifier createSpawnCost(BiPredicate<RegistryKey<Biome>, Biome> shouldModify, Supplier<EntityType<?>> typeSupplier, double spawnCostPerEntity, double maxSpawnCost) {
-		return new BiomeSpawnsModifier(shouldModify, context -> context.event.getSpawns().withSpawnCost(typeSupplier.get(), spawnCostPerEntity, maxSpawnCost));
+		return new BiomeSpawnsModifier(shouldModify, context -> context.event.getSpawns().addMobCharge(typeSupplier.get(), spawnCostPerEntity, maxSpawnCost));
 	}
 
 	/**
@@ -51,7 +51,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	 * @return A {@link BiomeSpawnsModifier} for adding a {@link MobSpawnInfo.Spawners} for an {@link EntityType}.
 	 */
 	public static BiomeSpawnsModifier createSpawnAdder(BiPredicate<RegistryKey<Biome>, Biome> shouldModify, EntityClassification classification, Supplier<EntityType<?>> typeSupplier, int weight, int minCount, int maxCount) {
-		return new BiomeSpawnsModifier(shouldModify, context -> context.event.getSpawns().withSpawner(classification, new MobSpawnInfo.Spawners(typeSupplier.get(), weight, minCount, maxCount)));
+		return new BiomeSpawnsModifier(shouldModify, context -> context.event.getSpawns().addSpawn(classification, new MobSpawnInfo.Spawners(typeSupplier.get(), weight, minCount, maxCount)));
 	}
 
 	/**
@@ -66,7 +66,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
 			MobSpawnInfoBuilder builder = context.event.getSpawns();
 			for (SpawnInfo spawnInfo : spawnInfoSet) {
-				builder.withSpawner(classification, new MobSpawnInfo.Spawners(spawnInfo.type.get(), spawnInfo.weight, spawnInfo.minCount, spawnInfo.maxCount));
+				builder.addSpawn(classification, new MobSpawnInfo.Spawners(spawnInfo.type.get(), spawnInfo.weight, spawnInfo.minCount, spawnInfo.maxCount));
 			}
 		});
 	}
@@ -84,7 +84,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 			MobSpawnInfoBuilder builder = context.event.getSpawns();
 			for (EntityClassification classification : classifications) {
 				for (SpawnInfo spawnInfo : spawnInfoSet) {
-					builder.withSpawner(classification, new MobSpawnInfo.Spawners(spawnInfo.type.get(), spawnInfo.weight, spawnInfo.minCount, spawnInfo.maxCount));
+					builder.addSpawn(classification, new MobSpawnInfo.Spawners(spawnInfo.type.get(), spawnInfo.weight, spawnInfo.minCount, spawnInfo.maxCount));
 				}
 			}
 		});
@@ -99,7 +99,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	 * @return A {@link BiomeSpawnsModifier} for removing {@link MobSpawnInfo.Spawners} entries for {@link EntityType} of a {@link EntityClassification}.
 	 */
 	public static BiomeSpawnsModifier createSpawnRemover(BiPredicate<RegistryKey<Biome>, Biome> shouldModify, EntityClassification classification, Supplier<EntityType<?>> typeSupplier) {
-		return new BiomeSpawnsModifier(shouldModify, context -> context.event.getSpawns().withSpawner(classification, new MobSpawnInfo.Spawners(typeSupplier.get(), 0, 0, 0)));
+		return new BiomeSpawnsModifier(shouldModify, context -> context.event.getSpawns().addSpawn(classification, new MobSpawnInfo.Spawners(typeSupplier.get(), 0, 0, 0)));
 	}
 
 	/**
@@ -159,7 +159,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 			EntityType<?> replacerType = replacer.get();
 			toRemove.forEach(spawner -> {
 				spawners.remove(spawner);
-				spawners.add(new MobSpawnInfo.Spawners(replacerType, spawner.itemWeight, spawner.minCount, spawner.maxCount));
+				spawners.add(new MobSpawnInfo.Spawners(replacerType, spawner.weight, spawner.minCount, spawner.maxCount));
 			});
 		});
 	}
@@ -188,7 +188,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 				}
 				toRemove.forEach(spawner -> {
 					spawners.remove(spawner);
-					spawners.add(new MobSpawnInfo.Spawners(replacerType, spawner.itemWeight, spawner.minCount, spawner.maxCount));
+					spawners.add(new MobSpawnInfo.Spawners(replacerType, spawner.weight, spawner.minCount, spawner.maxCount));
 				});
 			}
 		});

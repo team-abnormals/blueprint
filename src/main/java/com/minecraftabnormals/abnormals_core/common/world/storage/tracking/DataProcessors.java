@@ -147,13 +147,13 @@ public final class DataProcessors {
 		@Override
 		public CompoundNBT write(BlockPos pos) {
 			CompoundNBT compound = new CompoundNBT();
-			compound.putLong("Pos", pos.toLong());
+			compound.putLong("Pos", pos.asLong());
 			return compound;
 		}
 
 		@Override
 		public BlockPos read(CompoundNBT compound) {
-			return BlockPos.fromLong(compound.getLong("Pos"));
+			return BlockPos.of(compound.getLong("Pos"));
 		}
 
 	};
@@ -163,13 +163,13 @@ public final class DataProcessors {
 		@Override
 		public CompoundNBT write(UUID uuid) {
 			CompoundNBT compound = new CompoundNBT();
-			compound.putUniqueId("UUID", uuid);
+			compound.putUUID("UUID", uuid);
 			return compound;
 		}
 
 		@Override
 		public UUID read(CompoundNBT compound) {
-			return compound.getUniqueId("UUID");
+			return compound.getUUID("UUID");
 		}
 
 	};
@@ -192,12 +192,12 @@ public final class DataProcessors {
 
 		@Override
 		public CompoundNBT write(ItemStack stack) {
-			return stack.write(new CompoundNBT());
+			return stack.save(new CompoundNBT());
 		}
 
 		@Override
 		public ItemStack read(CompoundNBT compound) {
-			return ItemStack.read(compound);
+			return ItemStack.of(compound);
 		}
 
 	};

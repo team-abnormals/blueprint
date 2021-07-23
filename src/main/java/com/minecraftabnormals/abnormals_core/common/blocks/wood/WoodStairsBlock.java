@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class WoodStairsBlock extends AbnormalsStairsBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_STAIRS);
 
@@ -17,7 +19,7 @@ public class WoodStairsBlock extends AbnormalsStairsBlock {
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this.asItem(), group, items);
 	}
 }

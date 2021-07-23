@@ -56,8 +56,8 @@ public final class NetworkUtil {
 	 * @param posZ   - The z position
 	 */
 	public static void teleportEntity(Entity entity, double posX, double posY, double posZ) {
-		entity.setLocationAndAngles(posX, posY, posZ, entity.rotationYaw, entity.rotationPitch);
-		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageS2CTeleportEntity(entity.getEntityId(), posX, posY, posZ));
+		entity.moveTo(posX, posY, posZ, entity.yRot, entity.xRot);
+		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageS2CTeleportEntity(entity.getId(), posX, posY, posZ));
 	}
 
 	/**
@@ -67,8 +67,8 @@ public final class NetworkUtil {
 	 * @param endimationToPlay - The endimation to play
 	 */
 	public static <E extends Entity & IEndimatedEntity> void setPlayingAnimationMessage(E entity, Endimation endimationToPlay) {
-		if (!entity.world.isRemote) {
-			AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CEndimation(entity.getEntityId(), ArrayUtils.indexOf(entity.getEndimations(), endimationToPlay)));
+		if (!entity.level.isClientSide) {
+			AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CEndimation(entity.getId(), ArrayUtils.indexOf(entity.getEndimations(), endimationToPlay)));
 			entity.setPlayingEndimation(endimationToPlay);
 		}
 	}
@@ -94,28 +94,28 @@ public final class NetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void redirectToServer(String address) {
 		Minecraft minecraft = ClientInfo.MINECRAFT;
-		World world = minecraft.world;
-		Screen currentScreen = minecraft.currentScreen;
-		boolean integrated = minecraft.isIntegratedServerRunning();
+		World world = minecraft.level;
+		Screen currentScreen = minecraft.screen;
+		boolean integrated = minecraft.isLocalServer();
 
 		if (world != null) {
-			world.sendQuittingDisconnectingPacket();
-			minecraft.unloadWorld(new DirtMessageScreen(new TranslationTextComponent(integrated ? "menu.savingLevel" : "abnormals_core.message.redirect")));
+			world.disconnect();
+			minecraft.clearLevel(new DirtMessageScreen(new TranslationTextComponent(integrated ? "menu.savingLevel" : "abnormals_core.message.redirect")));
 
 			MainMenuScreen menuScreen = new MainMenuScreen();
-			minecraft.displayGuiScreen(integrated ? menuScreen : new MultiplayerScreen(menuScreen));
+			minecraft.setScreen(integrated ? menuScreen : new MultiplayerScreen(menuScreen));
 
 			if (currentScreen != null)
-				minecraft.displayGuiScreen(new ConnectingScreen(currentScreen, minecraft, new ServerData("Redirect", address, false)));
+				minecraft.setScreen(new ConnectingScreen(currentScreen, minecraft, new ServerData("Redirect", address, false)));
 		}
 	}
 
 	public static void updateTrackedData(ServerPlayerEntity player, Entity target, Set<IDataManager.DataEntry<?>> entries) {
-		AbnormalsCore.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MessageS2CUpdateEntityData(target.getEntityId(), entries));
+		AbnormalsCore.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MessageS2CUpdateEntityData(target.getId(), entries));
 	}
 
 	public static void updateTrackedData(Entity entity, Set<IDataManager.DataEntry<?>> entries) {
-		AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CUpdateEntityData(entity.getEntityId(), entries));
+		AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CUpdateEntityData(entity.getId(), entries));
 	}
 
 	@OnlyIn(Dist.CLIENT)

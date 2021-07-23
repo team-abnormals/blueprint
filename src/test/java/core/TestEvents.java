@@ -27,7 +27,7 @@ public final class TestEvents {
 	@SubscribeEvent
 	public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
 		Entity entity = event.getTarget();
-		if (!entity.world.isRemote && (entity instanceof CowEntity || entity instanceof PlayerEntity)) {
+		if (!entity.level.isClientSide && (entity instanceof CowEntity || entity instanceof PlayerEntity)) {
 			PlayerEntity player = event.getPlayer();
 			if (player instanceof ServerPlayerEntity) {
 				TestTriggers.EMPTY_TEST.trigger((ServerPlayerEntity) player);
@@ -39,10 +39,10 @@ public final class TestEvents {
 	@SubscribeEvent
 	public static void onLivingTick(LivingEvent.LivingUpdateEvent event) {
 		LivingEntity entity = event.getEntityLiving();
-		if (entity.world.isRemote && (entity instanceof CowEntity || entity instanceof PlayerEntity) && TrackedDataManager.INSTANCE.getValue(entity, ACTest.TEST_TRACKED_DATA)) {
-			Random rand = entity.getRNG();
+		if (entity.level.isClientSide && (entity instanceof CowEntity || entity instanceof PlayerEntity) && TrackedDataManager.INSTANCE.getValue(entity, ACTest.TEST_TRACKED_DATA)) {
+			Random rand = entity.getRandom();
 			for (int i = 0; i < 2; ++i) {
-				entity.world.addParticle(ParticleTypes.PORTAL, entity.getPosXRandom(0.5D), entity.getPosYRandom() - 0.25D, entity.getPosZRandom(0.5D), (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(), (rand.nextDouble() - 0.5D) * 2.0D);
+				entity.level.addParticle(ParticleTypes.PORTAL, entity.getRandomX(0.5D), entity.getRandomY() - 0.25D, entity.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(), (rand.nextDouble() - 0.5D) * 2.0D);
 			}
 		}
 	}

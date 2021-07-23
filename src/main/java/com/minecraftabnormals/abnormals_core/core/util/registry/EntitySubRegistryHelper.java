@@ -70,8 +70,8 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	 */
 	public <E extends LivingEntity> EntityType<E> createLivingEntity(EntityType.IFactory<E> factory, EntityClassification entityClassification, String name, float width, float height) {
 		ResourceLocation location = this.parent.prefix(name);
-		EntityType<E> entity = EntityType.Builder.create(factory, entityClassification)
-				.size(width, height)
+		EntityType<E> entity = EntityType.Builder.of(factory, entityClassification)
+				.sized(width, height)
 				.setTrackingRange(64)
 				.setShouldReceiveVelocityUpdates(true)
 				.setUpdateInterval(3)
@@ -92,8 +92,8 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	 */
 	public <E extends Entity> EntityType<E> createEntity(EntityType.IFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, World, E> clientFactory, EntityClassification entityClassification, String name, float width, float height) {
 		ResourceLocation location = this.parent.prefix(name);
-		EntityType<E> entity = EntityType.Builder.create(factory, entityClassification)
-				.size(width, height)
+		EntityType<E> entity = EntityType.Builder.of(factory, entityClassification)
+				.sized(width, height)
 				.setTrackingRange(64)
 				.setShouldReceiveVelocityUpdates(true)
 				.setUpdateInterval(3)

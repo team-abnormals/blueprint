@@ -22,8 +22,8 @@ public class ChunkLoadTestBlock extends Block {
 	}
 
 	@Override
-	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
-		if (!world.isRemote) {
+	public void onPlace(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
+		if (!world.isClientSide) {
 			world.getCapability(ChunkLoaderCapability.CHUNK_LOAD_CAP).ifPresent(loader -> {
 				loader.addPos(pos);
 			});
@@ -31,8 +31,8 @@ public class ChunkLoadTestBlock extends Block {
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!world.isRemote) {
+	public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (!world.isClientSide) {
 			world.getCapability(ChunkLoaderCapability.CHUNK_LOAD_CAP).ifPresent(loader -> {
 				loader.removePos(pos);
 				((ChunkLoader) loader).scheduleChunkProcess(world.getChunk(pos), (chunk) -> {
@@ -41,8 +41,8 @@ public class ChunkLoadTestBlock extends Block {
 						int x = pos.getX() + rand.nextInt(3);
 						int z = pos.getZ() + rand.nextInt(3);
 						ZombieEntity zombie = EntityType.ZOMBIE.create(world);
-						zombie.setPosition(x, pos.getY(), z);
-						chunk.getWorldForge().addEntity(zombie);
+						zombie.setPos(x, pos.getY(), z);
+						chunk.getWorldForge().addFreshEntity(zombie);
 
 						for (int i2 = 0; i2 < 3; i2++) {
 							NetworkUtil.spawnParticle(ParticleTypes.CLOUD.getRegistryName().toString(), x, pos.getY(), z, 0.0F, 0.25F, 0.0F);

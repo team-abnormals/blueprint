@@ -39,11 +39,11 @@ public final class MessageS2CTeleportEntity {
 
 	public static void handle(MessageS2CTeleportEntity message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
+		Entity entity = ClientInfo.getClientPlayerWorld().getEntity(message.entityId);
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				if (entity != null) {
-					entity.setLocationAndAngles(message.posX, message.posY, message.posZ, entity.rotationYaw, entity.rotationPitch);
+					entity.moveTo(message.posX, message.posY, message.posZ, entity.yRot, entity.xRot);
 				}
 			});
 			context.setPacketHandled(true);

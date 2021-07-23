@@ -36,7 +36,7 @@ public class SlabfishHatScreen extends Screen {
 				configValue.set(enabled);
 				button.setMessage(this.getOptionName(setting, enabled));
 				NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
-			}, (button, stack, mouseX, mouseY) -> this.renderTooltip(stack, this.font.trimStringToWidth(new TranslationTextComponent("abnormals_core.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"), 200), mouseX, mouseY)));
+			}, (button, stack, mouseX, mouseY) -> this.renderTooltip(stack, this.font.split(new TranslationTextComponent("abnormals_core.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"), 200), mouseX, mouseY)));
 			++i;
 		}
 
@@ -44,7 +44,7 @@ public class SlabfishHatScreen extends Screen {
 			++i;
 		}
 
-		this.addButton(new Button(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, DialogTexts.GUI_DONE, (button) -> this.getMinecraft().displayGuiScreen(this.parent)));
+		this.addButton(new Button(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, DialogTexts.GUI_DONE, (button) -> this.getMinecraft().setScreen(this.parent)));
 	}
 
 	@Override
@@ -55,11 +55,11 @@ public class SlabfishHatScreen extends Screen {
 	}
 
 	@Override
-	public void closeScreen() {
-		this.getMinecraft().displayGuiScreen(this.parent);
+	public void onClose() {
+		this.getMinecraft().setScreen(this.parent);
 	}
 
 	private ITextComponent getOptionName(RewardHandler.SlabfishSetting setting, boolean enabled) {
-		return DialogTexts.getComposedOptionMessage(new TranslationTextComponent("abnormals_core.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT)), enabled);
+		return DialogTexts.optionStatus(new TranslationTextComponent("abnormals_core.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT)), enabled);
 	}
 }

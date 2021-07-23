@@ -15,6 +15,8 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
 
+import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
+
 /**
  * An {@link AdvancementModifier} extension that modifies the criteria and requirements of an advancement.
  * <p>This modifier can cause unexpected errors to occur later in-game when replacing certain parts due to how requirements work, so be sure you know what you're doing.</p>
@@ -22,27 +24,27 @@ import java.util.Optional;
  * @author SmellyModder (Luke Tonon)
  */
 public final class CriteriaModifier extends AdvancementModifier<CriteriaModifier.Config> {
-	public static final Field REQUIREMENTS_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "field_192066_f");
+	public static final Field REQUIREMENTS_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "requirements");
 
 	public CriteriaModifier() {
 		super(((element, conditionArrayParser) -> {
 			JsonObject object = element.getAsJsonObject();
 			Mode mode = Mode.deserialize(object);
-			Optional<Map<String, Criterion>> criteria = JSONUtils.hasField(object, "criteria") ? Optional.of(Criterion.deserializeAll(JSONUtils.getJsonObject(object, "criteria"), conditionArrayParser)) : Optional.empty();
+			Optional<Map<String, Criterion>> criteria = JSONUtils.isValidNode(object, "criteria") ? Optional.of(Criterion.criteriaFromJson(JSONUtils.getAsJsonObject(object, "criteria"), conditionArrayParser)) : Optional.empty();
 			if (criteria.isPresent() && criteria.get().isEmpty()) {
 				throw new JsonParseException("Advancement criteria cannot be empty");
 			}
 			Optional<String[][]> requirements = Optional.empty();
-			if (JSONUtils.hasField(object, "requirements")) {
-				JsonArray jsonArray = JSONUtils.getJsonArray(object, "requirements", new JsonArray());
+			if (JSONUtils.isValidNode(object, "requirements")) {
+				JsonArray jsonArray = JSONUtils.getAsJsonArray(object, "requirements", new JsonArray());
 				String[][] requirementsArray = new String[jsonArray.size()][];
 
 				for (int i = 0; i < jsonArray.size(); ++i) {
-					JsonArray requirementsArray2 = JSONUtils.getJsonArray(jsonArray.get(i), "requirements[" + i + "]");
+					JsonArray requirementsArray2 = JSONUtils.convertToJsonArray(jsonArray.get(i), "requirements[" + i + "]");
 					requirementsArray[i] = new String[requirementsArray2.size()];
 
 					for (int j = 0; j < requirementsArray2.size(); ++j) {
-						requirementsArray[i][j] = JSONUtils.getString(requirementsArray2.get(j), "requirements[" + i + "][" + j + "]");
+						requirementsArray[i][j] = JSONUtils.convertToString(requirementsArray2.get(j), "requirements[" + i + "][" + j + "]");
 					}
 				}
 

@@ -52,7 +52,7 @@ public class ChunkLoaderCapability implements ICapabilitySerializable<INBT> {
 				ChunkLoader loader = (ChunkLoader) instance;
 				loader.loadedPositions.clear();
 				for (Long pos : ((LongArrayNBT) nbt).getAsLongArray()) {
-					loader.addPos(BlockPos.fromLong(pos));
+					loader.addPos(BlockPos.of(pos));
 				}
 			}
 		}, () -> new ChunkLoader(null));

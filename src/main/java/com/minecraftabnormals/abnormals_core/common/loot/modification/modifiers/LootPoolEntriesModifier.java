@@ -20,7 +20,7 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public final class LootPoolEntriesModifier implements ILootModifier<LootPoolEntriesModifier.Config> {
-	public static final Field ENTRIES = ObfuscationReflectionHelper.findField(LootPool.class, "field_186453_a");
+	public static final Field ENTRIES = ObfuscationReflectionHelper.findField(LootPool.class, "entries");
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -52,7 +52,7 @@ public final class LootPoolEntriesModifier implements ILootModifier<LootPoolEntr
 	@Override
 	public Config deserialize(JsonElement element, Pair<Gson, LootPredicateManager> additional) throws JsonParseException {
 		JsonObject jsonObject = element.getAsJsonObject();
-		int index = JSONUtils.getInt(jsonObject, "index");
+		int index = JSONUtils.getAsInt(jsonObject, "index");
 		if (index < 0) {
 			throw new JsonParseException("'index' must be 0 or greater!");
 		}
@@ -60,7 +60,7 @@ public final class LootPoolEntriesModifier implements ILootModifier<LootPoolEntr
 		JsonArray entriesArray = jsonObject.getAsJsonArray("entries");
 		Gson gson = additional.getFirst();
 		entriesArray.forEach(entry -> entries.add(gson.fromJson(entry, LootEntry.class)));
-		return new Config(JSONUtils.getBoolean(jsonObject, "replace"), index, entries);
+		return new Config(JSONUtils.getAsBoolean(jsonObject, "replace"), index, entries);
 	}
 
 	public static class Config {

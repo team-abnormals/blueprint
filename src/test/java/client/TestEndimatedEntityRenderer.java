@@ -20,7 +20,7 @@ public final class TestEndimatedEntityRenderer extends LivingRenderer<TestEndima
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(TestEndimatedEntity entity) {
+	public ResourceLocation getTextureLocation(TestEndimatedEntity entity) {
 		return SKIN_HELPER.getSkinForEntityOrElse(entity, TEXTURE);
 	}
 }

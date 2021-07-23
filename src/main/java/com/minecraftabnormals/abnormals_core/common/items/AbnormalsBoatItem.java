@@ -32,34 +32,34 @@ import net.minecraft.world.World;
 
 public class AbnormalsBoatItem extends Item {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.DARK_OAK_BOAT);
-	private static final Predicate<Entity> COLLISION_PREDICATE = EntityPredicates.NOT_SPECTATING.and(Entity::canBeCollidedWith);
+	private static final Predicate<Entity> COLLISION_PREDICATE = EntityPredicates.NO_SPECTATORS.and(Entity::isPickable);
 	private final String type;
 
 	public AbnormalsBoatItem(String type, Item.Properties properties) {
 		super(properties);
 		this.type = type;
-		DispenserBlock.registerDispenseBehavior(this, new DispenserBoatBehavior(type));
+		DispenserBlock.registerBehavior(this, new DispenserBoatBehavior(type));
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this, group, items);
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		ItemStack itemstack = playerIn.getHeldItem(handIn);
-		RayTraceResult raytraceresult = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.ANY);
+	public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+		ItemStack itemstack = playerIn.getItemInHand(handIn);
+		RayTraceResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, RayTraceContext.FluidMode.ANY);
 		if (raytraceresult.getType() == RayTraceResult.Type.MISS) {
 			return new ActionResult<>(ActionResultType.PASS, itemstack);
 		} else {
-			Vector3d vec3d = playerIn.getLook(1.0F);
-			List<Entity> list = worldIn.getEntitiesInAABBexcluding(playerIn, playerIn.getBoundingBox().expand(vec3d.scale(5.0D)).grow(1.0D), COLLISION_PREDICATE);
+			Vector3d vec3d = playerIn.getViewVector(1.0F);
+			List<Entity> list = worldIn.getEntities(playerIn, playerIn.getBoundingBox().expandTowards(vec3d.scale(5.0D)).inflate(1.0D), COLLISION_PREDICATE);
 			if (!list.isEmpty()) {
 				Vector3d vec3d1 = playerIn.getEyePosition(1.0F);
 
 				for (Entity entity : list) {
-					AxisAlignedBB axisalignedbb = entity.getBoundingBox().grow((double) entity.getCollisionBorderSize());
+					AxisAlignedBB axisalignedbb = entity.getBoundingBox().inflate((double) entity.getPickRadius());
 					if (axisalignedbb.contains(vec3d1)) {
 						return new ActionResult<>(ActionResultType.PASS, itemstack);
 					}
@@ -67,21 +67,21 @@ public class AbnormalsBoatItem extends Item {
 			}
 
 			if (raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
-				AbnormalsBoatEntity boatentity = new AbnormalsBoatEntity(worldIn, raytraceresult.getHitVec().x, raytraceresult.getHitVec().y, raytraceresult.getHitVec().z);
+				AbnormalsBoatEntity boatentity = new AbnormalsBoatEntity(worldIn, raytraceresult.getLocation().x, raytraceresult.getLocation().y, raytraceresult.getLocation().z);
 				boatentity.setBoat(this.type);
-				boatentity.rotationYaw = playerIn.rotationYaw;
-				if (!worldIn.hasNoCollisions(boatentity, boatentity.getBoundingBox().grow(-0.1D))) {
+				boatentity.yRot = playerIn.yRot;
+				if (!worldIn.noCollision(boatentity, boatentity.getBoundingBox().inflate(-0.1D))) {
 					return new ActionResult<>(ActionResultType.FAIL, itemstack);
 				} else {
-					if (!worldIn.isRemote) {
-						worldIn.addEntity(boatentity);
+					if (!worldIn.isClientSide) {
+						worldIn.addFreshEntity(boatentity);
 					}
 
-					if (!playerIn.abilities.isCreativeMode) {
+					if (!playerIn.abilities.instabuild) {
 						itemstack.shrink(1);
 					}
 
-					playerIn.addStat(Stats.ITEM_USED.get(this));
+					playerIn.awardStat(Stats.ITEM_USED.get(this));
 					return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
 				}
 			} else {
@@ -99,32 +99,32 @@ public class AbnormalsBoatItem extends Item {
 		}
 
 		@SuppressWarnings("deprecation")
-		public ItemStack dispenseStack(IBlockSource iBlockSource, ItemStack stack) {
-			Direction direction = iBlockSource.getBlockState().get(DispenserBlock.FACING);
-			World world = iBlockSource.getWorld();
-			double x = iBlockSource.getX() + (double) ((float) direction.getXOffset() * 1.125f);
-			double y = iBlockSource.getY() + (double) ((float) direction.getYOffset() * 1.125f);
-			double z = iBlockSource.getZ() + (double) ((float) direction.getZOffset() * 1.125f);
-			BlockPos pos = iBlockSource.getBlockPos().offset(direction);
+		public ItemStack execute(IBlockSource iBlockSource, ItemStack stack) {
+			Direction direction = iBlockSource.getBlockState().getValue(DispenserBlock.FACING);
+			World world = iBlockSource.getLevel();
+			double x = iBlockSource.x() + (double) ((float) direction.getStepX() * 1.125f);
+			double y = iBlockSource.y() + (double) ((float) direction.getStepY() * 1.125f);
+			double z = iBlockSource.z() + (double) ((float) direction.getStepZ() * 1.125f);
+			BlockPos pos = iBlockSource.getPos().relative(direction);
 			double adjustY;
-			if (world.getFluidState(pos).isTagged(FluidTags.WATER)) {
+			if (world.getFluidState(pos).is(FluidTags.WATER)) {
 				adjustY = 1d;
 			} else {
-				if (!world.getBlockState(pos).isAir() || !world.getFluidState(pos.down()).isTagged(FluidTags.WATER)) {
+				if (!world.getBlockState(pos).isAir() || !world.getFluidState(pos.below()).is(FluidTags.WATER)) {
 					return this.defaultDispenseItemBehavior.dispense(iBlockSource, stack);
 				}
 				adjustY = 0d;
 			}
 			AbnormalsBoatEntity boat = new AbnormalsBoatEntity(world, x, y + adjustY, z);
 			boat.setBoat(this.type);
-			boat.rotationYaw = direction.getHorizontalAngle();
-			world.addEntity(boat);
+			boat.yRot = direction.toYRot();
+			world.addFreshEntity(boat);
 			stack.shrink(1);
 			return stack;
 		}
 
-		protected void playDispenseSound(IBlockSource iBlockSource) {
-			iBlockSource.getWorld().playEvent(1000, iBlockSource.getBlockPos(), 0);
+		protected void playSound(IBlockSource iBlockSource) {
+			iBlockSource.getLevel().levelEvent(1000, iBlockSource.getPos(), 0);
 		}
 	}
 }

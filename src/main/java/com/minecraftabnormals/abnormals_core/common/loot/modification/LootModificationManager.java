@@ -35,7 +35,7 @@ import java.util.Map;
  */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
 public final class LootModificationManager extends ModificationManager<LootTableLoadEvent, Gson, Pair<Gson, LootPredicateManager>> {
-	private static final Gson GSON = LootSerializers.func_237388_c_().registerTypeAdapter(LootPool.class, new LootPoolSerializer()).create();
+	private static final Gson GSON = LootSerializers.createLootTableSerializer().registerTypeAdapter(LootPool.class, new LootPoolSerializer()).create();
 	private static LootModificationManager INSTANCE = null;
 	private final LootPredicateManager lootPredicateManager;
 
@@ -65,15 +65,15 @@ public final class LootModificationManager extends ModificationManager<LootTable
 	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) {
 		DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
-		INSTANCE = new LootModificationManager(dataPackRegistries.getLootPredicateManager());
+		INSTANCE = new LootModificationManager(dataPackRegistries.getPredicateManager());
 		//Loot modifiers must load before loot tables
 		SimpleReloadableResourceManager simpleReloadableResourceManager = (SimpleReloadableResourceManager) dataPackRegistries.getResourceManager();
-		List<IFutureReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, simpleReloadableResourceManager, "field_199015_d");
+		List<IFutureReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, simpleReloadableResourceManager, "listeners");
 		if (reloadListeners != null) {
 			reloadListeners.add(2, INSTANCE);
 		}
 
-		List<IFutureReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, simpleReloadableResourceManager, "field_219539_d");
+		List<IFutureReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, simpleReloadableResourceManager, "recentlyRegistered");
 		if (initTaskQueue != null) {
 			initTaskQueue.add(2, INSTANCE);
 		}
@@ -110,15 +110,15 @@ public final class LootModificationManager extends ModificationManager<LootTable
 
 		@Override
 		public LootPool deserialize(JsonElement p_deserialize_1_, Type p_deserialize_2_, JsonDeserializationContext p_deserialize_3_) throws JsonParseException {
-			JsonObject jsonobject = JSONUtils.getJsonObject(p_deserialize_1_, "loot pool");
-			LootEntry[] alootentry = JSONUtils.deserializeClass(jsonobject, "entries", p_deserialize_3_, LootEntry[].class);
-			ILootCondition[] ailootcondition = JSONUtils.deserializeClass(jsonobject, "conditions", new ILootCondition[0], p_deserialize_3_, ILootCondition[].class);
-			ILootFunction[] ailootfunction = JSONUtils.deserializeClass(jsonobject, "functions", new ILootFunction[0], p_deserialize_3_, ILootFunction[].class);
+			JsonObject jsonobject = JSONUtils.convertToJsonObject(p_deserialize_1_, "loot pool");
+			LootEntry[] alootentry = JSONUtils.getAsObject(jsonobject, "entries", p_deserialize_3_, LootEntry[].class);
+			ILootCondition[] ailootcondition = JSONUtils.getAsObject(jsonobject, "conditions", new ILootCondition[0], p_deserialize_3_, ILootCondition[].class);
+			ILootFunction[] ailootfunction = JSONUtils.getAsObject(jsonobject, "functions", new ILootFunction[0], p_deserialize_3_, ILootFunction[].class);
 			IRandomRange irandomrange = RandomRanges.deserialize(jsonobject.get("rolls"), p_deserialize_3_);
-			RandomValueRange randomvaluerange = JSONUtils.deserializeClass(jsonobject, "bonus_rolls", new RandomValueRange(0.0F, 0.0F), p_deserialize_3_, RandomValueRange.class);
+			RandomValueRange randomvaluerange = JSONUtils.getAsObject(jsonobject, "bonus_rolls", new RandomValueRange(0.0F, 0.0F), p_deserialize_3_, RandomValueRange.class);
 			if (jsonobject.has("name")) {
 				try {
-					return LOOT_POOL_CONSTRUCTOR.newInstance(alootentry, ailootcondition, ailootfunction, irandomrange, randomvaluerange, JSONUtils.getString(jsonobject, "name"));
+					return LOOT_POOL_CONSTRUCTOR.newInstance(alootentry, ailootcondition, ailootfunction, irandomrange, randomvaluerange, JSONUtils.getAsString(jsonobject, "name"));
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					e.printStackTrace();
 					throw new JsonParseException("Could not initialize a new loot pool: " + e);

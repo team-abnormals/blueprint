@@ -27,10 +27,12 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class WoodPostBlock extends Block implements IWaterLoggable {
-	private static final VoxelShape SHAPE_X = makeCuboidShape(0.0F, 6.0F, 6.0F, 16.0F, 10.0F, 10.0F);
-	private static final VoxelShape SHAPE_Y = makeCuboidShape(6.0F, 0.0F, 6.0F, 10.0F, 16.0F, 10.0F);
-	private static final VoxelShape SHAPE_Z = makeCuboidShape(6.0F, 6.0F, 0.0F, 10.0F, 10.0F, 16.0F);
+	private static final VoxelShape SHAPE_X = box(0.0F, 6.0F, 6.0F, 16.0F, 10.0F, 10.0F);
+	private static final VoxelShape SHAPE_Y = box(6.0F, 0.0F, 6.0F, 10.0F, 16.0F, 10.0F);
+	private static final VoxelShape SHAPE_Z = box(6.0F, 6.0F, 0.0F, 10.0F, 10.0F, 16.0F);
 	private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	private static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
 	private static final BooleanProperty[] CHAINED = new BooleanProperty[] {
@@ -51,15 +53,15 @@ public class WoodPostBlock extends Block implements IWaterLoggable {
 	public WoodPostBlock(Supplier<Block> block, Properties properties) {
 		super(properties);
 		this.block = block;
-		BlockState defaultState = stateContainer.getBaseState().with(WATERLOGGED, false).with(AXIS, Axis.Y);
+		BlockState defaultState = stateDefinition.any().setValue(WATERLOGGED, false).setValue(AXIS, Axis.Y);
 		for (BooleanProperty prop : CHAINED)
-			defaultState = defaultState.with(prop, false);
-		this.setDefaultState(defaultState);
+			defaultState = defaultState.setValue(prop, false);
+		this.registerDefaultState(defaultState);
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		switch (state.get(AXIS)) {
+		switch (state.getValue(AXIS)) {
 			case X: return SHAPE_X;
 			case Y: return SHAPE_Y;
 			default: return SHAPE_Z;
@@ -68,28 +70,28 @@ public class WoodPostBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-		return !state.get(WATERLOGGED);
+		return !state.getValue(WATERLOGGED);
 	}
 
 	@Override
 	public FluidState getFluidState(BlockState state) {
-		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
 	}
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return this.getRelevantState(context.getWorld(), context.getPos(), context.getFace().getAxis());
+		return this.getRelevantState(context.getLevel(), context.getClickedPos(), context.getClickedFace().getAxis());
 	}
 
 	@Override
 	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-		BlockState newState = this.getRelevantState(worldIn, pos, state.get(AXIS));
+		BlockState newState = this.getRelevantState(worldIn, pos, state.getValue(AXIS));
 		if (!newState.equals(state))
-			worldIn.setBlockState(pos, newState);
+			worldIn.setBlockAndUpdate(pos, newState);
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(WATERLOGGED, AXIS);
 		for (BooleanProperty prop : CHAINED)
 			builder.add(prop);
@@ -98,21 +100,21 @@ public class WoodPostBlock extends Block implements IWaterLoggable {
 	@Override
 	public BlockState getToolModifiedState(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, ToolType toolType) {
 		if (toolType == ToolType.AXE)
-			return block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().getDefaultState()) : null;
+			return block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().defaultBlockState()) : null;
 		return super.getToolModifiedState(state, world, pos, player, stack, toolType);
 	}
 
 	private BlockState getRelevantState(World world, BlockPos pos, Axis axis) {
-		BlockState state = this.getDefaultState().with(WATERLOGGED, world.getFluidState(pos).getFluid() == Fluids.WATER).with(AXIS, axis);
+		BlockState state = this.defaultBlockState().setValue(WATERLOGGED, world.getFluidState(pos).getType() == Fluids.WATER).setValue(AXIS, axis);
 
 		for (Direction direction : Direction.values()) {
 			if (direction.getAxis() == axis)
 				continue;
 
-			BlockState sideState = world.getBlockState(pos.offset(direction));
-			if ((sideState.getBlock() instanceof ChainBlock && sideState.get(BlockStateProperties.AXIS) == direction.getAxis()) 
-					|| (direction == Direction.DOWN && sideState.getBlock() instanceof LanternBlock && sideState.get(LanternBlock.HANGING)))
-				state = state.with(CHAINED[direction.ordinal()], true);
+			BlockState sideState = world.getBlockState(pos.relative(direction));
+			if ((sideState.getBlock() instanceof ChainBlock && sideState.getValue(BlockStateProperties.AXIS) == direction.getAxis()) 
+					|| (direction == Direction.DOWN && sideState.getBlock() instanceof LanternBlock && sideState.getValue(LanternBlock.HANGING)))
+				state = state.setValue(CHAINED[direction.ordinal()], true);
 		}
 
 		return state;

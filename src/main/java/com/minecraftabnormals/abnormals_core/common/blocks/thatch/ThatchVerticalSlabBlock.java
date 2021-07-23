@@ -8,6 +8,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class ThatchVerticalSlabBlock extends VerticalSlabBlock {
 	public ThatchVerticalSlabBlock(Properties properties) {
 		super(properties);
@@ -15,7 +17,7 @@ public class ThatchVerticalSlabBlock extends VerticalSlabBlock {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+	public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		return 1.0F;
 	}
 

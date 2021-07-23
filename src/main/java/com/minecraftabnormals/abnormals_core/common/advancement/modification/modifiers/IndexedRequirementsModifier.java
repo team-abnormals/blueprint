@@ -12,6 +12,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.Map;
 import java.util.Optional;
 
+import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
+
 /**
  * An {@link AdvancementModifier} extension that modifies a specific requirement array of an advancement's requirements.
  *
@@ -23,16 +25,16 @@ public final class IndexedRequirementsModifier extends AdvancementModifier<Index
 		super(((element, conditionArrayParser) -> {
 			JsonObject object = element.getAsJsonObject();
 			Mode mode = Mode.deserialize(object);
-			int index = JSONUtils.getInt(object, "index");
-			Optional<Map<String, Criterion>> criterionMap = JSONUtils.hasField(object, "criteria") ? Optional.of(Criterion.deserializeAll(object.getAsJsonObject("criteria"), conditionArrayParser)) : Optional.empty();
+			int index = JSONUtils.getAsInt(object, "index");
+			Optional<Map<String, Criterion>> criterionMap = JSONUtils.isValidNode(object, "criteria") ? Optional.of(Criterion.criteriaFromJson(object.getAsJsonObject("criteria"), conditionArrayParser)) : Optional.empty();
 			Optional<String[]> requirements = Optional.empty();
 			if (criterionMap.isPresent()) {
 				Map<String, Criterion> map = criterionMap.get();
 				if (map.isEmpty()) {
 					throw new JsonParseException("Criteria cannot be empty! Don't include it instead");
 				}
-				if (JSONUtils.hasField(object, "requirements")) {
-					JsonArray requirementsArray = JSONUtils.getJsonArray(object, "requirements");
+				if (JSONUtils.isValidNode(object, "requirements")) {
+					JsonArray requirementsArray = JSONUtils.getAsJsonArray(object, "requirements");
 					String[] strings = new String[requirementsArray.size()];
 					if (strings.length == 0) {
 						throw new JsonParseException("Requirements cannot be empty!");

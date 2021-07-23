@@ -31,20 +31,20 @@ public class ChunkLoader implements IChunkLoader {
 	public void addPos(BlockPos pos) {
 		if (!this.containsPos(pos)) {
 			this.forceChunk(pos, true);
-			this.loadedPositions.add(pos.toLong());
+			this.loadedPositions.add(pos.asLong());
 		}
 	}
 
 	@Override
 	public void removePos(BlockPos pos) {
-		if (this.loadedPositions.remove(pos.toLong())) {
+		if (this.loadedPositions.remove(pos.asLong())) {
 			this.forceChunk(pos, false);
 		}
 	}
 
 	@Override
 	public boolean containsPos(BlockPos pos) {
-		return this.loadedPositions.contains(pos.toLong());
+		return this.loadedPositions.contains(pos.asLong());
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ChunkLoader implements IChunkLoader {
 
 	private void forceChunk(BlockPos pos, boolean load) {
 		if (this.world != null) {
-			this.world.forceChunk(pos.getX() >> 4, pos.getZ() >> 4, load);
+			this.world.setChunkForced(pos.getX() >> 4, pos.getZ() >> 4, load);
 		}
 	}
 

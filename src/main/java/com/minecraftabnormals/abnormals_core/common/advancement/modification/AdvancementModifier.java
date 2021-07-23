@@ -58,7 +58,7 @@ public abstract class AdvancementModifier<C> {
 		}
 
 		public static Mode deserialize(JsonObject object) throws JsonParseException {
-			String string = JSONUtils.getString(object, "mode");
+			String string = JSONUtils.getAsString(object, "mode");
 			Mode mode = VALUES_MAP.get(string);
 			if (mode == null) {
 				throw new JsonParseException("Unknown mode type: " + string);

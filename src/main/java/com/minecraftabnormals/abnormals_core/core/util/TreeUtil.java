@@ -27,55 +27,55 @@ import net.minecraftforge.common.IPlantable;
 public final class TreeUtil {
 
 	public static void placeLogAt(IWorldWriter world, BlockPos pos, Random rand, BaseTreeFeatureConfig config) {
-		setForcedState(world, pos, config.trunkProvider.getBlockState(rand, pos));
+		setForcedState(world, pos, config.trunkProvider.getState(rand, pos));
 	}
 
 	public static void placeDirectionalLogAt(IWorldWriter world, BlockPos pos, Direction direction, Random rand, BaseTreeFeatureConfig config) {
-		setForcedState(world, pos, config.trunkProvider.getBlockState(rand, pos).with(RotatedPillarBlock.AXIS, direction.getAxis()));
+		setForcedState(world, pos, config.trunkProvider.getState(rand, pos).setValue(RotatedPillarBlock.AXIS, direction.getAxis()));
 	}
 
 	public static boolean isInTag(IWorldGenerationBaseReader world, BlockPos pos, INamedTag<Block> tag) {
-		return world.hasBlockState(pos, (block) -> block.isIn(tag));
+		return world.isStateAtPosition(pos, (block) -> block.is(tag));
 	}
 
 	public static void placeLeafAt(IWorldGenerationReader world, BlockPos pos, Random rand, BaseTreeFeatureConfig config) {
 		if (isAirOrLeaves(world, pos)) {
-			setForcedState(world, pos, config.leavesProvider.getBlockState(rand, pos).with(LeavesBlock.DISTANCE, 1));
+			setForcedState(world, pos, config.leavesProvider.getState(rand, pos).setValue(LeavesBlock.DISTANCE, 1));
 		}
 	}
 
 	public static void setForcedState(IWorldWriter world, BlockPos pos, BlockState state) {
-		world.setBlockState(pos, state, 18);
+		world.setBlock(pos, state, 18);
 	}
 
 	@SuppressWarnings("deprecation")
 	public static boolean isAir(IWorldGenerationBaseReader world, BlockPos pos) {
 		if (!(world instanceof IBlockReader)) {
-			return world.hasBlockState(pos, BlockState::isAir);
+			return world.isStateAtPosition(pos, BlockState::isAir);
 		} else {
-			return world.hasBlockState(pos, state -> state.isAir((net.minecraft.world.IBlockReader) world, pos));
+			return world.isStateAtPosition(pos, state -> state.isAir((net.minecraft.world.IBlockReader) world, pos));
 		}
 	}
 
 	public static boolean isLog(IWorldGenerationBaseReader world, BlockPos pos) {
-		return world.hasBlockState(pos, (state) -> state.isIn(BlockTags.LOGS));
+		return world.isStateAtPosition(pos, (state) -> state.is(BlockTags.LOGS));
 	}
 
 	public static boolean isLeaves(IWorldGenerationBaseReader worldIn, BlockPos pos) {
-		return worldIn.hasBlockState(pos, (state) -> state.isIn(BlockTags.LEAVES));
+		return worldIn.isStateAtPosition(pos, (state) -> state.is(BlockTags.LEAVES));
 	}
 
 	public static boolean isAirOrLeaves(IWorldGenerationBaseReader world, BlockPos pos) {
 		if (world instanceof IWorldReader) {
-			return world.hasBlockState(pos, state -> state.canBeReplacedByLeaves((IWorldReader) world, pos));
+			return world.isStateAtPosition(pos, state -> state.canBeReplacedByLeaves((IWorldReader) world, pos));
 		}
-		return world.hasBlockState(pos, (state) -> isAir(world, pos) || state.isIn(BlockTags.LEAVES));
+		return world.isStateAtPosition(pos, (state) -> isAir(world, pos) || state.is(BlockTags.LEAVES));
 	}
 
 	public static void setDirtAt(IWorld world, BlockPos pos) {
 		Block block = world.getBlockState(pos).getBlock();
 		if (block == Blocks.GRASS_BLOCK || block == Blocks.FARMLAND) {
-			world.setBlockState(pos, Blocks.DIRT.getDefaultState(), 18);
+			world.setBlock(pos, Blocks.DIRT.defaultBlockState(), 18);
 		}
 	}
 

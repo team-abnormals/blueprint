@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public final class LayerUtilMixin {
     @Inject(method = "isOcean", at = @At("HEAD"), cancellable = true)
     private static void isOcean(int biomeIn, CallbackInfoReturnable<Boolean> cir) {
-        RegistryKey<Biome> biome = BiomeRegistry.getKeyFromID(biomeIn);
+        RegistryKey<Biome> biome = BiomeRegistry.byId(biomeIn);
         if (BiomeUtil.isOceanBiome(biome)) {
             cir.setReturnValue(true);
         }
@@ -25,7 +25,7 @@ public final class LayerUtilMixin {
     
     @Inject(method = "isShallowOcean", at = @At("HEAD"), cancellable = true)
     private static void isShallowOcean(int biomeIn, CallbackInfoReturnable<Boolean> cir) {
-        RegistryKey<Biome> biome = BiomeRegistry.getKeyFromID(biomeIn);
+        RegistryKey<Biome> biome = BiomeRegistry.byId(biomeIn);
         if (BiomeUtil.isShallowOceanBiome(biome)) {
             cir.setReturnValue(true);
         }

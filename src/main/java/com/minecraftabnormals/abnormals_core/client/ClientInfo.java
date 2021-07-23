@@ -11,7 +11,7 @@ public final class ClientInfo {
 	 * @return - The partial ticks of the minecraft client
 	 */
 	public static float getPartialTicks() {
-		return MINECRAFT.isGamePaused() ? MINECRAFT.renderPartialTicksPaused : MINECRAFT.getRenderPartialTicks();
+		return MINECRAFT.isPaused() ? MINECRAFT.pausePartialTick : MINECRAFT.getFrameTime();
 	}
 
 	/**
@@ -25,6 +25,6 @@ public final class ClientInfo {
 	 * @return - The client player's world; equivalent to getting the client world
 	 */
 	public static World getClientPlayerWorld() {
-		return ClientInfo.getClientPlayer().world;
+		return ClientInfo.getClientPlayer().level;
 	}
 }

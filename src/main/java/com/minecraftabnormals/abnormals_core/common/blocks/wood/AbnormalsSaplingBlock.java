@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class AbnormalsSaplingBlock extends SaplingBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.DARK_OAK_SAPLING);
 
@@ -16,7 +18,7 @@ public class AbnormalsSaplingBlock extends SaplingBlock {
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this.asItem(), group, items);
 	}
 }

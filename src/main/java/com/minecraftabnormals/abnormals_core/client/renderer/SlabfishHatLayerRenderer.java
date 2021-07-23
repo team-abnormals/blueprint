@@ -41,10 +41,10 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 		String defaultTypeUrl = slabfishProperties.getDefaultTypeUrl();
 		IDataManager data = (IDataManager) entity;
 
-		if (entity.isInvisible() || entity.isSpectator() || !(RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.ENABLED)) || defaultTypeUrl == null || !RewardHandler.REWARDS.containsKey(entity.getUniqueID()))
+		if (entity.isInvisible() || entity.isSpectator() || !(RewardHandler.SlabfishSetting.getSetting(data, RewardHandler.SlabfishSetting.ENABLED)) || defaultTypeUrl == null || !RewardHandler.REWARDS.containsKey(entity.getUUID()))
 			return;
 
-		RewardHandler.RewardData reward = RewardHandler.REWARDS.get(entity.getUniqueID());
+		RewardHandler.RewardData reward = RewardHandler.REWARDS.get(entity.getUUID());
 
 		if (reward.getSlabfish() == null || reward.getTier() < 2)
 			return;
@@ -59,15 +59,15 @@ public class SlabfishHatLayerRenderer extends LayerRenderer<AbstractClientPlayer
 		ModelRenderer body = this.model.body;
 		ModelRenderer backpack = this.model.backpack;
 
-		body.copyModelAngles(this.getEntityModel().bipedHead);
-		body.render(stack, buffer.getBuffer(slabfish.isTranslucent() ? RenderType.getEntityTranslucent(typeLocation) : RenderType.getEntityCutout(typeLocation)), packedLight, OverlayTexture.NO_OVERLAY);
+		body.copyFrom(this.getParentModel().head);
+		body.render(stack, buffer.getBuffer(slabfish.isTranslucent() ? RenderType.entityTranslucent(typeLocation) : RenderType.entityCutout(typeLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 
 		if (sweaterLocation != null)
-			body.render(stack, buffer.getBuffer(RenderType.getEntityCutout(sweaterLocation)), packedLight, OverlayTexture.NO_OVERLAY);
+			body.render(stack, buffer.getBuffer(RenderType.entityCutout(sweaterLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 
 		if (backpackLocation != null) {
-			backpack.copyModelAngles(body);
-			backpack.render(stack, buffer.getBuffer(RenderType.getEntityCutout(backpackLocation)), packedLight, OverlayTexture.NO_OVERLAY);
+			backpack.copyFrom(body);
+			backpack.render(stack, buffer.getBuffer(RenderType.entityCutout(backpackLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 		}
 	}
 }

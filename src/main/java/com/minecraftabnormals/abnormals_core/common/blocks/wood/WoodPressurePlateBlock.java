@@ -8,6 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 
+import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.block.PressurePlateBlock.Sensitivity;
+
 public class WoodPressurePlateBlock extends AbnormalsPressurePlateBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_PRESSURE_PLATE);
 
@@ -16,7 +19,7 @@ public class WoodPressurePlateBlock extends AbnormalsPressurePlateBlock {
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this.asItem(),group, items);
 	}
 }

@@ -8,5 +8,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(Item.class)
 public interface ItemInvokerMixin {
 	@Invoker
-	boolean callIsInGroup(ItemGroup group);
+	boolean callAllowdedIn(ItemGroup group);
 }

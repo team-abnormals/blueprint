@@ -22,16 +22,16 @@ import java.util.List;
 public abstract class EndBiomeProviderMixin extends BiomeProvider {
 	@Shadow
 	@Final
-	private Registry<Biome> lookupRegistry;
+	private Registry<Biome> biomes;
 	@Shadow
 	@Final
-	private Biome endHighlandsBiome;
+	private Biome highlands;
 	@Shadow
 	@Final
-	private Biome endMidlandsBiome;
+	private Biome midlands;
 	@Shadow
 	@Final
-	private Biome endBarrensBiome;
+	private Biome barrens;
 
 	private Layer noiseBiomeLayer;
 
@@ -41,26 +41,26 @@ public abstract class EndBiomeProviderMixin extends BiomeProvider {
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void init(Registry<Biome> lookupRegistry, long seed, CallbackInfo info) {
-		this.noiseBiomeLayer = ACLayerUtil.createEndBiomeLayer(lookupRegistry, (seedModifier) -> new LazyAreaLayerContext(25, seed, seedModifier));
+		this.noiseBiomeLayer = ACLayerUtil.createEndBiomeLayer(biomes, (seedModifier) -> new LazyAreaLayerContext(25, seed, seedModifier));
 	}
 
 	@Inject(at = @At("RETURN"), method = "getNoiseBiome(III)Lnet/minecraft/world/biome/Biome;", cancellable = true)
 	private void addEndBiomes(int x, int y, int z, CallbackInfoReturnable<Biome> info) {
 		Biome oldBiome = info.getReturnValue();
-		if (oldBiome == this.endHighlandsBiome || oldBiome == this.endMidlandsBiome || oldBiome == this.endBarrensBiome) {
+		if (oldBiome == this.highlands || oldBiome == this.midlands || oldBiome == this.barrens) {
 			Biome newBiome = this.getNoiseBiome(x, z);
-			if (newBiome != this.endMidlandsBiome) {
+			if (newBiome != this.midlands) {
 				info.setReturnValue(newBiome);
 			}
 		}
 	}
 
 	private Biome getNoiseBiome(int x, int z) {
-		int biomeID = this.noiseBiomeLayer.field_215742_b.getValue(x, z);
-		Biome biome = this.lookupRegistry.getByValue(biomeID);
+		int biomeID = this.noiseBiomeLayer.area.get(x, z);
+		Biome biome = this.biomes.byId(biomeID);
 		if (biome == null) {
 			AbnormalsCore.LOGGER.warn("Unknown end biome id: {}", biomeID);
-			return this.endMidlandsBiome;
+			return this.midlands;
 		}
 		return biome;
 	}

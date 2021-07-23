@@ -34,41 +34,41 @@ import java.util.function.Supplier;
 public abstract class ClientWorldMixin extends World {
     @Shadow
     @Final
-    private DimensionRenderInfo field_239131_x_;
+    private DimensionRenderInfo effects;
     @Shadow
-    private int timeLightningFlash;
+    private int skyFlashTime;
 
     protected ClientWorldMixin(ISpawnWorldInfo p_i241925_1_, RegistryKey<World> p_i241925_2_, DimensionType p_i241925_3_, Supplier<IProfiler> p_i241925_4_, boolean p_i241925_5_, boolean p_i241925_6_, long p_i241925_7_) {
         super(p_i241925_1_, p_i241925_2_, p_i241925_3_, p_i241925_4_, p_i241925_5_, p_i241925_6_, p_i241925_7_);
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;animateTick(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)V"), method = "animateTick(IIIILjava/util/Random;ZLnet/minecraft/util/math/BlockPos$Mutable;)V")
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;animateTick(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)V"), method = "doAnimateTick(IIIILjava/util/Random;ZLnet/minecraft/util/math/BlockPos$Mutable;)V")
     private void animateTick(Block block, BlockState state, World world, BlockPos pos, Random rand) {
         if (!AnimateTickEvent.onAnimateTick(state, world, pos, rand)) {
             block.animateTick(state, world, pos, rand);
         }
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;animateTick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)V"), method = "animateTick(IIIILjava/util/Random;ZLnet/minecraft/util/math/BlockPos$Mutable;)V")
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;animateTick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)V"), method = "doAnimateTick(IIIILjava/util/Random;ZLnet/minecraft/util/math/BlockPos$Mutable;)V")
     private void animateFluidTick(FluidState state, World world, BlockPos pos, Random random) {
         if (!AnimateFluidTickEvent.onAnimateFluidTick(world, pos, state, random)) {
-            ((FluidInvokerMixin) state.getFluid()).callAnimateTick(world, pos, state, random);
+            ((FluidInvokerMixin) state.getType()).callAnimateTick(world, pos, state, random);
         }
     }
 
     @Inject(at = @At("HEAD"), method = "getSkyColor", cancellable = true)
     private void getSkyColor(BlockPos blockPos, float partialTicks, CallbackInfoReturnable<Vector3d> info) {
-        if (ACConfig.ValuesHolder.isSmoothSkyColorEnabled() && this.field_239131_x_.func_241683_c_() == DimensionRenderInfo.FogType.NORMAL) {
-            Vector3d scaledOffset = Vector3d.copy(blockPos).subtract(2.0D, 2.0D, 2.0D).scale(0.25D);
+        if (ACConfig.ValuesHolder.isSmoothSkyColorEnabled() && this.effects.skyType() == DimensionRenderInfo.FogType.NORMAL) {
+            Vector3d scaledOffset = Vector3d.atLowerCornerOf(blockPos).subtract(2.0D, 2.0D, 2.0D).scale(0.25D);
             BiomeManager biomemanager = this.getBiomeManager();
-            Vector3d sampledSkyColor = CubicSampler.func_240807_a_(scaledOffset, (x, y, z) -> {
-                return Vector3d.unpack(biomemanager.getBiomeAtPosition(x, y, z).getSkyColor());
+            Vector3d sampledSkyColor = CubicSampler.gaussianSampleVec3(scaledOffset, (x, y, z) -> {
+                return Vector3d.fromRGB24(biomemanager.getNoiseBiomeAtQuart(x, y, z).getSkyColor());
             });
-            float celestialAngleFactor = MathHelper.clamp(MathHelper.cos(this.func_242415_f(partialTicks) * ((float) Math.PI * 2F)) * 2.0F + 0.5F, 0.0F, 1.0F);
+            float celestialAngleFactor = MathHelper.clamp(MathHelper.cos(this.getTimeOfDay(partialTicks) * ((float) Math.PI * 2F)) * 2.0F + 0.5F, 0.0F, 1.0F);
             float r = (float) sampledSkyColor.x * celestialAngleFactor;
             float g = (float) sampledSkyColor.y * celestialAngleFactor;
             float b = (float) sampledSkyColor.z * celestialAngleFactor;
-            float rainStrength = this.getRainStrength(partialTicks);
+            float rainStrength = this.getRainLevel(partialTicks);
             if (rainStrength > 0.0F) {
                 float colorModifier = (r * 0.3F + g * 0.59F + b * 0.11F) * 0.6F;
                 float strengthFactor = 1.0F - rainStrength * 0.75F;
@@ -77,7 +77,7 @@ public abstract class ClientWorldMixin extends World {
                 b = b * strengthFactor + colorModifier * (1.0F - strengthFactor);
             }
 
-            float thunderStrength = this.getThunderStrength(partialTicks);
+            float thunderStrength = this.getThunderLevel(partialTicks);
             if (thunderStrength > 0.0F) {
                 float colorModifier = (r * 0.3F + g * 0.59F + b * 0.11F) * 0.2F;
                 float strengthFactor = 1.0F - thunderStrength * 0.75F;
@@ -86,8 +86,8 @@ public abstract class ClientWorldMixin extends World {
                 b = b * strengthFactor + colorModifier * (1.0F - strengthFactor);
             }
 
-            if (this.timeLightningFlash > 0) {
-                float flash = (float) this.timeLightningFlash - partialTicks;
+            if (this.skyFlashTime > 0) {
+                float flash = (float) this.skyFlashTime - partialTicks;
                 if (flash > 1.0F) {
                     flash = 1.0F;
                 }

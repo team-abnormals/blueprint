@@ -18,25 +18,25 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(HillsLayer.class)
 public abstract class HillsLayerMixin implements IAreaTransformer2, IDimOffset1Transformer {
-	@Inject(method = "apply", at = @At(value = "INVOKE_ASSIGN", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/gen/INoiseRandom;random(I)I"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	@Inject(method = "applyPixel", at = @At(value = "INVOKE_ASSIGN", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/gen/INoiseRandom;nextRandom(I)I"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void transformVariants(INoiseRandom rand, IArea area1, IArea area2, int x, int z, CallbackInfoReturnable<Integer> cir, int i, int j, int k) {
-		RegistryKey<Biome> hill = BiomeUtil.getHillBiome(BiomeRegistry.getKeyFromID(i), rand);
+		RegistryKey<Biome> hill = BiomeUtil.getHillBiome(BiomeRegistry.byId(i), rand);
 		if (hill != null) {
 			int l = BiomeUtil.getId(hill);
 
 			if (k == 0 && l != i) {
-				l = HillsLayer.field_242940_c.getOrDefault(l, i);
+				l = HillsLayer.MUTATIONS.getOrDefault(l, i);
 			}
 
 			if (l != i) {
 				int i1 = 0;
-				int offsetX = this.getOffsetX(x);
-				int offsetZ = this.getOffsetZ(x);
+				int offsetX = this.getParentX(x);
+				int offsetZ = this.getParentY(x);
 
-				if (LayerUtil.areBiomesSimilar(area1.getValue(offsetX + 1, offsetZ), i)) ++i1;
-				if (LayerUtil.areBiomesSimilar(area1.getValue(offsetX + 2, offsetZ + 1), i)) ++i1;
-				if (LayerUtil.areBiomesSimilar(area1.getValue(offsetX, offsetZ + 1), i)) ++i1;
-				if (LayerUtil.areBiomesSimilar(area1.getValue(offsetX + 1, offsetZ + 2), i)) ++i1;
+				if (LayerUtil.isSame(area1.get(offsetX + 1, offsetZ), i)) ++i1;
+				if (LayerUtil.isSame(area1.get(offsetX + 2, offsetZ + 1), i)) ++i1;
+				if (LayerUtil.isSame(area1.get(offsetX, offsetZ + 1), i)) ++i1;
+				if (LayerUtil.isSame(area1.get(offsetX + 1, offsetZ + 2), i)) ++i1;
 
 				if (i1 >= 3) {
 					cir.setReturnValue(l);

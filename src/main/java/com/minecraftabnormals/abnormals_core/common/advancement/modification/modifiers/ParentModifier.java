@@ -17,7 +17,7 @@ public final class ParentModifier extends AdvancementModifier<ResourceLocation> 
 
 	@Override
 	public void modify(Advancement.Builder builder, ResourceLocation location) {
-		builder.withParentId(location);
+		builder.parent(location);
 	}
 
 }

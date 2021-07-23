@@ -248,7 +248,7 @@ public final class BiomeUtil {
 	 */
 	@SuppressWarnings("deprecation")
 	public static int getId(@Nonnull RegistryKey<Biome> biome) {
-		return WorldGenRegistries.BIOME.getId(WorldGenRegistries.BIOME.getValueForKey(biome));
+		return WorldGenRegistries.BIOME.getId(WorldGenRegistries.BIOME.get(biome));
 	}
 
 	/**
@@ -282,7 +282,7 @@ public final class BiomeUtil {
 		public T get(INoiseRandom random) {
 			Iterator<Pair<T, Integer>> iterator = this.entries.iterator();
 			T value;
-			int randomTotal = random.random(this.totalWeight);
+			int randomTotal = random.nextRandom(this.totalWeight);
 			do {
 				Pair<T, Integer> entry = iterator.next();
 				value = entry.getFirst();
@@ -351,7 +351,7 @@ public final class BiomeUtil {
 				if (size > 0) {
 					List<T> copy = new ArrayList<>(list);
 					while (size > 0) {
-						int index = random.random(size);
+						int index = random.nextRandom(size);
 						T picked = copy.get(index);
 						C callback = callbackProcessor.apply(picked);
 						if (callback != null) {

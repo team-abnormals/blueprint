@@ -75,6 +75,6 @@ public final class ItemStackUtil {
 	 * @return Whether or not the item is in the {@link ItemGroup}.
 	 */
 	public static boolean isInGroup(Item item, @Nonnull ItemGroup group) {
-		return ((ItemInvokerMixin) item).callIsInGroup(group);
+		return ((ItemInvokerMixin) item).callAllowdedIn(group);
 	}
 }

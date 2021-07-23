@@ -18,19 +18,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Minecraft.class)
 public final class MinecraftMixin {
 	@Shadow
-	public ClientWorld world;
+	public ClientWorld level;
 	@Shadow
 	public ClientPlayerEntity player;
 	@Shadow
 	@Final
-	public IngameGui ingameGUI;
+	public IngameGui gui;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/overlay/BossOverlayGui;shouldPlayEndBossMusic()Z"), method = "getBackgroundMusicSelector", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/overlay/BossOverlayGui;shouldPlayMusic()Z"), method = "getSituationalMusic", cancellable = true)
 	private void addCustomEndBiomeMusic(CallbackInfoReturnable<BackgroundMusicSelector> info) {
-		if (!this.ingameGUI.getBossOverlay().shouldPlayEndBossMusic()) {
-			Biome biome = this.world.getBiomeManager().getBiomeAtPosition(this.player.getPosition());
+		if (!this.gui.getBossOverlay().shouldPlayMusic()) {
+			Biome biome = this.level.getBiomeManager().getNoiseBiomeAtPosition(this.player.blockPosition());
 			if (BiomeUtil.shouldPlayCustomEndMusic(biome.getRegistryName())) {
-				info.setReturnValue(biome.getBackgroundMusic().orElse(BackgroundMusicTracks.WORLD_MUSIC));
+				info.setReturnValue(biome.getBackgroundMusic().orElse(BackgroundMusicTracks.GAME));
 			}
 		}
 	}

@@ -30,14 +30,14 @@ public class RaidCheckCondition implements ILootCondition {
     }
 
     @Override
-    public LootConditionType func_230419_b_() {
-        return Registry.LOOT_CONDITION_TYPE.getOrDefault(ACLootConditions.RAID_CHECK);
+    public LootConditionType getType() {
+        return Registry.LOOT_CONDITION_TYPE.get(ACLootConditions.RAID_CHECK);
     }
 
     @Override
     public boolean test(LootContext lootContext) {
-        Entity entity = lootContext.get(LootParameters.THIS_ENTITY);
-        return inverted != (entity != null && lootContext.getWorld().findRaid(entity.getPosition()) != null);
+        Entity entity = lootContext.getParamOrNull(LootParameters.THIS_ENTITY);
+        return inverted != (entity != null && lootContext.getLevel().getRaidAt(entity.blockPosition()) != null);
     }
 
     public static class Serializer implements ILootSerializer<RaidCheckCondition> {
@@ -50,7 +50,7 @@ public class RaidCheckCondition implements ILootCondition {
 
         @Override
         public RaidCheckCondition deserialize(JsonObject json, JsonDeserializationContext context) {
-            return new RaidCheckCondition(JSONUtils.getBoolean(json, "inverted", false));
+            return new RaidCheckCondition(JSONUtils.getAsBoolean(json, "inverted", false));
         }
     }
 }

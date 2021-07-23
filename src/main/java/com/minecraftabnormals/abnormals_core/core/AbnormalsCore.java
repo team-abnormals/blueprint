@@ -120,7 +120,7 @@ public final class AbnormalsCore {
 			modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event -> {
 				IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
 				if (resourceManager instanceof IReloadableResourceManager) {
-					((IReloadableResourceManager) resourceManager).addReloadListener(ENDIMATION_DATA_MANAGER);
+					((IReloadableResourceManager) resourceManager).registerReloadListener(ENDIMATION_DATA_MANAGER);
 				}
 			});
 			modEventBus.addListener(EventPriority.NORMAL, false, ModConfig.Reloading.class, event -> {
@@ -171,13 +171,13 @@ public final class AbnormalsCore {
 	}
 
 	private void replaceBeehivePOI() {
-		PointOfInterestType.BEEHIVE.blockStates = Sets.newHashSet(PointOfInterestType.BEEHIVE.blockStates);
-		Map<BlockState, PointOfInterestType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PointOfInterestType.class, null, "field_221073_u");
+		PointOfInterestType.BEEHIVE.matchingStates = Sets.newHashSet(PointOfInterestType.BEEHIVE.matchingStates);
+		Map<BlockState, PointOfInterestType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PointOfInterestType.class, null, "TYPE_BY_STATE");
 		if (statePointOfInterestMap != null) {
 			for (Block block : TileEntitySubRegistryHelper.collectBlocks(AbnormalsBeehiveBlock.class)) {
-				block.getStateContainer().getValidStates().forEach(state -> {
+				block.getStateDefinition().getPossibleStates().forEach(state -> {
 					statePointOfInterestMap.put(state, PointOfInterestType.BEEHIVE);
-					PointOfInterestType.BEEHIVE.blockStates.add(state);
+					PointOfInterestType.BEEHIVE.matchingStates.add(state);
 				});
 			}
 		}

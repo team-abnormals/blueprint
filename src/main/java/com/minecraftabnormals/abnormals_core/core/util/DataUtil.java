@@ -47,15 +47,15 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 public final class DataUtil {
-	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "func_193357_a", Potion.class, Item.class, Potion.class);
+	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "addMix", Potion.class, Item.class, Potion.class);
 
 	public static void registerFlammable(Block block, int encouragement, int flammability) {
 		FireBlock fire = (FireBlock) Blocks.FIRE;
-		fire.setFireInfo(block, encouragement, flammability);
+		fire.setFlammable(block, encouragement, flammability);
 	}
 
 	public static void registerCompostable(IItemProvider item, float chance) {
-		ComposterBlock.CHANCES.put(item.asItem(), chance);
+		ComposterBlock.COMPOSTABLES.put(item.asItem(), chance);
 	}
 
 	public static void addMix(Potion input, Item reactant, Potion result) {
@@ -96,7 +96,7 @@ public final class DataUtil {
 	public static void registerVillagerGift(VillagerProfession profession) {
 		ResourceLocation name = profession.getRegistryName();
 		if (name != null) {
-			GiveHeroGiftsTask.GIFTS.put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
+			GiveHeroGiftsTask.gifts.put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
 		}
 	}
 
@@ -108,7 +108,7 @@ public final class DataUtil {
 	 * @param name  The new name of the block
 	 */
 	public static void changeBlockLocalization(Block block, String modid, String name) {
-		block.translationKey = Util.makeTranslationKey("block", new ResourceLocation(modid, name));
+		block.descriptionId = Util.makeDescriptionId("block", new ResourceLocation(modid, name));
 	}
 
 	/**
@@ -123,7 +123,7 @@ public final class DataUtil {
 	public static void changeBlockLocalization(String inputMod, String input, String outputMod, String output) {
 		Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(inputMod, input));
 		if (block != null)
-			block.translationKey = Util.makeTranslationKey("block", new ResourceLocation(outputMod, output));
+			block.descriptionId = Util.makeDescriptionId("block", new ResourceLocation(outputMod, output));
 	}
 
 	/**
@@ -134,7 +134,7 @@ public final class DataUtil {
 	 * @param name  The new name of the item
 	 */
 	public static void changeItemLocalization(Item item, String modid, String name) {
-		item.translationKey = Util.makeTranslationKey("item", new ResourceLocation(modid, name));
+		item.descriptionId = Util.makeDescriptionId("item", new ResourceLocation(modid, name));
 	}
 
 	/**
@@ -149,7 +149,7 @@ public final class DataUtil {
 	public static void changeItemLocalization(String inputMod, String input, String outputMod, String output) {
 		Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(inputMod, input));
 		if (item != null)
-			item.translationKey = Util.makeTranslationKey("item", new ResourceLocation(outputMod, output));
+			item.descriptionId = Util.makeDescriptionId("item", new ResourceLocation(outputMod, output));
 	}
 
 	/**
@@ -173,7 +173,7 @@ public final class DataUtil {
 	 */
 	public static boolean matchesKeys(ResourceLocation loc, RegistryKey<?>... keys) {
 		for (RegistryKey<?> key : keys)
-			if (key.getLocation().equals(loc))
+			if (key.location().equals(loc))
 				return true;
 		return false;
 	}
@@ -190,8 +190,8 @@ public final class DataUtil {
 	 * @author abigailfails
 	 */
 	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior newBehavior) {
-		IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.get(item);
-		DispenserBlock.registerDispenseBehavior(item, (source, stack) -> {
+		IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSER_REGISTRY.get(item);
+		DispenserBlock.registerBehavior(item, (source, stack) -> {
 			return condition.test(source, stack) ? newBehavior.dispense(source, stack) : oldBehavior.dispense(source, stack);
 		});
 	}
@@ -206,10 +206,10 @@ public final class DataUtil {
 	 * @author abigailfails
 	 */
 	public static void addToJigsawPattern(ResourceLocation toAdd, JigsawPiece newPiece, int weight) {
-		JigsawPattern oldPool = WorldGenRegistries.JIGSAW_POOL.getOrDefault(toAdd);
+		JigsawPattern oldPool = WorldGenRegistries.TEMPLATE_POOL.get(toAdd);
 		if (oldPool != null) {
 			oldPool.rawTemplates.add(Pair.of(newPiece, weight));
-			List<JigsawPiece> jigsawPieces = oldPool.jigsawPieces;
+			List<JigsawPiece> jigsawPieces = oldPool.templates;
 			for (int i = 0; i < weight; i++) {
 				jigsawPieces.add(newPiece);
 			}

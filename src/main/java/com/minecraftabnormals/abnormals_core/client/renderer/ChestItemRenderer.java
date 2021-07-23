@@ -24,7 +24,7 @@ public class ChestItemRenderer<T extends TileEntity> extends ItemStackTileEntity
 	}
 
 	@Override
-	public void func_239207_a_(ItemStack itemStackIn, TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+	public void renderByItem(ItemStack itemStackIn, TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 		BlockItem blockItem = (BlockItem) itemStackIn.getItem();
 		AbnormalsChestTileEntityRenderer.itemBlock = blockItem.getBlock();
 		TileEntityRendererDispatcher.instance.renderItem(this.te.get(), matrixStack, buffer, combinedLight, combinedOverlay);

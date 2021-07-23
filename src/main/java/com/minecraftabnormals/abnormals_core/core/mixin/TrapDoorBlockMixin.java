@@ -20,10 +20,10 @@ public final class TrapDoorBlockMixin {
 	//Temporary fix for a Forge issue
 	@Inject(at = @At("RETURN"), method = "isLadder", cancellable = true, remap = false)
 	private void isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity, CallbackInfoReturnable<Boolean> info) {
-		if (state.get(TrapDoorBlock.OPEN)) {
-			BlockState down = world.getBlockState(pos.down());
+		if (state.getValue(TrapDoorBlock.OPEN)) {
+			BlockState down = world.getBlockState(pos.below());
 			if (down.getBlock() instanceof LadderBlock)
-				info.setReturnValue(down.get(LadderBlock.FACING) == state.get(TrapDoorBlock.HORIZONTAL_FACING));
+				info.setReturnValue(down.getValue(LadderBlock.FACING) == state.getValue(TrapDoorBlock.FACING));
 		}
 	}
 

@@ -13,6 +13,8 @@ import net.minecraft.loot.ConditionArrayParser;
 import net.minecraft.loot.ConditionArraySerializer;
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraft.advancements.ICriterionTrigger.Listener;
+
 /**
  * @author - SmellyModder(Luke Tonon)
  */
@@ -30,13 +32,13 @@ public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instan
 	}
 
 	@Override
-	public void addListener(PlayerAdvancements playerAdvancements, Listener<Instance> listener) {
+	public void addPlayerListener(PlayerAdvancements playerAdvancements, Listener<Instance> listener) {
 		Listeners listeners = this.listeners.computeIfAbsent(playerAdvancements, Listeners::new);
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeListener(PlayerAdvancements playerAdvancements, Listener<Instance> listener) {
+	public void removePlayerListener(PlayerAdvancements playerAdvancements, Listener<Instance> listener) {
 		Listeners listeners = this.listeners.get(playerAdvancements);
 		if (listeners != null) {
 			listeners.remove(listener);
@@ -47,12 +49,12 @@ public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instan
 	}
 
 	@Override
-	public void removeAllListeners(PlayerAdvancements playerAdvancements) {
+	public void removePlayerListeners(PlayerAdvancements playerAdvancements) {
 		this.listeners.remove(playerAdvancements);
 	}
 
 	@Override
-	public Instance deserialize(JsonObject object, ConditionArrayParser conditions) {
+	public Instance createInstance(JsonObject object, ConditionArrayParser conditions) {
 		return new Instance(this.id);
 	}
 
@@ -72,12 +74,12 @@ public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instan
 		}
 
 		@Override
-		public ResourceLocation getId() {
+		public ResourceLocation getCriterion() {
 			return this.id;
 		}
 
 		@Override
-		public JsonObject serialize(ConditionArraySerializer conditions) {
+		public JsonObject serializeToJson(ConditionArraySerializer conditions) {
 			return new JsonObject();
 		}
 	}
@@ -105,7 +107,7 @@ public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instan
 		public void trigger() {
 			List<Listener<Instance>> listenerList = new ArrayList<>(this.listeners);
 			for (Listener<Instance> instanceListener : listenerList) {
-				instanceListener.grantCriterion(this.advancements);
+				instanceListener.run(this.advancements);
 			}
 		}
 	}

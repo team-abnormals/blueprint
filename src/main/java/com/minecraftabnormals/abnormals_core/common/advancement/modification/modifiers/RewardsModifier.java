@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
+
 /**
  * An {@link AdvancementModifier} extension that modifies the rewards of an advancement.
  *
@@ -23,16 +25,16 @@ public final class RewardsModifier extends AdvancementModifier<RewardsModifier.C
 		super(((element, conditionArrayParser) -> {
 			JsonObject object = element.getAsJsonObject();
 			Mode mode = Mode.deserialize(object);
-			Optional<Integer> experience = JSONUtils.hasField(object, "experience") ? Optional.of(JSONUtils.getInt(object, "experience")) : Optional.empty();
+			Optional<Integer> experience = JSONUtils.isValidNode(object, "experience") ? Optional.of(JSONUtils.getAsInt(object, "experience")) : Optional.empty();
 			Optional<List<ResourceLocation>> loot = deserializeResourceList(object, "loot");
 			Optional<List<ResourceLocation>> recipes = deserializeResourceList(object, "recipes");
-			Optional<ResourceLocation> function = JSONUtils.hasField(object, "function") ? Optional.of(new ResourceLocation(JSONUtils.getString(object, "function"))) : Optional.empty();
+			Optional<ResourceLocation> function = JSONUtils.isValidNode(object, "function") ? Optional.of(new ResourceLocation(JSONUtils.getAsString(object, "function"))) : Optional.empty();
 			return new Config(mode, experience, loot, recipes, function);
 		}));
 	}
 
 	private static Optional<List<ResourceLocation>> deserializeResourceList(JsonObject object, String key) {
-		if (JSONUtils.hasField(object, key)) {
+		if (JSONUtils.isValidNode(object, key)) {
 			List<ResourceLocation> resourceLocations = Lists.newArrayList();
 			object.getAsJsonArray(key).forEach(element -> resourceLocations.add(new ResourceLocation(element.getAsString())));
 			return Optional.of(resourceLocations);
@@ -56,7 +58,7 @@ public final class RewardsModifier extends AdvancementModifier<RewardsModifier.C
 			config.loot.ifPresent(rewardsBuilder.loot::addAll);
 			config.recipes.ifPresent(rewardsBuilder.recipes::addAll);
 			config.function.ifPresent(function -> rewardsBuilder.function = function);
-			builder.withRewards(rewardsBuilder);
+			builder.rewards(rewardsBuilder);
 		} else {
 			AdvancementRewards.Builder rewardsBuilder = new AdvancementRewards.Builder();
 			config.experience.ifPresent(rewardsBuilder::addExperience);
@@ -69,7 +71,7 @@ public final class RewardsModifier extends AdvancementModifier<RewardsModifier.C
 				rewardsBuilder.recipes.addAll(recipes);
 			});
 			config.function.ifPresent(function -> rewardsBuilder.function = function);
-			builder.withRewards(rewardsBuilder);
+			builder.rewards(rewardsBuilder);
 		}
 	}
 

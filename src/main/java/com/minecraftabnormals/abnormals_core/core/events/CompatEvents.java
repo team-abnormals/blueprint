@@ -37,17 +37,17 @@ public final class CompatEvents {
 			PlayerEntity player = event.getPlayer();
 			CompoundNBT persistentData = target.getPersistentData();
 			if (((IAgeableEntity) target).canAge(true) && !persistentData.getBoolean(POISON_TAG)) {
-				if (target.world.rand.nextDouble() < ACConfig.ValuesHolder.poisonEffectChance()) {
-					target.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.5f, 0.25f);
+				if (target.level.random.nextDouble() < ACConfig.ValuesHolder.poisonEffectChance()) {
+					target.playSound(SoundEvents.GENERIC_EAT, 0.5f, 0.25f);
 					persistentData.putBoolean(POISON_TAG, true);
 					if (ACConfig.ValuesHolder.shouldPoisonEntity()) {
-						((LivingEntity) target).addPotionEffect(new EffectInstance(Effects.POISON, 200));
+						((LivingEntity) target).addEffect(new EffectInstance(Effects.POISON, 200));
 					}
 				} else {
-					target.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.5f, 0.5f + target.world.rand.nextFloat() / 2);
+					target.playSound(SoundEvents.GENERIC_EAT, 0.5f, 0.5f + target.level.random.nextFloat() / 2);
 				}
 				if (!player.isCreative()) stack.shrink(1);
-				event.setCancellationResult(ActionResultType.func_233537_a_(event.getWorld().isRemote()));
+				event.setCancellationResult(ActionResultType.sidedSuccess(event.getWorld().isClientSide()));
 				event.setCanceled(true);
 			}
 		}

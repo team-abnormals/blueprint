@@ -85,15 +85,15 @@ public final class ACTest {
 			BiomeUtil.addOceanBiome(BiomeUtil.OceanType.WARM, TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_WARM_OCEAN, 20);
 			BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
 			BiomeUtil.addNetherBiome(new Biome.Attributes(0.0F, 0.1F, 0.0F, 0.0F, 0.25F), TestBiomes.TEST_NETHER.getKey());
-			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::canAnimalSpawn);
+			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::checkAnimalSpawnRules);
 		});
 
 		BiomeModificationManager instance = BiomeModificationManager.INSTANCE;
-		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.PLAINS), GenerationStage.Decoration.VEGETAL_DECORATION, () -> Features.BIRCH.withPlacement(Placement.DARK_OAK_TREE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG))));
+		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.PLAINS), GenerationStage.Decoration.VEGETAL_DECORATION, () -> Features.BIRCH.decorated(Placement.DARK_OAK_TREE.configured(IPlacementConfig.NONE))));
 		instance.addModifier(BiomeSpawnsModifier.createSpawnAdder(BiomeModificationPredicates.forBiomeKey(Biomes.SAVANNA), EntityClassification.CREATURE, TestEntities.COW::get, 12, 10, 20));
 		instance.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), Sets.newHashSet(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> Features.END_ISLAND));
 		instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStage.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
-		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.ICE_SPIKES), GenerationStage.Decoration.UNDERGROUND_DECORATION, () -> TestFeatures.TEST_SPLINE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).chance(3)));
+		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.ICE_SPIKES), GenerationStage.Decoration.UNDERGROUND_DECORATION, () -> TestFeatures.TEST_SPLINE.get().configured(IFeatureConfig.NONE).decorated(Features.Placements.HEIGHTMAP_SQUARE).chance(3)));
 
 		BiomeUtil.addEndBiome(Biomes.ICE_SPIKES, 7);
 		this.registerLootInjectors();
@@ -109,6 +109,6 @@ public final class ACTest {
 
 	private void registerLootInjectors() {
 		LootInjectionRegistry.LootInjector injector = new LootInjectionRegistry.LootInjector(MOD_ID);
-		injector.addLootInjection(injector.buildLootPool("test", 1, 0), LootTables.CHESTS_NETHER_BRIDGE, LootTables.CHESTS_JUNGLE_TEMPLE);
+		injector.addLootInjection(injector.buildLootPool("test", 1, 0), LootTables.NETHER_BRIDGE, LootTables.JUNGLE_TEMPLE);
 	}
 }

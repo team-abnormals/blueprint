@@ -45,7 +45,7 @@ public class ContainsPredicate implements IConfigPredicate {
 
         @Override
         public ContainsPredicate read(JsonObject json) {
-            if (!json.has("value") && !JSONUtils.isString(json, "value"))
+            if (!json.has("value") && !JSONUtils.isStringValue(json, "value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a string");
             return new ContainsPredicate(json.get("value").getAsString());
         }

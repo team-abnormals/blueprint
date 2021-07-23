@@ -7,6 +7,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class ThatchStairsBlock extends StairsBlock {
 	@SuppressWarnings("deprecation")
 	public ThatchStairsBlock(BlockState state, Properties properties) {
@@ -15,7 +17,7 @@ public class ThatchStairsBlock extends StairsBlock {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+	public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		return 1.0F;
 	}
 

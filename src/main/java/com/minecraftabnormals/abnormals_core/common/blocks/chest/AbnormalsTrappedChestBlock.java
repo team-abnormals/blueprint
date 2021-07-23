@@ -16,6 +16,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBlock {
 	public final String type;
 
@@ -30,7 +32,7 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(IBlockReader worldIn) {
+	public TileEntity newBlockEntity(IBlockReader worldIn) {
 		return new AbnormalsTrappedChestTileEntity();
 	}
 
@@ -40,22 +42,22 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	}
 
 	@Override
-	protected Stat<ResourceLocation> getOpenStat() {
+	protected Stat<ResourceLocation> getOpenChestStat() {
 		return Stats.CUSTOM.get(Stats.TRIGGER_TRAPPED_CHEST);
 	}
 
 	@Override
-	public boolean canProvidePower(BlockState p_149744_1_) {
+	public boolean isSignalSource(BlockState p_149744_1_) {
 		return true;
 	}
 
 	@Override
-	public int getWeakPower(BlockState p_180656_1_, IBlockReader p_180656_2_, BlockPos p_180656_3_, Direction p_180656_4_) {
-		return MathHelper.clamp(ChestTileEntity.getPlayersUsing(p_180656_2_, p_180656_3_), 0, 15);
+	public int getSignal(BlockState p_180656_1_, IBlockReader p_180656_2_, BlockPos p_180656_3_, Direction p_180656_4_) {
+		return MathHelper.clamp(ChestTileEntity.getOpenCount(p_180656_2_, p_180656_3_), 0, 15);
 	}
 
 	@Override
-	public int getStrongPower(BlockState p_176211_1_, IBlockReader p_176211_2_, BlockPos p_176211_3_, Direction p_176211_4_) {
-		return p_176211_4_ == Direction.UP ? p_176211_1_.getWeakPower(p_176211_2_, p_176211_3_, p_176211_4_) : 0;
+	public int getDirectSignal(BlockState p_176211_1_, IBlockReader p_176211_2_, BlockPos p_176211_3_, Direction p_176211_4_) {
+		return p_176211_4_ == Direction.UP ? p_176211_1_.getSignal(p_176211_2_, p_176211_3_, p_176211_4_) : 0;
 	}
 }

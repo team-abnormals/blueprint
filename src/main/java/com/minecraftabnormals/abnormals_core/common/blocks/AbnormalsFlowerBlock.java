@@ -11,6 +11,8 @@ import net.minecraft.util.NonNullList;
 
 import java.util.function.Supplier;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class AbnormalsFlowerBlock extends FlowerBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WITHER_ROSE);
 	private final Supplier<Effect> stewEffect;
@@ -23,17 +25,17 @@ public class AbnormalsFlowerBlock extends FlowerBlock {
 	}
 
 	@Override
-	public Effect getStewEffect() {
+	public Effect getSuspiciousStewEffect() {
 		return this.stewEffect.get();
 	}
 
 	@Override
-	public int getStewEffectDuration() {
-		return this.getStewEffect().isInstant() ? this.stewEffectDuration : this.stewEffectDuration * 20;
+	public int getEffectDuration() {
+		return this.getSuspiciousStewEffect().isInstantenous() ? this.stewEffectDuration : this.stewEffectDuration * 20;
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this.asItem(), group, items);
 	}
 }

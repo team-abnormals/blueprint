@@ -85,7 +85,7 @@ public class ItemStackBuilder {
 	 * @return This builder.
 	 */
 	public ItemStackBuilder addEnchantment(Enchantment enchantment, int level) {
-		this.stack.addEnchantment(enchantment, level);
+		this.stack.enchant(enchantment, level);
 		return this;
 	}
 
@@ -97,7 +97,7 @@ public class ItemStackBuilder {
 	 * @see ItemStack#setDisplayName(ITextComponent).
 	 */
 	public ItemStackBuilder setName(@Nullable ITextComponent text) {
-		this.stack.setDisplayName(text);
+		this.stack.setHoverName(text);
 		return this;
 	}
 
@@ -108,7 +108,7 @@ public class ItemStackBuilder {
 	 * @return This builder.
 	 */
 	public ItemStackBuilder addLore(ITextComponent text) {
-		CompoundNBT display = this.stack.getOrCreateChildTag("display");
+		CompoundNBT display = this.stack.getOrCreateTagElement("display");
 		ListNBT loreListTag;
 		if (display.contains("Lore", 9)) {
 			loreListTag = display.getList("Lore", 8);

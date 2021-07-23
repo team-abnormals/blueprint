@@ -17,7 +17,7 @@ import net.minecraftforge.event.LootTableLoadEvent;
  */
 public final class LootModifiers {
 	public static final ModifierRegistry<LootTableLoadEvent, Gson, Pair<Gson, LootPredicateManager>> REGISTRY = new ModifierRegistry<>();
-	private static final Gson GSON = LootSerializers.func_237388_c_().setPrettyPrinting().disableHtmlEscaping().create();
+	private static final Gson GSON = LootSerializers.createLootTableSerializer().setPrettyPrinting().disableHtmlEscaping().create();
 
 	public static final LootPoolEntriesModifier ENTRIES_MODIFIER = REGISTRY.register("entries", new LootPoolEntriesModifier());
 	public static final LootPoolsModifier POOLS_MODIFIER = REGISTRY.register("pools", new LootPoolsModifier());

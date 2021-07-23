@@ -42,7 +42,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		this.setScale(1.0F, 1.0F, 1.0F);
 		model.addBoxToSavedBoxes(this);
 		model.accept(this);
-		this.setTextureSize(model.textureWidth, model.textureHeight);
+		this.setTexSize(model.texWidth, model.texHeight);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	 * @param textureOffsetY - Y offset on the texture
 	 */
 	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> model, int textureOffsetX, int textureOffsetY) {
-		this(model.textureWidth, model.textureHeight, textureOffsetX, textureOffsetY);
+		this(model.texWidth, model.texHeight, textureOffsetX, textureOffsetY);
 		model.addBoxToSavedBoxes(this);
 		model.accept(this);
 	}
@@ -84,14 +84,14 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	 * Performs the same function as vanilla's setTextureOffset
 	 */
 	@Override
-	public EndimatorModelRenderer setTextureOffset(int x, int y) {
+	public EndimatorModelRenderer texOffs(int x, int y) {
 		this.textureOffsetX = x;
 		this.textureOffsetY = y;
 		return this;
 	}
 	
 	@Override
-	public EndimatorModelRenderer setTextureSize(int textureWidthIn, int textureHeightIn) {
+	public EndimatorModelRenderer setTexSize(int textureWidthIn, int textureHeightIn) {
 		this.textureWidth = (float)textureWidthIn;
 		this.textureHeight = (float)textureHeightIn;
 		return this;
@@ -99,7 +99,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	
 	@Override
 	public EndimatorModelRenderer addBox(String partName, float x, float y, float z, int width, int height, int depth, float delta, int texX, int texY) {
-		this.setTextureOffset(texX, texY);
+		this.texOffs(texX, texY);
 		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, (float)width, (float)height, (float)depth, delta, delta, delta, this.mirror, false);
 		return this;
 	}
@@ -135,17 +135,17 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	 * Should be called after all the boxes in an entity model have been initialized
 	 */
 	public void setDefaultBoxValues() {
-		this.defaultRotationPointX = this.rotationPointX;
-		this.defaultRotationPointY = this.rotationPointY;
-		this.defaultRotationPointZ = this.rotationPointZ;
+		this.defaultRotationPointX = this.x;
+		this.defaultRotationPointY = this.y;
+		this.defaultRotationPointZ = this.z;
 		
 		this.defaultOffsetX = this.offsetX;
 		this.defaultOffsetY = this.offsetY;
 		this.defaultOffsetZ = this.offsetZ;
 		
-		this.defaultRotateAngleX = this.rotateAngleX;
-		this.defaultRotateAngleY = this.rotateAngleY;
-		this.defaultRotateAngleZ = this.rotateAngleZ;
+		this.defaultRotateAngleX = this.xRot;
+		this.defaultRotateAngleY = this.yRot;
+		this.defaultRotateAngleZ = this.zRot;
 		
 		this.defaultScaleX = this.scaleX;
 		this.defaultScaleY = this.scaleY;
@@ -158,17 +158,17 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	 * Should be called before applying further rotations and/or animations.
 	 */
 	public void revertToDefaultBoxValues() {
-		this.rotationPointX = this.defaultRotationPointX;
-		this.rotationPointY = this.defaultRotationPointY;
-		this.rotationPointZ = this.defaultRotationPointZ;
+		this.x = this.defaultRotationPointX;
+		this.y = this.defaultRotationPointY;
+		this.z = this.defaultRotationPointZ;
 		
 		this.offsetX = this.defaultOffsetX;
 		this.offsetY = this.defaultOffsetY;
 		this.offsetZ = this.defaultOffsetZ;
 		
-		this.rotateAngleX = this.defaultRotateAngleX;
-		this.rotateAngleY = this.defaultRotateAngleY;
-		this.rotateAngleZ = this.defaultRotateAngleZ;
+		this.xRot = this.defaultRotateAngleX;
+		this.yRot = this.defaultRotateAngleY;
+		this.zRot = this.defaultRotateAngleZ;
 		
 		this.scaleX = this.defaultScaleX;
 		this.scaleY = this.defaultScaleY;
@@ -209,7 +209,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	}
 	
 	public void applyScaling(EndimatorModelRenderer modelRenderer) {
-		this.setScale(modelRenderer.rotationPointX, modelRenderer.rotationPointY, modelRenderer.rotationPointZ);
+		this.setScale(modelRenderer.x, modelRenderer.y, modelRenderer.z);
 	}
 	
 	public void setShouldScaleChildren(boolean scaleChildren) {
@@ -230,55 +230,55 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	
 	@Override
 	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		if (this.showModel) {
+		if (this.visible) {
 			if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
-				matrixStackIn.push();
-				this.translateRotate(matrixStackIn);
+				matrixStackIn.pushPose();
+				this.translateAndRotate(matrixStackIn);
 				
 				if (this.scaleChildren) {
 					matrixStackIn.translate(this.offsetX, this.offsetY, this.offsetZ);
 					matrixStackIn.scale(this.scaleX, this.scaleY, this.scaleZ);
-					this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+					this.doRender(matrixStackIn.last(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 					
 					for (EndimatorModelRenderer modelrenderer : this.childModels) {
 						modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 					}
 				} else {
-					matrixStackIn.push();
+					matrixStackIn.pushPose();
 					matrixStackIn.translate(this.offsetX, this.offsetY, this.offsetZ);
 					matrixStackIn.scale(this.scaleX, this.scaleY, this.scaleZ);
-					this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-					matrixStackIn.pop();
+					this.doRender(matrixStackIn.last(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+					matrixStackIn.popPose();
 					
 					for (EndimatorModelRenderer modelrenderer : this.childModels) {
 						modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 					}
 				}
-				matrixStackIn.pop();
+				matrixStackIn.popPose();
 			}
 		}
 	}
 	
 	private void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		Matrix4f matrix4f = matrixEntryIn.getMatrix();
-		Matrix3f matrix3f = matrixEntryIn.getNormal();
+		Matrix4f matrix4f = matrixEntryIn.pose();
+		Matrix3f matrix3f = matrixEntryIn.normal();
 
 		for (ModelBox modelrenderer$modelbox : this.cubeList) {
 			for (TexturedQuad modelrenderer$texturedquad : modelrenderer$modelbox.quads) {
 				Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
 				vector3f.transform(matrix3f);
-				float f = vector3f.getX();
-				float f1 = vector3f.getY();
-				float f2 = vector3f.getZ();
+				float f = vector3f.x();
+				float f1 = vector3f.y();
+				float f2 = vector3f.z();
 
 				for (int i = 0; i < 4; ++i) {
 					PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
-					float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
-					float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
-					float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
+					float f3 = modelrenderer$positiontexturevertex.position.x() / 16.0F;
+					float f4 = modelrenderer$positiontexturevertex.position.y() / 16.0F;
+					float f5 = modelrenderer$positiontexturevertex.position.z() / 16.0F;
 					Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
 					vector4f.transform(matrix4f);
-					bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+					bufferIn.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
 				}
 			}
 		}
@@ -384,7 +384,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	            }
 			}
 
-			this.normal = directionIn.toVector3f();
+			this.normal = directionIn.step();
 			if (mirrorIn) {
 				this.normal.mul(-1.0F, 1.0F, 1.0F);
 			}

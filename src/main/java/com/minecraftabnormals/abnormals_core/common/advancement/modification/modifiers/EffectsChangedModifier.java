@@ -20,15 +20,15 @@ import java.util.Map;
  * @author SmellyModder (Luke Tonon)
  */
 public final class EffectsChangedModifier extends AdvancementModifier<EffectsChangedModifier.Config> {
-	private static final Field INSTANCE_EFFECTS_FIELD = ObfuscationReflectionHelper.findField(EffectsChangedTrigger.Instance.class, "field_193196_a");
-	private static final Field PREDICATE_EFFECTS_FIELD = ObfuscationReflectionHelper.findField(MobEffectsPredicate.class, "field_193474_b");
+	private static final Field INSTANCE_EFFECTS_FIELD = ObfuscationReflectionHelper.findField(EffectsChangedTrigger.Instance.class, "effects");
+	private static final Field PREDICATE_EFFECTS_FIELD = ObfuscationReflectionHelper.findField(MobEffectsPredicate.class, "effects");
 
 	public EffectsChangedModifier() {
 		super((element, conditionArrayParser) -> {
 			JsonObject object = element.getAsJsonObject();
-			String criteria = JSONUtils.getString(object, "criteria");
-			boolean removes = JSONUtils.getBoolean(object, "removes");
-			MobEffectsPredicate effectsPredicate = MobEffectsPredicate.deserialize(object.get("effects"));
+			String criteria = JSONUtils.getAsString(object, "criteria");
+			boolean removes = JSONUtils.getAsBoolean(object, "removes");
+			MobEffectsPredicate effectsPredicate = MobEffectsPredicate.fromJson(object.get("effects"));
 			return new Config(criteria, removes, effectsPredicate);
 		});
 	}
@@ -39,7 +39,7 @@ public final class EffectsChangedModifier extends AdvancementModifier<EffectsCha
 		String criteriaKey = config.criteria;
 		Criterion criterion = builder.getCriteria().get(criteriaKey);
 		if (criterion != null) {
-			ICriterionInstance instance = criterion.getCriterionInstance();
+			ICriterionInstance instance = criterion.getTrigger();
 			if (instance instanceof EffectsChangedTrigger.Instance) {
 				try {
 					Map<Effect, MobEffectsPredicate.InstancePredicate> effectMap = (Map<Effect, MobEffectsPredicate.InstancePredicate>) PREDICATE_EFFECTS_FIELD.get(INSTANCE_EFFECTS_FIELD.get(instance));

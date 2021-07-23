@@ -7,6 +7,8 @@ import net.minecraft.nbt.CompoundNBT;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
+import net.minecraft.item.Item.Properties;
+
 /**
  * @author SmellyModder(Luke Tonon)
  */
@@ -25,7 +27,7 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 		if (compound != null && compound.contains(ENTITY_TAG, 10)) {
 			CompoundNBT entityTag = compound.getCompound(ENTITY_TAG);
 			if (entityTag.contains(ENTITY_ID_TAG, 8)) {
-				return EntityType.byKey(entityTag.getString(ENTITY_ID_TAG)).orElse(this.entityType.get());
+				return EntityType.byString(entityTag.getString(ENTITY_ID_TAG)).orElse(this.entityType.get());
 			}
 		}
 		return this.entityType.get();

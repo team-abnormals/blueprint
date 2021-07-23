@@ -34,14 +34,14 @@ public class MobBucketItem extends BucketItem {
 		this.entityType = entityType;
 	}
 
-	public void onLiquidPlaced(World world, ItemStack stack, BlockPos pos) {
-		if (!world.isRemote) {
+	public void checkExtraContent(World world, ItemStack stack, BlockPos pos) {
+		if (!world.isClientSide) {
 			this.placeEntity((ServerWorld) world, stack, pos);
 		}
 	}
 
 	protected void playEmptySound(@Nullable PlayerEntity player, IWorld worldIn, BlockPos pos) {
-		worldIn.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY_FISH, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+		worldIn.playSound(player, pos, SoundEvents.BUCKET_EMPTY_FISH, SoundCategory.NEUTRAL, 1.0F, 1.0F);
 	}
 
 	protected void placeEntity(ServerWorld world, ItemStack stack, BlockPos pos) {
@@ -52,7 +52,7 @@ public class MobBucketItem extends BucketItem {
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this, group, items);
 	}
 }

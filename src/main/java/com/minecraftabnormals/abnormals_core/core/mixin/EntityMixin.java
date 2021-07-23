@@ -27,10 +27,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 import java.util.Set;
 
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager.DataEntry;
+
 @Mixin(Entity.class)
 public final class EntityMixin implements IDataManager {
 	@Shadow
-	private World world;
+	private World level;
 
 	private Map<TrackedData<?>, DataEntry<?>> dataMap = Maps.newHashMap();
 	private boolean dirty = false;
@@ -40,7 +42,7 @@ public final class EntityMixin implements IDataManager {
 	public <T> void setValue(TrackedData<T> trackedData, T value) {
 		DataEntry<T> entry = (DataEntry<T>) this.dataMap.computeIfAbsent(trackedData, DataEntry::new);
 		if (!entry.getValue().equals(value)) {
-			boolean dirty = !this.world.isRemote && entry.getTrackedData().getSyncType() != SyncType.NOPE;
+			boolean dirty = !this.level.isClientSide && entry.getTrackedData().getSyncType() != SyncType.NOPE;
 			entry.setValue(value, dirty);
 			this.dirty = dirty;
 		}
@@ -97,7 +99,7 @@ public final class EntityMixin implements IDataManager {
 		return dirtyEntries;
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", shift = At.Shift.BEFORE), method = "writeWithoutTypeId")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;addAdditionalSaveData(Lnet/minecraft/nbt/CompoundNBT;)V", shift = At.Shift.BEFORE), method = "saveWithoutId")
 	private void writeTrackedData(CompoundNBT compound, CallbackInfoReturnable<CompoundNBT> info) {
 		if (!this.dataMap.isEmpty()) {
 			ListNBT dataListTag = new ListNBT();
@@ -112,7 +114,7 @@ public final class EntityMixin implements IDataManager {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readAdditional(Lnet/minecraft/nbt/CompoundNBT;)V", shift = At.Shift.BEFORE), method = "read")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundNBT;)V", shift = At.Shift.BEFORE), method = "load")
 	public void read(CompoundNBT compound, CallbackInfo info) {
 		if (compound.contains("ACTrackedData", Constants.NBT.TAG_LIST)) {
 			ListNBT dataListTag = compound.getList("ACTrackedData", Constants.NBT.TAG_COMPOUND);
@@ -131,10 +133,10 @@ public final class EntityMixin implements IDataManager {
 		}
 	}
 
-	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onEntityWalk(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V"))
+	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;stepOn(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V"))
 	private void onEntityWalk(Block block, World world, BlockPos pos, Entity entity) {
 		if (!EntityWalkEvent.onEntityWalk(world, pos, entity)) {
-			block.onEntityWalk(world, pos, entity);
+			block.stepOn(world, pos, entity);
 		}
 	}
 }

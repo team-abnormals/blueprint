@@ -12,14 +12,14 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
 public class LeafCarpetBlock extends Block {
-	private static final VoxelShape SHAPE = makeCuboidShape(0, 0, 0, 16, 1, 16);
+	private static final VoxelShape SHAPE = box(0, 0, 0, 16, 1, 16);
 
 	public LeafCarpetBlock(Block.Properties properties) {
 		super(properties);
 	}
 
 	@Override
-	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+	public boolean canBeReplaced(BlockState state, BlockItemUseContext useContext) {
 		return true;
 	}
 

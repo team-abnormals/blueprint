@@ -97,7 +97,7 @@ public final class LootInjectionRegistry {
 		 * @see LootPool
 		 */
 		public LootPool buildLootPool(String name, int weight, int quality) {
-			return LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(this.modId, "injections/" + name)).weight(weight).quality(quality)).name(this.modId + name).build();
+			return LootPool.lootPool().add(TableLootEntry.lootTableReference(new ResourceLocation(this.modId, "injections/" + name)).setWeight(weight).setQuality(quality)).name(this.modId + name).build();
 		}
 	}
 }

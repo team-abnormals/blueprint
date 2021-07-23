@@ -14,15 +14,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public final class TrackedEntityMixin {
 	@Shadow
 	@Final
-	private Entity trackedEntity;
+	private Entity entity;
 
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;isAirBorne:Z", ordinal = 2, shift = At.Shift.AFTER), method = "tick")
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;hasImpulse:Z", ordinal = 2, shift = At.Shift.AFTER), method = "sendChanges")
 	private void update(CallbackInfo info) {
-		EntityTrackingEvent.onEntityTracking(this.trackedEntity, true);
+		EntityTrackingEvent.onEntityTracking(this.entity, true);
 	}
 
-	@Inject(at = @At("HEAD"), method = "tick")
+	@Inject(at = @At("HEAD"), method = "sendChanges")
 	private void tick(CallbackInfo info) {
-		EntityTrackingEvent.onEntityTracking(this.trackedEntity, false);
+		EntityTrackingEvent.onEntityTracking(this.entity, false);
 	}
 }

@@ -44,14 +44,14 @@ public class RandomDifficultyChanceCondition implements ILootCondition {
 	}
 
 	@Override
-	public LootConditionType func_230419_b_() {
-		return Registry.LOOT_CONDITION_TYPE.getOrDefault(ACLootConditions.RANDOM_DIFFICULTY_CHANCE);
+	public LootConditionType getType() {
+		return Registry.LOOT_CONDITION_TYPE.get(ACLootConditions.RANDOM_DIFFICULTY_CHANCE);
 	}
 
 	@Override
 	public boolean test(LootContext lootContext) {
 		float chance = this.defaultChance;
-		switch (lootContext.getWorld().getDifficulty()) {
+		switch (lootContext.getLevel().getDifficulty()) {
 			case PEACEFUL:
 				if (this.peacefulChance >= 0) chance = this.peacefulChance;
 				break;
@@ -84,13 +84,13 @@ public class RandomDifficultyChanceCondition implements ILootCondition {
 
 		public RandomDifficultyChanceCondition deserialize(JsonObject json, JsonDeserializationContext context) {
 			if (json.has("default_chance")) {
-				return new RandomDifficultyChanceCondition(JSONUtils.getFloat(json, "default_chance"), getFloatOrMinus1(json, "peaceful"), getFloatOrMinus1(json, "easy"), getFloatOrMinus1(json, "normal"), getFloatOrMinus1(json, "hard"));
+				return new RandomDifficultyChanceCondition(JSONUtils.getAsFloat(json, "default_chance"), getFloatOrMinus1(json, "peaceful"), getFloatOrMinus1(json, "easy"), getFloatOrMinus1(json, "normal"), getFloatOrMinus1(json, "hard"));
 			}
 			throw new JsonSyntaxException("Missing 'default_chance', expected to find a float");
 		}
 
 		private static float getFloatOrMinus1(JsonObject json, String fieldName) {
-			return json.has(fieldName) ? JSONUtils.getFloat(json, fieldName) : -1.0F;
+			return json.has(fieldName) ? JSONUtils.getAsFloat(json, fieldName) : -1.0F;
 		}
 
 	}

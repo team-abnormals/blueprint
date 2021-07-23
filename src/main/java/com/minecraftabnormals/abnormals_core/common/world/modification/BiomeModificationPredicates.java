@@ -67,7 +67,7 @@ public final class BiomeModificationPredicates {
 	 * @return A {@link BiPredicate} true for a certain {@link Biome.Category}.
 	 */
 	public static BiPredicate<RegistryKey<Biome>, Biome> forCategory(Biome.Category category) {
-		return (biomeRegistryKey, biome) -> biome.getCategory() == category;
+		return (biomeRegistryKey, biome) -> biome.getBiomeCategory() == category;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public final class BiomeModificationPredicates {
 	 * @return A {@link BiPredicate} true for a set of {@link Biome.Category}s.
 	 */
 	public static BiPredicate<RegistryKey<Biome>, Biome> forCategory(Biome.Category... categories) {
-		return (biomeRegistryKey, biome) -> Sets.newHashSet(categories).contains(biome.getCategory());
+		return (biomeRegistryKey, biome) -> Sets.newHashSet(categories).contains(biome.getBiomeCategory());
 	}
 
 	/**

@@ -54,7 +54,7 @@ public class GenerationPiece {
 	 */
 	public void place(IWorld world) {
 		for (BlockPart blocks : this.blockPieces) {
-			world.setBlockState(blocks.pos, blocks.state, 2);
+			world.setBlock(blocks.pos, blocks.state, 2);
 		}
 	}
 

@@ -26,20 +26,20 @@ import net.minecraftforge.fml.network.NetworkHooks;
  * @author SmellyModder (Luke Tonon)
  */
 public class AbnormalsBoatEntity extends BoatEntity {
-	private static final DataParameter<String> BOAT_TYPE = EntityDataManager.createKey(AbnormalsBoatEntity.class, DataSerializers.STRING);
+	private static final DataParameter<String> BOAT_TYPE = EntityDataManager.defineId(AbnormalsBoatEntity.class, DataSerializers.STRING);
 
 	public AbnormalsBoatEntity(EntityType<? extends BoatEntity> type, World world) {
 		super(type, world);
-		this.preventEntitySpawning = true;
+		this.blocksBuilding = true;
 	}
 
 	public AbnormalsBoatEntity(World worldIn, double x, double y, double z) {
 		this(ACEntities.BOAT.get(), worldIn);
-		this.setPosition(x, y, z);
-		this.setMotion(Vector3d.ZERO);
-		this.prevPosX = x;
-		this.prevPosY = y;
-		this.prevPosZ = z;
+		this.setPos(x, y, z);
+		this.setDeltaMovement(Vector3d.ZERO);
+		this.xo = x;
+		this.yo = y;
+		this.zo = z;
 	}
 
 	public AbnormalsBoatEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
@@ -47,18 +47,18 @@ public class AbnormalsBoatEntity extends BoatEntity {
 	}
 
 	@Override
-	protected void registerData() {
-		super.registerData();
-		this.dataManager.register(BOAT_TYPE, "minecraft:oak");
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(BOAT_TYPE, "minecraft:oak");
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundNBT compound) {
 		compound.putString("Type", BoatRegistry.getNameForData(this.getBoat()));
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundNBT compound) {
 		if (compound.contains("Type", Constants.NBT.TAG_STRING)) {
 			String type = compound.getString("Type");
 			BoatRegistry.BoatData data = BoatRegistry.getDataForBoat(type);
@@ -70,8 +70,8 @@ public class AbnormalsBoatEntity extends BoatEntity {
 	}
 
 	@Override
-	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
-		this.lastYd = this.getMotion().y;
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+		this.lastYd = this.getDeltaMovement().y;
 		if (!this.isPassenger()) {
 			if (onGroundIn) {
 				if (this.fallDistance > 3.0F) {
@@ -80,43 +80,43 @@ public class AbnormalsBoatEntity extends BoatEntity {
 						return;
 					}
 
-					this.onLivingFall(this.fallDistance, 1.0F);
-					if (!this.world.isRemote && this.isAlive()) {
+					this.causeFallDamage(this.fallDistance, 1.0F);
+					if (!this.level.isClientSide && this.isAlive()) {
 						this.remove();
-						if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
+						if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
 							for (int i = 0; i < 3; ++i) {
-								this.entityDropItem(this.getBoat().getPlankItem());
+								this.spawnAtLocation(this.getBoat().getPlankItem());
 							}
 
 							for (int j = 0; j < 2; ++j) {
-								this.entityDropItem(Items.STICK);
+								this.spawnAtLocation(Items.STICK);
 							}
 						}
 					}
 				}
 
 				this.fallDistance = 0.0F;
-			} else if (!this.world.getFluidState((new BlockPos(this.getPositionVec())).down()).isTagged(FluidTags.WATER) && y < 0.0D) {
+			} else if (!this.level.getFluidState((new BlockPos(this.position())).below()).is(FluidTags.WATER) && y < 0.0D) {
 				this.fallDistance = (float) ((double) this.fallDistance - y);
 			}
 		}
 	}
 
 	@Override
-	public Item getItemBoat() {
+	public Item getDropItem() {
 		return this.getBoat().getBoatItem();
 	}
 
 	public void setBoat(String boat) {
-		this.dataManager.set(BOAT_TYPE, boat);
+		this.entityData.set(BOAT_TYPE, boat);
 	}
 
 	public BoatRegistry.BoatData getBoat() {
-		return BoatRegistry.getDataForBoat(this.dataManager.get(BOAT_TYPE));
+		return BoatRegistry.getDataForBoat(this.entityData.get(BOAT_TYPE));
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

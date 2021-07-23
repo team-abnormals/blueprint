@@ -36,7 +36,7 @@ public final class MessageS2CEndimation {
 
 	public static void handle(MessageS2CEndimation message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		IEndimatedEntity endimatedEntity = (IEndimatedEntity) ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
+		IEndimatedEntity endimatedEntity = (IEndimatedEntity) ClientInfo.getClientPlayerWorld().getEntity(message.entityId);
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				if (endimatedEntity != null) {

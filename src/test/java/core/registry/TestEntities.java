@@ -24,7 +24,7 @@ public final class TestEntities {
 
 	@SubscribeEvent
 	public static void registerAttributes(EntityAttributeCreationEvent event) {
-		event.put(TestEntities.ENDIMATED_TEST.get(), CreatureEntity.func_233666_p_().create());
-		event.put(TestEntities.COW.get(), CowEntity.func_234188_eI_().create());
+		event.put(TestEntities.ENDIMATED_TEST.get(), CreatureEntity.createMobAttributes().build());
+		event.put(TestEntities.COW.get(), CowEntity.createAttributes().build());
 	}
 }

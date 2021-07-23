@@ -300,30 +300,30 @@ public final class Endimator<E extends Entity & IEndimatedEntity> {
 		}
 
 		public void addValuesToBox(EndimatorModelRenderer modelRenderer) {
-			modelRenderer.rotationPointX += this.posX;
-			modelRenderer.rotationPointY += this.posY;
-			modelRenderer.rotationPointZ += this.posZ;
+			modelRenderer.x += this.posX;
+			modelRenderer.y += this.posY;
+			modelRenderer.z += this.posZ;
 			modelRenderer.offsetX += this.offsetX;
 			modelRenderer.offsetY += this.offsetY;
 			modelRenderer.offsetZ += this.offsetZ;
-			modelRenderer.rotateAngleX += this.angleX;
-			modelRenderer.rotateAngleY += this.angleY;
-			modelRenderer.rotateAngleZ += this.angleZ;
+			modelRenderer.xRot += this.angleX;
+			modelRenderer.yRot += this.angleY;
+			modelRenderer.zRot += this.angleZ;
 			modelRenderer.scaleX += this.scaleX;
 			modelRenderer.scaleY += this.scaleY;
 			modelRenderer.scaleZ += this.scaleZ;
 		}
 
 		public void addValuesToBoxWithMultiplier(EndimatorModelRenderer modelRenderer, float multiplier) {
-			modelRenderer.rotationPointX += multiplier * this.posX;
-			modelRenderer.rotationPointY += multiplier * this.posY;
-			modelRenderer.rotationPointZ += multiplier * this.posZ;
+			modelRenderer.x += multiplier * this.posX;
+			modelRenderer.y += multiplier * this.posY;
+			modelRenderer.z += multiplier * this.posZ;
 			modelRenderer.offsetX += multiplier * this.offsetX;
 			modelRenderer.offsetY += multiplier * this.offsetY;
 			modelRenderer.offsetZ += multiplier * this.offsetZ;
-			modelRenderer.rotateAngleX += multiplier * this.angleX;
-			modelRenderer.rotateAngleY += multiplier * this.angleY;
-			modelRenderer.rotateAngleZ += multiplier * this.angleZ;
+			modelRenderer.xRot += multiplier * this.angleX;
+			modelRenderer.yRot += multiplier * this.angleY;
+			modelRenderer.zRot += multiplier * this.angleZ;
 			modelRenderer.scaleX += multiplier * this.scaleX;
 			modelRenderer.scaleY += multiplier * this.scaleY;
 			modelRenderer.scaleZ += multiplier * this.scaleZ;

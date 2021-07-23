@@ -13,12 +13,12 @@ import net.minecraft.world.World;
 
 public final class FishBucketDispenseBehavior extends DefaultDispenseItemBehavior {
 	@Override
-	public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+	public ItemStack execute(IBlockSource source, ItemStack stack) {
 		BucketItem bucketitem = (BucketItem) stack.getItem();
-		BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
-		World world = source.getWorld();
-		if (bucketitem.tryPlaceContainedLiquid((PlayerEntity) null, world, blockpos, (BlockRayTraceResult) null)) {
-			bucketitem.onLiquidPlaced(world, stack, blockpos);
+		BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
+		World world = source.getLevel();
+		if (bucketitem.emptyBucket((PlayerEntity) null, world, blockpos, (BlockRayTraceResult) null)) {
+			bucketitem.checkExtraContent(world, stack, blockpos);
 			return new ItemStack(Items.BUCKET);
 		} else {
 			return new DefaultDispenseItemBehavior().dispense(source, stack);

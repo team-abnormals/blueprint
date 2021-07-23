@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class WoodTrapDoorBlock extends TrapDoorBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_TRAPDOOR);
 
@@ -15,7 +17,7 @@ public class WoodTrapDoorBlock extends TrapDoorBlock {
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this.asItem(), group, items);
 	}
 }

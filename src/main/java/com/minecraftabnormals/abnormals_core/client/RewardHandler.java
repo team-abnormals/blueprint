@@ -59,12 +59,12 @@ public final class RewardHandler {
 	private static RewardProperties rewardProperties;
 
 	public static void clientSetup(FMLClientSetupEvent event) {
-		OnlineRequest.request(REWARDS_URL, Util.getServerExecutor()).thenAcceptAsync(stream -> {
+		OnlineRequest.request(REWARDS_URL, Util.backgroundExecutor()).thenAcceptAsync(stream -> {
 			if (stream == null)
 				return;
 
 			try (InputStreamReader reader = new InputStreamReader(stream)) {
-				JsonObject object = JSONUtils.fromJson(reader);
+				JsonObject object = JSONUtils.parse(reader);
 				for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
 					if (entry.getKey().equals("properties")) {
 						rewardProperties = GSON.fromJson(entry.getValue(), RewardProperties.class);
@@ -77,7 +77,7 @@ public final class RewardHandler {
 			}
 		}, Minecraft.getInstance());
 
-		for (PlayerRenderer renderer : Minecraft.getInstance().getRenderManager().getSkinMap().values())
+		for (PlayerRenderer renderer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values())
 			renderer.addLayer(new SlabfishHatLayerRenderer(renderer, new SlabfishHatModel()));
 	}
 
@@ -89,12 +89,12 @@ public final class RewardHandler {
 	@SubscribeEvent
 	public static void onEvent(RenderPlayerEvent.Post event) {
 		PlayerEntity player = event.getPlayer();
-		UUID uuid = PlayerEntity.getUUID(player.getGameProfile());
+		UUID uuid = PlayerEntity.createPlayerUUID(player.getGameProfile());
 
 		if (REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
 			AbstractClientPlayerEntity clientPlayer = (AbstractClientPlayerEntity) player;
-			if (clientPlayer.hasPlayerInfo() && clientPlayer.getLocationCape() == null) {
-				Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = clientPlayer.playerInfo.playerTextures;
+			if (clientPlayer.isCapeLoaded() && clientPlayer.getCloakTextureLocation() == null) {
+				Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = clientPlayer.playerInfo.textureLocations;
 				playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
 				playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
 			}

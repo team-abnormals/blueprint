@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public final class ShoreLayerMixin {
     @Inject(method = "apply", at = @At("HEAD"), cancellable = true)
     private void apply(INoiseRandom context, int north, int west, int south, int east, int center, CallbackInfoReturnable<Integer> cir) {
-        RegistryKey<Biome> biome = BiomeUtil.getEdgeBiome(BiomeRegistry.getKeyFromID(center), context, BiomeRegistry.getKeyFromID(north), BiomeRegistry.getKeyFromID(west), BiomeRegistry.getKeyFromID(south), BiomeRegistry.getKeyFromID(east));
+        RegistryKey<Biome> biome = BiomeUtil.getEdgeBiome(BiomeRegistry.byId(center), context, BiomeRegistry.byId(north), BiomeRegistry.byId(west), BiomeRegistry.byId(south), BiomeRegistry.byId(east));
         
         if (biome != null) {
             cir.setReturnValue(BiomeUtil.getId(biome));

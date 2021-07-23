@@ -15,5 +15,5 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class TestFeatures {
 	public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, ACTest.MOD_ID);
 
-	public static final RegistryObject<Feature<NoFeatureConfig>> TEST_SPLINE = FEATURES.register("spline", () -> new TestSplineFeature(NoFeatureConfig.field_236558_a_));
+	public static final RegistryObject<Feature<NoFeatureConfig>> TEST_SPLINE = FEATURES.register("spline", () -> new TestSplineFeature(NoFeatureConfig.CODEC));
 }

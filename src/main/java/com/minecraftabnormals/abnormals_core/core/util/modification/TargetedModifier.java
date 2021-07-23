@@ -66,13 +66,13 @@ public final class TargetedModifier<T, S, D> {
 	 * @throws JsonParseException If an error occurs when parsing the {@link JsonObject}.
 	 */
 	public static <T, S, D> TargetedModifier<T, S, D> deserialize(JsonObject object, String targetKey, D additional, ModifierRegistry<T, S, D> registry, boolean logSkipping) throws JsonParseException {
-		ResourceLocation target = new ResourceLocation(JSONUtils.getString(object, targetKey));
+		ResourceLocation target = new ResourceLocation(JSONUtils.getAsString(object, targetKey));
 		List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers = new ArrayList<>();
-		JsonArray modifiers = JSONUtils.getJsonArray(object, "modifiers");
+		JsonArray modifiers = JSONUtils.getAsJsonArray(object, "modifiers");
 		modifiers.forEach(element -> {
 			JsonObject entry = element.getAsJsonObject();
-			String type = JSONUtils.getString(entry, "type");
-			if (!JSONUtils.hasField(entry, "conditions") || CraftingHelper.processConditions(JSONUtils.getJsonArray(entry, "conditions"))) {
+			String type = JSONUtils.getAsString(entry, "type");
+			if (!JSONUtils.isValidNode(entry, "conditions") || CraftingHelper.processConditions(JSONUtils.getAsJsonArray(entry, "conditions"))) {
 				IModifier<T, ?, S, D> configuredModifier = registry.getModifier(type);
 				if (configuredModifier == null) {
 					throw new JsonParseException("Unknown modifier type: " + type);

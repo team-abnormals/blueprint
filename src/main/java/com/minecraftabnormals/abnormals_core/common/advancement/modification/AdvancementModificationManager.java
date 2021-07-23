@@ -58,18 +58,18 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 
 	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) throws NoSuchFieldException, IllegalAccessException {
-		INSTANCE = new AdvancementModificationManager(event.getDataPackRegistries().getLootPredicateManager());
+		INSTANCE = new AdvancementModificationManager(event.getDataPackRegistries().getPredicateManager());
 		//Advancement modifiers must load before advancements
 		Field field = AddReloadListenerEvent.class.getDeclaredField("dataPackRegistries");
 		field.setAccessible(true);
 		SimpleReloadableResourceManager reloadableResourceManager = (SimpleReloadableResourceManager) ((DataPackRegistries) field.get(event)).getResourceManager();
 
-		List<IFutureReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_199015_d");
+		List<IFutureReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "listeners");
 		if (reloadListeners != null) {
 			reloadListeners.add(4, INSTANCE);
 		}
 
-		List<IFutureReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_219539_d");
+		List<IFutureReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "recentlyRegistered");
 		if (initTaskQueue != null) {
 			initTaskQueue.add(4, INSTANCE);
 		}
@@ -88,13 +88,13 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 
 	private static TargetedAdvancementModifier deserializeModifiers(JsonElement jsonElement, ConditionArrayParser conditionArrayParser) throws JsonParseException {
 		JsonObject object = jsonElement.getAsJsonObject();
-		ResourceLocation advancement = new ResourceLocation(JSONUtils.getString(object, "advancement"));
+		ResourceLocation advancement = new ResourceLocation(JSONUtils.getAsString(object, "advancement"));
 		List<ConfiguredAdvancementModifier<?, ?>> advancementModifiers = Lists.newArrayList();
-		JsonArray modifiers = JSONUtils.getJsonArray(object, "modifiers");
+		JsonArray modifiers = JSONUtils.getAsJsonArray(object, "modifiers");
 		modifiers.forEach(element -> {
 			JsonObject entry = element.getAsJsonObject();
-			String type = JSONUtils.getString(entry, "type");
-			if (!JSONUtils.hasField(entry, "conditions") || CraftingHelper.processConditions(JSONUtils.getJsonArray(entry, "conditions"))) {
+			String type = JSONUtils.getAsString(entry, "type");
+			if (!JSONUtils.isValidNode(entry, "conditions") || CraftingHelper.processConditions(JSONUtils.getAsJsonArray(entry, "conditions"))) {
 				AdvancementModifier<?> modifier = AdvancementModifiers.getModifier(type);
 				if (modifier == null) {
 					throw new JsonParseException("Unknown Advancement Modifier type: " + type);

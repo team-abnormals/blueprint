@@ -33,7 +33,7 @@ import java.util.function.Supplier;
  * @see AbstractSubRegistryHelper
  */
 public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
-	private static final Field EGGS_FIELD = ObfuscationReflectionHelper.findField(SpawnEggItem.class, "field_195987_b");
+	private static final Field EGGS_FIELD = ObfuscationReflectionHelper.findField(SpawnEggItem.class, "BY_ID");
 	protected final Set<AbnormalsSpawnEggItem> spawnEggs = Sets.newHashSet();
 
 	public ItemSubRegistryHelper(RegistryHelper parent, DeferredRegister<Item> deferredRegister) {
@@ -65,7 +65,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @return A {@link RegistryObject} containing the {@link Item}
 	 */
 	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, ItemGroup group) {
-		return this.deferredRegister.register(name, () -> new Item(properties.group(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
+		return this.deferredRegister.register(name, () -> new Item(properties.tab(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @return A {@link RegistryObject} containing the {@link Item}
 	 */
 	public RegistryObject<Item> createCompatItem(String name, Item.Properties properties, ItemGroup group, String... modIds) {
-		return this.deferredRegister.register(name, () -> new Item(properties.group(areModsLoaded(modIds) ? group : null)));
+		return this.deferredRegister.register(name, () -> new Item(properties.tab(areModsLoaded(modIds) ? group : null)));
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @see AbnormalsSpawnEggItem
 	 */
 	public RegistryObject<AbnormalsSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<?>> supplier, int primaryColor, int secondaryColor) {
-		AbnormalsSpawnEggItem eggItem = new AbnormalsSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().group(ItemGroup.MISC));
+		AbnormalsSpawnEggItem eggItem = new AbnormalsSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(ItemGroup.TAB_MISC));
 		RegistryObject<AbnormalsSpawnEggItem> spawnEgg = this.deferredRegister.register(entityName + "_spawn_egg", () -> eggItem);
 		this.spawnEggs.add(eggItem);
 		return spawnEgg;
@@ -106,7 +106,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 */
 	public RegistryObject<Item> createBoatItem(String wood, RegistryObject<Block> block) {
 		String type = this.parent.getModId() + ":" + wood;
-		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new AbnormalsBoatItem(type, createSimpleItemProperty(1, ItemGroup.TRANSPORTATION)));
+		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new AbnormalsBoatItem(type, createSimpleItemProperty(1, ItemGroup.TAB_TRANSPORTATION)));
 		BoatRegistry.registerBoat(type, boat, block);
 		return boat;
 	}
@@ -121,7 +121,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @see WallOrFloorItem
 	 */
 	public static BlockItem createWallOrFloorItem(Block floorBlock, Block wallBlock, ItemGroup itemGroup) {
-		return new WallOrFloorItem(floorBlock, wallBlock, new Item.Properties().group(itemGroup));
+		return new WallOrFloorItem(floorBlock, wallBlock, new Item.Properties().tab(itemGroup));
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @see TallBlockItem
 	 */
 	public static BlockItem createTallBlockItem(Block blockForInput, ItemGroup itemGroup) {
-		return new TallBlockItem(blockForInput, new Item.Properties().group(itemGroup));
+		return new TallBlockItem(blockForInput, new Item.Properties().tab(itemGroup));
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @return The created {@link FuelItem}
 	 */
 	public static FuelItem createFuelItem(int burnTime, ItemGroup itemGroup) {
-		return new FuelItem(burnTime, new Item.Properties().group(itemGroup));
+		return new FuelItem(burnTime, new Item.Properties().tab(itemGroup));
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @return - The BlockItem
 	 */
 	public static BlockItem createSimpleBlockItem(Block blockForInput, @Nullable ItemGroup itemGroup) {
-		return new BlockItem(blockForInput, new Item.Properties().group(itemGroup));
+		return new BlockItem(blockForInput, new Item.Properties().tab(itemGroup));
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @return The simple {@link Item.Properties}
 	 */
 	public static Item.Properties createSimpleItemProperty(int stackSize, ItemGroup itemGroup) {
-		return new Item.Properties().group(itemGroup).maxStackSize(stackSize);
+		return new Item.Properties().tab(itemGroup).stacksTo(stackSize);
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 		if (!this.spawnEggs.isEmpty()) {
 			event.enqueueWork(() -> {
 				for (AbnormalsSpawnEggItem spawnEggItem : this.spawnEggs) {
-					DispenserBlock.registerDispenseBehavior(spawnEggItem, new SpawnEggDispenseBehavior());
+					DispenserBlock.registerBehavior(spawnEggItem, new SpawnEggDispenseBehavior());
 				}
 			});
 		}

@@ -100,7 +100,7 @@ public class BiomeSubRegistryHelper extends AbstractSubRegistryHelper<Biome> {
 		 * @see RegistryObject#get()
 		 */
 		public RegistryKey<Biome> getKey() {
-			return this.lazyKey.getValue();
+			return this.lazyKey.get();
 		}
 	}
 

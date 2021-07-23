@@ -251,7 +251,7 @@ public enum ITextComponentCodec implements Codec<ITextComponent> {
 		} else if (input instanceof TranslationTextComponent) {
 			TranslationTextComponent translationTextComponent = (TranslationTextComponent) input;
 			mapBuilder.add("translate", ops.createString(((TranslationTextComponent) input).getKey()));
-			Object[] formatArgs = translationTextComponent.getFormatArgs();
+			Object[] formatArgs = translationTextComponent.getArgs();
 			if (formatArgs != null && formatArgs.length > 0) {
 				ListBuilder<T> with = ops.listBuilder();
 				for (Object arg : formatArgs) {
@@ -274,26 +274,26 @@ public enum ITextComponentCodec implements Codec<ITextComponent> {
 			scoreMapBuilder.add("objective", ops.createString(scoreTextComponent.getObjective()));
 			mapBuilder.add("score", scoreMapBuilder.build(ops.empty()));
 		} else if (input instanceof SelectorTextComponent) {
-			mapBuilder.add("selector", ops.createString(((SelectorTextComponent) input).getSelector()));
+			mapBuilder.add("selector", ops.createString(((SelectorTextComponent) input).getPattern()));
 		} else if (input instanceof KeybindTextComponent) {
-			mapBuilder.add("keybind", ops.createString(((KeybindTextComponent) input).getKeybind()));
+			mapBuilder.add("keybind", ops.createString(((KeybindTextComponent) input).getName()));
 		} else {
 			if (!(input instanceof NBTTextComponent)) {
 				return DataResult.error("Don't know how to encode " + input + " as a Component");
 			}
 
 			NBTTextComponent nbtTextComponent = (NBTTextComponent) input;
-			mapBuilder.add("nbt", ops.createString(nbtTextComponent.func_218676_i()));
-			mapBuilder.add("interpret", ops.createBoolean(nbtTextComponent.func_218677_j()));
+			mapBuilder.add("nbt", ops.createString(nbtTextComponent.getNbtPath()));
+			mapBuilder.add("interpret", ops.createBoolean(nbtTextComponent.isInterpreting()));
 			if (nbtTextComponent instanceof NBTTextComponent.Block) {
-				mapBuilder.add("block", ops.createString(((NBTTextComponent.Block) nbtTextComponent).func_218683_k()));
+				mapBuilder.add("block", ops.createString(((NBTTextComponent.Block) nbtTextComponent).getPos()));
 			} else if (nbtTextComponent instanceof NBTTextComponent.Entity) {
-				mapBuilder.add("entity", ops.createString(((NBTTextComponent.Entity) nbtTextComponent).func_218687_k()));
+				mapBuilder.add("entity", ops.createString(((NBTTextComponent.Entity) nbtTextComponent).getSelector()));
 			} else {
 				if (!(nbtTextComponent instanceof NBTTextComponent.Storage)) {
 					return DataResult.error("Don't know to encode " + nbtTextComponent + " as a Component");
 				}
-				mapBuilder.add("storage", ops.createString(((NBTTextComponent.Storage) nbtTextComponent).func_229726_k_().toString()));
+				mapBuilder.add("storage", ops.createString(((NBTTextComponent.Storage) nbtTextComponent).getId().toString()));
 			}
 		}
 		return mapBuilder.build(prefix);

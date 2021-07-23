@@ -11,6 +11,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
 	public final String type;
 
@@ -25,7 +27,7 @@ public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(IBlockReader worldIn) {
+	public TileEntity newBlockEntity(IBlockReader worldIn) {
 		return new AbnormalsChestTileEntity();
 	}
 

@@ -49,7 +49,7 @@ public final class ChestManager {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onStitch(TextureStitchEvent.Pre event) {
-		if (event.getMap().getTextureLocation().equals(Atlases.CHEST_ATLAS)) {
+		if (event.getMap().location().equals(Atlases.CHEST_SHEET)) {
 			for (ChestInfo chestInfo : CHEST_INFO_MAP.values()) {
 				chestInfo.setup(event);
 			}
@@ -78,9 +78,9 @@ public final class ChestManager {
 			event.addSprite(this.single);
 			event.addSprite(this.left);
 			event.addSprite(this.right);
-			this.singleMaterial = new RenderMaterial(Atlases.CHEST_ATLAS, this.single);
-			this.leftMaterial = new RenderMaterial(Atlases.CHEST_ATLAS, this.left);
-			this.rightMaterial = new RenderMaterial(Atlases.CHEST_ATLAS, this.right);
+			this.singleMaterial = new RenderMaterial(Atlases.CHEST_SHEET, this.single);
+			this.leftMaterial = new RenderMaterial(Atlases.CHEST_SHEET, this.left);
+			this.rightMaterial = new RenderMaterial(Atlases.CHEST_SHEET, this.right);
 		}
 
 		/**

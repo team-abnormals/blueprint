@@ -16,6 +16,8 @@ import net.minecraftforge.common.ToolType;
 
 import java.util.function.Supplier;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class AbnormalsLogBlock extends RotatedPillarBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_STEM);
 	private final Supplier<Block> block;
@@ -28,12 +30,12 @@ public class AbnormalsLogBlock extends RotatedPillarBlock {
 	@Override
 	public BlockState getToolModifiedState(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, ToolType toolType) {
 		if (toolType == ToolType.AXE)
-			return block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().getDefaultState()) : null;
+			return block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().defaultBlockState()) : null;
 		return super.getToolModifiedState(state, world, pos, player, stack, toolType);
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this.asItem(), group, items);
 	}
 }
