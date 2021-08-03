@@ -19,8 +19,7 @@
     "ServerWorldMixin",
     "ShoreLayerMixin",
     "SpawnEggItemMixin",
-    "TrackedEntityMixin",
-    "TrapDoorBlockMixin"
+    "TrackedEntityMixin"
   ],
   "client": [
     "client.ClientWorldMixin",

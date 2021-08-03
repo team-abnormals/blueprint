@@ -7,18 +7,16 @@ license = "https://github.com/team-abnormals/abnormals-core/blob/main/LICENSE.tx
     modId = "abnormals_core"
     version = "3.2.0"
     logoFile = "logo.png"
+    itemIcon = "minecraft:creeper_head"
+    configBackground = "abnormals_core:textures/blueprint.png"
     authors = "Team Abnormals"
-    credits = "SmellyModder (Luke Tonon), bageldotjpg, and Jackson"
+    credits = "SmellyModder, bageldotjpg, Jackson"
     displayURL = "https://www.teamabnormals.com/mods/abnormals-core"
     displayName = "Abnormals Core"
     description = '''
     The library mod used by all Abnormals mods. Adds support for various types of blocks, helps with registering, and adds tons of misc. utils.
     Also comes with Endimator, an animation library that supports data-driven and coded animations.
     '''
-
-[modproperties.abnormals_core]
-    catalogueItemIcon = "minecraft:creeper_head"
-    configuredBackground = "abnormals_core:textures/blueprint.png"
 
 [[dependencies.abnormals_core]]
     modId = "minecraft"
@@ -30,6 +28,6 @@ license = "https://github.com/team-abnormals/abnormals-core/blob/main/LICENSE.tx
 [[dependencies.abnormals_core]]
     modId = "forge"
     mandatory = true
-    versionRange = "[36.1.0,)"
+    versionRange = "[36.2.0,)"
     ordering = "NONE"
     side = "BOTH"

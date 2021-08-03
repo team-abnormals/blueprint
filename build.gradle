@@ -68,8 +68,8 @@ minecraft {
             workingDirectory project.file("run")
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property "mixin.env.remapRefMap", "true"
+            property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
             args "--mod", project.modId, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources")
             mods {
                 abnormals_core {
@@ -100,7 +100,7 @@ dependencies {
     runtimeOnly fg.deobf("com.github.Ocelot5836:Sonar:4cc95e6")
     shade "com.github.Ocelot5836:Sonar:4cc95e6"
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+    annotationProcessor "org.spongepowered:mixin:0.8.2:processor"
 }
 
 repositories {
@@ -125,7 +125,7 @@ jar {
 
 shadowJar {
     configurations = [project.configurations.shade]
-    relocate 'io.github.ocelot', 'com.minecraftabnormals.abnormals_core.lib.sonar'
+    relocate "io.github.ocelot", "com.minecraftabnormals.abnormals_core.lib.sonar"
     classifier = null
 }
 
