@@ -16,8 +16,6 @@ import net.minecraftforge.common.ToolType;
 
 import java.util.function.Supplier;
 
-import net.minecraft.block.AbstractBlock.Properties;
-
 public class WoodBlock extends RotatedPillarBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_HYPHAE);
 	private final Supplier<Block> block;

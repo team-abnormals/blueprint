@@ -27,8 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 import java.util.Set;
 
-import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager.DataEntry;
-
 @Mixin(Entity.class)
 public final class EntityMixin implements IDataManager {
 	@Shadow

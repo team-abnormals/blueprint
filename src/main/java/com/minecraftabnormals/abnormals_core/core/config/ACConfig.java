@@ -1,11 +1,10 @@
 package com.minecraftabnormals.abnormals_core.core.config;
 
 import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.fml.config.ModConfig;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * @author SmellyModder(Luke Tonon)

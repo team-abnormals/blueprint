@@ -7,8 +7,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.block.AbstractBlock.Properties;
-
 public class ThatchBlock extends Block {
 
 	public ThatchBlock(Properties properties) {

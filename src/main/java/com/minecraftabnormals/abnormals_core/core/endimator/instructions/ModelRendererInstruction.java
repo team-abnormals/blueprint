@@ -1,12 +1,11 @@
 package com.minecraftabnormals.abnormals_core.core.endimator.instructions;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import com.mojang.serialization.Codec;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
+import com.mojang.serialization.Codec;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author SmellyModder (Luke Tonon)

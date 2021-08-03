@@ -1,11 +1,10 @@
 package com.minecraftabnormals.abnormals_core.client.renderer;
 
+import com.minecraftabnormals.abnormals_core.client.RewardHandler;
+import com.minecraftabnormals.abnormals_core.client.model.SlabfishHatModel;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.minecraftabnormals.abnormals_core.client.RewardHandler;
-import com.minecraftabnormals.abnormals_core.client.model.SlabfishHatModel;
-
 import io.github.ocelot.sonar.client.util.OnlineImageCache;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

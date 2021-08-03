@@ -1,14 +1,17 @@
 package com.minecraftabnormals.abnormals_core.client;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import com.minecraftabnormals.abnormals_core.client.model.SlabfishHatModel;
 import com.minecraftabnormals.abnormals_core.client.renderer.SlabfishHatLayerRenderer;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
-import io.github.ocelot.sonar.common.util.OnlineRequest;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
-
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import io.github.ocelot.sonar.common.util.OnlineRequest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -23,21 +26,13 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;

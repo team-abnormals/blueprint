@@ -7,8 +7,6 @@ import net.minecraft.nbt.CompoundNBT;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-import net.minecraft.item.Item.Properties;
-
 /**
  * @author SmellyModder(Luke Tonon)
  */

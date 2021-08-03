@@ -1,9 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.blocks;
 
-import javax.annotation.Nullable;
-
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
-
 import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.BlockState;
@@ -16,7 +13,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.world.IBlockReader;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import javax.annotation.Nullable;
 
 public class AbnormalsBeehiveBlock extends BeehiveBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.BEEHIVE);

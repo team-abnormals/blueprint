@@ -1,10 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.advancement;
 
-import java.util.*;
-
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
-
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -13,7 +10,7 @@ import net.minecraft.loot.ConditionArrayParser;
 import net.minecraft.loot.ConditionArraySerializer;
 import net.minecraft.util.ResourceLocation;
 
-import net.minecraft.advancements.ICriterionTrigger.Listener;
+import java.util.*;
 
 /**
  * @author - SmellyModder(Luke Tonon)

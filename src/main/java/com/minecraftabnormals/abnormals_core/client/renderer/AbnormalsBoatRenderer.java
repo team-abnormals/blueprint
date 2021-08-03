@@ -1,13 +1,10 @@
 package com.minecraftabnormals.abnormals_core.client.renderer;
 
-import java.util.Arrays;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.minecraftabnormals.abnormals_core.common.entity.AbnormalsBoatEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.minecraftabnormals.abnormals_core.common.entity.AbnormalsBoatEntity;
-
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -21,6 +18,8 @@ import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Arrays;
 
 @OnlyIn(Dist.CLIENT)
 public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoatEntity> {

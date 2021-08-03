@@ -1,9 +1,9 @@
 package com.minecraftabnormals.abnormals_core.core.endimator.instructions;
 
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 
 /**
  * @author SmellyModder (Luke Tonon)

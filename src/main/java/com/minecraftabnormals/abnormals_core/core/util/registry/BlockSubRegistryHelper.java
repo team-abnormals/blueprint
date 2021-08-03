@@ -2,6 +2,7 @@ package com.minecraftabnormals.abnormals_core.core.util.registry;
 
 import com.minecraftabnormals.abnormals_core.client.ChestManager;
 import com.minecraftabnormals.abnormals_core.client.renderer.ChestItemRenderer;
+import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
@@ -11,7 +12,6 @@ import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsChestTil
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.minecraftabnormals.abnormals_core.core.api.SignManager;
 import com.mojang.datafixers.util.Pair;
-import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.WoodType;

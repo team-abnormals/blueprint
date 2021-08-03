@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.core.endimator.instructions;
 
-import com.mojang.serialization.Codec;
 import com.minecraftabnormals.abnormals_core.core.endimator.EndimationDataManager;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
+import com.mojang.serialization.Codec;
 
 /**
  * @author SmellyModder (Luke Tonon)

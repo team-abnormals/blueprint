@@ -17,8 +17,6 @@ import net.minecraft.world.IWorld;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
-import net.minecraft.block.AbstractBlock.Properties;
-
 public class HedgeBlock extends FenceBlock {
 	public static final ITag<Block> HEDGES = BlockTags.createOptional(new ResourceLocation("quark", "hedges"));
 	private static final BooleanProperty EXTEND = BooleanProperty.create("extend");

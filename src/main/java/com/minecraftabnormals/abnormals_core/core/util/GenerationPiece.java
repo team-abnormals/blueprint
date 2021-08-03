@@ -1,13 +1,12 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import java.util.List;
-import java.util.function.BiPredicate;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+
+import java.util.List;
+import java.util.function.BiPredicate;
 
 /**
  * Class that makes checking conditions for placing generation parts easier

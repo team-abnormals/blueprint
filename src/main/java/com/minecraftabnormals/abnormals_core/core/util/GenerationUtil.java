@@ -1,18 +1,17 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Predicate;
 
 /**
  * This class holds a list of useful methods for generation

@@ -1,10 +1,5 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DirectionalBlock;
@@ -21,6 +16,11 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * @author - SmellyModder(Luke Tonon)

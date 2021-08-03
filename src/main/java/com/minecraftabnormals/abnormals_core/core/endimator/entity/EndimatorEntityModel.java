@@ -1,17 +1,16 @@
 package com.minecraftabnormals.abnormals_core.core.endimator.entity;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
+import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.Endimator;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimator;
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.List;
 
 /**
  * @param <E> The Entity for the Model

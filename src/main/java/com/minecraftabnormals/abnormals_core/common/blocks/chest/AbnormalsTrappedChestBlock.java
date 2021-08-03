@@ -3,7 +3,6 @@ package com.minecraftabnormals.abnormals_core.common.blocks.chest;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.minecraftabnormals.abnormals_core.core.api.IChestBlock;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.stats.Stat;
@@ -15,8 +14,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
-
-import net.minecraft.block.AbstractBlock.Properties;
 
 public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBlock {
 	public final String type;

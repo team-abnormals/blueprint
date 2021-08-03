@@ -2,7 +2,10 @@ package core;
 
 import client.TestEndimatedEntityRenderer;
 import com.google.common.collect.Sets;
-import com.minecraftabnormals.abnormals_core.common.world.modification.*;
+import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeFeatureModifier;
+import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
+import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
+import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeSpawnsModifier;
 import com.minecraftabnormals.abnormals_core.common.world.storage.GlobalStorage;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;

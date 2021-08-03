@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.client.screen;
 
+import com.minecraftabnormals.abnormals_core.client.RewardHandler;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.minecraftabnormals.abnormals_core.client.RewardHandler;
 import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;

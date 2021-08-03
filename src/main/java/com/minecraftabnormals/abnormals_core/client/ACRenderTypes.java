@@ -1,7 +1,6 @@
 package com.minecraftabnormals.abnormals_core.client;
 
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;

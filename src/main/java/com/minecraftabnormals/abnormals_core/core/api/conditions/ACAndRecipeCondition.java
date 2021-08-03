@@ -1,19 +1,18 @@
 package com.minecraftabnormals.abnormals_core.core.api.conditions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author SmellyModder (Luke Tonon)

@@ -1,8 +1,5 @@
 package com.minecraftabnormals.abnormals_core.common.blocks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
@@ -26,7 +23,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class VerticalSlabBlock extends Block implements IWaterLoggable {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);

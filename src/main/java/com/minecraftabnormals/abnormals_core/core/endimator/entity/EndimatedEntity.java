@@ -1,10 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.endimator.entity;
 
-import javax.annotation.Nullable;
-
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.particles.ParticleTypes;
@@ -12,6 +9,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 /**
  * Implementation class of {@link IEndimatedEntity} for Endimated entities.

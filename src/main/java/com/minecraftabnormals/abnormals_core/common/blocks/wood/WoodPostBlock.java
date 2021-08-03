@@ -1,14 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.blocks.wood;
 
-import java.util.function.Supplier;
-
 import com.minecraftabnormals.abnormals_core.core.util.BlockUtil;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ChainBlock;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.block.LanternBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -27,7 +20,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import java.util.function.Supplier;
 
 public class WoodPostBlock extends Block implements IWaterLoggable {
 	private static final VoxelShape SHAPE_X = box(0.0F, 6.0F, 6.0F, 16.0F, 10.0F, 10.0F);

@@ -1,11 +1,8 @@
 package com.minecraftabnormals.abnormals_core.core.registry;
 
-import java.util.Set;
-
 import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.TableLootEntry;
 import net.minecraft.util.ResourceLocation;
@@ -13,6 +10,8 @@ import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Set;
 
 /**
  * A simple class for adding loot injectors.

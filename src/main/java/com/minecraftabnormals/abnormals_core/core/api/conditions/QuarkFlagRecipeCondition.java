@@ -2,7 +2,6 @@ package com.minecraftabnormals.abnormals_core.core.api.conditions;
 
 import com.google.gson.JsonObject;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;

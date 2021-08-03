@@ -25,8 +25,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
-import net.minecraft.block.AbstractBlock.Properties;
-
 public class DirectionalVerticalSlabBlock extends Block implements IWaterLoggable {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);
 	public static final DirectionProperty FACING = HorizontalBlock.FACING;

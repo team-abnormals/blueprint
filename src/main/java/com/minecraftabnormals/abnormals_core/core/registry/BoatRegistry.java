@@ -1,18 +1,16 @@
 package com.minecraftabnormals.abnormals_core.core.registry;
 
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.abnormals_core.core.registry.BoatRegistry.BoatData.DefaultBoatData;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.fml.RegistryObject;
+
+import javax.annotation.Nullable;
+import java.util.Map;
 
 public final class BoatRegistry {
 	private static final Map<String, BoatData> BOATS = Util.make(Maps.newHashMap(), (entries) -> {

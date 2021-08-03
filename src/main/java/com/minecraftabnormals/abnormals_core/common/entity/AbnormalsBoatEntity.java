@@ -2,7 +2,6 @@ package com.minecraftabnormals.abnormals_core.common.entity;
 
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.BoatRegistry;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.BoatEntity;

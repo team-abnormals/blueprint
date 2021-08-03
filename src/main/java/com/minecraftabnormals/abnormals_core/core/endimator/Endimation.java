@@ -1,14 +1,12 @@
 package com.minecraftabnormals.abnormals_core.core.endimator;
 
-import java.util.Objects;
-
-import javax.annotation.Nullable;
-
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * A class that holds information for an animation

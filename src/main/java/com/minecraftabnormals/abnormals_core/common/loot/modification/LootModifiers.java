@@ -1,7 +1,10 @@
 package com.minecraftabnormals.abnormals_core.common.loot.modification;
 
 import com.google.gson.Gson;
-import com.minecraftabnormals.abnormals_core.common.loot.modification.modifiers.*;
+import com.minecraftabnormals.abnormals_core.common.loot.modification.modifiers.ILootModifier;
+import com.minecraftabnormals.abnormals_core.common.loot.modification.modifiers.LootPoolEntriesModifier;
+import com.minecraftabnormals.abnormals_core.common.loot.modification.modifiers.LootPoolsModifier;
+import com.minecraftabnormals.abnormals_core.common.loot.modification.modifiers.LootTypeModifier;
 import com.minecraftabnormals.abnormals_core.core.util.modification.ModifierDataProvider;
 import com.minecraftabnormals.abnormals_core.core.util.modification.ModifierRegistry;
 import com.mojang.datafixers.util.Pair;

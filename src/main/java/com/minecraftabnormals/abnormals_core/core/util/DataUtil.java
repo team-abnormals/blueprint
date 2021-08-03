@@ -2,14 +2,10 @@ package com.minecraftabnormals.abnormals_core.core.util;
 
 import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
-import com.minecraftabnormals.abnormals_core.core.api.conditions.loot.ConfigLootCondition;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
+import com.minecraftabnormals.abnormals_core.core.api.conditions.loot.ConfigLootCondition;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ComposterBlock;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.FireBlock;
+import net.minecraft.block.*;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;

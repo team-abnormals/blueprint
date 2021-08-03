@@ -1,8 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.endimator.entity;
 
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
 

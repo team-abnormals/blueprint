@@ -9,8 +9,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.item.Item.Properties;
-
 /**
  * This fixes incompatibility issues that occur when other modded spawn eggs are not sorted alphabetically.
  * <p>Also technically a feature.</p>

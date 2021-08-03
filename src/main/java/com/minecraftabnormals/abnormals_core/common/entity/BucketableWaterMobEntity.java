@@ -1,7 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.entity;
 
 import com.minecraftabnormals.abnormals_core.core.api.IBucketableEntity;
-
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.WaterMobEntity;

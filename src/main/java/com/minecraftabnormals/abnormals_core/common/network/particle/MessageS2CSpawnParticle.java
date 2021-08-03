@@ -1,9 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.network.particle;
 
-import java.util.function.Supplier;
-
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.ResourceLocation;
@@ -11,6 +8,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Supplier;
 
 /**
  * Message for telling the client to spawn particles

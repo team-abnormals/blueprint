@@ -1,6 +1,5 @@
 package core.registry;
 
-import com.mojang.datafixers.util.Pair;
 import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.HedgeBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
@@ -11,6 +10,7 @@ import com.minecraftabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBloc
 import com.minecraftabnormals.abnormals_core.common.blocks.wood.WoodPostBlock;
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.util.registry.BlockSubRegistryHelper;
+import com.mojang.datafixers.util.Pair;
 import common.blocks.ChunkLoadTestBlock;
 import common.blocks.RotatedVoxelShapeTestBlock;
 import core.ACTest;

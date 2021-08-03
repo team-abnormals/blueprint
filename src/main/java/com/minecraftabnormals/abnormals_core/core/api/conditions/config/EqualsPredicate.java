@@ -1,10 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;

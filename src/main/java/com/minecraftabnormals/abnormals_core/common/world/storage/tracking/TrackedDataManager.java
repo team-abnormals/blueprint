@@ -2,8 +2,8 @@ package com.minecraftabnormals.abnormals_core.common.world.storage.tracking;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.abnormals_core.core.events.EntityTrackingEvent;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

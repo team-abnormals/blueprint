@@ -1,7 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.endimator;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 

@@ -1,10 +1,5 @@
 package com.minecraftabnormals.abnormals_core.common.entity.ai;
 
-import java.util.EnumSet;
-import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -13,7 +8,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import javax.annotation.Nullable;
+import java.util.EnumSet;
+import java.util.function.Predicate;
 
 /**
  * @author SmellyModder(Luke Tonon)

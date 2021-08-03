@@ -1,13 +1,12 @@
 package com.minecraftabnormals.abnormals_core.common.network.entity;
 
-import java.util.function.Supplier;
-
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Message for teleporting the entity from the server

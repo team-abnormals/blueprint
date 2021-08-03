@@ -2,11 +2,7 @@ package com.minecraftabnormals.abnormals_core.core.annotations;
 
 import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * This annotation, when applied to {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue ConfigValue} fields

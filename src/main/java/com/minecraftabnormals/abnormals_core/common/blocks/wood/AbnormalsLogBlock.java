@@ -16,8 +16,6 @@ import net.minecraftforge.common.ToolType;
 
 import java.util.function.Supplier;
 
-import net.minecraft.block.AbstractBlock.Properties;
-
 public class AbnormalsLogBlock extends RotatedPillarBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_STEM);
 	private final Supplier<Block> block;
