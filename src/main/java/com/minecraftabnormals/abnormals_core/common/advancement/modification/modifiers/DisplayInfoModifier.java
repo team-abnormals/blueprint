@@ -21,8 +21,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
-
 /**
  * An {@link AdvancementModifier} extension that modifies the {@link DisplayInfo} of an advancement.
  *

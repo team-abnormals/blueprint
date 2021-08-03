@@ -1,16 +1,14 @@
 package com.minecraftabnormals.abnormals_core.common.capability.chunkloading;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.abnormals_core.core.util.TickTask;
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerWorld;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Can load and unload Chunks, as well as schedule tick tasks on Chunks

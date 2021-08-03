@@ -1,7 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.capability.chunkloading;
 
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;

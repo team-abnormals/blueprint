@@ -1,7 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.tileentity;
 
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
-
 import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;

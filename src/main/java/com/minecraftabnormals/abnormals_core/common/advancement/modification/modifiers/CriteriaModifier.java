@@ -15,8 +15,6 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
 
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
-
 /**
  * An {@link AdvancementModifier} extension that modifies the criteria and requirements of an advancement.
  * <p>This modifier can cause unexpected errors to occur later in-game when replacing certain parts due to how requirements work, so be sure you know what you're doing.</p>

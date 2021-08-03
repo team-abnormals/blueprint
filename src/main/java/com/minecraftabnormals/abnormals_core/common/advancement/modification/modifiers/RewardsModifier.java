@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
-
 /**
  * An {@link AdvancementModifier} extension that modifies the rewards of an advancement.
  *
