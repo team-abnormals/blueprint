@@ -1,5 +1,7 @@
 package core;
 
+import com.minecraftabnormals.abnormals_core.client.screen.shaking.EntityShakeSource;
+import com.minecraftabnormals.abnormals_core.client.screen.shaking.ScreenShakeHandler;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.util.TradeUtil;
 import core.registry.TestItems;
@@ -27,12 +29,16 @@ public final class TestEvents {
 	@SubscribeEvent
 	public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
 		Entity entity = event.getTarget();
-		if (!entity.level.isClientSide && (entity instanceof CowEntity || entity instanceof PlayerEntity)) {
-			PlayerEntity player = event.getPlayer();
-			if (player instanceof ServerPlayerEntity) {
-				TestTriggers.EMPTY_TEST.trigger((ServerPlayerEntity) player);
+		if (entity instanceof CowEntity || entity instanceof PlayerEntity) {
+			if (!entity.level.isClientSide) {
+				PlayerEntity player = event.getPlayer();
+				if (player instanceof ServerPlayerEntity) {
+					TestTriggers.EMPTY_TEST.trigger((ServerPlayerEntity) player);
+				}
+				TrackedDataManager.INSTANCE.setValue(entity, ACTest.TEST_TRACKED_DATA, true);
+			} else {
+				ScreenShakeHandler.INSTANCE.addShakeSource(new EntityShakeSource(entity, 100, 0.1F, 0.1F, 0.02F, 0.2F, 0.2F, 0.04F, 0.98F, 0.98F, 0.99F));
 			}
-			TrackedDataManager.INSTANCE.setValue(entity, ACTest.TEST_TRACKED_DATA, true);
 		}
 	}
 

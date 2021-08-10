@@ -22,6 +22,7 @@
     "TrackedEntityMixin"
   ],
   "client": [
+    "client.ActiveRenderInfoInvokerMixin",
     "client.ClientWorldMixin",
     "client.CustomizeSkinScreenMixin",
     "client.MinecraftMixin",

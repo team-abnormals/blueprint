@@ -48,6 +48,10 @@ public final class ACConfig {
 	public static final class Client {
 		@ConfigKey("smooth_sky_color_enabled")
 		public final ConfigValue<Boolean> enableSmoothSkyColor;
+		@ConfigKey("screen_shake_scale")
+		public final ConfigValue<Double> screenShakeScale;
+		@ConfigKey("max_screen_shakers")
+		public final ConfigValue<Integer> maxScreenShakers;
 		public final SlabfishSettings slabfishSettings;
 
 		Client(ForgeConfigSpec.Builder builder) {
@@ -58,6 +62,16 @@ public final class ACConfig {
 					.comment("If sky color transition should be smooth; Default: True")
 					.translation(makeTranslation("smooth_sky_color"))
 					.define("smoothSkyColor", true);
+
+			this.screenShakeScale = builder
+					.comment("Scale for screen shake effects; Default: 1.0")
+					.translation(makeTranslation("screen_shake_scale"))
+					.defineInRange("screenShakeScale", 1.0D, 0.0D, 1.0D);
+
+			this.maxScreenShakers = builder
+					.comment("Max amount of sources that can contribute to screen shaking, adjustable for performance and preference reasons. 0 will disable the addition of shake sources; Default: 256")
+					.translation(makeTranslation("max_screen_shakers"))
+					.defineInRange("maxScreenShakers", 256, 0, Integer.MAX_VALUE);
 
 			this.slabfishSettings = new SlabfishSettings(builder);
 
@@ -124,6 +138,8 @@ public final class ACConfig {
 		private static boolean poisonEffect;
 		private static double poisonChance;
 		private static boolean smoothSkyColorEnabled;
+		private static double screenShakeScale;
+		private static int maxScreenShakers;
 
 		public static void updateCommonValuesFromConfig(ModConfig config) {
 			poisonPotatoCompatEnabled = ACConfig.COMMON.poisonPotatoCompatEnabled.get();
@@ -133,6 +149,8 @@ public final class ACConfig {
 
 		public static void updateClientValuesFromConfig(ModConfig config) {
 			smoothSkyColorEnabled = ACConfig.CLIENT.enableSmoothSkyColor.get();
+			screenShakeScale = ACConfig.CLIENT.screenShakeScale.get();
+			maxScreenShakers = ACConfig.CLIENT.maxScreenShakers.get();
 		}
 
 		public static boolean isPoisonPotatoCompatEnabled() {
@@ -149,6 +167,14 @@ public final class ACConfig {
 
 		public static boolean isSmoothSkyColorEnabled() {
 			return smoothSkyColorEnabled;
+		}
+
+		public static double getScreenShakeScale() {
+			return screenShakeScale;
+		}
+
+		public static int getMaxScreenShakers() {
+			return maxScreenShakers;
 		}
 	}
 
