@@ -303,6 +303,19 @@ public final class DataUtil {
 	}
 
 	/**
+	 * Please use {@link DataUtil#registerAlternativeDispenseBehavior(String, Item, BiPredicate, IDispenseItemBehavior)}
+	 * or {@link DataUtil#registerAlternativeDispenseBehavior(String, Item, BiPredicate, IDispenseItemBehavior, Function)}
+	 * instead.
+	 *
+	 * @see DataUtil#registerAlternativeDispenseBehavior(String, Item, BiPredicate, IDispenseItemBehavior)
+	 * @see DataUtil#registerAlternativeDispenseBehavior(String, Item, BiPredicate, IDispenseItemBehavior, Function)
+	 * */
+	@Deprecated
+	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
+		registerAlternativeDispenseBehavior("", item, condition, behavior, id -> 0);
+	}
+
+	/**
 	 * <p>Registers a {@link IDispenseItemBehavior} that will perform the new behavior if the condition is met and the behavior that was already in the registry if not.
 	 * This works even if multiple mods add new behavior to the same item, though it is possible that the conditions might
 	 * overlap, in which case {@link DataUtil#registerAlternativeDispenseBehavior(String, Item, BiPredicate, IDispenseItemBehavior, Function)}

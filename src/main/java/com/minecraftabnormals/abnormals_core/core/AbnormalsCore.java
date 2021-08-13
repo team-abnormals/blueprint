@@ -64,9 +64,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-import static com.minecraftabnormals.abnormals_core.core.util.DataUtil.AlternativeDispenseBehavior;
-import static com.minecraftabnormals.abnormals_core.core.util.DataUtil.AlternativeDispenseBehavior.alternativeDispenseBehaviors;
-
 @Mod(AbnormalsCore.MODID)
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AbnormalsCore {
@@ -155,7 +152,7 @@ public final class AbnormalsCore {
 	}
 
 	private void postLoadingSetup(FMLLoadCompleteEvent event) {
-		event.enqueueWork(() -> alternativeDispenseBehaviors().forEach(AlternativeDispenseBehavior::register));
+		event.enqueueWork(() -> DataUtil.AlternativeDispenseBehavior.alternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register));
 	}
 
 	private void modelSetup(ModelRegistryEvent event) {
