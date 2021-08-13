@@ -152,7 +152,7 @@ public final class AbnormalsCore {
 	}
 
 	private void postLoadingSetup(FMLLoadCompleteEvent event) {
-		event.enqueueWork(() -> DataUtil.AlternativeDispenseBehavior.alternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register));
+		event.enqueueWork(() -> DataUtil.getSortedAlternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register));
 	}
 
 	private void modelSetup(ModelRegistryEvent event) {
