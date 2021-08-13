@@ -185,8 +185,7 @@ public final class DataUtil {
 	 * an {@link IDispenseItemBehavior} that performs the new behavior if its condition is met and the behavior that was 
 	 * already registered if not. See {@link AlternativeDispenseBehavior} for details.
 	 *
-	 * <p>Since Abnormals Core handles registering the condition at the right time, mods should call this method as early as possible,
-	 * such as in a {@code static{}} block.</p>
+	 * <p>Since Abnormals Core handles registering the condition at the right time, mods should call this method as early as possible.</p>
 	 *
 	 * @param behavior The {@link AlternativeDispenseBehavior} to be registered.  
 	 *
