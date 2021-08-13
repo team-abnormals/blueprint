@@ -202,7 +202,6 @@ public final class DataUtil {
 	 * Please use {@link DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)} instead.
 	 *
 	 * @see DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)
-	 *
 	 */
 	@Deprecated
 	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
@@ -337,7 +336,7 @@ public final class DataUtil {
 	 * internal use in order to register the behaviors to the dispenser registry.
 	 *
 	 * @author abigailfails
-	 * */
+	 */
 	public static List<AlternativeDispenseBehavior> getSortedAlternativeDispenseBehaviors() {
 		List<AlternativeDispenseBehavior> behaviors = new ArrayList<>(ALTERNATIVE_DISPENSE_BEHAVIORS);
 		Collections.sort(behaviors);
@@ -423,7 +422,7 @@ public final class DataUtil {
 		/**
 		 * Registers an {@link IDispenseItemBehavior} for {@code item} which performs {@code behavior} if
 		 * {@code condition} passes.
-		 * */
+		 */
 		public void register() {
 			IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSER_REGISTRY.get(item);
 			DispenserBlock.registerBehavior(item, (source, stack) -> condition.test(source, stack) ? behavior.dispense(source, stack) : oldBehavior.dispense(source, stack));
