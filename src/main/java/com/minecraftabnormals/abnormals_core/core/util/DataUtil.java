@@ -306,7 +306,7 @@ public final class DataUtil {
 	 * <p>Registers a {@link IDispenseItemBehavior} that will perform the new behavior if the condition is met and the behavior that was already in the registry if not.
 	 * This works even if multiple mods add new behavior to the same item, though it is possible that the conditions might
 	 * overlap, in which case {@link DataUtil#registerAlternativeDispenseBehavior(String, Item, BiPredicate, IDispenseItemBehavior, Function)}
-	 * should be used which allows you to specify mod ids whose conditions for the same item should be registered before or after to.
+	 * should be used.
 	 *
 	 * <p>Ideally, the condition should be implemented such that the predicate only passes if the new behavior will be 'successful', avoiding problems with failure sounds not playing.</p>
 	 *
@@ -317,6 +317,8 @@ public final class DataUtil {
 	 * @param item The {@link Item} to register {@code newBehavior} for.
 	 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments, returning true if {@code newBehavior} should be used.
 	 * @param behavior The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
+	 *
+	 * @see DataUtil#registerAlternativeDispenseBehavior(String, Item, BiPredicate, IDispenseItemBehavior, Function)
 	 *
 	 * @author abigailfails
 	 */
