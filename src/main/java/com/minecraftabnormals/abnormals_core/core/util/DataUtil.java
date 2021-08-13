@@ -45,7 +45,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 public final class DataUtil {
 	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "func_193357_a", Potion.class, Item.class, Potion.class);
@@ -179,13 +178,15 @@ public final class DataUtil {
 				return true;
 		return false;
 	}
-	
+
 	/**
 	 * <p>Slates a {@link AlternativeDispenseBehavior} instance for later processing, where it will be used to register
 	 * an {@link IDispenseItemBehavior} that performs the new behavior if its condition is met and the behavior that was 
 	 * already registered if not. See {@link AlternativeDispenseBehavior} for details.
 	 *
-	 * <p>Since Abnormals Core handles registering the condition at the right time, mods should call this method as early as possible.</p>
+	 * <p>Since Abnormals Core handles registering the condition at the right time, mods should call this method as
+	 * early as possible, ideally in an {@link net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent#enqueueWork enqueueWork}
+	 * call within an {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent FMLCommonSetupEvent}.</p>
 	 *
 	 * @param behavior The {@link AlternativeDispenseBehavior} to be registered.  
 	 *
@@ -332,6 +333,18 @@ public final class DataUtil {
 	}
 
 	/**
+	 * Returns the list of registered {@link AlternativeDispenseBehavior}s, sorted by their comparators. Intended for
+	 * internal use in order to register the behaviors to the dispenser registry.
+	 *
+	 * @author abigailfails
+	 * */
+	public static List<AlternativeDispenseBehavior> getSortedAlternativeDispenseBehaviors() {
+		List<AlternativeDispenseBehavior> behaviors = new ArrayList<>(ALTERNATIVE_DISPENSE_BEHAVIORS);
+		Collections.sort(behaviors);
+		return behaviors;
+	}
+
+	/**
 	 * When an instance of this class is registered using {@link DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)},
 	 * an {@link IDispenseItemBehavior} will get registered that will perform a new {@link IDispenseItemBehavior} if
 	 * a condition is met and the behavior that was already in the registry if not. See constructor for details.
@@ -341,7 +354,6 @@ public final class DataUtil {
 	 * {@code modComparator} is intended to solve.</p>
 	 *
 	 * @author abigailfails
-	 *
 	 */
 	public static class AlternativeDispenseBehavior implements Comparable<AlternativeDispenseBehavior> {
 		protected final String modId;
@@ -359,10 +371,9 @@ public final class DataUtil {
 		 *
 		 * @param modId The ID of the mod registering the condition.
 		 * @param item The {@link Item} to register the {@code behavior} for.
-		 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments, returning true if {@code behavior} should be performed.
+		 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments,
+		 *                  returning true if {@code behavior} should be performed.
 		 * @param behavior The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
-		 *
-		 *
 		 */
 		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
 			this(modId, item, condition, behavior, (id1, id2) -> 0);
@@ -370,7 +381,7 @@ public final class DataUtil {
 
 		/**
 		 * Initialises a new {@link AlternativeDispenseBehavior}, where {@code condition} decides whether {@code behavior}
-		 * should be used instead of the behavior previously stored in the dispenser registry for {@code item}.
+		 * should get used instead of the behavior previously stored in the dispenser registry for {@code item}.
 		 *
 		 * <p>Ideally, the condition should be implemented such that the predicate only passes if the new behavior will
 		 * be 'successful', avoiding problems with failure sounds not playing.</p>
@@ -395,8 +406,6 @@ public final class DataUtil {
 		 *                        second is the mod id for another behavior registered to the same item.
 		 *                        It should return 1 if {@code behavior} is to be registered after the other behavior, -1 if
 		 *                        it should go before, and 0 in any other case.
-		 *
-		 *
 		 */
 		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior, Comparator<String> modIdComparator) {
 			this.modId = modId;
@@ -411,15 +420,13 @@ public final class DataUtil {
 			return this.item == behavior.item ? modIdComparator.compare(this.modId, behavior.modId) : 0;
 		}
 
+		/**
+		 * Registers an {@link IDispenseItemBehavior} for {@code item} which performs {@code behavior} if
+		 * {@code condition} passes.
+		 * */
 		public void register() {
 			IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSER_REGISTRY.get(item);
 			DispenserBlock.registerBehavior(item, (source, stack) -> condition.test(source, stack) ? behavior.dispense(source, stack) : oldBehavior.dispense(source, stack));
 		}
-	}
-
-	public static List<AlternativeDispenseBehavior> getSortedAlternativeDispenseBehaviors() {
-		List<AlternativeDispenseBehavior> behaviors = new ArrayList<>(ALTERNATIVE_DISPENSE_BEHAVIORS);
-		Collections.sort(behaviors);
-		return behaviors;
 	}
 }
