@@ -38,12 +38,17 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 import java.util.function.BiPredicate;
 
 public final class DataUtil {
 	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "func_193357_a", Potion.class, Item.class, Potion.class);
+	private static final Vector<AlternativeDispenseBehavior> ALTERNATIVE_DISPENSE_BEHAVIORS = new Vector<>();
 
 	public static void registerFlammable(Block block, int encouragement, int flammability) {
 		FireBlock fire = (FireBlock) Blocks.FIRE;
@@ -175,21 +180,32 @@ public final class DataUtil {
 	}
 
 	/**
-	 * <p>Registers a {@link IDispenseItemBehavior} that will perform the new behavior if the condition is met and the behavior that was already in the registry if not.
-	 * This works even if multiple mods add new behavior to the same item.</p>
-	 * <p>Ideally, the condition should be implemented such that the predicate only passes if the new behavior will be 'successful', avoiding problems with failure sounds not playing.</p>
+	 * <p>Slates a {@link AlternativeDispenseBehavior} instance for later processing, where it will be used to register
+	 * an {@link IDispenseItemBehavior} that performs the new behavior if its condition is met and the behavior that was 
+	 * already registered if not. See {@link AlternativeDispenseBehavior} for details.
 	 *
-	 * @param item The {@link Item} to register the {@code newBehavior} for.
-	 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments, returning true if the {@code newBehavior} should be performed.
-	 * @param newBehavior The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
+	 * <p>Since Abnormals Core handles registering the condition at the right time, mods should call this method as
+	 * early as possible, ideally in an {@link net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent#enqueueWork enqueueWork}
+	 * call within an {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent FMLCommonSetupEvent}.</p>
+	 *
+	 * @param behavior The {@link AlternativeDispenseBehavior} to be registered.  
+	 *
+	 * @see AlternativeDispenseBehavior
 	 *
 	 * @author abigailfails
 	 */
-	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior newBehavior) {
-		IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSER_REGISTRY.get(item);
-		DispenserBlock.registerBehavior(item, (source, stack) -> {
-			return condition.test(source, stack) ? newBehavior.dispense(source, stack) : oldBehavior.dispense(source, stack);
-		});
+	public static void registerAlternativeDispenseBehavior(AlternativeDispenseBehavior behavior) {
+		ALTERNATIVE_DISPENSE_BEHAVIORS.add(behavior);
+	}
+
+	/**
+	 * Please use {@link DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)} instead.
+	 *
+	 * @see DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)
+	 */
+	@Deprecated
+	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
+		registerAlternativeDispenseBehavior(new AlternativeDispenseBehavior("", item, condition, behavior));
 	}
 
 	/**
@@ -313,5 +329,103 @@ public final class DataUtil {
 		if (ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.containsKey(key))
 			throw new IllegalStateException("Duplicate config predicate serializer: " + key);
 		ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.put(key, serializer);
+	}
+
+	/**
+	 * Returns the list of registered {@link AlternativeDispenseBehavior}s, sorted by their comparators. Intended for
+	 * internal use in order to register the behaviors to the dispenser registry.
+	 *
+	 * @author abigailfails
+	 */
+	public static List<AlternativeDispenseBehavior> getSortedAlternativeDispenseBehaviors() {
+		List<AlternativeDispenseBehavior> behaviors = new ArrayList<>(ALTERNATIVE_DISPENSE_BEHAVIORS);
+		Collections.sort(behaviors);
+		return behaviors;
+	}
+
+	/**
+	 * When an instance of this class is registered using {@link DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)},
+	 * an {@link IDispenseItemBehavior} will get registered that will perform a new {@link IDispenseItemBehavior} if
+	 * a condition is met and the behavior that was already in the registry if not. See constructor for details.
+	 *
+	 * <p>This works even if multiple mods
+	 * add new behavior to the same item, though the conditions may overlap, which is what
+	 * {@code modComparator} is intended to solve.</p>
+	 *
+	 * @author abigailfails
+	 */
+	public static class AlternativeDispenseBehavior implements Comparable<AlternativeDispenseBehavior> {
+		protected final String modId;
+		protected final Item item;
+		protected final BiPredicate<IBlockSource, ItemStack> condition;
+		protected final IDispenseItemBehavior behavior;
+		protected final Comparator<String> modIdComparator;
+
+		/**
+		 * Initialises a new {@link AlternativeDispenseBehavior} where {@code condition} decides whether {@code behavior}
+		 * should get used instead of the behavior previously stored in the dispenser registry for {@code item}.
+		 *
+		 * <p>Ideally, the condition should be implemented such that the predicate only passes if the new behavior will
+		 * be 'successful', avoiding problems with failure sounds not playing.</p>
+		 *
+		 * @param modId The ID of the mod registering the condition.
+		 * @param item The {@link Item} to register the {@code behavior} for.
+		 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments,
+		 *                  returning true if {@code behavior} should be performed.
+		 * @param behavior The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
+		 */
+		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
+			this(modId, item, condition, behavior, (id1, id2) -> 0);
+		}
+
+		/**
+		 * Initialises a new {@link AlternativeDispenseBehavior}, where {@code condition} decides whether {@code behavior}
+		 * should get used instead of the behavior previously stored in the dispenser registry for {@code item}.
+		 *
+		 * <p>Ideally, the condition should be implemented such that the predicate only passes if the new behavior will
+		 * be 'successful', avoiding problems with failure sounds not playing.</p>
+		 *
+		 * <p>If multiple mods add a behavior to the same item and the conditions overlap such that the order that they
+		 * are registered in matters, {@code modIdComparator} (where the first parameter is {@code modId} and the second
+		 * parameter is the mod ID of another {@link AlternativeDispenseBehavior} instance)
+		 * can be used to ensure this order regardless of which mod is loaded first.</p>
+		 *
+		 * <p>For example, if a mod with the ID {@code a} has a behavior where its condition passes if any block is in front
+		 * of the dispenser, but a mod with the ID {@code b} has a behavior for the same item that passes only if a specific
+		 * block is in front of the dispenser, authors may want to make sure that {@code b}'s condition is registered after
+		 * {@code a}'s. In this case, {@code a}'s {@code modComparator} should be something like
+		 * {@code (id1, id2) -> id2.equals("b") ? -1 : 0}, and {@code b}'s should be {@code (id1, id2) -> id2.equals("a") ? 1 : 0}.</p>
+		 *
+		 * @param modId The ID of the mod registering the condition.
+		 * @param item The {@link Item} to register the {@code behavior} for.
+		 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments,
+		 *                  returning true if {@code behavior} should be performed.
+		 * @param behavior The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
+		 * @param modIdComparator A {@link Comparator} that compares two strings. The first is {@code modId}, and the
+		 *                        second is the mod id for another behavior registered to the same item.
+		 *                        It should return 1 if {@code behavior} is to be registered after the other behavior, -1 if
+		 *                        it should go before, and 0 in any other case.
+		 */
+		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior, Comparator<String> modIdComparator) {
+			this.modId = modId;
+			this.item = item;
+			this.condition = condition;
+			this.behavior = behavior;
+			this.modIdComparator = modIdComparator;
+		}
+
+		@Override
+		public int compareTo(AlternativeDispenseBehavior behavior) {
+			return this.item == behavior.item ? modIdComparator.compare(this.modId, behavior.modId) : 0;
+		}
+
+		/**
+		 * Registers an {@link IDispenseItemBehavior} for {@code item} which performs {@code behavior} if
+		 * {@code condition} passes.
+		 */
+		public void register() {
+			IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSER_REGISTRY.get(item);
+			DispenserBlock.registerBehavior(item, (source, stack) -> condition.test(source, stack) ? behavior.dispense(source, stack) : oldBehavior.dispense(source, stack));
+		}
 	}
 }

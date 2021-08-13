@@ -55,6 +55,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -126,6 +127,7 @@ public final class AbnormalsCore {
 		});
 
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
+		modEventBus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
 		context.registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
 		context.registerConfig(ModConfig.Type.CLIENT, ACConfig.CLIENT_SPEC);
 	}
@@ -147,6 +149,10 @@ public final class AbnormalsCore {
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), SignTileEntityRenderer::new);
 
 		event.enqueueWork(SignManager::setupAtlas);
+	}
+
+	private void postLoadingSetup(FMLLoadCompleteEvent event) {
+		event.enqueueWork(() -> DataUtil.getSortedAlternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register));
 	}
 
 	private void modelSetup(ModelRegistryEvent event) {
