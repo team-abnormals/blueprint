@@ -201,7 +201,8 @@ public final class DataUtil {
 	 * Please use {@link DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)} instead.
 	 *
 	 * @see DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)
-	 * */
+	 *
+	 */
 	@Deprecated
 	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
 		registerAlternativeDispenseBehavior(new AlternativeDispenseBehavior("", item, condition, behavior));
@@ -332,15 +333,16 @@ public final class DataUtil {
 
 	/**
 	 * When an instance of this class is registered using {@link DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)},
-	 * an {@link IDispenseItemBehavior} will be registered that will perform a new {@link IDispenseItemBehavior} if
+	 * an {@link IDispenseItemBehavior} will get registered that will perform a new {@link IDispenseItemBehavior} if
 	 * a condition is met and the behavior that was already in the registry if not. See constructor for details.
 	 *
 	 * <p>This works even if multiple mods
-	 * add new behavior to the same item, though it is possible that the conditions might overlap, which is what
+	 * add new behavior to the same item, though the conditions may overlap, which is what
 	 * {@code modComparator} is intended to solve.</p>
 	 *
 	 * @author abigailfails
-	 * */
+	 *
+	 */
 	public static class AlternativeDispenseBehavior implements Comparable<AlternativeDispenseBehavior> {
 		protected final String modId;
 		protected final Item item;
@@ -349,18 +351,19 @@ public final class DataUtil {
 		protected final Comparator<String> modIdComparator;
 
 		/**
-		 * Initialises a new {@link AlternativeDispenseBehavior}, where {@code condition} decides whether {@code behavior}
-		 * should be used instead of the behavior previously stored in the dispenser registry for {@code item}.
+		 * Initialises a new {@link AlternativeDispenseBehavior} where {@code condition} decides whether {@code behavior}
+		 * should get used instead of the behavior previously stored in the dispenser registry for {@code item}.
 		 *
 		 * <p>Ideally, the condition should be implemented such that the predicate only passes if the new behavior will
 		 * be 'successful', avoiding problems with failure sounds not playing.</p>
 		 *
-		 * @param modId the ID of the mod registering the condition.
+		 * @param modId The ID of the mod registering the condition.
 		 * @param item The {@link Item} to register the {@code behavior} for.
 		 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments, returning true if {@code behavior} should be performed.
 		 * @param behavior The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
 		 *
-		 * */
+		 *
+		 */
 		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
 			this(modId, item, condition, behavior, (id1, id2) -> 0);
 		}
@@ -383,7 +386,7 @@ public final class DataUtil {
 		 * {@code a}'s. In this case, {@code a}'s {@code modComparator} should be something like
 		 * {@code (id1, id2) -> id2.equals("b") ? -1 : 0}, and {@code b}'s should be {@code (id1, id2) -> id2.equals("a") ? 1 : 0}.</p>
 		 *
-		 * @param modId the ID of the mod registering the condition.
+		 * @param modId The ID of the mod registering the condition.
 		 * @param item The {@link Item} to register the {@code behavior} for.
 		 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments,
 		 *                  returning true if {@code behavior} should be performed.
@@ -393,7 +396,8 @@ public final class DataUtil {
 		 *                        It should return 1 if {@code behavior} is to be registered after the other behavior, -1 if
 		 *                        it should go before, and 0 in any other case.
 		 *
-		 * */
+		 *
+		 */
 		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior, Comparator<String> modIdComparator) {
 			this.modId = modId;
 			this.item = item;
