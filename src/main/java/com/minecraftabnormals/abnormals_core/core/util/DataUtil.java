@@ -212,20 +212,20 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Registers a {@link CustomNoteBlockInstrument} that will be used to play a custom note block sound if a
+	 * Registers a {@link CustomNoteBlockInstrument} that will get used to play a custom note block sound if a
 	 * {@link BlockState} predicate (representing the position under the note block) passes.
 	 * See {@link CustomNoteBlockInstrument} for details.
 	 *
 	 * <p>Since Abnormals Core adds instruments to an internal list at the end of mod loading, mods should call
 	 * this method as early as possible, ideally in an
-	 * {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent FMLCommonSetupEvent}.</p>
+	 * {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent FMLCommonSetupEvent} listener.</p>
 	 *
-	 * @param instrument The {@link CustomNoteBlockInstrument} to be registered.
+	 * @param instrument The {@link CustomNoteBlockInstrument} to get registered.
 	 *
 	 * @see CustomNoteBlockInstrument
 	 *
 	 * @author abigailfails
-	 * */
+	 */
 	public static void registerNoteBlockInstrument(CustomNoteBlockInstrument instrument) {
 		CUSTOM_NOTE_BLOCK_INSTRUMENTS.add(instrument);
 	}
@@ -366,8 +366,8 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Returns the list of registered {@link CustomNoteBlockInstrument}s, sorted by their comparators. Intended for
-	 * internal use.
+	 * Returns the list of registered {@link CustomNoteBlockInstrument}s, sorted by their comparators.
+	 * <b>Intended for internal use.</b>
 	 *
 	 * @author abigailfails
 	 */
@@ -533,7 +533,7 @@ public final class DataUtil {
 			return this.condition.test(state);
 		}
 
-		public SoundEvent sound() {
+		public SoundEvent getSound() {
 			return this.sound;
 		}
 	}
