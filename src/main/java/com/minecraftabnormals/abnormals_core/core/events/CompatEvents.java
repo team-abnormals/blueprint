@@ -6,24 +6,21 @@ import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
@@ -31,9 +28,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,6 +39,7 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
 public final class CompatEvents {
 	public static final String POISON_TAG = AbnormalsCore.MODID + ":poisoned_by_potato";
+	public static final String NOTE_KEY = "minecraft:note";
 	public static List<DataUtil.CustomNoteBlockInstrument> SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS = null;
 
 	@SubscribeEvent
@@ -81,7 +77,7 @@ public final class CompatEvents {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onNoteBlockPlay(NoteBlockEvent.Play event) {
 		if (SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS  != null) {
-			IWorld world = event.getWorld();
+			World world = (World) event.getWorld();
 			BlockPos pos = event.getPos();
 			BlockState state = world.getBlockState(pos.relative(Direction.DOWN));
 			for (DataUtil.CustomNoteBlockInstrument instrument : SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS) {
@@ -89,9 +85,7 @@ public final class CompatEvents {
 					SoundEvent sound = instrument.getSound();
 					double note = event.getVanillaNoteId();
 					world.playSound(null, pos, sound, SoundCategory.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
-					ResourceLocation noteId = ForgeRegistries.PARTICLE_TYPES.getKey(ParticleTypes.NOTE);
-					if (noteId != null)
-						NetworkUtil.spawnParticle(noteId.toString(), pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
+					NetworkUtil.spawnParticle(NOTE_KEY, world.dimension(), pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
 					event.setCanceled(true);
 					break;
 				}
