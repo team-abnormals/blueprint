@@ -86,7 +86,7 @@ public final class CompatEvents {
 			BlockState state = world.getBlockState(pos.relative(Direction.DOWN));
 			for (DataUtil.CustomNoteBlockInstrument instrument : SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS) {
 				if (instrument.test(state)) {
-					SoundEvent sound = instrument.sound();
+					SoundEvent sound = instrument.getSound();
 					double note = event.getVanillaNoteId();
 					world.playSound(null, pos, sound, SoundCategory.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
 					ResourceLocation noteId = ForgeRegistries.PARTICLE_TYPES.getKey(ParticleTypes.NOTE);
