@@ -5,7 +5,7 @@ import com.minecraftabnormals.abnormals_core.core.api.IAgeableEntity;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
-import net.minecraft.block.BlockState;
+import net.minecraft.dispenser.ProxyBlockSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,6 +21,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
@@ -78,16 +79,17 @@ public final class CompatEvents {
 	public static void onNoteBlockPlay(NoteBlockEvent.Play event) {
 		if (SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS  != null) {
 			World world = (World) event.getWorld();
-			BlockPos pos = event.getPos();
-			BlockState state = world.getBlockState(pos.relative(Direction.DOWN));
-			for (DataUtil.CustomNoteBlockInstrument instrument : SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS) {
-				if (instrument.test(state)) {
-					SoundEvent sound = instrument.getSound();
-					double note = event.getVanillaNoteId();
-					world.playSound(null, pos, sound, SoundCategory.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
-					NetworkUtil.spawnParticle(NOTE_KEY, world.dimension(), pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
-					event.setCanceled(true);
-					break;
+			if (!world.isClientSide()) {
+				BlockPos pos = event.getPos();
+				for (DataUtil.CustomNoteBlockInstrument instrument : SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS) {
+					if (instrument.test(new ProxyBlockSource((ServerWorld) world, pos.relative(Direction.DOWN)))) {
+						SoundEvent sound = instrument.getSound();
+						double note = event.getVanillaNoteId();
+						world.playSound(null, pos, sound, SoundCategory.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
+						NetworkUtil.spawnParticle(NOTE_KEY, world.dimension(), pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
+						event.setCanceled(true);
+						break;
+					}
 				}
 			}
 		}

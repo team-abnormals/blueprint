@@ -96,8 +96,8 @@ public final class ACTest {
 			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::checkAnimalSpawnRules);
 		});
 
-		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(AbnormalsCore.MODID, state -> state.getMaterial() == Material.HEAVY_METAL, SoundEvents.BELL_BLOCK));
-		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(ACTest.MOD_ID, state -> state.is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, (id1, id2) -> id2.equals("abnormals_core") ? -1 : 0));
+		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(AbnormalsCore.MODID, source -> source.getBlockState().getMaterial() == Material.HEAVY_METAL, SoundEvents.BELL_BLOCK));
+		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(ACTest.MOD_ID, source -> source.getBlockState().is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, (id1, id2) -> id2.equals("abnormals_core") ? -1 : 0));
 
 		BiomeModificationManager instance = BiomeModificationManager.INSTANCE;
 		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.PLAINS), GenerationStage.Decoration.VEGETAL_DECORATION, () -> Features.BIRCH.decorated(Placement.DARK_OAK_TREE.configured(IPlacementConfig.NONE))));

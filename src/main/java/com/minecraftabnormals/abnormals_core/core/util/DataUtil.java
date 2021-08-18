@@ -213,7 +213,7 @@ public final class DataUtil {
 
 	/**
 	 * Registers a {@link CustomNoteBlockInstrument} that will get used to play a custom note block sound if a
-	 * {@link BlockState} predicate (representing the position under the note block) passes.
+	 * {@link IBlockSource} predicate (representing the position under the note block) passes.
 	 * See {@link CustomNoteBlockInstrument} for details.
 	 *
 	 * <p>Since Abnormals Core adds instruments to an internal list at the end of mod loading, mods should call
@@ -466,7 +466,7 @@ public final class DataUtil {
 	/**
 	 * When an instance of this class is registered using
 	 * {@link DataUtil#registerNoteBlockInstrument(CustomNoteBlockInstrument)}, note blocks will play a custom sound
-	 * if a blockstate predicate for the position under the note block passes. See constructor for details.
+	 * if an {@link IBlockSource} predicate for the position under the note block passes. See constructor for details.
 	 *
 	 * <p>If multiple mods add new instruments the predicates may overlap, which is what
 	 * {@code modIdComparator} is intended to solve.</p>
@@ -476,7 +476,7 @@ public final class DataUtil {
 	public static class CustomNoteBlockInstrument implements Comparable<CustomNoteBlockInstrument> {
 		protected final String modId;
 		protected final Comparator<String> modIdComparator;
-		protected final Predicate<BlockState> condition;
+		protected final Predicate<IBlockSource> condition;
 		private final SoundEvent sound;
 
 		/**
@@ -484,11 +484,11 @@ public final class DataUtil {
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
 		 * @param modId The ID of the mod registering the condition.
-		 * @param condition A {@link Predicate} that takes in a {@link BlockState} instance that represents the position
-		 *                  under the note block, returning true if {@code sound} should be played.
+		 * @param condition A {@link Predicate} that takes in a {@link IBlockSource} instance that represents the
+		 *                  position under the note block, returning true if {@code sound} should be played.
 		 * @param sound The {@link SoundEvent} that will be played if {@code condition} is met.
 		 */
-		public CustomNoteBlockInstrument(String modId, Predicate<BlockState> condition, SoundEvent sound){
+		public CustomNoteBlockInstrument(String modId, Predicate<IBlockSource> condition, SoundEvent sound){
 			this(modId, condition, sound, (id1, id2) -> 0);
 		}
 
@@ -496,7 +496,7 @@ public final class DataUtil {
 		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
-		 * <p>If multiple mods add new instruments and the {@link BlockState} predicates overlap such that the order
+		 * <p>If multiple mods add new instruments and the {@link IBlockSource} predicates overlap such that the order
 		 * that they are registered in matters, {@code modIdComparator} (where the first parameter is {@code modId} and
 		 * the second parameter is the mod ID of another {@link CustomNoteBlockInstrument} instance) can be used to
 		 * ensure this order regardless of which mod is loaded first.</p>
@@ -509,15 +509,15 @@ public final class DataUtil {
 		 * {@code (id1, id2) -> id2.equals("a") ? -1 : 0}.</p>
 		 *
 		 * @param modId The ID of the mod registering the condition.
-		 * @param condition A {@link Predicate} that takes in a {@link BlockState} predicate, returning true if
-		 * 					{@code sound} should be played.
+		 * @param condition A {@link Predicate} that takes in a {@link IBlockSource} instance that represents the
+		 *                  position under the note block, returning true if {@code sound} should be played.
 		 * @param sound The {@link SoundEvent} that will be played if {@code condition} is met.
 		 * @param modIdComparator A {@link Comparator} that compares two strings. The first is {@code modId}, and the
 		 *                        second is the mod id for another note block instrument.
 		 *                        It should return 1 if {@code condition} should be tested after the other instrument's,
 		 *                        -1 if it should go before, and 0 in any other case.
 		 */
-		public CustomNoteBlockInstrument(String modId, Predicate<BlockState> condition, SoundEvent sound, Comparator<String> modIdComparator){
+		public CustomNoteBlockInstrument(String modId, Predicate<IBlockSource> condition, SoundEvent sound, Comparator<String> modIdComparator){
 			this.modId = modId;
 			this.condition = condition;
 			this.sound = sound;
@@ -529,8 +529,8 @@ public final class DataUtil {
 			return this.modIdComparator.compare(this.modId, instrument.modId);
 		}
 
-		public boolean test(BlockState state) {
-			return this.condition.test(state);
+		public boolean test(IBlockSource source) {
+			return this.condition.test(source);
 		}
 
 		public SoundEvent getSound() {
