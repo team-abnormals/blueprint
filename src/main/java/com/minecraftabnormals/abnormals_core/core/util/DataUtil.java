@@ -475,9 +475,9 @@ public final class DataUtil {
 	 */
 	public static class CustomNoteBlockInstrument implements Comparable<CustomNoteBlockInstrument> {
 		protected final String modId;
-		protected final Predicate<BlockState> condition;
-		protected final SoundEvent sound;
 		protected final Comparator<String> modIdComparator;
+		protected final Predicate<BlockState> condition;
+		public final SoundEvent sound;
 
 		/**
 		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
