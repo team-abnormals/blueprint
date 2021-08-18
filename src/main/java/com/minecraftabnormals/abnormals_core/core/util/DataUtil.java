@@ -384,7 +384,7 @@ public final class DataUtil {
 	 *
 	 * <p>This works even if multiple mods
 	 * add new behavior to the same item, though the conditions may overlap, which is what
-	 * {@code modComparator} is intended to solve.</p>
+	 * {@code modIdComparator} is intended to solve.</p>
 	 *
 	 * @author abigailfails
 	 */
@@ -427,7 +427,7 @@ public final class DataUtil {
 		 * <p>For example, if a mod with the ID {@code a} has a behavior where its condition passes if any block is in front
 		 * of the dispenser, but a mod with the ID {@code b} has a behavior for the same item that passes only if a specific
 		 * block is in front of the dispenser, authors may want to make sure that {@code b}'s condition is registered after
-		 * {@code a}'s. In this case, {@code a}'s {@code modComparator} should be something like
+		 * {@code a}'s. In this case, {@code a}'s {@code modIdComparator} should be something like
 		 * {@code (id1, id2) -> id2.equals("b") ? -1 : 0}, and {@code b}'s should be {@code (id1, id2) -> id2.equals("a") ? 1 : 0}.</p>
 		 *
 		 * @param modId The ID of the mod registering the condition.
@@ -450,7 +450,7 @@ public final class DataUtil {
 
 		@Override
 		public int compareTo(AlternativeDispenseBehavior behavior) {
-			return this.item == behavior.item ? modIdComparator.compare(this.modId, behavior.modId) : 0;
+			return this.item == behavior.item ? this.modIdComparator.compare(this.modId, behavior.modId) : 0;
 		}
 
 		/**
