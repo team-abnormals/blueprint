@@ -23,6 +23,7 @@ import net.minecraft.potion.PotionBrewing;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
@@ -45,10 +46,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public final class DataUtil {
 	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "func_193357_a", Potion.class, Item.class, Potion.class);
 	private static final Vector<AlternativeDispenseBehavior> ALTERNATIVE_DISPENSE_BEHAVIORS = new Vector<>();
+	private static final Vector<CustomNoteBlockInstrument> CUSTOM_NOTE_BLOCK_INSTRUMENTS = new Vector<>();
 
 	public static void registerFlammable(Block block, int encouragement, int flammability) {
 		FireBlock fire = (FireBlock) Blocks.FIRE;
@@ -209,6 +212,25 @@ public final class DataUtil {
 	}
 
 	/**
+	 * Registers a {@link CustomNoteBlockInstrument} that will be used to play a custom note block sound if a
+	 * {@link BlockState} predicate (representing the position under the note block) passes.
+	 * See {@link CustomNoteBlockInstrument} for details.
+	 *
+	 * <p>Since Abnormals Core adds instruments to an internal list at the end of mod loading, mods should call
+	 * this method as early as possible, ideally in an
+	 * {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent FMLCommonSetupEvent}.</p>
+	 *
+	 * @param instrument The {@link CustomNoteBlockInstrument} to be registered.
+	 *
+	 * @see CustomNoteBlockInstrument
+	 *
+	 * @author abigailfails
+	 * */
+	public static void registerNoteBlockInstrument(CustomNoteBlockInstrument instrument) {
+		CUSTOM_NOTE_BLOCK_INSTRUMENTS.add(instrument);
+	}
+
+	/**
 	 * Adds a new {@link JigsawPiece} to a pre-existing {@link JigsawPattern}.
 	 *
 	 * @param toAdd The {@link ResourceLocation} of the pattern to insert the new piece into.
@@ -344,6 +366,18 @@ public final class DataUtil {
 	}
 
 	/**
+	 * Returns the list of registered {@link CustomNoteBlockInstrument}s, sorted by their comparators. Intended for
+	 * internal use.
+	 *
+	 * @author abigailfails
+	 */
+	public static List<CustomNoteBlockInstrument> getSortedCustomNoteBlockInstruments() {
+		List<CustomNoteBlockInstrument> instruments = new ArrayList<>(CUSTOM_NOTE_BLOCK_INSTRUMENTS);
+		Collections.sort(instruments);
+		return instruments;
+	}
+
+	/**
 	 * When an instance of this class is registered using {@link DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)},
 	 * an {@link IDispenseItemBehavior} will get registered that will perform a new {@link IDispenseItemBehavior} if
 	 * a condition is met and the behavior that was already in the registry if not. See constructor for details.
@@ -426,6 +460,81 @@ public final class DataUtil {
 		public void register() {
 			IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSER_REGISTRY.get(item);
 			DispenserBlock.registerBehavior(item, (source, stack) -> condition.test(source, stack) ? behavior.dispense(source, stack) : oldBehavior.dispense(source, stack));
+		}
+	}
+
+	/**
+	 * When an instance of this class is registered using
+	 * {@link DataUtil#registerNoteBlockInstrument(CustomNoteBlockInstrument)}, note blocks will play a custom sound
+	 * if a blockstate predicate for the position under the note block passes. See constructor for details.
+	 *
+	 * <p>If multiple mods add new instruments the predicates may overlap, which is what
+	 * {@code modIdComparator} is intended to solve.</p>
+	 *
+	 * @author abigailfails
+	 */
+	public static class CustomNoteBlockInstrument implements Comparable<CustomNoteBlockInstrument> {
+		protected final String modId;
+		protected final Predicate<BlockState> condition;
+		protected final SoundEvent sound;
+		protected final Comparator<String> modIdComparator;
+
+		/**
+		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
+		 * should get played instead of vanilla's when a note block is triggered.
+		 *
+		 * @param modId The ID of the mod registering the condition.
+		 * @param condition A {@link Predicate} that takes in a {@link BlockState} instance that represents the position
+		 *                  under the note block, returning true if {@code sound} should be played.
+		 * @param sound The {@link SoundEvent} that will be played if {@code condition} is met.
+		 */
+		public CustomNoteBlockInstrument(String modId, Predicate<BlockState> condition, SoundEvent sound){
+			this(modId, condition, sound, (id1, id2) -> 0);
+		}
+
+		/**
+		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
+		 * should get played instead of vanilla's when a note block is triggered.
+		 *
+		 * <p>If multiple mods add new instruments and the {@link BlockState} predicates overlap such that the order
+		 * that they are registered in matters, {@code modIdComparator} (where the first parameter is {@code modId} and
+		 * the second parameter is the mod ID of another {@link CustomNoteBlockInstrument} instance) can be used to
+		 * ensure this order regardless of which mod is loaded first.</p>
+		 *
+		 * <p>For example, if a mod with the ID {@code a} has an instrument that plays if the block under the note
+		 * block's material is {@code HEAVY_METAL}, but a mod with the ID {@code b} has an instrument that plays if the
+		 * block is a lodestone, authors may want to make sure that {@code b}'s condition is tested before {@code a}'s.
+		 * In this case, {@code a}'s {@code modIdComparator} should be something like
+		 * {@code (id1, id2) -> id2.equals("b") ? 1 : 0}, and {@code b}'s should be
+		 * {@code (id1, id2) -> id2.equals("a") ? -1 : 0}.</p>
+		 *
+		 * @param modId The ID of the mod registering the condition.
+		 * @param condition A {@link Predicate} that takes in a {@link BlockState} predicate, returning true if
+		 * 					{@code sound} should be played.
+		 * @param sound The {@link SoundEvent} that will be played if {@code condition} is met.
+		 * @param modIdComparator A {@link Comparator} that compares two strings. The first is {@code modId}, and the
+		 *                        second is the mod id for another note block instrument.
+		 *                        It should return 1 if {@code condition} should be tested after the other instrument's,
+		 *                        -1 if it should go before, and 0 in any other case.
+		 */
+		public CustomNoteBlockInstrument(String modId, Predicate<BlockState> condition, SoundEvent sound, Comparator<String> modIdComparator){
+			this.modId = modId;
+			this.condition = condition;
+			this.sound = sound;
+			this.modIdComparator = modIdComparator;
+		}
+
+		@Override
+		public int compareTo(CustomNoteBlockInstrument instrument) {
+			return this.modIdComparator.compare(this.modId, instrument.modId);
+		}
+
+		public boolean test(BlockState state) {
+			return this.condition.test(state);
+		}
+
+		public SoundEvent sound() {
+			return this.sound;
 		}
 	}
 }

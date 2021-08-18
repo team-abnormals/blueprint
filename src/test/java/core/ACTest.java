@@ -10,9 +10,11 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.GlobalStorage;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.DataProcessors;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
+import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.registry.LootInjectionRegistry;
 import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
+import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.mojang.datafixers.util.Pair;
 import common.world.TestGlobalStorage;
@@ -20,12 +22,15 @@ import core.registry.TestBiomes;
 import core.registry.TestEntities;
 import core.registry.TestFeatures;
 import core.registry.TestItems;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
@@ -90,6 +95,9 @@ public final class ACTest {
 			BiomeUtil.addNetherBiome(new Biome.Attributes(0.0F, 0.1F, 0.0F, 0.0F, 0.25F), TestBiomes.TEST_NETHER.getKey());
 			EntitySpawnPlacementRegistry.register(TestEntities.COW.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CowEntity::checkAnimalSpawnRules);
 		});
+
+		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(AbnormalsCore.MODID, state -> state.getMaterial() == Material.HEAVY_METAL, SoundEvents.BELL_BLOCK));
+		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(ACTest.MOD_ID, state -> state.is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, (id1, id2) -> id2.equals("abnormals_core") ? -1 : 0));
 
 		BiomeModificationManager instance = BiomeModificationManager.INSTANCE;
 		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.PLAINS), GenerationStage.Decoration.VEGETAL_DECORATION, () -> Features.BIRCH.decorated(Placement.DARK_OAK_TREE.configured(IPlacementConfig.NONE))));
