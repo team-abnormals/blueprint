@@ -34,7 +34,7 @@ public final class NetworkUtil {
 	/**
 	 * All other parameters work same as world#addParticle
 	 * <p>Used for adding particles to client worlds from the server side</p>
-	 * @param name - The registry name of the particle
+	 * @param name The registry name of the particle
 	 */
 	public static void spawnParticle(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageS2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
@@ -45,8 +45,8 @@ public final class NetworkUtil {
 	 * <p>Used for adding particles to client worlds from the server side</p>
 	 * <p>Only sends the packet to players in {@code dimension}</p>
 	 *
-	 * @param name - The registry name of the particle
-	 * @param dimension - The dimension to spawn the particle in. You can get this using {@link World#dimension()}
+	 * @param name The registry name of the particle
+	 * @param dimension The dimension to spawn the particle in. You can get this using {@link World#dimension()}
 	 */
 	public static void spawnParticle(String name, RegistryKey<World> dimension, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.DIMENSION.with(() -> dimension), new MessageS2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
@@ -55,10 +55,10 @@ public final class NetworkUtil {
 	/**
 	 * Teleports the entity to a specified location
 	 *
-	 * @param entity - The Entity to teleport
-	 * @param posX   - The x position
-	 * @param posY   - The y position
-	 * @param posZ   - The z position
+	 * @param entity The Entity to teleport
+	 * @param posX   The x position
+	 * @param posY   The y position
+	 * @param posZ   The z position
 	 */
 	public static void teleportEntity(Entity entity, double posX, double posY, double posZ) {
 		entity.moveTo(posX, posY, posZ, entity.yRot, entity.xRot);
@@ -68,8 +68,8 @@ public final class NetworkUtil {
 	/**
 	 * Sends an animation message to the clients to update an entity's animations
 	 *
-	 * @param entity           - The Entity to send the packet for
-	 * @param endimationToPlay - The endimation to play
+	 * @param entity           The Entity to send the packet for
+	 * @param endimationToPlay The endimation to play
 	 */
 	public static <E extends Entity & IEndimatedEntity> void setPlayingAnimationMessage(E entity, Endimation endimationToPlay) {
 		if (!entity.level.isClientSide) {
@@ -81,7 +81,7 @@ public final class NetworkUtil {
 	/**
 	 * Send a packet to the client to redirect them to another server
 	 *
-	 * @param address - The address to connect to
+	 * @param address The address to connect to
 	 */
 	public static void redirectToServer(ServerPlayerEntity player, String address) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MessageS2CServerRedirect(address));
@@ -90,7 +90,7 @@ public final class NetworkUtil {
 	/**
 	 * Send a packet to all clients to redirect them to another server
 	 *
-	 * @param address - The address to connect to
+	 * @param address The address to connect to
 	 */
 	public static void redirectAllToServer(String address) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageS2CServerRedirect(address));
