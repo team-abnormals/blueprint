@@ -23,6 +23,7 @@ import com.minecraftabnormals.abnormals_core.core.api.conditions.config.*;
 import com.minecraftabnormals.abnormals_core.core.api.model.FullbrightModel;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.endimator.EndimationDataManager;
+import com.minecraftabnormals.abnormals_core.core.events.CompatEvents;
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.ACLootConditions;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
@@ -152,7 +153,10 @@ public final class AbnormalsCore {
 	}
 
 	private void postLoadingSetup(FMLLoadCompleteEvent event) {
-		event.enqueueWork(() -> DataUtil.getSortedAlternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register));
+		event.enqueueWork(() -> {
+			DataUtil.getSortedAlternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register);
+			CompatEvents.SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS = DataUtil.getSortedCustomNoteBlockInstruments();
+		});
 	}
 
 	private void modelSetup(ModelRegistryEvent event) {
