@@ -5,6 +5,7 @@ import com.minecraftabnormals.abnormals_core.core.api.IAgeableEntity;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.ProxyBlockSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -81,8 +82,9 @@ public final class CompatEvents {
 			World world = (World) event.getWorld();
 			if (!world.isClientSide()) {
 				BlockPos pos = event.getPos();
+				IBlockSource source = new ProxyBlockSource((ServerWorld) world, pos.relative(Direction.DOWN));
 				for (DataUtil.CustomNoteBlockInstrument instrument : SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS) {
-					if (instrument.test(new ProxyBlockSource((ServerWorld) world, pos.relative(Direction.DOWN)))) {
+					if (instrument.test(source)) {
 						SoundEvent sound = instrument.getSound();
 						double note = event.getVanillaNoteId();
 						world.playSound(null, pos, sound, SoundCategory.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
