@@ -44,17 +44,17 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	}
 
 	@Override
-	public boolean isSignalSource(BlockState p_149744_1_) {
+	public boolean isSignalSource(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public int getSignal(BlockState p_180656_1_, IBlockReader p_180656_2_, BlockPos p_180656_3_, Direction p_180656_4_) {
-		return MathHelper.clamp(ChestTileEntity.getOpenCount(p_180656_2_, p_180656_3_), 0, 15);
+	public int getSignal(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
+		return MathHelper.clamp(ChestTileEntity.getOpenCount(world, pos), 0, 15);
 	}
 
 	@Override
-	public int getDirectSignal(BlockState p_176211_1_, IBlockReader p_176211_2_, BlockPos p_176211_3_, Direction p_176211_4_) {
-		return p_176211_4_ == Direction.UP ? p_176211_1_.getSignal(p_176211_2_, p_176211_3_, p_176211_4_) : 0;
+	public int getDirectSignal(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
+		return face == Direction.UP ? state.getSignal(world, pos, face) : 0;
 	}
 }
