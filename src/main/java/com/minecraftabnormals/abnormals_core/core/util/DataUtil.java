@@ -133,7 +133,7 @@ public final class DataUtil {
 	/**
 	 * Changes the localization key of an item
 	 *
-	 * @param item The {@link Item} being re-localized
+	 * @param item  The {@link Item} being re-localized
 	 * @param modid The modid of the mod changing the localization
 	 * @param name  The new name of the item
 	 */
@@ -157,14 +157,16 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Adds an {@link EnchantmentType} to an EnchantmentType array
+	 * Adds an {@link EnchantmentType} to an EnchantmentType array.
 	 *
-	 * @param array   The array being modified
-	 * @param element The enchantment being added
+	 * @param array   The array being modified.
+	 * @param element The enchantment being added.
+	 * @deprecated Will get changed in 1.17 to be generic.
 	 */
+	@Deprecated
 	public static EnchantmentType[] add(EnchantmentType[] array, EnchantmentType element) {
 		int arrayLength = Array.getLength(array);
-		Object newArrayObject = Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
+		EnchantmentType[] newArrayObject = (EnchantmentType[]) Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
 		System.arraycopy(array, 0, newArrayObject, 0, arrayLength);
 		array[array.length - 1] = element;
 		return array;
@@ -184,18 +186,16 @@ public final class DataUtil {
 
 	/**
 	 * <p>Slates a {@link AlternativeDispenseBehavior} instance for later processing, where it will be used to register
-	 * an {@link IDispenseItemBehavior} that performs the new behavior if its condition is met and the behavior that was 
+	 * an {@link IDispenseItemBehavior} that performs the new behavior if its condition is met and the behavior that was
 	 * already registered if not. See {@link AlternativeDispenseBehavior} for details.
 	 *
 	 * <p>Since Abnormals Core handles registering the condition at the right time, mods should call this method as
 	 * early as possible, ideally in an {@link net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent#enqueueWork enqueueWork}
 	 * call within an {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent FMLCommonSetupEvent}.</p>
 	 *
-	 * @param behavior The {@link AlternativeDispenseBehavior} to be registered.  
-	 *
-	 * @see AlternativeDispenseBehavior
-	 *
+	 * @param behavior The {@link AlternativeDispenseBehavior} to be registered.
 	 * @author abigailfails
+	 * @see AlternativeDispenseBehavior
 	 */
 	public static void registerAlternativeDispenseBehavior(AlternativeDispenseBehavior behavior) {
 		ALTERNATIVE_DISPENSE_BEHAVIORS.add(behavior);
@@ -221,10 +221,8 @@ public final class DataUtil {
 	 * {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent FMLCommonSetupEvent} listener.</p>
 	 *
 	 * @param instrument The {@link CustomNoteBlockInstrument} to get registered.
-	 *
-	 * @see CustomNoteBlockInstrument
-	 *
 	 * @author abigailfails
+	 * @see CustomNoteBlockInstrument
 	 */
 	public static void registerNoteBlockInstrument(CustomNoteBlockInstrument instrument) {
 		CUSTOM_NOTE_BLOCK_INSTRUMENTS.add(instrument);
@@ -233,10 +231,9 @@ public final class DataUtil {
 	/**
 	 * Adds a new {@link JigsawPiece} to a pre-existing {@link JigsawPattern}.
 	 *
-	 * @param toAdd The {@link ResourceLocation} of the pattern to insert the new piece into.
+	 * @param toAdd    The {@link ResourceLocation} of the pattern to insert the new piece into.
 	 * @param newPiece The {@link JigsawPiece} to insert into {@code toAdd}.
-	 * @param weight The probability weight of {@code newPiece}.
-	 *
+	 * @param weight   The probability weight of {@code newPiece}.
 	 * @author abigailfails
 	 */
 	public static void addToJigsawPattern(ResourceLocation toAdd, JigsawPiece newPiece, int weight) {
@@ -265,7 +262,7 @@ public final class DataUtil {
 	 * <p>All the {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}s in the objects in
 	 * {@code configObjects} with a {@link ConfigKey} annotation are mapped to the string values
 	 * of their field's annotation.
-
+	 *
 	 * <p>The stored names are used to target config fields from JSON files. When defining a condition with<br>
 	 * {@code "type": "[modId]:config"}<br>
 	 * you use the {@code "value"} argument to specify the config value to target.
@@ -315,11 +312,10 @@ public final class DataUtil {
 	 * but you can create custom predicates and register them with
 	 * {@link DataUtil#registerConfigPredicate(IConfigPredicateSerializer)}.</p>
 	 *
-	 * @param modId The mod ID to register the config condition under. The reason this is required and that you can't just
-	 *              register your values under {@code "abnormals_core:config"} is because there could be duplicate keys
-	 *              between mods.
+	 * @param modId         The mod ID to register the config condition under. The reason this is required and that you can't just
+	 *                      register your values under {@code "abnormals_core:config"} is because there could be duplicate keys
+	 *                      between mods.
 	 * @param configObjects The list of objects to get config keys from. The {@link ConfigKey} values must be unique.
-	 *
 	 * @author abigailfails
 	 */
 	public static void registerConfigCondition(String modId, Object... configObjects) {
@@ -330,7 +326,8 @@ public final class DataUtil {
 					field.setAccessible(true);
 					try {
 						configValues.put(field.getAnnotation(ConfigKey.class).value(), (ForgeConfigSpec.ConfigValue<?>) field.get(object));
-					} catch (IllegalAccessException ignored) {}
+					} catch (IllegalAccessException ignored) {
+					}
 				}
 			}
 		}
@@ -402,11 +399,11 @@ public final class DataUtil {
 		 * <p>Ideally, the condition should be implemented such that the predicate only passes if the new behavior will
 		 * be 'successful', avoiding problems with failure sounds not playing.</p>
 		 *
-		 * @param modId The ID of the mod registering the condition.
-		 * @param item The {@link Item} to register the {@code behavior} for.
+		 * @param modId     The ID of the mod registering the condition.
+		 * @param item      The {@link Item} to register the {@code behavior} for.
 		 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments,
 		 *                  returning true if {@code behavior} should be performed.
-		 * @param behavior The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
+		 * @param behavior  The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
 		 */
 		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
 			this(modId, item, condition, behavior, (id1, id2) -> 0);
@@ -430,11 +427,11 @@ public final class DataUtil {
 		 * {@code a}'s. In this case, {@code a}'s {@code modIdComparator} should be something like
 		 * {@code (id1, id2) -> id2.equals("b") ? -1 : 0}, and {@code b}'s should be {@code (id1, id2) -> id2.equals("a") ? 1 : 0}.</p>
 		 *
-		 * @param modId The ID of the mod registering the condition.
-		 * @param item The {@link Item} to register the {@code behavior} for.
-		 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments,
-		 *                  returning true if {@code behavior} should be performed.
-		 * @param behavior The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
+		 * @param modId           The ID of the mod registering the condition.
+		 * @param item            The {@link Item} to register the {@code behavior} for.
+		 * @param condition       A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments,
+		 *                        returning true if {@code behavior} should be performed.
+		 * @param behavior        The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
 		 * @param modIdComparator A {@link Comparator} that compares two strings. The first is {@code modId}, and the
 		 *                        second is the mod id for another behavior registered to the same item.
 		 *                        It should return 1 if {@code behavior} is to be registered after the other behavior, -1 if
@@ -483,12 +480,12 @@ public final class DataUtil {
 		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
-		 * @param modId The ID of the mod registering the condition.
+		 * @param modId     The ID of the mod registering the condition.
 		 * @param condition A {@link Predicate} that takes in a {@link IBlockSource} instance that represents the
 		 *                  position under the note block, returning true if {@code sound} should be played.
-		 * @param sound The {@link SoundEvent} that will be played if {@code condition} is met.
+		 * @param sound     The {@link SoundEvent} that will be played if {@code condition} is met.
 		 */
-		public CustomNoteBlockInstrument(String modId, Predicate<IBlockSource> condition, SoundEvent sound){
+		public CustomNoteBlockInstrument(String modId, Predicate<IBlockSource> condition, SoundEvent sound) {
 			this(modId, condition, sound, (id1, id2) -> 0);
 		}
 
@@ -508,16 +505,16 @@ public final class DataUtil {
 		 * {@code (id1, id2) -> id2.equals("b") ? 1 : 0}, and {@code b}'s should be
 		 * {@code (id1, id2) -> id2.equals("a") ? -1 : 0}.</p>
 		 *
-		 * @param modId The ID of the mod registering the condition.
-		 * @param condition A {@link Predicate} that takes in a {@link IBlockSource} instance that represents the
-		 *                  position under the note block, returning true if {@code sound} should be played.
-		 * @param sound The {@link SoundEvent} that will be played if {@code condition} is met.
+		 * @param modId           The ID of the mod registering the condition.
+		 * @param condition       A {@link Predicate} that takes in a {@link IBlockSource} instance that represents the
+		 *                        position under the note block, returning true if {@code sound} should be played.
+		 * @param sound           The {@link SoundEvent} that will be played if {@code condition} is met.
 		 * @param modIdComparator A {@link Comparator} that compares two strings. The first is {@code modId}, and the
 		 *                        second is the mod id for another note block instrument.
 		 *                        It should return 1 if {@code condition} should be tested after the other instrument's,
 		 *                        -1 if it should go before, and 0 in any other case.
 		 */
-		public CustomNoteBlockInstrument(String modId, Predicate<IBlockSource> condition, SoundEvent sound, Comparator<String> modIdComparator){
+		public CustomNoteBlockInstrument(String modId, Predicate<IBlockSource> condition, SoundEvent sound, Comparator<String> modIdComparator) {
 			this.modId = modId;
 			this.condition = condition;
 			this.sound = sound;
