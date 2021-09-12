@@ -68,6 +68,20 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
+	 * Creates and registers a {@link Block} with a {@link BlockItem} with custom {@link Item.Properties}
+	 *
+	 * @param name       - The block's name
+	 * @param supplier   - The supplied {@link Block}
+	 * @param properties - The {@link Item.Properties} for the {@link BlockItem}
+	 * @return A {@link RegistryObject} containing the created {@link Block}.
+	 */
+	public <B extends Block> RegistryObject<B> createBlock(String name, Supplier<? extends B> supplier, Item.Properties properties) {
+		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
+		this.itemRegister.register(name, () -> new BlockItem(block.get(), properties));
+		return block;
+	}
+
+	/**
 	 * Creates and registers a {@link Block} with a specified {@link BlockItem}
 	 *
 	 * @param name     - The block's name
