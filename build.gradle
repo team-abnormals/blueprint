@@ -83,16 +83,6 @@ minecraft {
     }
 }
 
-task deobfJar(type: Jar) {
-    description = "Creates a JAR containing the non-obfuscated compiled code."
-    from sourceSets.main.output
-    classifier = "deobf"
-}
-
-artifacts {
-    archives deobfJar
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
 
@@ -108,7 +98,6 @@ repositories {
 }
 
 jar {
-    classifier = "slim"
     manifest {
         attributes([
                 "Specification-Title"     : project.modName,
@@ -121,33 +110,39 @@ jar {
                 "MixinConfigs"            : project.modId + ".mixins.json"
         ])
     }
+    classifier = "slim"
+    finalizedBy "reobfJar"
+    finalizedBy "sourcesJar"
 }
 
 shadowJar {
     configurations = [project.configurations.shade]
     relocate "io.github.ocelot", "com.minecraftabnormals.abnormals_core.lib.sonar"
     classifier = null
+    finalizedBy "reobfShadowJar"
+    assemble.dependsOn shadowJar
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    archiveClassifier = "sources"
 }
 
 reobf {
     shadowJar {}
 }
 
-artifacts {
-    archives jar
-    archives shadowJar
-}
-
-build.dependsOn reobfShadowJar
-
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        maven(MavenPublication) {
             artifact shadowJar
+            artifact sourcesJar
         }
     }
     repositories {
-        if(project.hasProperty("jacksonMavenUser") && project.hasProperty("jacksonMavenPass")) {
+        if (project.hasProperty("jacksonMavenUser") && project.hasProperty("jacksonMavenPass")) {
             maven {
                 url "https://maven.jaackson.me"
                 credentials {
