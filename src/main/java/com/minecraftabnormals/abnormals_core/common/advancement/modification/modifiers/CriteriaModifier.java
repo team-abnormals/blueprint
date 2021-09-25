@@ -8,14 +8,12 @@ import com.minecraftabnormals.abnormals_core.common.advancement.modification.Adv
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.util.GsonHelper;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
-
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
 
 /**
  * An {@link AdvancementModifier} extension that modifies the criteria and requirements of an advancement.

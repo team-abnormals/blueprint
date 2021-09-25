@@ -8,20 +8,18 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
-
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
 
 /**
  * An {@link AdvancementModifier} extension that modifies the {@link DisplayInfo} of an advancement.

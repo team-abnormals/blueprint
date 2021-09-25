@@ -5,14 +5,12 @@ import com.google.gson.JsonObject;
 import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
 
 /**
  * An {@link AdvancementModifier} extension that modifies the rewards of an advancement.

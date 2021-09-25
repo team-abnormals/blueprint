@@ -1,9 +1,9 @@
 package com.minecraftabnormals.abnormals_core.common.world.modification;
 
 import com.google.common.collect.Sets;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraftforge.common.world.MobSpawnInfoBuilder;
@@ -40,27 +40,27 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeSpawnsModifier} for adding a {@link MobSpawnInfo.Spawners} for an {@link EntityType}.
+	 * Creates a {@link BiomeSpawnsModifier} for adding a {@link MobSpawnSettings.SpawnerData} for an {@link EntityType}.
 	 *
 	 * @param shouldModify   A {@link BiPredicate} for what biomes it should modify.
-	 * @param classification The {@link EntityClassification} to add the {@link MobSpawnInfo.Spawners} for.
-	 * @param typeSupplier   A {@link Supplier} of the {@link EntityType} to add the {@link MobSpawnInfo.Spawners} for.
-	 * @param weight         The weight for the {@link MobSpawnInfo.Spawners}.
+	 * @param classification The {@link MobCategory} to add the {@link MobSpawnSettings.SpawnerData} for.
+	 * @param typeSupplier   A {@link Supplier} of the {@link EntityType} to add the {@link MobSpawnSettings.SpawnerData} for.
+	 * @param weight         The weight for the {@link MobSpawnSettings.SpawnerData}.
 	 * @param minCount       The minimum spawn count.
 	 * @param maxCount       The maximum spawn count.
-	 * @return A {@link BiomeSpawnsModifier} for adding a {@link MobSpawnInfo.Spawners} for an {@link EntityType}.
+	 * @return A {@link BiomeSpawnsModifier} for adding a {@link MobSpawnSettings.SpawnerData} for an {@link EntityType}.
 	 */
 	public static BiomeSpawnsModifier createSpawnAdder(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, MobCategory classification, Supplier<EntityType<?>> typeSupplier, int weight, int minCount, int maxCount) {
 		return new BiomeSpawnsModifier(shouldModify, context -> context.event.getSpawns().addSpawn(classification, new MobSpawnSettings.SpawnerData(typeSupplier.get(), weight, minCount, maxCount)));
 	}
 
 	/**
-	 * Creates a {@link BiomeSpawnsModifier} for adding multiple {@link MobSpawnInfo.Spawners} for an {@link EntityClassification}.
+	 * Creates a {@link BiomeSpawnsModifier} for adding multiple {@link MobSpawnSettings.SpawnerData} for an {@link MobCategory}.
 	 *
 	 * @param shouldModify   A {@link BiPredicate} for what biomes it should modify.
-	 * @param classification The {@link EntityClassification} to add the {@link MobSpawnInfo.Spawners} for.
+	 * @param classification The {@link MobCategory} to add the {@link MobSpawnSettings.SpawnerData} for.
 	 * @param spawnInfoSet   A set of {@link SpawnInfo}s to add.
-	 * @return A {@link BiomeSpawnsModifier} for adding multiple {@link MobSpawnInfo.Spawners} for an {@link EntityClassification}.
+	 * @return A {@link BiomeSpawnsModifier} for adding multiple {@link MobSpawnSettings.SpawnerData} for an {@link MobCategory}.
 	 */
 	public static BiomeSpawnsModifier createMultiSpawnAdder(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, MobCategory classification, Set<SpawnInfo> spawnInfoSet) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
@@ -72,12 +72,12 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeSpawnsModifier} for adding multiple {@link MobSpawnInfo.Spawners} for multiple {@link EntityClassification}s.
+	 * Creates a {@link BiomeSpawnsModifier} for adding multiple {@link MobSpawnSettings.SpawnerData} for multiple {@link MobCategory}s.
 	 *
 	 * @param shouldModify    A {@link BiPredicate} for what biomes it should modify.
-	 * @param classifications A set of {@link EntityClassification} to add the {@link MobSpawnInfo.Spawners} for.
+	 * @param classifications A set of {@link MobCategory} to add the {@link MobSpawnSettings.SpawnerData} for.
 	 * @param spawnInfoSet    A set of {@link SpawnInfo}s to add.
-	 * @return A {@link BiomeSpawnsModifier} for adding multiple {@link MobSpawnInfo.Spawners} for an {@link EntityClassification}.
+	 * @return A {@link BiomeSpawnsModifier} for adding multiple {@link MobSpawnSettings.SpawnerData} for an {@link MobCategory}.
 	 */
 	public static BiomeSpawnsModifier createMultiSpawnAdder(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<MobCategory> classifications, Set<SpawnInfo> spawnInfoSet) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
@@ -91,24 +91,24 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeSpawnsModifier} for removing {@link MobSpawnInfo.Spawners} entries for {@link EntityType} of a {@link EntityClassification}.
+	 * Creates a {@link BiomeSpawnsModifier} for removing {@link MobSpawnSettings.SpawnerData} entries for {@link EntityType} of a {@link MobCategory}.
 	 *
 	 * @param shouldModify   A {@link BiPredicate} for what biomes it should modify.
-	 * @param classification The {@link EntityClassification} to remove the {@link MobSpawnInfo.Spawners} for.
-	 * @param typeSupplier   A {@link Supplier} of the {@link EntityType} to remove the {@link MobSpawnInfo.Spawners} for.
-	 * @return A {@link BiomeSpawnsModifier} for removing {@link MobSpawnInfo.Spawners} entries for {@link EntityType} of a {@link EntityClassification}.
+	 * @param classification The {@link MobCategory} to remove the {@link MobSpawnSettings.SpawnerData} for.
+	 * @param typeSupplier   A {@link Supplier} of the {@link EntityType} to remove the {@link MobSpawnSettings.SpawnerData} for.
+	 * @return A {@link BiomeSpawnsModifier} for removing {@link MobSpawnSettings.SpawnerData} entries for {@link EntityType} of a {@link MobCategory}.
 	 */
 	public static BiomeSpawnsModifier createSpawnRemover(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, MobCategory classification, Supplier<EntityType<?>> typeSupplier) {
 		return new BiomeSpawnsModifier(shouldModify, context -> context.event.getSpawns().addSpawn(classification, new MobSpawnSettings.SpawnerData(typeSupplier.get(), 0, 0, 0)));
 	}
 
 	/**
-	 * Creates a {@link BiomeSpawnsModifier} for removing {@link MobSpawnInfo.Spawners} entries for multiple {@link EntityType}s of a {@link EntityClassification}.
+	 * Creates a {@link BiomeSpawnsModifier} for removing {@link MobSpawnSettings.SpawnerData} entries for multiple {@link EntityType}s of a {@link MobCategory}.
 	 *
 	 * @param shouldModify   A {@link BiPredicate} for what biomes it should modify.
-	 * @param classification The {@link EntityClassification} to remove the {@link MobSpawnInfo.Spawners} for.
-	 * @param typeSuppliers  A set of {@link Supplier}s of the {@link EntityType}s to remove the {@link MobSpawnInfo.Spawners} for.
-	 * @return A {@link BiomeSpawnsModifier} for removing {@link MobSpawnInfo.Spawners} entries for multiple {@link EntityType}s of a {@link EntityClassification}.
+	 * @param classification The {@link MobCategory} to remove the {@link MobSpawnSettings.SpawnerData} for.
+	 * @param typeSuppliers  A set of {@link Supplier}s of the {@link EntityType}s to remove the {@link MobSpawnSettings.SpawnerData} for.
+	 * @return A {@link BiomeSpawnsModifier} for removing {@link MobSpawnSettings.SpawnerData} entries for multiple {@link EntityType}s of a {@link MobCategory}.
 	 */
 	public static BiomeSpawnsModifier createMultiSpawnRemover(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, MobCategory classification, Set<Supplier<EntityType<?>>> typeSuppliers) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
@@ -119,12 +119,12 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeSpawnsModifier} for removing {@link MobSpawnInfo.Spawners} entries for multiple {@link EntityType}s of multiple {@link EntityClassification}s.
+	 * Creates a {@link BiomeSpawnsModifier} for removing {@link MobSpawnSettings.SpawnerData} entries for multiple {@link EntityType}s of multiple {@link MobCategory}s.
 	 *
 	 * @param shouldModify    A {@link BiPredicate} for what biomes it should modify.
-	 * @param classifications A set of {@link EntityClassification}s to remove the {@link MobSpawnInfo.Spawners} for.
-	 * @param typeSuppliers   A set of {@link Supplier}s of the {@link EntityType}s to remove the {@link MobSpawnInfo.Spawners} for.
-	 * @return A {@link BiomeSpawnsModifier} for removing {@link MobSpawnInfo.Spawners} entries for multiple {@link EntityType}s of multiple {@link EntityClassification}s.
+	 * @param classifications A set of {@link MobCategory}s to remove the {@link MobSpawnSettings.SpawnerData} for.
+	 * @param typeSuppliers   A set of {@link Supplier}s of the {@link EntityType}s to remove the {@link MobSpawnSettings.SpawnerData} for.
+	 * @return A {@link BiomeSpawnsModifier} for removing {@link MobSpawnSettings.SpawnerData} entries for multiple {@link EntityType}s of multiple {@link MobCategory}s.
 	 */
 	public static BiomeSpawnsModifier createMultiSpawnRemover(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<MobCategory> classifications, Set<Supplier<EntityType<?>>> typeSuppliers) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
@@ -137,13 +137,13 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeSpawnsModifier} for replacing {@link MobSpawnInfo.Spawners} entries for an {@link EntityType} of a {@link EntityClassification}.
+	 * Creates a {@link BiomeSpawnsModifier} for replacing {@link MobSpawnSettings.SpawnerData} entries for an {@link EntityType} of a {@link MobCategory}.
 	 *
 	 * @param shouldModify   A {@link BiPredicate} for what biomes it should modify.
-	 * @param classification The {@link EntityClassification} to replace the {@link MobSpawnInfo.Spawners} for.
+	 * @param classification The {@link MobCategory} to replace the {@link MobSpawnSettings.SpawnerData} for.
 	 * @param replace        A {@link Supplier} of the {@link EntityType} that will be replaced.
-	 * @param replacer       A {@link Supplier} of the {@link EntityType} to replace the {@link MobSpawnInfo.Spawners} for.
-	 * @return A {@link BiomeSpawnsModifier} for replacing {@link MobSpawnInfo.Spawners} entries for an {@link EntityType} of a {@link EntityClassification}.
+	 * @param replacer       A {@link Supplier} of the {@link EntityType} to replace the {@link MobSpawnSettings.SpawnerData} for.
+	 * @return A {@link BiomeSpawnsModifier} for replacing {@link MobSpawnSettings.SpawnerData} entries for an {@link EntityType} of a {@link MobCategory}.
 	 */
 	public static BiomeSpawnsModifier createSpawnReplacer(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, MobCategory classification, Supplier<EntityType<?>> replace, Supplier<EntityType<?>> replacer) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
@@ -159,19 +159,19 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 			EntityType<?> replacerType = replacer.get();
 			toRemove.forEach(spawner -> {
 				spawners.remove(spawner);
-				spawners.add(new MobSpawnSettings.SpawnerData(replacerType, spawner.weight, spawner.minCount, spawner.maxCount));
+				spawners.add(new MobSpawnSettings.SpawnerData(replacerType, spawner.getWeight(), spawner.minCount, spawner.maxCount));
 			});
 		});
 	}
 
 	/**
-	 * Creates a {@link BiomeSpawnsModifier} for replacing {@link MobSpawnInfo.Spawners} entries for an {@link EntityType} for multiple {@link EntityClassification}s.
+	 * Creates a {@link BiomeSpawnsModifier} for replacing {@link MobSpawnSettings.SpawnerData} entries for an {@link EntityType} for multiple {@link MobCategory}s.
 	 *
 	 * @param shouldModify    A {@link BiPredicate} for what biomes it should modify.
-	 * @param classifications A set of {@link EntityClassification}s to replace the {@link MobSpawnInfo.Spawners} for.
+	 * @param classifications A set of {@link MobCategory}s to replace the {@link MobSpawnSettings.SpawnerData} for.
 	 * @param replace         A {@link Supplier} of the {@link EntityType} that will be replaced.
-	 * @param replacer        A {@link Supplier} of the {@link EntityType} to replace the {@link MobSpawnInfo.Spawners} for.
-	 * @return A {@link BiomeSpawnsModifier} for replacing {@link MobSpawnInfo.Spawners} entries for an {@link EntityType} for multiple {@link EntityClassification}s.
+	 * @param replacer        A {@link Supplier} of the {@link EntityType} to replace the {@link MobSpawnSettings.SpawnerData} for.
+	 * @return A {@link BiomeSpawnsModifier} for replacing {@link MobSpawnSettings.SpawnerData} entries for an {@link EntityType} for multiple {@link MobCategory}s.
 	 */
 	public static BiomeSpawnsModifier createMultiSpawnReplacer(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<MobCategory> classifications, Supplier<EntityType<?>> replace, Supplier<EntityType<?>> replacer) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
@@ -188,7 +188,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 				}
 				toRemove.forEach(spawner -> {
 					spawners.remove(spawner);
-					spawners.add(new MobSpawnSettings.SpawnerData(replacerType, spawner.weight, spawner.minCount, spawner.maxCount));
+					spawners.add(new MobSpawnSettings.SpawnerData(replacerType, spawner.getWeight(), spawner.minCount, spawner.maxCount));
 				});
 			}
 		});

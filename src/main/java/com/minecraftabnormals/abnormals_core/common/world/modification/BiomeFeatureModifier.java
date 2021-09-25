@@ -29,36 +29,36 @@ public final class BiomeFeatureModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeFeatureModifier} for adding a {@link ConfiguredFeature} for a {@link GenerationStage}.
+	 * Creates a {@link BiomeFeatureModifier} for adding a {@link ConfiguredFeature} for a {@link GenerationStep}.
 	 *
 	 * @param shouldModify A {@link BiPredicate} for what biomes it should modify.
-	 * @param stage        The {@link GenerationStage} to add the {@link ConfiguredFeature} to.
+	 * @param stage        The {@link GenerationStep} to add the {@link ConfiguredFeature} to.
 	 * @param feature      A {@link ConfiguredFeature} to add.
-	 * @return A {@link BiomeFeatureModifier} for adding a {@link ConfiguredFeature} for a {@link GenerationStage}.
+	 * @return A {@link BiomeFeatureModifier} for adding a {@link ConfiguredFeature} for a {@link GenerationStep}.
 	 */
 	public static BiomeFeatureModifier createFeatureAdder(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, GenerationStep.Decoration stage, Supplier<ConfiguredFeature<?, ?>> feature) {
 		return new BiomeFeatureModifier(shouldModify, context -> context.event.getGeneration().getFeatures(stage).add(feature));
 	}
 
 	/**
-	 * Creates a {@link BiomeFeatureModifier} for adding multiple {@link ConfiguredFeature}s for a {@link GenerationStage}.
+	 * Creates a {@link BiomeFeatureModifier} for adding multiple {@link ConfiguredFeature}s for a {@link GenerationStep}.
 	 *
 	 * @param shouldModify A {@link BiPredicate} for what biomes it should modify.
-	 * @param stage        The {@link GenerationStage} to add the {@link ConfiguredFeature} to.
+	 * @param stage        The {@link GenerationStep} to add the {@link ConfiguredFeature} to.
 	 * @param features     A set of {@link ConfiguredFeature}s to add.
-	 * @return A {@link BiomeFeatureModifier} for adding multiple {@link ConfiguredFeature}s for a {@link GenerationStage}.
+	 * @return A {@link BiomeFeatureModifier} for adding multiple {@link ConfiguredFeature}s for a {@link GenerationStep}.
 	 */
 	public static BiomeFeatureModifier createMultiFeatureAdder(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, GenerationStep.Decoration stage, Set<Supplier<ConfiguredFeature<?, ?>>> features) {
 		return new BiomeFeatureModifier(shouldModify, context -> context.event.getGeneration().getFeatures(stage).addAll(features));
 	}
 
 	/**
-	 * Creates a {@link BiomeFeatureModifier} for adding multiple {@link ConfiguredFeature}s for multiple {@link GenerationStage}s.
+	 * Creates a {@link BiomeFeatureModifier} for adding multiple {@link ConfiguredFeature}s for multiple {@link GenerationStep}s.
 	 *
 	 * @param shouldModify A {@link BiPredicate} for what biomes it should modify.
-	 * @param stages       A set of {@link GenerationStage} to add the {@link ConfiguredFeature} to.
+	 * @param stages       A set of {@link GenerationStep} to add the {@link ConfiguredFeature} to.
 	 * @param features     A set of {@link ConfiguredFeature}s to add.
-	 * @return A {@link BiomeFeatureModifier} for adding multiple {@link ConfiguredFeature}s for multiple {@link GenerationStage}s.
+	 * @return A {@link BiomeFeatureModifier} for adding multiple {@link ConfiguredFeature}s for multiple {@link GenerationStep}s.
 	 */
 	public static BiomeFeatureModifier createMultiFeatureAdder(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<GenerationStep.Decoration> stages, Set<Supplier<ConfiguredFeature<?, ?>>> features) {
 		return new BiomeFeatureModifier(shouldModify, context -> {
@@ -70,12 +70,12 @@ public final class BiomeFeatureModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeFeatureModifier} for removing a {@link Feature} for a set of {@link GenerationStage}s.
+	 * Creates a {@link BiomeFeatureModifier} for removing a {@link Feature} for a set of {@link GenerationStep}s.
 	 *
 	 * @param shouldModify    A {@link BiPredicate} for what biomes it should modify.
-	 * @param stages          A set of {@link GenerationStage} to remove the {@link Feature} for.
+	 * @param stages          A set of {@link GenerationStep} to remove the {@link Feature} for.
 	 * @param featureSupplier The {@link Feature} to remove.
-	 * @return A {@link BiomeFeatureModifier} for removing a {@link Feature} for a set of {@link GenerationStage}s.
+	 * @return A {@link BiomeFeatureModifier} for removing a {@link Feature} for a set of {@link GenerationStep}s.
 	 */
 	public static BiomeFeatureModifier createFeatureRemover(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<GenerationStep.Decoration> stages, Supplier<Feature<?>> featureSupplier) {
 		return new BiomeFeatureModifier(shouldModify, context -> {
@@ -91,12 +91,12 @@ public final class BiomeFeatureModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeFeatureModifier} for removing a set of {@link Feature}s for a set of {@link GenerationStage}s.
+	 * Creates a {@link BiomeFeatureModifier} for removing a set of {@link Feature}s for a set of {@link GenerationStep}s.
 	 *
 	 * @param shouldModify     A {@link BiPredicate} for what biomes it should modify.
-	 * @param stages           A set of {@link GenerationStage} to remove the {@link Feature} for.
+	 * @param stages           A set of {@link GenerationStep} to remove the {@link Feature} for.
 	 * @param featureSuppliers A set of {@link Feature}s to remove.
-	 * @return A {@link BiomeFeatureModifier} for removing a set of {@link Feature}s for a set of {@link GenerationStage}s.
+	 * @return A {@link BiomeFeatureModifier} for removing a set of {@link Feature}s for a set of {@link GenerationStep}s.
 	 */
 	public static BiomeFeatureModifier createMultiFeatureRemover(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<GenerationStep.Decoration> stages, Set<Supplier<Feature<?>>> featureSuppliers) {
 		return new BiomeFeatureModifier(shouldModify, context -> {
@@ -113,13 +113,13 @@ public final class BiomeFeatureModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeFeatureModifier} for replacing {@link ConfiguredFeature}s for a {@link Feature} with another {@link ConfiguredFeature} for a set of {@link GenerationStage}s.
+	 * Creates a {@link BiomeFeatureModifier} for replacing {@link ConfiguredFeature}s for a {@link Feature} with another {@link ConfiguredFeature} for a set of {@link GenerationStep}s.
 	 *
 	 * @param shouldModify A {@link BiPredicate} for what biomes it should modify.
-	 * @param stages       A set of {@link GenerationStage} to remove the {@link Feature} for.
+	 * @param stages       A set of {@link GenerationStep} to remove the {@link Feature} for.
 	 * @param toReplace    The {@link Feature} to replace.
 	 * @param replacer     A {@link ConfiguredFeature} to replace the other {@link ConfiguredFeature} with.
-	 * @return A {@link BiomeFeatureModifier} for replacing {@link ConfiguredFeature}s for a {@link Feature} with another {@link ConfiguredFeature} for a set of {@link GenerationStage}s.
+	 * @return A {@link BiomeFeatureModifier} for replacing {@link ConfiguredFeature}s for a {@link Feature} with another {@link ConfiguredFeature} for a set of {@link GenerationStep}s.
 	 */
 	public static BiomeFeatureModifier createFeatureReplacer(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<GenerationStep.Decoration> stages, Supplier<Feature<?>> toReplace, Supplier<ConfiguredFeature<?, ?>> replacer) {
 		return new BiomeFeatureModifier(shouldModify, context -> {
@@ -143,13 +143,13 @@ public final class BiomeFeatureModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a {@link BiomeFeatureModifier} for replacing {@link ConfiguredFeature}s for multiple {@link Feature}s with another {@link ConfiguredFeature} for a set of {@link GenerationStage}s.
+	 * Creates a {@link BiomeFeatureModifier} for replacing {@link ConfiguredFeature}s for multiple {@link Feature}s with another {@link ConfiguredFeature} for a set of {@link GenerationStep}s.
 	 *
 	 * @param shouldModify A {@link BiPredicate} for what biomes it should modify.
-	 * @param stages       A set of {@link GenerationStage} to remove the {@link Feature}s for.
+	 * @param stages       A set of {@link GenerationStep} to remove the {@link Feature}s for.
 	 * @param toReplace    A set of {@link Feature}s to replace.
 	 * @param replacer     A {@link ConfiguredFeature} to replace the other {@link ConfiguredFeature}s with.
-	 * @return A {@link BiomeFeatureModifier} for replacing {@link ConfiguredFeature}s for multiple {@link Feature}s with another {@link ConfiguredFeature} for a set of {@link GenerationStage}s.
+	 * @return A {@link BiomeFeatureModifier} for replacing {@link ConfiguredFeature}s for multiple {@link Feature}s with another {@link ConfiguredFeature} for a set of {@link GenerationStep}s.
 	 */
 	public static BiomeFeatureModifier createMultiFeatureReplacer(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<GenerationStep.Decoration> stages, Set<Supplier<Feature<?>>> toReplace, Supplier<ConfiguredFeature<?, ?>> replacer) {
 		return new BiomeFeatureModifier(shouldModify, context -> {

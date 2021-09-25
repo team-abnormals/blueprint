@@ -2,34 +2,32 @@ package com.minecraftabnormals.abnormals_core.common.items;
 
 import com.minecraftabnormals.abnormals_core.common.entity.AbnormalsBoatEntity;
 import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.core.BlockSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.stats.Stats;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.*;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
-
-import java.util.List;
-import java.util.function.Predicate;
-
+import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 public class AbnormalsBoatItem extends Item {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.DARK_OAK_BOAT);
@@ -70,7 +68,7 @@ public class AbnormalsBoatItem extends Item {
 			if (raytraceresult.getType() == HitResult.Type.BLOCK) {
 				AbnormalsBoatEntity boatentity = new AbnormalsBoatEntity(worldIn, raytraceresult.getLocation().x, raytraceresult.getLocation().y, raytraceresult.getLocation().z);
 				boatentity.setBoat(this.type);
-				boatentity.yRot = playerIn.yRot;
+				boatentity.setYRot(playerIn.getYRot());
 				if (!worldIn.noCollision(boatentity, boatentity.getBoundingBox().inflate(-0.1D))) {
 					return new InteractionResultHolder<>(InteractionResult.FAIL, itemstack);
 				} else {
@@ -78,7 +76,7 @@ public class AbnormalsBoatItem extends Item {
 						worldIn.addFreshEntity(boatentity);
 					}
 
-					if (!playerIn.abilities.instabuild) {
+					if (!playerIn.getAbilities().instabuild) {
 						itemstack.shrink(1);
 					}
 
@@ -118,7 +116,7 @@ public class AbnormalsBoatItem extends Item {
 			}
 			AbnormalsBoatEntity boat = new AbnormalsBoatEntity(world, x, y + adjustY, z);
 			boat.setBoat(this.type);
-			boat.yRot = direction.toYRot();
+			boat.setYRot(direction.toYRot());
 			world.addFreshEntity(boat);
 			stack.shrink(1);
 			return stack;

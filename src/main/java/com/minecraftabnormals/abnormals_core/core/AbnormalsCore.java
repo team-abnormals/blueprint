@@ -31,7 +31,6 @@ import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.abnormals_core.core.util.registry.BlockEntitySubRegistryHelper;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
-import com.minecraftabnormals.abnormals_core.core.util.registry.TileEntitySubRegistryHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;

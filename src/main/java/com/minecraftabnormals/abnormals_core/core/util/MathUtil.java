@@ -37,7 +37,7 @@ public final class MathUtil {
 	 * @return The distance between two 2D points.
 	 */
 	public static double distanceBetweenPoints2d(double x1, double y1, double x2, double y2) {
-		return Mth.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
 
 	/**

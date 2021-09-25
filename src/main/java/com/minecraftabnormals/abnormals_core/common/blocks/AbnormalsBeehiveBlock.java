@@ -2,20 +2,18 @@ package com.minecraftabnormals.abnormals_core.common.blocks;
 
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
-import net.minecraft.world.level.block.BeehiveBlock;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Mirror;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class AbnormalsBeehiveBlock extends BeehiveBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.BEEHIVE);
@@ -26,8 +24,8 @@ public class AbnormalsBeehiveBlock extends BeehiveBlock {
 
 	@Nullable
 	@Override
-	public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-		return ACTileEntities.BEEHIVE.get().create();
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return ACTileEntities.BEEHIVE.get().create(pos, state);
 	}
 
 	@Override

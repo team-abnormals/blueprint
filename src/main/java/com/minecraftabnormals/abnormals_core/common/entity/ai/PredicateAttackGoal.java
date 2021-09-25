@@ -1,18 +1,16 @@
 package com.minecraftabnormals.abnormals_core.common.entity.ai;
 
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.function.Predicate;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 /**
  * @author SmellyModder(Luke Tonon)
@@ -37,7 +35,7 @@ public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
 		this.canOwnerTarget = canOwnerTarget;
 		this.targetClass = targetClassIn;
 		this.targetChance = targetChanceIn;
-		this.targetEntitySelector = (new TargetingConditions()).range(this.getFollowDistance()).selector(targetPredicate);
+		this.targetEntitySelector = TargetingConditions.forCombat().range(this.getFollowDistance()).selector(targetPredicate);
 		this.setFlags(EnumSet.of(Flag.TARGET));
 	}
 
@@ -56,7 +54,7 @@ public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
 
 	protected void findNearestTarget() {
 		if (this.targetClass != Player.class && this.targetClass != ServerPlayer.class) {
-			this.nearestTarget = this.mob.level.<T>getNearestLoadedEntity(this.targetClass, this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ(), this.getTargetableArea(this.getFollowDistance()));
+			this.nearestTarget = this.mob.level.getNearestEntity(this.targetClass, this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ(), this.getTargetableArea(this.getFollowDistance()));
 		} else {
 			this.nearestTarget = this.mob.level.getNearestPlayer(this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
 		}

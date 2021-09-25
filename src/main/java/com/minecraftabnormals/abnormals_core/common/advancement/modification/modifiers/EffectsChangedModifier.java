@@ -7,9 +7,9 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.EffectsChangedTrigger;
 import net.minecraft.advancements.critereon.MobEffectsPredicate;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.util.GsonHelper;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.util.Map;

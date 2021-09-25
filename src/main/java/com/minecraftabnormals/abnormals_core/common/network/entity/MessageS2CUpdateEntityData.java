@@ -4,10 +4,10 @@ import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.Set;
 import java.util.function.Supplier;

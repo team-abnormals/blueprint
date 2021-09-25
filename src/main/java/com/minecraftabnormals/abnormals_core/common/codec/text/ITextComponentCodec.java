@@ -3,6 +3,7 @@ package com.minecraftabnormals.abnormals_core.common.codec.text;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.text.*;
 
@@ -11,15 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.KeybindComponent;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.NbtComponent;
-import net.minecraft.network.chat.ScoreComponent;
-import net.minecraft.network.chat.SelectorComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 /**
  * A codec for {@link ITextComponent}s.

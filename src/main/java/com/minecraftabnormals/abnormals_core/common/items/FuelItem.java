@@ -2,8 +2,9 @@ package com.minecraftabnormals.abnormals_core.common.items;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 
-import net.minecraft.world.item.Item.Properties;
+import javax.annotation.Nullable;
 
 public class FuelItem extends Item {
 	private final int burnTime;
@@ -14,7 +15,7 @@ public class FuelItem extends Item {
 	}
 
 	@Override
-	public int getBurnTime(ItemStack itemStack) {
+	public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
 		return this.burnTime;
 	}
 }

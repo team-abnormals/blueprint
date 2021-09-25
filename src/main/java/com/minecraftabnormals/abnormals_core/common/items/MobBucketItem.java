@@ -2,28 +2,22 @@ package com.minecraftabnormals.abnormals_core.common.items;
 
 import com.minecraftabnormals.abnormals_core.common.entity.BucketableWaterMobEntity;
 import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.item.*;
-import net.minecraft.core.NonNullList;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.material.Fluid;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
-
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class MobBucketItem extends BucketItem {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.TROPICAL_FISH_BUCKET);

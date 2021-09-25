@@ -1,11 +1,10 @@
 package com.minecraftabnormals.abnormals_core.core.util.item;
 
 import com.minecraftabnormals.abnormals_core.core.mixin.ItemInvokerMixin;
-import net.minecraft.block.Block;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
@@ -34,8 +33,8 @@ public final class ItemStackUtil {
 		return -1;
 	}
 
-	/**
-	 * Used in {@link Item#fillItemCategory(CreativeModeTab, NonNullList)} and {@link Block#fillItemCategory(CreativeModeTab, NonNullList)} to fill an item after a specific item for a group.
+	/** Block#fillItemCategory
+	 * Used in {@link Item#fillItemCategory(CreativeModeTab, NonNullList)} and {@link (CreativeModeTab, NonNullList)} to fill an item after a specific item for a group.
 	 *
 	 * @param item       The item to fill.
 	 * @param targetItem The item to fill after.

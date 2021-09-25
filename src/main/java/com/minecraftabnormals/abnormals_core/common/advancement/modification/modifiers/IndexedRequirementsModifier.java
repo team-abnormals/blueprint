@@ -12,8 +12,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.Map;
 import java.util.Optional;
 
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
-
 /**
  * An {@link AdvancementModifier} extension that modifies a specific requirement array of an advancement's requirements.
  *

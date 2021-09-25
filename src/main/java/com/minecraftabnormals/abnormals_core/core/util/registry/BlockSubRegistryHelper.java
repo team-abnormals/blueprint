@@ -12,13 +12,17 @@ import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsChestTil
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.minecraftabnormals.abnormals_core.core.api.SignManager;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
@@ -29,14 +33,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
-
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.DoubleHighBlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.SignItem;
-import net.minecraft.world.item.StandingAndWallBlockItem;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for blocks. This contains some useful registering methods for blocks.
@@ -360,6 +356,6 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<BlockEntityWithoutLevelRenderer> chestISTER(boolean trapped) {
-		return () -> new ChestItemRenderer<BlockEntity>(trapped ? AbnormalsTrappedChestTileEntity::new : AbnormalsChestTileEntity::new);
+		return () -> new ChestItemRenderer<BlockEntity>(trapped ? () -> new AbnormalsTrappedChestTileEntity(BlockPos.ZERO, Blocks.TRAPPED_CHEST.defaultBlockState()) : () -> new AbnormalsChestTileEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()););
 	}
 }

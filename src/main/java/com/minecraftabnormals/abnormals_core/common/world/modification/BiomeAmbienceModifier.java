@@ -22,11 +22,11 @@ public final class BiomeAmbienceModifier extends BiomeModifier {
 	}
 
 	/**
-	 * Creates a new {@link BiomeAmbienceModifier} that replaces a biome's {@link BiomeAmbience}.
+	 * Creates a new {@link BiomeAmbienceModifier} that replaces a biome's {@link BiomeSpecialEffects}.
 	 *
 	 * @param shouldModify A {@link BiPredicate} for what biomes it should modify.
-	 * @param ambience     A {@link BiomeAmbience} to replace it with.
-	 * @return A new {@link BiomeAmbienceModifier} that replaces a biome's {@link BiomeAmbience}.
+	 * @param ambience     A {@link BiomeSpecialEffects} to replace it with.
+	 * @return A new {@link BiomeAmbienceModifier} that replaces a biome's {@link BiomeSpecialEffects}.
 	 */
 	public static BiomeAmbienceModifier createAmbienceReplacer(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Supplier<BiomeSpecialEffects> ambience) {
 		return new BiomeAmbienceModifier(shouldModify, context -> context.event.setEffects(ambience.get()));
