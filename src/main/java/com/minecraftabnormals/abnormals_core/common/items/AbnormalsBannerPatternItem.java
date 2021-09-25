@@ -1,12 +1,14 @@
 package com.minecraftabnormals.abnormals_core.common.items;
 
 import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
-import net.minecraft.item.BannerPatternItem;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tileentity.BannerPattern;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.item.BannerPatternItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.core.NonNullList;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class AbnormalsBannerPatternItem extends BannerPatternItem {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.PIGLIN_BANNER_PATTERN);
@@ -16,7 +18,7 @@ public class AbnormalsBannerPatternItem extends BannerPatternItem {
 	}
 
 	@Override
-	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this, group, items);
 	}
 }

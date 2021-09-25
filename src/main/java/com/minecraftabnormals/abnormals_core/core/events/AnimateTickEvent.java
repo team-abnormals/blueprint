@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.core.events;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import java.util.Random;
 
 /**
- * This event is fired before {@link net.minecraft.block.Block#animateTick Block.animateTick()}.
+ * This event is fired before {@link net.minecraft.world.level.block.Block#animateTick Block.animateTick()}.
  * <p>Canceling this event will prevent the original method from being called.</p>
  *
  * @author abigailfails
@@ -19,7 +19,7 @@ import java.util.Random;
 public final class AnimateTickEvent extends BlockEvent {
     private final Random random;
 
-    public AnimateTickEvent(BlockState state, World world, BlockPos pos, Random rand) {
+    public AnimateTickEvent(BlockState state, Level world, BlockPos pos, Random rand) {
         super(world, pos, state);
         this.random = rand;
     }
@@ -29,13 +29,13 @@ public final class AnimateTickEvent extends BlockEvent {
     }
 
     /**
-     * Fires the {@link AnimateTickEvent} for a given {@link BlockState}, {@link World}, {@link BlockPos} and {@link Random}.
-     * @param state The {@link BlockState} that {@link net.minecraft.block.Block#animateTick Block.animateTick()} is being fired for.
-     * @param world The {@link World} that the {@code state} is in.
+     * Fires the {@link AnimateTickEvent} for a given {@link BlockState}, {@link Level}, {@link BlockPos} and {@link Random}.
+     * @param state The {@link BlockState} that {@link net.minecraft.world.level.block.Block#animateTick Block.animateTick()} is being fired for.
+     * @param world The {@link Level} that the {@code state} is in.
      * @param pos The {@link BlockPos} that the {@code state} is at.
      * @param rand The {@link Random} to be used for randomizing particle placement.
      */
-    public static boolean onAnimateTick(BlockState state, World world, BlockPos pos, Random rand) {
+    public static boolean onAnimateTick(BlockState state, Level world, BlockPos pos, Random rand) {
         return MinecraftForge.EVENT_BUS.post(new AnimateTickEvent(state, world, pos, rand));
     }
 

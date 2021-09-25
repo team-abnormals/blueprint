@@ -1,10 +1,10 @@
 package com.minecraftabnormals.abnormals_core.common.network.entity;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -24,14 +24,14 @@ public final class MessageS2CTeleportEntity {
 		this.posZ = posZ;
 	}
 
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeInt(this.entityId);
 		buf.writeDouble(this.posX);
 		buf.writeDouble(this.posY);
 		buf.writeDouble(this.posZ);
 	}
 
-	public static MessageS2CTeleportEntity deserialize(PacketBuffer buf) {
+	public static MessageS2CTeleportEntity deserialize(FriendlyByteBuf buf) {
 		int entityId = buf.readInt();
 		return new MessageS2CTeleportEntity(entityId, buf.readDouble(), buf.readDouble(), buf.readDouble());
 	}
@@ -42,7 +42,7 @@ public final class MessageS2CTeleportEntity {
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				if (entity != null) {
-					entity.moveTo(message.posX, message.posY, message.posZ, entity.yRot, entity.xRot);
+					entity.moveTo(message.posX, message.posY, message.posZ, entity.getYRot(), entity.getXRot());
 				}
 			});
 			context.setPacketHandled(true);

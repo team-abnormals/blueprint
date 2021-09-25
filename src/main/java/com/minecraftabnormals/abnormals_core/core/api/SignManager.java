@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.api;
 
-import net.minecraft.block.WoodType;
-import net.minecraft.client.renderer.Atlases;
+import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -14,7 +14,7 @@ public final class SignManager {
     @OnlyIn(Dist.CLIENT)
     public static void setupAtlas() {
         for (WoodType type : WOOD_TYPES)
-            Atlases.addWoodType(type);
+            Sheets.addWoodType(type);
     }
 
     public static synchronized WoodType registerWoodType(WoodType type) {

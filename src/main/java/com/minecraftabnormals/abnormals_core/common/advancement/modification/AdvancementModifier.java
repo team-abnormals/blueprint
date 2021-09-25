@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.util.GsonHelper;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -34,7 +34,7 @@ public abstract class AdvancementModifier<C> {
 		return this.deserializer;
 	}
 
-	public final ConfiguredAdvancementModifier<C, AdvancementModifier<C>> deserialize(JsonElement config, ConditionArrayParser conditionArrayParser) throws JsonParseException {
+	public final ConfiguredAdvancementModifier<C, AdvancementModifier<C>> deserialize(JsonElement config, DeserializationContext conditionArrayParser) throws JsonParseException {
 		return new ConfiguredAdvancementModifier<>(this, this.deserializer.deserialize(config, conditionArrayParser));
 	}
 
@@ -58,7 +58,7 @@ public abstract class AdvancementModifier<C> {
 		}
 
 		public static Mode deserialize(JsonObject object) throws JsonParseException {
-			String string = JSONUtils.getAsString(object, "mode");
+			String string = GsonHelper.getAsString(object, "mode");
 			Mode mode = VALUES_MAP.get(string);
 			if (mode == null) {
 				throw new JsonParseException("Unknown mode type: " + string);
@@ -73,6 +73,6 @@ public abstract class AdvancementModifier<C> {
 
 	@FunctionalInterface
 	protected interface Deserializer<C> {
-		C deserialize(JsonElement element, ConditionArrayParser conditionArrayParser) throws JsonParseException;
+		C deserialize(JsonElement element, DeserializationContext conditionArrayParser) throws JsonParseException;
 	}
 }

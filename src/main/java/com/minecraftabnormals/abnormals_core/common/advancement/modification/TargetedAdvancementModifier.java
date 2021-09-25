@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.advancement.modification;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.List;

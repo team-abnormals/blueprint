@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.client.screen.shaking;
 
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * An extension of {@link SimpleShakeSource} applied to 3D space.
@@ -29,11 +29,11 @@ public class PositionedShakeSource extends SimpleShakeSource {
 	}
 
 	@Override
-	public Vector3d getIntensity(Vector3d pos) {
+	public Vec3 getIntensity(Vec3 pos) {
 		double dx = this.x - pos.x;
 		double dy = this.y - pos.y;
 		double dz = this.z - pos.z;
 		double distanceFactor = 0.001F * (dx * dx + dy * dy + dz * dz);
-		return new Vector3d(Math.max(0, this.intensityX - distanceFactor), Math.max(0, this.intensityY - distanceFactor), Math.max(0, this.intensityZ - distanceFactor));
+		return new Vec3(Math.max(0, this.intensityX - distanceFactor), Math.max(0, this.intensityY - distanceFactor), Math.max(0, this.intensityZ - distanceFactor));
 	}
 }

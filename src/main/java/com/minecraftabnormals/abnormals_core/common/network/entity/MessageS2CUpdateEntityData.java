@@ -4,8 +4,8 @@ import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -24,13 +24,13 @@ public final class MessageS2CUpdateEntityData {
 		this.entries = entries;
 	}
 
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeInt(this.entityId);
 		buf.writeInt(this.entries.size());
 		this.entries.forEach(entry -> entry.write(buf));
 	}
 
-	public static MessageS2CUpdateEntityData deserialize(PacketBuffer buf) {
+	public static MessageS2CUpdateEntityData deserialize(FriendlyByteBuf buf) {
 		int entityId = buf.readInt();
 		int size = buf.readInt();
 		Set<IDataManager.DataEntry<?>> entries = Sets.newHashSet();

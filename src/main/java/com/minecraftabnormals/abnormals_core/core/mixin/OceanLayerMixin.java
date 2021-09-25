@@ -1,12 +1,12 @@
 package com.minecraftabnormals.abnormals_core.core.mixin;
 
 import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.gen.INoiseRandom;
-import net.minecraft.world.gen.ImprovedNoiseGenerator;
-import net.minecraft.world.gen.layer.OceanLayer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.newbiome.context.Context;
+import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
+import net.minecraft.world.level.newbiome.layer.OceanLayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(OceanLayer.class)
 public final class OceanLayerMixin {
     @Inject(method = "applyPixel", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/gen/ImprovedNoiseGenerator;noise(DDDDD)D", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void applyPixel(INoiseRandom p_215735_1_, int p_215735_2_, int p_215735_3_, CallbackInfoReturnable<Integer> cir, ImprovedNoiseGenerator improvednoisegenerator, double d0) {
+    private void applyPixel(Context p_215735_1_, int p_215735_2_, int p_215735_3_, CallbackInfoReturnable<Integer> cir, ImprovedNoise improvednoisegenerator, double d0) {
         BiomeUtil.OceanType type;
         if (d0 > 0.4D) {
             type = BiomeUtil.OceanType.WARM;
@@ -33,7 +33,7 @@ public final class OceanLayerMixin {
             type = BiomeUtil.OceanType.NORMAL;
         }
     
-        RegistryKey<Biome> biome = BiomeUtil.getOceanBiome(type, p_215735_1_);
+        ResourceKey<Biome> biome = BiomeUtil.getOceanBiome(type, p_215735_1_);
         if (!biome.equals(Biomes.FROZEN_OCEAN) && !biome.equals(Biomes.COLD_OCEAN) && !biome.equals(Biomes.OCEAN) && !biome.equals(Biomes.LUKEWARM_OCEAN) && !biome.equals(Biomes.WARM_OCEAN)) {
             cir.setReturnValue(BiomeUtil.getId(biome));
         }

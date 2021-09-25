@@ -12,19 +12,24 @@ import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Set;
+
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -46,9 +51,9 @@ public final class NetworkUtil {
 	 * <p>Only sends the packet to players in {@code dimension}</p>
 	 *
 	 * @param name The registry name of the particle
-	 * @param dimension The dimension to spawn the particle in. You can get this using {@link World#dimension()}
+	 * @param dimension The dimension to spawn the particle in. You can get this using {@link Level#dimension()}
 	 */
-	public static void spawnParticle(String name, RegistryKey<World> dimension, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
+	public static void spawnParticle(String name, ResourceKey<Level> dimension, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.DIMENSION.with(() -> dimension), new MessageS2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
 	}
 
@@ -61,7 +66,7 @@ public final class NetworkUtil {
 	 * @param posZ   The z position
 	 */
 	public static void teleportEntity(Entity entity, double posX, double posY, double posZ) {
-		entity.moveTo(posX, posY, posZ, entity.yRot, entity.xRot);
+		entity.moveTo(posX, posY, posZ, entity.getYRot(), entity.getXRot());
 		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageS2CTeleportEntity(entity.getId(), posX, posY, posZ));
 	}
 
@@ -83,7 +88,7 @@ public final class NetworkUtil {
 	 *
 	 * @param address The address to connect to
 	 */
-	public static void redirectToServer(ServerPlayerEntity player, String address) {
+	public static void redirectToServer(ServerPlayer player, String address) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MessageS2CServerRedirect(address));
 	}
 
@@ -99,23 +104,23 @@ public final class NetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void redirectToServer(String address) {
 		Minecraft minecraft = ClientInfo.MINECRAFT;
-		World world = minecraft.level;
+		Level world = minecraft.level;
 		Screen currentScreen = minecraft.screen;
 		boolean integrated = minecraft.isLocalServer();
 
 		if (world != null) {
 			world.disconnect();
-			minecraft.clearLevel(new DirtMessageScreen(new TranslationTextComponent(integrated ? "menu.savingLevel" : "abnormals_core.message.redirect")));
+			minecraft.clearLevel(new GenericDirtMessageScreen(new TranslatableComponent(integrated ? "menu.savingLevel" : "abnormals_core.message.redirect")));
 
-			MainMenuScreen menuScreen = new MainMenuScreen();
-			minecraft.setScreen(integrated ? menuScreen : new MultiplayerScreen(menuScreen));
+			TitleScreen menuScreen = new TitleScreen();
+			minecraft.setScreen(integrated ? menuScreen : new JoinMultiplayerScreen(menuScreen));
 
 			if (currentScreen != null)
-				minecraft.setScreen(new ConnectingScreen(currentScreen, minecraft, new ServerData("Redirect", address, false)));
+				minecraft.setScreen(new ConnectScreen(currentScreen, minecraft, new ServerData("Redirect", address, false)));
 		}
 	}
 
-	public static void updateTrackedData(ServerPlayerEntity player, Entity target, Set<IDataManager.DataEntry<?>> entries) {
+	public static void updateTrackedData(ServerPlayer player, Entity target, Set<IDataManager.DataEntry<?>> entries) {
 		AbnormalsCore.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MessageS2CUpdateEntityData(target.getId(), entries));
 	}
 

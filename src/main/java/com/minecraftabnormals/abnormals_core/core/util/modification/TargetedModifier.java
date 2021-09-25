@@ -5,8 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -66,13 +66,13 @@ public final class TargetedModifier<T, S, D> {
 	 * @throws JsonParseException If an error occurs when parsing the {@link JsonObject}.
 	 */
 	public static <T, S, D> TargetedModifier<T, S, D> deserialize(JsonObject object, String targetKey, D additional, ModifierRegistry<T, S, D> registry, boolean logSkipping) throws JsonParseException {
-		ResourceLocation target = new ResourceLocation(JSONUtils.getAsString(object, targetKey));
+		ResourceLocation target = new ResourceLocation(GsonHelper.getAsString(object, targetKey));
 		List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers = new ArrayList<>();
-		JsonArray modifiers = JSONUtils.getAsJsonArray(object, "modifiers");
+		JsonArray modifiers = GsonHelper.getAsJsonArray(object, "modifiers");
 		modifiers.forEach(element -> {
 			JsonObject entry = element.getAsJsonObject();
-			String type = JSONUtils.getAsString(entry, "type");
-			if (!JSONUtils.isValidNode(entry, "conditions") || CraftingHelper.processConditions(JSONUtils.getAsJsonArray(entry, "conditions"))) {
+			String type = GsonHelper.getAsString(entry, "type");
+			if (!GsonHelper.isValidNode(entry, "conditions") || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(entry, "conditions"))) {
 				IModifier<T, ?, S, D> configuredModifier = registry.getModifier(type);
 				if (configuredModifier == null) {
 					throw new JsonParseException("Unknown modifier type: " + type);

@@ -2,7 +2,7 @@ package com.minecraftabnormals.abnormals_core.common.advancement.modification.mo
 
 import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * An {@link AdvancementModifier} extension that modifies the parent advancement of an advancement.

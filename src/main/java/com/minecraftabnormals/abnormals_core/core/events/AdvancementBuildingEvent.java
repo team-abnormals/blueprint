@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.events;
 
 import net.minecraft.advancements.Advancement;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 

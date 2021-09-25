@@ -2,12 +2,12 @@ package com.minecraftabnormals.abnormals_core.core.mixin;
 
 import com.minecraftabnormals.abnormals_core.common.world.gen.ACLayerUtil;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.biome.provider.EndBiomeProvider;
-import net.minecraft.world.gen.LazyAreaLayerContext;
-import net.minecraft.world.gen.layer.Layer;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.TheEndBiomeSource;
+import net.minecraft.world.level.newbiome.context.LazyAreaContext;
+import net.minecraft.world.level.newbiome.layer.Layer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
-@Mixin(EndBiomeProvider.class)
-public abstract class EndBiomeProviderMixin extends BiomeProvider {
+@Mixin(TheEndBiomeSource.class)
+public abstract class EndBiomeProviderMixin extends BiomeSource {
 	@Shadow
 	@Final
 	private Registry<Biome> biomes;
@@ -41,7 +41,7 @@ public abstract class EndBiomeProviderMixin extends BiomeProvider {
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void init(Registry<Biome> lookupRegistry, long seed, CallbackInfo info) {
-		this.noiseBiomeLayer = ACLayerUtil.createEndBiomeLayer(biomes, (seedModifier) -> new LazyAreaLayerContext(25, seed, seedModifier));
+		this.noiseBiomeLayer = ACLayerUtil.createEndBiomeLayer(biomes, (seedModifier) -> new LazyAreaContext(25, seed, seedModifier));
 	}
 
 	@Inject(at = @At("RETURN"), method = "getNoiseBiome(III)Lnet/minecraft/world/biome/Biome;", cancellable = true)

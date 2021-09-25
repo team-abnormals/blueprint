@@ -5,8 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
@@ -55,7 +55,7 @@ public final class ACAndRecipeCondition implements ICondition {
 		@Override
 		public ACAndRecipeCondition read(JsonObject json) {
 			List<ICondition> children = new ArrayList<>();
-			for (JsonElement elements : JSONUtils.getAsJsonArray(json, "values")) {
+			for (JsonElement elements : GsonHelper.getAsJsonArray(json, "values")) {
 				if (!elements.isJsonObject()) {
 					throw new JsonSyntaxException("And condition values must be an array of JsonObjects");
 				}

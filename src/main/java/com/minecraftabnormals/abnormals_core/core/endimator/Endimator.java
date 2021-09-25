@@ -5,8 +5,8 @@ import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.util.Mth;
 
 import java.util.Map;
 
@@ -91,7 +91,7 @@ public final class Endimator<E extends Entity & IEndimatedEntity> {
 	 */
 	public void endKeyframe() {
 		if (this.shouldEndimateBoxes()) {
-			float increment = MathHelper.sin((float) (((this.entity.getAnimationTick() - this.prevTickDuration + ClientInfo.getPartialTicks()) / (this.tickDuration - this.prevTickDuration)) * Math.PI / 2.0F));
+			float increment = Mth.sin((float) (((this.entity.getAnimationTick() - this.prevTickDuration + ClientInfo.getPartialTicks()) / (this.tickDuration - this.prevTickDuration)) * Math.PI / 2.0F));
 			this.prevBoxValues.forEach((endimatorModelRenderer, prevValues) -> prevValues.addValuesToBoxWithMultiplier(endimatorModelRenderer, 1.0F - increment));
 			this.boxValues.forEach((endimatorModelRenderer, values) -> values.addValuesToBoxWithMultiplier(endimatorModelRenderer, increment));
 		}

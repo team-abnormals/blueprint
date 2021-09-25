@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A simplified version of the {@link net.minecraft.util.registry.Registry} class.
- * <p>This class is not an instance of {@link net.minecraft.util.registry.Registry}</p>
+ * A simplified version of the {@link net.minecraft.core.Registry} class.
+ * <p>This class is not an instance of {@link net.minecraft.core.Registry}</p>
  *
  * @param <T> The type of object for the registry.
  * @author SmellyModder (Luke Tonon)

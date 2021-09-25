@@ -1,13 +1,13 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -39,7 +39,7 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	 * @param height               - The height of the entity's bounding box.
 	 * @return A {@link RegistryObject} containing the created {@link EntityType}
 	 */
-	public <E extends LivingEntity> RegistryObject<EntityType<E>> createLivingEntity(String name, EntityType.IFactory<E> factory, EntityClassification entityClassification, float width, float height) {
+	public <E extends LivingEntity> RegistryObject<EntityType<E>> createLivingEntity(String name, EntityType.EntityFactory<E> factory, MobCategory entityClassification, float width, float height) {
 		return this.deferredRegister.register(name, () -> createLivingEntity(factory, entityClassification, name, width, height));
 	}
 
@@ -54,7 +54,7 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	 * @param height               - The height of the entity's bounding box.
 	 * @return A {@link RegistryObject} containing the created {@link EntityType}
 	 */
-	public <E extends Entity> RegistryObject<EntityType<E>> createEntity(String name, EntityType.IFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, World, E> clientFactory, EntityClassification entityClassification, float width, float height) {
+	public <E extends Entity> RegistryObject<EntityType<E>> createEntity(String name, EntityType.EntityFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, Level, E> clientFactory, MobCategory entityClassification, float width, float height) {
 		return this.deferredRegister.register(name, () -> createEntity(factory, clientFactory, entityClassification, name, width, height));
 	}
 
@@ -68,7 +68,7 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	 * @param height               - The height of the entity's bounding box.
 	 * @return The created {@link EntityType}.
 	 */
-	public <E extends LivingEntity> EntityType<E> createLivingEntity(EntityType.IFactory<E> factory, EntityClassification entityClassification, String name, float width, float height) {
+	public <E extends LivingEntity> EntityType<E> createLivingEntity(EntityType.EntityFactory<E> factory, MobCategory entityClassification, String name, float width, float height) {
 		ResourceLocation location = this.parent.prefix(name);
 		EntityType<E> entity = EntityType.Builder.of(factory, entityClassification)
 				.sized(width, height)
@@ -90,7 +90,7 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	 * @param height               - The height of the entity's bounding box.
 	 * @return The created {@link EntityType}.
 	 */
-	public <E extends Entity> EntityType<E> createEntity(EntityType.IFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, World, E> clientFactory, EntityClassification entityClassification, String name, float width, float height) {
+	public <E extends Entity> EntityType<E> createEntity(EntityType.EntityFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, Level, E> clientFactory, MobCategory entityClassification, String name, float width, float height) {
 		ResourceLocation location = this.parent.prefix(name);
 		EntityType<E> entity = EntityType.Builder.of(factory, entityClassification)
 				.sized(width, height)

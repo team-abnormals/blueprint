@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.world.storage.tracking;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.Map;
 import java.util.Objects;
@@ -96,12 +96,12 @@ public interface IDataManager {
 			this.dirty = false;
 		}
 
-		public void write(PacketBuffer buffer) {
+		public void write(FriendlyByteBuf buffer) {
 			buffer.writeVarInt(TrackedDataManager.INSTANCE.getId(this.trackedData));
 			buffer.writeNbt(this.writeValue());
 		}
 
-		public static DataEntry<?> read(PacketBuffer buffer) {
+		public static DataEntry<?> read(FriendlyByteBuf buffer) {
 			int id = buffer.readVarInt();
 			TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(id);
 			Objects.requireNonNull(trackedData, String.format("Tracked Data does not exist for id %o", id));
@@ -110,11 +110,11 @@ public interface IDataManager {
 			return entry;
 		}
 
-		public CompoundNBT writeValue() {
+		public CompoundTag writeValue() {
 			return this.getTrackedData().getProcessor().write(this.value);
 		}
 
-		public void readValue(CompoundNBT compound, boolean dirty) {
+		public void readValue(CompoundTag compound, boolean dirty) {
 			this.value = this.getTrackedData().getProcessor().read(compound);
 			this.dirty = dirty;
 		}

@@ -2,10 +2,10 @@ package com.minecraftabnormals.abnormals_core.common.network;
 
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -21,11 +21,11 @@ public final class MessageC2SUpdateSlabfishHat {
 		this.setting = setting;
 	}
 
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeByte(this.setting);
 	}
 
-	public static MessageC2SUpdateSlabfishHat deserialize(PacketBuffer buf) {
+	public static MessageC2SUpdateSlabfishHat deserialize(FriendlyByteBuf buf) {
 		return new MessageC2SUpdateSlabfishHat(buf.readByte());
 	}
 
@@ -33,7 +33,7 @@ public final class MessageC2SUpdateSlabfishHat {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
-				ServerPlayerEntity player = context.getSender();
+				ServerPlayer player = context.getSender();
 				if (player instanceof IDataManager)
 					((IDataManager) player).setValue(AbnormalsCore.SLABFISH_SETTINGS, message.setting);
 			});

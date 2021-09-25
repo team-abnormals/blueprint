@@ -3,8 +3,8 @@ package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 /**
@@ -45,7 +45,7 @@ public class MatchesPredicate implements IConfigPredicate {
 
         @Override
         public MatchesPredicate read(JsonObject json) {
-            if (!json.has("expression") && !JSONUtils.isStringValue(json, "expression"))
+            if (!json.has("expression") && !GsonHelper.isStringValue(json, "expression"))
                 throw new JsonSyntaxException("Missing 'expression', expected to find a regular expression");
             return new MatchesPredicate(json.get("expression").getAsString());
         }

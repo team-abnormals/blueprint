@@ -2,26 +2,26 @@ package com.minecraftabnormals.abnormals_core.common.entity;
 
 import com.minecraftabnormals.abnormals_core.core.api.IBucketableEntity;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.WaterMobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Level;
 
-public abstract class BucketableWaterMobEntity extends WaterMobEntity implements IBucketableEntity {
-	private static final DataParameter<Boolean> FROM_BUCKET = EntityDataManager.defineId(BucketableWaterMobEntity.class, DataSerializers.BOOLEAN);
+public abstract class BucketableWaterMobEntity extends WaterAnimal implements IBucketableEntity {
+	private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(BucketableWaterMobEntity.class, EntityDataSerializers.BOOLEAN);
 
-	public BucketableWaterMobEntity(EntityType<? extends BucketableWaterMobEntity> type, World world) {
+	public BucketableWaterMobEntity(EntityType<? extends BucketableWaterMobEntity> type, Level world) {
 		super(type, world);
 	}
 
@@ -36,12 +36,12 @@ public abstract class BucketableWaterMobEntity extends WaterMobEntity implements
 		}
 	}
 
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putBoolean("FromBucket", this.isFromBucket());
 	}
 
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setFromBucket(compound.getBoolean("FromBucket"));
 	}
@@ -59,7 +59,7 @@ public abstract class BucketableWaterMobEntity extends WaterMobEntity implements
 	}
 
 	@Override
-	public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+	public InteractionResult mobInteract(Player player, InteractionHand hand) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		if (itemstack.getItem() == Items.WATER_BUCKET && this.isAlive()) {
 			this.playSound(this.getBucketFillSound(), 1.0F, 1.0F);
@@ -67,17 +67,17 @@ public abstract class BucketableWaterMobEntity extends WaterMobEntity implements
 			ItemStack itemstack1 = this.getBucket();
 			this.setBucketData(itemstack1);
 			if (!this.level.isClientSide) {
-				CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayerEntity) player, itemstack1);
+				CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, itemstack1);
 			}
 
 			if (itemstack.isEmpty()) {
 				player.setItemInHand(hand, itemstack1);
-			} else if (!player.inventory.add(itemstack1)) {
+			} else if (!player.getInventory().add(itemstack1)) {
 				player.drop(itemstack1, false);
 			}
 
-			this.remove();
-			return ActionResultType.SUCCESS;
+			this.kill();
+			return InteractionResult.SUCCESS;
 		} else {
 			return super.mobInteract(player, hand);
 		}

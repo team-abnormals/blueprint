@@ -1,21 +1,23 @@
 package com.minecraftabnormals.abnormals_core.common.tileentity;
 
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
-public class AbnormalsChestTileEntity extends ChestTileEntity {
-	protected AbnormalsChestTileEntity(TileEntityType<?> typeIn) {
-		super(typeIn);
+public class AbnormalsChestTileEntity extends ChestBlockEntity {
+	protected AbnormalsChestTileEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
+		super(typeIn, pos, state);
 	}
 
-	public AbnormalsChestTileEntity() {
-		super(ACTileEntities.CHEST.get());
+	public AbnormalsChestTileEntity(BlockPos pos, BlockState state) {
+		super(ACTileEntities.CHEST.get(), pos, state);
 	}
 
 	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		return new AxisAlignedBB(worldPosition.getX() - 1, worldPosition.getY(), worldPosition.getZ() - 1, worldPosition.getX() + 2, worldPosition.getY() + 2, worldPosition.getZ() + 2);
+	public AABB getRenderBoundingBox() {
+		return new AABB(worldPosition.getX() - 1, worldPosition.getY(), worldPosition.getZ() - 1, worldPosition.getX() + 2, worldPosition.getY() + 2, worldPosition.getZ() + 2);
 	}
 }

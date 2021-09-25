@@ -5,14 +5,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.Direction;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.core.Direction;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import com.mojang.math.Vector3f;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
@@ -23,6 +22,17 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
+
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockElement;
+import net.minecraft.client.renderer.block.model.BlockElementFace;
+import net.minecraft.client.renderer.block.model.BlockElementRotation;
+import net.minecraft.client.renderer.block.model.BlockFaceUV;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 
 public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
     private static final Gson GSON = new GsonBuilder()
@@ -38,9 +48,9 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
     }
 
     @Override
-    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ResourceLocation modelLocation) {
+    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
         for (FullbrightBlockPart part : this.elements) {
-            for (Map.Entry<Direction, BlockPartFace> entry : part.faces.entrySet()) {
+            for (Map.Entry<Direction, BlockElementFace> entry : part.faces.entrySet()) {
                 FullbrightBlockPartFace face = (FullbrightBlockPartFace) entry.getValue();
                 BakedQuad quad = BlockModel.makeBakedQuad(part, face, spriteGetter.apply(owner.resolveTexture(face.texture)), entry.getKey(), modelTransform, modelLocation);
                 if ((!face.override && part.fullbright) || (face.override && face.fullbright))
@@ -56,10 +66,10 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
     }
 
     @Override
-    public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        Set<RenderMaterial> textures = Sets.newHashSet();
+    public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+        Set<Material> textures = Sets.newHashSet();
         for (FullbrightBlockPart part : this.elements) {
-            for (BlockPartFace face : part.faces.values()) {
+            for (BlockElementFace face : part.faces.values()) {
                 textures.add(owner.resolveTexture(face.texture));
             }
         }
@@ -71,13 +81,13 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
         INSTANCE;
 
         @Override
-        public void onResourceManagerReload(IResourceManager manager) {}
+        public void onResourceManagerReload(ResourceManager manager) {}
 
         @Override
         public FullbrightModel read(JsonDeserializationContext context, JsonObject model) {
             List<FullbrightBlockPart> list = Lists.newArrayList();
             if (model.has("elements")) {
-                for (JsonElement jsonelement : JSONUtils.getAsJsonArray(model, "elements")) {
+                for (JsonElement jsonelement : GsonHelper.getAsJsonArray(model, "elements")) {
                     list.add(GSON.fromJson(jsonelement, FullbrightBlockPart.class));
                 }
             }
@@ -85,7 +95,7 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
         }
     }
 
-    private static class FullbrightBlockPartFace extends BlockPartFace {
+    private static class FullbrightBlockPartFace extends BlockElementFace {
         private final boolean fullbright;
         private final boolean override;
 
@@ -95,30 +105,30 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
             this.override = override;
         }
 
-        private static class Deserializer extends BlockPartFace.Deserializer {
+        private static class Deserializer extends BlockElementFace.Deserializer {
             @Override
-            public BlockPartFace deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-                BlockPartFace face = super.deserialize(element, type, context);
+            public BlockElementFace deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+                BlockElementFace face = super.deserialize(element, type, context);
                 JsonObject object = element.getAsJsonObject();
 
-                if (object.has("fullbright") && !JSONUtils.isBooleanValue(object, "fullbright"))
+                if (object.has("fullbright") && !GsonHelper.isBooleanValue(object, "fullbright"))
                     throw new JsonParseException("Expected fullbright to be a Boolean");
                 return new FullbrightBlockPartFace(
                         face.cullForDirection,
                         face.tintIndex,
                         face.texture,
                         face.uv,
-                        JSONUtils.getAsBoolean(object, "fullbright", false),
+                        GsonHelper.getAsBoolean(object, "fullbright", false),
                         object.has("fullbright")
                 );
             }
         }
     }
 
-    private static class FullbrightBlockPart extends BlockPart {
+    private static class FullbrightBlockPart extends BlockElement {
         private final boolean fullbright;
 
-        private FullbrightBlockPart(Vector3f positionFrom, Vector3f positionTo, Map<Direction, BlockPartFace> mapFaces, @Nullable BlockPartRotation partRotation, boolean shade, boolean fullbright) {
+        private FullbrightBlockPart(Vector3f positionFrom, Vector3f positionTo, Map<Direction, BlockElementFace> mapFaces, @Nullable BlockElementRotation partRotation, boolean shade, boolean fullbright) {
             super(positionFrom, positionTo, mapFaces, partRotation, shade);
             this.fullbright = fullbright;
         }
@@ -129,33 +139,33 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
                 JsonObject object = element.getAsJsonObject();
                 Vector3f from = this.validateVectorBounds(object, "from");
                 Vector3f to = this.validateVectorBounds(object, "to");
-                BlockPartRotation rotation = this.parseRotation(object);
-                Map<Direction, BlockPartFace> faces = this.parseFacesCheck(object);
+                BlockElementRotation rotation = this.parseRotation(object);
+                Map<Direction, BlockElementFace> faces = this.parseFacesCheck(object);
 
-                if (object.has("shade") && !JSONUtils.isBooleanValue(object, "shade"))
+                if (object.has("shade") && !GsonHelper.isBooleanValue(object, "shade"))
                     throw new JsonParseException("Expected shade to be a Boolean");
-                if (object.has("fullbright") && !JSONUtils.isBooleanValue(object, "fullbright"))
+                if (object.has("fullbright") && !GsonHelper.isBooleanValue(object, "fullbright"))
                     throw new JsonParseException("Expected fullbright to be a Boolean");
 
-                return new FullbrightBlockPart(from, to, faces, rotation, JSONUtils.getAsBoolean(object, "shade", true), JSONUtils.getAsBoolean(object, "fullbright", false));
+                return new FullbrightBlockPart(from, to, faces, rotation, GsonHelper.getAsBoolean(object, "shade", true), GsonHelper.getAsBoolean(object, "fullbright", false));
             }
 
             @Nullable
-            private BlockPartRotation parseRotation(JsonObject object) {
-                BlockPartRotation rotation = null;
+            private BlockElementRotation parseRotation(JsonObject object) {
+                BlockElementRotation rotation = null;
                 if (object.has("rotation")) {
-                    JsonObject rotObject = JSONUtils.getAsJsonObject(object, "rotation");
+                    JsonObject rotObject = GsonHelper.getAsJsonObject(object, "rotation");
                     Vector3f origin = this.deserializeVec3f(rotObject, "origin");
                     origin.mul(0.0625F);
-                    rotation = new BlockPartRotation(origin, this.parseAxis(rotObject), this.parseAngle(rotObject), JSONUtils.getAsBoolean(rotObject, "rescale", false));
+                    rotation = new BlockElementRotation(origin, this.parseAxis(rotObject), this.parseAngle(rotObject), GsonHelper.getAsBoolean(rotObject, "rescale", false));
                 }
 
                 return rotation;
             }
 
             private float parseAngle(JsonObject object) {
-                float angle = JSONUtils.getAsFloat(object, "angle");
-                if (angle != 0.0F && MathHelper.abs(angle) != 22.5F && MathHelper.abs(angle) != 45.0F) {
+                float angle = GsonHelper.getAsFloat(object, "angle");
+                if (angle != 0.0F && Mth.abs(angle) != 22.5F && Mth.abs(angle) != 45.0F) {
                     throw new JsonParseException("Invalid rotation " + angle + " found, only -45/-22.5/0/22.5/45 allowed");
                 }
 
@@ -163,7 +173,7 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
             }
 
             private Direction.Axis parseAxis(JsonObject object) {
-                String axisName = JSONUtils.getAsString(object, "axis");
+                String axisName = GsonHelper.getAsString(object, "axis");
                 Direction.Axis axis = Direction.Axis.byName(axisName.toLowerCase(Locale.ROOT));
                 if (axis == null) {
                     throw new JsonParseException("Invalid rotation axis: " + axisName);
@@ -172,8 +182,8 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
                 return axis;
             }
 
-            private Map<Direction, BlockPartFace> parseFacesCheck(JsonObject object) {
-                Map<Direction, BlockPartFace> faces = this.parseFaces(object);
+            private Map<Direction, BlockElementFace> parseFacesCheck(JsonObject object) {
+                Map<Direction, BlockElementFace> faces = this.parseFaces(object);
                 if (faces.isEmpty()) {
                     throw new JsonParseException("Expected between 1 and 6 unique faces, got 0");
                 }
@@ -181,9 +191,9 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
                 return faces;
             }
 
-            private Map<Direction, BlockPartFace> parseFaces(JsonObject object) {
-                Map<Direction, BlockPartFace> faces = Maps.newEnumMap(Direction.class);
-                JsonObject facesObject = JSONUtils.getAsJsonObject(object, "faces");
+            private Map<Direction, BlockElementFace> parseFaces(JsonObject object) {
+                Map<Direction, BlockElementFace> faces = Maps.newEnumMap(Direction.class);
+                JsonObject facesObject = GsonHelper.getAsJsonObject(object, "faces");
                 for (Map.Entry<String, JsonElement> entry : facesObject.entrySet()) {
                     Direction direction = this.parseEnumFacing(entry.getKey());
                     faces.put(direction, GSON.fromJson(entry.getValue(), FullbrightBlockPartFace.class));
@@ -211,14 +221,14 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
             }
 
             private Vector3f deserializeVec3f(JsonObject object, String name) {
-                JsonArray vectorJson = JSONUtils.getAsJsonArray(object, name);
+                JsonArray vectorJson = GsonHelper.getAsJsonArray(object, name);
                 if (vectorJson.size() != 3) {
                     throw new JsonParseException("Expected 3 " + name + " values, found: " + vectorJson.size());
                 }
 
                 float[] vector = new float[3];
                 for (int i = 0; i < 3; ++i) {
-                    vector[i] = JSONUtils.convertToFloat(vectorJson.get(i), name + "[" + i + "]");
+                    vector[i] = GsonHelper.convertToFloat(vectorJson.get(i), name + "[" + i + "]");
                 }
 
                 return new Vector3f(vector[0], vector[1], vector[2]);

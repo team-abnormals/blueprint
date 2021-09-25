@@ -3,10 +3,10 @@ package com.minecraftabnormals.abnormals_core.core.util.item.filling;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.NonNullList;
 
 import java.util.Map;
 import java.util.Set;
@@ -20,14 +20,14 @@ import java.util.function.Supplier;
  */
 public final class TargetedItemGroupFiller implements IItemGroupFiller {
 	private final Supplier<Item> targetItem;
-	private final Map<ItemGroup, OffsetValue> offsetMap = Maps.newHashMap();
+	private final Map<CreativeModeTab, OffsetValue> offsetMap = Maps.newHashMap();
 
 	public TargetedItemGroupFiller(Supplier<Item> targetItem) {
 		this.targetItem = targetItem;
 	}
 
 	@Override
-	public void fillItem(Item item, ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItem(Item item, CreativeModeTab group, NonNullList<ItemStack> items) {
 		if (ItemStackUtil.isInGroup(item, group)) {
 			OffsetValue offset = this.offsetMap.computeIfAbsent(group, (key) -> new OffsetValue());
 			if (offset.itemsProcessed.contains(item)) {

@@ -1,21 +1,21 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DirectionalBlock;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.Property;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.core.BlockSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.function.UnaryOperator;
  */
 public final class BlockUtil {
 
-	public static boolean isBlockInWater(World world, BlockPos pos) {
+	public static boolean isBlockInWater(Level world, BlockPos pos) {
 		if (world.getBlockState(pos).getFluidState().is(FluidTags.WATER)) {
 			return true;
 		}
@@ -39,18 +39,18 @@ public final class BlockUtil {
 		return false;
 	}
 
-	public static boolean canPlace(World world, PlayerEntity player, BlockPos pos, BlockState state) {
-		ISelectionContext selectionContext = player == null ? ISelectionContext.empty() : ISelectionContext.of(player);
+	public static boolean canPlace(Level world, Player player, BlockPos pos, BlockState state) {
+		CollisionContext selectionContext = player == null ? CollisionContext.empty() : CollisionContext.of(player);
 		VoxelShape voxelshape = state.getCollisionShape(world, pos, selectionContext);
 		VoxelShape offsetShape = world.getBlockState(pos).getCollisionShape(world, pos);
 		return (offsetShape.isEmpty() || world.getBlockState(pos).getMaterial().isReplaceable()) && state.canSurvive(world, pos) && world.isUnobstructed(null, voxelshape.move(pos.getX(), pos.getY(), pos.getZ()));
 	}
 
-	public static SoundEvent getPlaceSound(BlockState state, World world, BlockPos pos, PlayerEntity entity) {
+	public static SoundEvent getPlaceSound(BlockState state, Level world, BlockPos pos, Player entity) {
 		return state.getSoundType(world, pos, entity).getPlaceSound();
 	}
 
-	public static boolean isPosNotTouchingBlock(IWorld world, BlockPos pos, Block blockToCheck, Direction... blacklistedDirections) {
+	public static boolean isPosNotTouchingBlock(LevelAccessor world, BlockPos pos, Block blockToCheck, Direction... blacklistedDirections) {
 		for (Direction directions : Direction.values()) {
 			List<Direction> blacklistedDirectionsList = Arrays.asList(blacklistedDirections);
 			if (!blacklistedDirectionsList.contains(directions)) {
@@ -73,34 +73,34 @@ public final class BlockUtil {
 		return block;
 	}
 
-	public static AxisAlignedBB rotateHorizontalBB(AxisAlignedBB bb, BBRotation rotation) {
-		AxisAlignedBB newBB = bb;
+	public static AABB rotateHorizontalBB(AABB bb, BBRotation rotation) {
+		AABB newBB = bb;
 		return rotation.rotateBB(newBB);
 	}
 
 	public enum BBRotation {
 		REVERSE_X((bb) -> {
 			final float minX = 1.0F - (float) bb.maxX;
-			return new AxisAlignedBB(minX, bb.minY, bb.minZ, bb.maxX >= 1.0F ? bb.maxX - bb.minX : bb.maxX + minX, bb.maxY, bb.maxZ);
+			return new AABB(minX, bb.minY, bb.minZ, bb.maxX >= 1.0F ? bb.maxX - bb.minX : bb.maxX + minX, bb.maxY, bb.maxZ);
 		}),
 		REVERSE_Z((bb) -> {
 			final float minZ = 1.0F - (float) bb.maxZ;
-			return new AxisAlignedBB(bb.minX, bb.minY, minZ, bb.maxX, bb.maxY, bb.maxZ >= 1.0F ? bb.maxZ - bb.minZ : bb.maxZ + minZ);
+			return new AABB(bb.minX, bb.minY, minZ, bb.maxX, bb.maxY, bb.maxZ >= 1.0F ? bb.maxZ - bb.minZ : bb.maxZ + minZ);
 		}),
 		RIGHT((bb) -> {
-			return new AxisAlignedBB(bb.minZ, bb.minY, bb.minX, bb.maxZ, bb.maxY, bb.maxX);
+			return new AABB(bb.minZ, bb.minY, bb.minX, bb.maxZ, bb.maxY, bb.maxX);
 		}),
 		LEFT((bb) -> {
 			return REVERSE_X.rotateBB(RIGHT.rotateBB(bb));
 		});
 
-		private final UnaryOperator<AxisAlignedBB> modifier;
+		private final UnaryOperator<AABB> modifier;
 
-		BBRotation(UnaryOperator<AxisAlignedBB> modifier) {
+		BBRotation(UnaryOperator<AABB> modifier) {
 			this.modifier = modifier;
 		}
 
-		public AxisAlignedBB rotateBB(AxisAlignedBB bb) {
+		public AABB rotateBB(AABB bb) {
 			return this.modifier.apply(bb);
 		}
 
@@ -128,50 +128,50 @@ public final class BlockUtil {
 	 * {@link DirectionalBlock#FACING} property.</p>
 	 * This requires the {@link BlockState} stored in {@code source} to have a {@link DirectionalBlock#FACING} property.
 	 *
-	 * @param source The {@link IBlockSource} to get the position from.
+	 * @param source The {@link BlockSource} to get the position from.
 	 * @return The position in front of the dispenser's output face.
 	 *
 	 * @author abigailfails
 	 */
-	public static BlockPos offsetPos(IBlockSource source) {
+	public static BlockPos offsetPos(BlockSource source) {
 		return source.getPos().relative(source.getBlockState().getValue(DirectionalBlock.FACING));
 	}
 
 	/**
-	 * Gets the {@link BlockState} at the position returned by {@link #offsetPos(IBlockSource source)}.
+	 * Gets the {@link BlockState} at the position returned by {@link #offsetPos(BlockSource source)}.
 	 *
-	 * @param source The {@link IBlockSource} to get the position from.
+	 * @param source The {@link BlockSource} to get the position from.
 	 * @return The {@link BlockState} at the offset position.
-	 * @see #offsetPos(IBlockSource source)
+	 * @see #offsetPos(BlockSource source)
 	 */
-	public static BlockState getStateAtOffsetPos(IBlockSource source) {
+	public static BlockState getStateAtOffsetPos(BlockSource source) {
 		return source.getLevel().getBlockState(offsetPos(source));
 	}
 
 	/**
-	 * Gets a {@link List} of type {@link T} at the position returned by {@link #offsetPos(IBlockSource source)}.
+	 * Gets a {@link List} of type {@link T} at the position returned by {@link #offsetPos(BlockSource source)}.
 	 *
-	 * @param source The {@link IBlockSource} to get the position from.
+	 * @param source The {@link BlockSource} to get the position from.
 	 * @param entityType The class extending {@link T} to search for. Set to {@code Entity.class} to get all entities, regardless of type.
 	 *
 	 * @return A {@link List} of entities at the at the offset position.
-	 * @see #offsetPos(IBlockSource source)
+	 * @see #offsetPos(BlockSource source)
 	 */
-	public static<T extends Entity> List<T> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends T> entityType) {
-		return source.getLevel().getEntitiesOfClass(entityType, new AxisAlignedBB(offsetPos(source)));
+	public static<T extends Entity> List<T> getEntitiesAtOffsetPos(BlockSource source, Class<T> entityType) {
+		return source.getLevel().getEntitiesOfClass(entityType, new AABB(offsetPos(source)));
 	}
 
 	/**
-	 * Gets a {@link List} of type {@link T} that match a {@link Predicate} at the position returned by {@link #offsetPos(IBlockSource source)}.
+	 * Gets a {@link List} of type {@link T} that match a {@link Predicate} at the position returned by {@link #offsetPos(BlockSource source)}.
 	 *
-	 * @param source The {@link IBlockSource} to get the position from.
+	 * @param source The {@link BlockSource} to get the position from.
 	 * @param entityType The class extending {@link T} to search for. Set to {@code Entity.class} to get all entities, regardless of type.
 	 * @param predicate The predicate that takes a superclass of {@link T} as an argument to check against.
 	 *
 	 * @return A {@link List} of entities at the at the offset position.
-	 * @see #offsetPos(IBlockSource source)
+	 * @see #offsetPos(BlockSource source)
 	 */
-	public static<T extends Entity> List<T> getEntitiesAtOffsetPos(IBlockSource source, Class<? extends T> entityType, Predicate<? super T> predicate) {
-		return source.getLevel().getEntitiesOfClass(entityType, new AxisAlignedBB(offsetPos(source)), predicate);
+	public static<T extends Entity> List<T> getEntitiesAtOffsetPos(BlockSource source, Class<T> entityType, Predicate<? super T> predicate) {
+		return source.getLevel().getEntitiesOfClass(entityType, new AABB(offsetPos(source)), predicate);
 	}
 }

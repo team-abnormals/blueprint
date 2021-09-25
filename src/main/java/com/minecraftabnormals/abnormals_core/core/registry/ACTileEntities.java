@@ -9,17 +9,17 @@ import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsChestTil
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsSignTileEntity;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import com.minecraftabnormals.abnormals_core.core.util.registry.TileEntitySubRegistryHelper;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.fml.RegistryObject;
+import com.minecraftabnormals.abnormals_core.core.util.registry.BlockEntitySubRegistryHelper;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ACTileEntities {
-	public static final TileEntitySubRegistryHelper HELPER = AbnormalsCore.REGISTRY_HELPER.getTileEntitySubHelper();
+	public static final BlockEntitySubRegistryHelper HELPER = AbnormalsCore.REGISTRY_HELPER.getTileEntitySubHelper();
 
-	public static final RegistryObject<TileEntityType<AbnormalsSignTileEntity>> SIGN = HELPER.createTileEntity("sign", AbnormalsSignTileEntity::new, () -> TileEntitySubRegistryHelper.collectBlocks(IAbnormalsSign.class));
-	public static final RegistryObject<TileEntityType<AbnormalsBeehiveTileEntity>> BEEHIVE = HELPER.createTileEntity("beehive", AbnormalsBeehiveTileEntity::new, AbnormalsBeehiveBlock.class);
-	public static final RegistryObject<TileEntityType<AbnormalsChestTileEntity>> CHEST = HELPER.createTileEntity("chest", AbnormalsChestTileEntity::new, AbnormalsChestBlock.class);
-	public static final RegistryObject<TileEntityType<AbnormalsTrappedChestTileEntity>> TRAPPED_CHEST = HELPER.createTileEntity("trapped_chest", AbnormalsTrappedChestTileEntity::new, AbnormalsTrappedChestBlock.class);
+	public static final RegistryObject<BlockEntityType<AbnormalsSignTileEntity>> SIGN = HELPER.createBlockEntity("sign", AbnormalsSignTileEntity::new, () -> BlockEntitySubRegistryHelper.collectBlocks(IAbnormalsSign.class));
+	public static final RegistryObject<BlockEntityType<AbnormalsBeehiveTileEntity>> BEEHIVE = HELPER.createBlockEntity("beehive", AbnormalsBeehiveTileEntity::new, AbnormalsBeehiveBlock.class);
+	public static final RegistryObject<BlockEntityType<AbnormalsChestTileEntity>> CHEST = HELPER.createBlockEntity("chest", AbnormalsChestTileEntity::new, AbnormalsChestBlock.class);
+	public static final RegistryObject<BlockEntityType<AbnormalsTrappedChestTileEntity>> TRAPPED_CHEST = HELPER.createBlockEntity("trapped_chest", AbnormalsTrappedChestTileEntity::new, AbnormalsTrappedChestBlock.class);
 }

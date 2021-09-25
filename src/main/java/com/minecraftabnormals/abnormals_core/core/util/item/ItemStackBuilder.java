@@ -1,16 +1,16 @@
 package com.minecraftabnormals.abnormals_core.core.util.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -21,14 +21,14 @@ import javax.annotation.Nullable;
  */
 public class ItemStackBuilder {
 	private final ItemStack stack;
-	private final CompoundNBT tag;
+	private final CompoundTag tag;
 
 	public ItemStackBuilder(ItemStack stack) {
 		this.stack = stack;
 		this.tag = stack.getOrCreateTag();
 	}
 
-	public ItemStackBuilder(IItemProvider item) {
+	public ItemStackBuilder(ItemLike item) {
 		this(new ItemStack(item));
 	}
 
@@ -96,7 +96,7 @@ public class ItemStackBuilder {
 	 * @return This builder.
 	 * @see ItemStack#setDisplayName(ITextComponent).
 	 */
-	public ItemStackBuilder setName(@Nullable ITextComponent text) {
+	public ItemStackBuilder setName(@Nullable Component text) {
 		this.stack.setHoverName(text);
 		return this;
 	}
@@ -107,16 +107,16 @@ public class ItemStackBuilder {
 	 * @param text The lore text to add.
 	 * @return This builder.
 	 */
-	public ItemStackBuilder addLore(ITextComponent text) {
-		CompoundNBT display = this.stack.getOrCreateTagElement("display");
-		ListNBT loreListTag;
+	public ItemStackBuilder addLore(Component text) {
+		CompoundTag display = this.stack.getOrCreateTagElement("display");
+		ListTag loreListTag;
 		if (display.contains("Lore", 9)) {
 			loreListTag = display.getList("Lore", 8);
 		} else {
-			loreListTag = new ListNBT();
+			loreListTag = new ListTag();
 			display.put("Lore", loreListTag);
 		}
-		loreListTag.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(text)));
+		loreListTag.add(StringTag.valueOf(Component.Serializer.toJson(text)));
 		return this;
 	}
 
@@ -129,7 +129,7 @@ public class ItemStackBuilder {
 	 * @return This builder.
 	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
 	 */
-	public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, @Nullable EquipmentSlotType slot) {
+	public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, @Nullable EquipmentSlot slot) {
 		this.stack.addAttributeModifier(attribute, modifier, slot);
 		return this;
 	}
@@ -144,8 +144,8 @@ public class ItemStackBuilder {
 	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
 	 * @see #addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
 	 */
-	public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, EquipmentSlotType... slots) {
-		for (EquipmentSlotType slot : slots) {
+	public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, EquipmentSlot... slots) {
+		for (EquipmentSlot slot : slots) {
 			this.stack.addAttributeModifier(attribute, modifier, slot);
 		}
 		return this;
@@ -160,14 +160,14 @@ public class ItemStackBuilder {
 	 * @return This builder.
 	 */
 	public ItemStackBuilder addPredicate(String key, String predicate) {
-		ListNBT predicateList;
+		ListTag predicateList;
 		if (this.tag.contains(key, 9)) {
 			predicateList = this.tag.getList(key, 8);
 		} else {
-			predicateList = new ListNBT();
+			predicateList = new ListTag();
 			this.tag.put(key, predicateList);
 		}
-		predicateList.add(StringNBT.valueOf(predicate));
+		predicateList.add(StringTag.valueOf(predicate));
 		return this;
 	}
 

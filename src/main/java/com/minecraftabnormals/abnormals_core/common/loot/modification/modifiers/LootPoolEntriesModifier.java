@@ -2,11 +2,11 @@ package com.minecraftabnormals.abnormals_core.common.loot.modification.modifiers
 
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.loot.LootEntry;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootPredicateManager;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraft.loot.LootTable;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.util.GsonHelper;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -26,7 +26,7 @@ public final class LootPoolEntriesModifier implements ILootModifier<LootPoolEntr
 	@Override
 	public void modify(LootTableLoadEvent object, Config config) {
 		try {
-			List<LootEntry> lootEntries = (List<LootEntry>) ENTRIES.get(((List<LootPool>) LootPoolsModifier.POOLS.get(object.getTable())).get(config.index));
+			List<LootPoolEntryContainer> lootEntries = (List<LootPoolEntryContainer>) ENTRIES.get(((List<LootPool>) LootPoolsModifier.POOLS.get(object.getTable())).get(config.index));
 			if (config.replace) {
 				lootEntries.clear();
 			}
@@ -42,7 +42,7 @@ public final class LootPoolEntriesModifier implements ILootModifier<LootPoolEntr
 		jsonObject.addProperty("replace", config.replace);
 		jsonObject.addProperty("index", config.index);
 		JsonArray entries = new JsonArray();
-		for (LootEntry lootEntry : config.entries) {
+		for (LootPoolEntryContainer lootEntry : config.entries) {
 			entries.add(gson.toJsonTree(lootEntry));
 		}
 		jsonObject.add("entries", entries);
@@ -50,25 +50,25 @@ public final class LootPoolEntriesModifier implements ILootModifier<LootPoolEntr
 	}
 
 	@Override
-	public Config deserialize(JsonElement element, Pair<Gson, LootPredicateManager> additional) throws JsonParseException {
+	public Config deserialize(JsonElement element, Pair<Gson, PredicateManager> additional) throws JsonParseException {
 		JsonObject jsonObject = element.getAsJsonObject();
-		int index = JSONUtils.getAsInt(jsonObject, "index");
+		int index = GsonHelper.getAsInt(jsonObject, "index");
 		if (index < 0) {
 			throw new JsonParseException("'index' must be 0 or greater!");
 		}
-		List<LootEntry> entries = new ArrayList<>();
+		List<LootPoolEntryContainer> entries = new ArrayList<>();
 		JsonArray entriesArray = jsonObject.getAsJsonArray("entries");
 		Gson gson = additional.getFirst();
-		entriesArray.forEach(entry -> entries.add(gson.fromJson(entry, LootEntry.class)));
-		return new Config(JSONUtils.getAsBoolean(jsonObject, "replace"), index, entries);
+		entriesArray.forEach(entry -> entries.add(gson.fromJson(entry, LootPoolEntryContainer.class)));
+		return new Config(GsonHelper.getAsBoolean(jsonObject, "replace"), index, entries);
 	}
 
 	public static class Config {
 		private final boolean replace;
 		private final int index;
-		private final List<LootEntry> entries;
+		private final List<LootPoolEntryContainer> entries;
 
-		public Config(boolean replace, int index, List<LootEntry> entries) {
+		public Config(boolean replace, int index, List<LootPoolEntryContainer> entries) {
 			this.replace = replace;
 			this.index = index;
 			this.entries = entries;

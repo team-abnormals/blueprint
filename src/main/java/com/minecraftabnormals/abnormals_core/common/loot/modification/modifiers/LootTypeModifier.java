@@ -5,11 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.loot.LootParameterSet;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootPredicateManager;
-import net.minecraft.loot.LootTable;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.PredicateManager;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -20,11 +20,11 @@ import java.lang.reflect.Field;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class LootTypeModifier implements ILootModifier<LootParameterSet> {
+public final class LootTypeModifier implements ILootModifier<LootContextParamSet> {
 	private static final Field PARAMETER_SET = ObfuscationReflectionHelper.findField(LootTable.class, "field_216127_d");
 
 	@Override
-	public void modify(LootTableLoadEvent event, LootParameterSet config) {
+	public void modify(LootTableLoadEvent event, LootContextParamSet config) {
 		try {
 			PARAMETER_SET.set(event.getTable(), config);
 		} catch (IllegalAccessException e) {
@@ -33,8 +33,8 @@ public final class LootTypeModifier implements ILootModifier<LootParameterSet> {
 	}
 
 	@Override
-	public JsonElement serialize(LootParameterSet config, Gson additional) throws JsonParseException {
-		ResourceLocation resourceLocation = LootParameterSets.getKey(config);
+	public JsonElement serialize(LootContextParamSet config, Gson additional) throws JsonParseException {
+		ResourceLocation resourceLocation = LootContextParamSets.getKey(config);
 		if (resourceLocation == null) {
 			throw new JsonParseException("Unknown Loot Parameter Set: " + config);
 		}
@@ -42,9 +42,9 @@ public final class LootTypeModifier implements ILootModifier<LootParameterSet> {
 	}
 
 	@Override
-	public LootParameterSet deserialize(JsonElement element, Pair<Gson, LootPredicateManager> additional) throws JsonParseException {
+	public LootContextParamSet deserialize(JsonElement element, Pair<Gson, PredicateManager> additional) throws JsonParseException {
 		String type = element.getAsString();
-		LootParameterSet lootParameterSet = LootParameterSets.get(new ResourceLocation(type));
+		LootContextParamSet lootParameterSet = LootContextParamSets.get(new ResourceLocation(type));
 		if (lootParameterSet != null) {
 			return lootParameterSet;
 		}

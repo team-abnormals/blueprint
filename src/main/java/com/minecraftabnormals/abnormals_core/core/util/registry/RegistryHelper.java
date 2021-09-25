@@ -1,13 +1,13 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
 import com.google.common.collect.Maps;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -84,7 +84,7 @@ public class RegistryHelper {
 		this.putSubHelper(ForgeRegistries.ITEMS, new ItemSubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.BLOCKS, new BlockSubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.SOUND_EVENTS, new SoundSubRegistryHelper(this));
-		this.putSubHelper(ForgeRegistries.TILE_ENTITIES, new TileEntitySubRegistryHelper(this));
+		this.putSubHelper(ForgeRegistries.BLOCK_ENTITIES, new BlockEntitySubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.ENTITIES, new EntitySubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.BIOMES, new BiomeSubRegistryHelper(this));
 	}
@@ -115,8 +115,8 @@ public class RegistryHelper {
 	}
 
 	@Nonnull
-	public <T extends AbstractSubRegistryHelper<TileEntityType<?>>> T getTileEntitySubHelper() {
-		return this.getSubHelper(ForgeRegistries.TILE_ENTITIES);
+	public <T extends AbstractSubRegistryHelper<BlockEntityType<?>>> T getTileEntitySubHelper() {
+		return this.getSubHelper(ForgeRegistries.BLOCK_ENTITIES);
 	}
 
 	@Nonnull

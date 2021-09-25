@@ -6,11 +6,13 @@ import com.google.gson.JsonParseException;
 import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.util.GsonHelper;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Map;
 import java.util.Optional;
+
+import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
 
 /**
  * An {@link AdvancementModifier} extension that modifies a specific requirement array of an advancement's requirements.
@@ -23,16 +25,16 @@ public final class IndexedRequirementsModifier extends AdvancementModifier<Index
 		super(((element, conditionArrayParser) -> {
 			JsonObject object = element.getAsJsonObject();
 			Mode mode = Mode.deserialize(object);
-			int index = JSONUtils.getAsInt(object, "index");
-			Optional<Map<String, Criterion>> criterionMap = JSONUtils.isValidNode(object, "criteria") ? Optional.of(Criterion.criteriaFromJson(object.getAsJsonObject("criteria"), conditionArrayParser)) : Optional.empty();
+			int index = GsonHelper.getAsInt(object, "index");
+			Optional<Map<String, Criterion>> criterionMap = GsonHelper.isValidNode(object, "criteria") ? Optional.of(Criterion.criteriaFromJson(object.getAsJsonObject("criteria"), conditionArrayParser)) : Optional.empty();
 			Optional<String[]> requirements = Optional.empty();
 			if (criterionMap.isPresent()) {
 				Map<String, Criterion> map = criterionMap.get();
 				if (map.isEmpty()) {
 					throw new JsonParseException("Criteria cannot be empty! Don't include it instead");
 				}
-				if (JSONUtils.isValidNode(object, "requirements")) {
-					JsonArray requirementsArray = JSONUtils.getAsJsonArray(object, "requirements");
+				if (GsonHelper.isValidNode(object, "requirements")) {
+					JsonArray requirementsArray = GsonHelper.getAsJsonArray(object, "requirements");
 					String[] strings = new String[requirementsArray.size()];
 					if (strings.length == 0) {
 						throw new JsonParseException("Requirements cannot be empty!");

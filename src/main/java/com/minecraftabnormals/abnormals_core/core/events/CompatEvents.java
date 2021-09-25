@@ -5,20 +5,20 @@ import com.minecraftabnormals.abnormals_core.core.api.IAgeableEntity;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.dispenser.ProxyBlockSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.BlockSourceImpl;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
@@ -28,6 +28,12 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
+
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 
 /**
  * Events for mod compatibility.
@@ -45,20 +51,20 @@ public final class CompatEvents {
 		Entity target = event.getTarget();
 		ItemStack stack = event.getItemStack();
 		if (target instanceof IAgeableEntity && ((IAgeableEntity) target).hasGrowthProgress() && stack.getItem() == Items.POISONOUS_POTATO && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
-			PlayerEntity player = event.getPlayer();
-			CompoundNBT persistentData = target.getPersistentData();
+			Player player = event.getPlayer();
+			CompoundTag persistentData = target.getPersistentData();
 			if (((IAgeableEntity) target).canAge(true) && !persistentData.getBoolean(POISON_TAG)) {
 				if (target.level.random.nextDouble() < ACConfig.ValuesHolder.poisonEffectChance()) {
 					target.playSound(SoundEvents.GENERIC_EAT, 0.5f, 0.25f);
 					persistentData.putBoolean(POISON_TAG, true);
 					if (ACConfig.ValuesHolder.shouldPoisonEntity()) {
-						((LivingEntity) target).addEffect(new EffectInstance(Effects.POISON, 200));
+						((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.POISON, 200));
 					}
 				} else {
 					target.playSound(SoundEvents.GENERIC_EAT, 0.5f, 0.5f + target.level.random.nextFloat() / 2);
 				}
 				if (!player.isCreative()) stack.shrink(1);
-				event.setCancellationResult(ActionResultType.sidedSuccess(event.getWorld().isClientSide()));
+				event.setCancellationResult(InteractionResult.sidedSuccess(event.getWorld().isClientSide()));
 				event.setCanceled(true);
 			}
 		}
@@ -75,15 +81,15 @@ public final class CompatEvents {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onNoteBlockPlay(NoteBlockEvent.Play event) {
 		if (SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS  != null) {
-			World world = (World) event.getWorld();
+			Level world = (Level) event.getWorld();
 			if (!world.isClientSide()) {
 				BlockPos pos = event.getPos();
-				IBlockSource source = new ProxyBlockSource((ServerWorld) world, pos.relative(Direction.DOWN));
+				BlockSource source = new BlockSourceImpl((ServerLevel) world, pos.relative(Direction.DOWN));
 				for (DataUtil.CustomNoteBlockInstrument instrument : SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS) {
 					if (instrument.test(source)) {
 						SoundEvent sound = instrument.getSound();
 						double note = event.getVanillaNoteId();
-						world.playSound(null, pos, sound, SoundCategory.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
+						world.playSound(null, pos, sound, SoundSource.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
 						NetworkUtil.spawnParticle(NOTE_KEY, world.dimension(), pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
 						event.setCanceled(true);
 						break;

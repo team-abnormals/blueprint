@@ -7,10 +7,10 @@ import com.minecraftabnormals.abnormals_core.core.endimator.instructions.Endimat
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -20,7 +20,7 @@ import java.util.Optional;
  * Handles all the Data Driven Endimation internals.
  * @author SmellyModder (Luke Tonon)
  */
-public final class EndimationDataManager extends JsonReloadListener {
+public final class EndimationDataManager extends SimpleJsonResourceReloadListener {
 	private static final Gson GSON = (new GsonBuilder()).registerTypeAdapter(EndimationInstructionList.class, new EndimationInstructionListDeserializer()).create();
 	public static final Map<ResourceLocation, EndimationInstructionList> ENDIMATIONS = Maps.newHashMap();
 	
@@ -44,7 +44,7 @@ public final class EndimationDataManager extends JsonReloadListener {
 	}
 
 	@Override
-	protected void apply(Map<ResourceLocation, JsonElement> resourceMap, IResourceManager resourceManagerIn, IProfiler profilerIn) {
+	protected void apply(Map<ResourceLocation, JsonElement> resourceMap, ResourceManager resourceManagerIn, ProfilerFiller profilerIn) {
 		for (Map.Entry<ResourceLocation, JsonElement> entry : resourceMap.entrySet()) {
 			ResourceLocation resourcelocation = entry.getKey();
 			if (resourcelocation.getPath().startsWith("_")) continue;

@@ -1,9 +1,9 @@
 package com.minecraftabnormals.abnormals_core.client;
 
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -49,7 +49,7 @@ public final class ChestManager {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onStitch(TextureStitchEvent.Pre event) {
-		if (event.getMap().location().equals(Atlases.CHEST_SHEET)) {
+		if (event.getMap().location().equals(Sheets.CHEST_SHEET)) {
 			for (ChestInfo chestInfo : CHEST_INFO_MAP.values()) {
 				chestInfo.setup(event);
 			}
@@ -59,7 +59,7 @@ public final class ChestManager {
 	public static class ChestInfo {
 		private final ResourceLocation single, left, right;
 		@OnlyIn(Dist.CLIENT)
-		private RenderMaterial singleMaterial, leftMaterial, rightMaterial;
+		private Material singleMaterial, leftMaterial, rightMaterial;
 
 		public ChestInfo(String modId, String type, boolean trapped) {
 			String chest = trapped ? "trapped" : "normal";
@@ -78,9 +78,9 @@ public final class ChestManager {
 			event.addSprite(this.single);
 			event.addSprite(this.left);
 			event.addSprite(this.right);
-			this.singleMaterial = new RenderMaterial(Atlases.CHEST_SHEET, this.single);
-			this.leftMaterial = new RenderMaterial(Atlases.CHEST_SHEET, this.left);
-			this.rightMaterial = new RenderMaterial(Atlases.CHEST_SHEET, this.right);
+			this.singleMaterial = new Material(Sheets.CHEST_SHEET, this.single);
+			this.leftMaterial = new Material(Sheets.CHEST_SHEET, this.left);
+			this.rightMaterial = new Material(Sheets.CHEST_SHEET, this.right);
 		}
 
 		/**
@@ -89,7 +89,7 @@ public final class ChestManager {
 		 * @return This info's default/single {@link RenderMaterial}.
 		 */
 		@OnlyIn(Dist.CLIENT)
-		public RenderMaterial getSingleMaterial() {
+		public Material getSingleMaterial() {
 			return this.singleMaterial;
 		}
 
@@ -99,7 +99,7 @@ public final class ChestManager {
 		 * @return This info's left {@link RenderMaterial}.
 		 */
 		@OnlyIn(Dist.CLIENT)
-		public RenderMaterial getLeftMaterial() {
+		public Material getLeftMaterial() {
 			return this.leftMaterial;
 		}
 
@@ -109,7 +109,7 @@ public final class ChestManager {
 		 * @return This info's right {@link RenderMaterial}.
 		 */
 		@OnlyIn(Dist.CLIENT)
-		public RenderMaterial getRightMaterial() {
+		public Material getRightMaterial() {
 			return this.rightMaterial;
 		}
 	}

@@ -3,17 +3,19 @@ package com.minecraftabnormals.abnormals_core.common.blocks.chest;
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.minecraftabnormals.abnormals_core.core.api.IChestBlock;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.BlockGetter;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBlock {
 	public final String type;
@@ -24,12 +26,12 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	}
 
 	@Override
-	public boolean isFlammable(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
+	public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
 		return false;
 	}
 
 	@Override
-	public TileEntity newBlockEntity(IBlockReader worldIn) {
+	public BlockEntity newBlockEntity(BlockGetter worldIn) {
 		return new AbnormalsTrappedChestTileEntity();
 	}
 
@@ -49,12 +51,12 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	}
 
 	@Override
-	public int getSignal(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
-		return MathHelper.clamp(ChestTileEntity.getOpenCount(world, pos), 0, 15);
+	public int getSignal(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
+		return Mth.clamp(ChestBlockEntity.getOpenCount(world, pos), 0, 15);
 	}
 
 	@Override
-	public int getDirectSignal(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
+	public int getDirectSignal(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
 		return face == Direction.UP ? state.getSignal(world, pos, face) : 0;
 	}
 }

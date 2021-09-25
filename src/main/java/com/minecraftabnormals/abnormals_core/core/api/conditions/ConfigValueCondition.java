@@ -8,8 +8,8 @@ import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
@@ -103,26 +103,26 @@ public class ConfigValueCondition implements ICondition {
         public ConfigValueCondition read(JsonObject json) {
             if (!json.has("value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a string");
-            String name = JSONUtils.getAsString(json, "value");
+            String name = GsonHelper.getAsString(json, "value");
             ForgeConfigSpec.ConfigValue<?> configValue = configValues.get(name);
             if (configValue == null)
                 throw new JsonSyntaxException("No config value of name '" + name + "' found");
             Map<IConfigPredicate, Boolean> predicates = new HashMap<>();
-            if (JSONUtils.isValidNode(json, "predicates")) {
-                for (JsonElement predicateElement : JSONUtils.getAsJsonArray(json, "predicates")) {
+            if (GsonHelper.isValidNode(json, "predicates")) {
+                for (JsonElement predicateElement : GsonHelper.getAsJsonArray(json, "predicates")) {
                     if (!predicateElement.isJsonObject())
                         throw new JsonSyntaxException("Predicates must be an array of JsonObjects");
                     JsonObject predicateObject = predicateElement.getAsJsonObject();
-                    ResourceLocation type = new ResourceLocation(JSONUtils.getAsString(predicateObject, "type"));
+                    ResourceLocation type = new ResourceLocation(GsonHelper.getAsString(predicateObject, "type"));
                     IConfigPredicateSerializer<?> serializer = CONFIG_PREDICATE_SERIALIZERS.get(type);
                     if (serializer == null)
                         throw new JsonSyntaxException("Unknown predicate type: " + type.toString());
-                    predicates.put(serializer.read(predicateObject), predicateObject.has("inverted") && JSONUtils.getAsBoolean(predicateObject, "inverted"));
+                    predicates.put(serializer.read(predicateObject), predicateObject.has("inverted") && GsonHelper.getAsBoolean(predicateObject, "inverted"));
                 }
             } else if (!(configValue.get() instanceof Boolean)) {
                 throw new JsonSyntaxException("Missing 'predicates' for non-boolean config value '" + name + "', expected to find an array");
             }
-            return new ConfigValueCondition(location, configValue, name, predicates, json.has("inverted") && JSONUtils.getAsBoolean(json, "inverted"));
+            return new ConfigValueCondition(location, configValue, name, predicates, json.has("inverted") && GsonHelper.getAsBoolean(json, "inverted"));
         }
 
         @Override

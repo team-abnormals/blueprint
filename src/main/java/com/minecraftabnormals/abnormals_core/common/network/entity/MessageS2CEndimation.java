@@ -2,9 +2,9 @@ package com.minecraftabnormals.abnormals_core.common.network.entity;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -22,12 +22,12 @@ public final class MessageS2CEndimation {
 		this.endimationIndex = endimationIndex;
 	}
 
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeInt(this.entityId);
 		buf.writeInt(this.endimationIndex);
 	}
 
-	public static MessageS2CEndimation deserialize(PacketBuffer buf) {
+	public static MessageS2CEndimation deserialize(FriendlyByteBuf buf) {
 		int entityId = buf.readInt();
 		int endimationIndex = buf.readInt();
 		return new MessageS2CEndimation(entityId, endimationIndex);

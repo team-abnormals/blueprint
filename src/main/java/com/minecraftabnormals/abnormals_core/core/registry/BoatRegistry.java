@@ -2,12 +2,12 @@ package com.minecraftabnormals.abnormals_core.core.registry;
 
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.abnormals_core.core.registry.BoatRegistry.BoatData.DefaultBoatData;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.Map;

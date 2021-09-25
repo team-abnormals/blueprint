@@ -1,7 +1,9 @@
 package com.minecraftabnormals.abnormals_core.common.items;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class FuelItem extends Item {
 	private final int burnTime;

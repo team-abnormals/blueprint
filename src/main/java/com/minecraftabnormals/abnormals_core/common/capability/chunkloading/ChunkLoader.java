@@ -2,9 +2,9 @@ package com.minecraftabnormals.abnormals_core.common.capability.chunkloading;
 
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.abnormals_core.core.util.TickTask;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -17,11 +17,11 @@ import java.util.function.Consumer;
  */
 public class ChunkLoader implements IChunkLoader {
 	@Nullable
-	private final ServerWorld world;
+	private final ServerLevel world;
 	public final List<Long> loadedPositions = Lists.newArrayList();
-	private final List<TickTask<IChunk>> scheduledChunkProcesses = Lists.newArrayList();
+	private final List<TickTask<ChunkAccess>> scheduledChunkProcesses = Lists.newArrayList();
 
-	public ChunkLoader(@Nullable ServerWorld world) {
+	public ChunkLoader(@Nullable ServerLevel world) {
 		this.world = world;
 	}
 
@@ -47,7 +47,7 @@ public class ChunkLoader implements IChunkLoader {
 
 	@Override
 	public void tick() {
-		for (TickTask<IChunk> process : this.scheduledChunkProcesses) {
+		for (TickTask<ChunkAccess> process : this.scheduledChunkProcesses) {
 			process.tick();
 		}
 		this.scheduledChunkProcesses.removeIf(TickTask::isComplete);
@@ -59,7 +59,7 @@ public class ChunkLoader implements IChunkLoader {
 		}
 	}
 
-	public void scheduleChunkProcess(IChunk chunk, Consumer<IChunk> chunkProcess, int ticks) {
+	public void scheduleChunkProcess(ChunkAccess chunk, Consumer<ChunkAccess> chunkProcess, int ticks) {
 		this.scheduledChunkProcesses.add(new TickTask<>(chunk, chunkProcess, ticks));
 	}
 }

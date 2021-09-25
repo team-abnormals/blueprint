@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.client.screen.shaking;
 
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * A {@link ShakeSource} implementation containing some values that make up a 'simple' {@link ShakeSource}.
@@ -66,7 +66,7 @@ public class SimpleShakeSource implements ShakeSource {
 	}
 
 	@Override
-	public Vector3d getIntensity(Vector3d pos) {
-		return new Vector3d(this.intensityX, this.intensityY, this.intensityZ);
+	public Vec3 getIntensity(Vec3 pos) {
+		return new Vec3(this.intensityX, this.intensityY, this.intensityZ);
 	}
 }

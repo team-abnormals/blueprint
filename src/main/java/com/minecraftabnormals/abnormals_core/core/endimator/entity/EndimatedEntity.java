@@ -2,13 +2,13 @@ package com.minecraftabnormals.abnormals_core.core.endimator.entity;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -16,11 +16,11 @@ import javax.annotation.Nullable;
  * Implementation class of {@link IEndimatedEntity} for Endimated entities.
  * @author - SmellyModder(Luke Tonon)
  */
-public abstract class EndimatedEntity extends CreatureEntity implements IEndimatedEntity {
+public abstract class EndimatedEntity extends PathfinderMob implements IEndimatedEntity {
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	
-	public EndimatedEntity(EntityType<? extends CreatureEntity> type, World world) {
+	public EndimatedEntity(EntityType<? extends PathfinderMob> type, Level world) {
 		super(type, world);
 	}
 	
@@ -55,7 +55,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	
 	private void onEndimatedDeathUpdate(int deathAnimationDuration) {
 		if (this.deathTime++ >= deathAnimationDuration - 1) {
-			this.remove();
+			this.kill();
 			this.addDeathEffects();
 		}
 	}
@@ -139,8 +139,8 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	 * @param pathZ - z location of the path
 	 * @return - A vector containing the mid-position of the entity's path end location and its current location
 	 */
-	public Vector3d getMoveControllerPathDistance(double pathX, double pathY, double pathZ) {
-		return new Vector3d(pathX - this.getX(), pathY - this.getY(), pathY - this.getY());
+	public Vec3 getMoveControllerPathDistance(double pathX, double pathY, double pathZ) {
+		return new Vec3(pathX - this.getX(), pathY - this.getY(), pathY - this.getY());
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	 * @param Vector3d - The distance vector
 	 * @return - A vector that gets the target angle for a path's distance
 	 */
-	public float getTargetAngleForPathDistance(Vector3d Vector3d) {
-		return (float) (MathHelper.atan2(Vector3d.z, Vector3d.x) * (double) (180F / (float) Math.PI)) - 90F;
+	public float getTargetAngleForPathDistance(Vec3 Vector3d) {
+		return (float) (Mth.atan2(Vector3d.z, Vector3d.x) * (double) (180F / (float) Math.PI)) - 90F;
 	}
 }

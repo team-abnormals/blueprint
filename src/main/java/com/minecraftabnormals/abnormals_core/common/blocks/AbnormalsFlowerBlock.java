@@ -1,29 +1,31 @@
 package com.minecraftabnormals.abnormals_core.common.blocks;
 
 import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
-import net.minecraft.block.FlowerBlock;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.level.block.FlowerBlock;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.core.NonNullList;
 
 import java.util.function.Supplier;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class AbnormalsFlowerBlock extends FlowerBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WITHER_ROSE);
-	private final Supplier<Effect> stewEffect;
+	private final Supplier<MobEffect> stewEffect;
 	private final int stewEffectDuration;
 
-	public AbnormalsFlowerBlock(Supplier<Effect> stewEffect, int stewEffectDuration, Properties properties) {
-		super(Effects.WEAKNESS, stewEffectDuration, properties);
+	public AbnormalsFlowerBlock(Supplier<MobEffect> stewEffect, int stewEffectDuration, Properties properties) {
+		super(MobEffects.WEAKNESS, stewEffectDuration, properties);
 		this.stewEffect = stewEffect;
 		this.stewEffectDuration = stewEffectDuration;
 	}
 
 	@Override
-	public Effect getSuspiciousStewEffect() {
+	public MobEffect getSuspiciousStewEffect() {
 		return this.stewEffect.get();
 	}
 
@@ -33,7 +35,7 @@ public class AbnormalsFlowerBlock extends FlowerBlock {
 	}
 
 	@Override
-	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this.asItem(), group, items);
 	}
 }

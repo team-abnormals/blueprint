@@ -2,31 +2,38 @@ package com.minecraftabnormals.abnormals_core.common.items;
 
 import com.minecraftabnormals.abnormals_core.common.entity.AbnormalsBoatEntity;
 import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.BlockSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.function.Predicate;
 
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EntitySelector;
+
 public class AbnormalsBoatItem extends Item {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.DARK_OAK_BOAT);
-	private static final Predicate<Entity> COLLISION_PREDICATE = EntityPredicates.NO_SPECTATORS.and(Entity::isPickable);
+	private static final Predicate<Entity> COLLISION_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
 	private final String type;
 
 	public AbnormalsBoatItem(String type, Item.Properties properties) {
@@ -36,36 +43,36 @@ public class AbnormalsBoatItem extends Item {
 	}
 
 	@Override
-	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
 		FILLER.fillItem(this, group, items);
 	}
 
 	@Override
-	public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		ItemStack itemstack = playerIn.getItemInHand(handIn);
-		RayTraceResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, RayTraceContext.FluidMode.ANY);
-		if (raytraceresult.getType() == RayTraceResult.Type.MISS) {
-			return new ActionResult<>(ActionResultType.PASS, itemstack);
+		HitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.ANY);
+		if (raytraceresult.getType() == HitResult.Type.MISS) {
+			return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
 		} else {
-			Vector3d vec3d = playerIn.getViewVector(1.0F);
+			Vec3 vec3d = playerIn.getViewVector(1.0F);
 			List<Entity> list = worldIn.getEntities(playerIn, playerIn.getBoundingBox().expandTowards(vec3d.scale(5.0D)).inflate(1.0D), COLLISION_PREDICATE);
 			if (!list.isEmpty()) {
-				Vector3d vec3d1 = playerIn.getEyePosition(1.0F);
+				Vec3 vec3d1 = playerIn.getEyePosition(1.0F);
 
 				for (Entity entity : list) {
-					AxisAlignedBB axisalignedbb = entity.getBoundingBox().inflate((double) entity.getPickRadius());
+					AABB axisalignedbb = entity.getBoundingBox().inflate((double) entity.getPickRadius());
 					if (axisalignedbb.contains(vec3d1)) {
-						return new ActionResult<>(ActionResultType.PASS, itemstack);
+						return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
 					}
 				}
 			}
 
-			if (raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
+			if (raytraceresult.getType() == HitResult.Type.BLOCK) {
 				AbnormalsBoatEntity boatentity = new AbnormalsBoatEntity(worldIn, raytraceresult.getLocation().x, raytraceresult.getLocation().y, raytraceresult.getLocation().z);
 				boatentity.setBoat(this.type);
 				boatentity.yRot = playerIn.yRot;
 				if (!worldIn.noCollision(boatentity, boatentity.getBoundingBox().inflate(-0.1D))) {
-					return new ActionResult<>(ActionResultType.FAIL, itemstack);
+					return new InteractionResultHolder<>(InteractionResult.FAIL, itemstack);
 				} else {
 					if (!worldIn.isClientSide) {
 						worldIn.addFreshEntity(boatentity);
@@ -76,10 +83,10 @@ public class AbnormalsBoatItem extends Item {
 					}
 
 					playerIn.awardStat(Stats.ITEM_USED.get(this));
-					return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+					return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
 				}
 			} else {
-				return new ActionResult<>(ActionResultType.PASS, itemstack);
+				return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
 			}
 		}
 	}
@@ -93,9 +100,9 @@ public class AbnormalsBoatItem extends Item {
 		}
 
 		@SuppressWarnings("deprecation")
-		public ItemStack execute(IBlockSource iBlockSource, ItemStack stack) {
+		public ItemStack execute(BlockSource iBlockSource, ItemStack stack) {
 			Direction direction = iBlockSource.getBlockState().getValue(DispenserBlock.FACING);
-			World world = iBlockSource.getLevel();
+			Level world = iBlockSource.getLevel();
 			double x = iBlockSource.x() + (double) ((float) direction.getStepX() * 1.125f);
 			double y = iBlockSource.y() + (double) ((float) direction.getStepY() * 1.125f);
 			double z = iBlockSource.z() + (double) ((float) direction.getStepZ() * 1.125f);
@@ -117,7 +124,7 @@ public class AbnormalsBoatItem extends Item {
 			return stack;
 		}
 
-		protected void playSound(IBlockSource iBlockSource) {
+		protected void playSound(BlockSource iBlockSource) {
 			iBlockSource.getLevel().levelEvent(1000, iBlockSource.getPos(), 0);
 		}
 	}

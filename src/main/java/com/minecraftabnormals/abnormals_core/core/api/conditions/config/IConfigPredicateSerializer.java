@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Serializer for an {@link IConfigPredicate}, generating a value from JSON or writing to json from a value.

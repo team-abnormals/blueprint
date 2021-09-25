@@ -2,9 +2,9 @@ package com.minecraftabnormals.abnormals_core.common.loot.modification.modifiers
 
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootPredicateManager;
-import net.minecraft.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.PredicateManager;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -47,7 +47,7 @@ public final class LootPoolsModifier implements ILootModifier<LootPoolsModifier.
 	}
 
 	@Override
-	public LootPoolsModifier.Config deserialize(JsonElement element, Pair<Gson, LootPredicateManager> additional) throws JsonParseException {
+	public LootPoolsModifier.Config deserialize(JsonElement element, Pair<Gson, PredicateManager> additional) throws JsonParseException {
 		JsonObject jsonObject = element.getAsJsonObject();
 		List<LootPool> lootPools = new ArrayList<>();
 		JsonArray poolsArray = jsonObject.getAsJsonArray("pools");

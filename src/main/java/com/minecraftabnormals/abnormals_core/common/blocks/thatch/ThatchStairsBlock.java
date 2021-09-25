@@ -1,13 +1,15 @@
 package com.minecraftabnormals.abnormals_core.common.blocks.thatch;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ThatchStairsBlock extends StairsBlock {
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+public class ThatchStairsBlock extends StairBlock {
 	@SuppressWarnings("deprecation")
 	public ThatchStairsBlock(BlockState state, Properties properties) {
 		super(state, properties);
@@ -15,12 +17,12 @@ public class ThatchStairsBlock extends StairsBlock {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
+	public float getShadeBrightness(BlockState state, BlockGetter worldIn, BlockPos pos) {
 		return 1.0F;
 	}
 
 	@Override
-	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
 		return true;
 	}
 }

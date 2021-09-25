@@ -4,7 +4,7 @@ buildscript {
         maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
     }
     dependencies {
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "4.1.+", changing: true
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+", changing: true
         classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
     }
 }
@@ -17,6 +17,7 @@ apply plugin: "net.minecraftforge.gradle"
 apply plugin: "eclipse"
 apply plugin: "maven-publish"
 apply plugin: "org.spongepowered.mixin"
+apply from: "https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle"
 
 mixin {
     add sourceSets.main, "${project.modId}.refmap.json"
@@ -30,15 +31,15 @@ version = "${project.minecraft}-${project.modVersion}"
 group = "com.minecraftabnormals"
 archivesBaseName = project.modId
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = "1.8"
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
-    mappings channel: "official", version: "1.16.5"
+    mappings channel: "official", version: "1.17.1"
     accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
     runs {
         client {
             workingDirectory project.file("run")
-            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.markers", "REGISTRIES"
             property "forge.logging.console.level", "debug"
             arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
@@ -52,7 +53,7 @@ minecraft {
         }
         server {
             workingDirectory project.file("run")
-            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.markers", "REGISTRIES"
             property "forge.logging.console.level", "debug"
             arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
@@ -66,7 +67,7 @@ minecraft {
         }
         data {
             workingDirectory project.file("run")
-            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.markers", "REGISTRIES"
             property "forge.logging.console.level", "debug"
             property "mixin.env.remapRefMap", "true"
             property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
@@ -96,11 +97,11 @@ artifacts {
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
 
-    compileOnly fg.deobf("com.github.Ocelot5836:Sonar:4cc95e6:api")
-    runtimeOnly fg.deobf("com.github.Ocelot5836:Sonar:4cc95e6")
-    shade "com.github.Ocelot5836:Sonar:4cc95e6"
+    compileOnly fg.deobf("com.github.Ocelot5836:Sonar:917ca53:api")
+    runtimeOnly fg.deobf("com.github.Ocelot5836:Sonar:917ca53")
+    shade "com.github.Ocelot5836:Sonar:917ca53"
 
-    annotationProcessor "org.spongepowered:mixin:0.8.2:processor"
+    annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
 }
 
 repositories {

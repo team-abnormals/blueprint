@@ -1,11 +1,11 @@
 package com.minecraftabnormals.abnormals_core.core.util.item.filling;
 
 import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Predicate;
 
@@ -35,7 +35,7 @@ public final class AlphabeticalItemGroupFiller implements IItemGroupFiller {
 	}
 
 	@Override
-	public void fillItem(Item item, ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItem(Item item, CreativeModeTab group, NonNullList<ItemStack> items) {
 		if (ItemStackUtil.isInGroup(item, group)) {
 			ResourceLocation location = item.getRegistryName();
 			if (location != null) {

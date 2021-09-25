@@ -4,21 +4,21 @@ import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.events.AnimateFluidTickEvent;
 import com.minecraftabnormals.abnormals_core.core.events.AnimateTickEvent;
 import com.minecraftabnormals.abnormals_core.core.mixin.FluidInvokerMixin;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.client.world.DimensionRenderInfo;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.profiler.IProfiler;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.DimensionSpecialEffects;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.util.CubicSampler;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeManager;
-import net.minecraft.world.storage.ISpawnWorldInfo;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.storage.WritableLevelData;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,41 +30,41 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Random;
 import java.util.function.Supplier;
 
-@Mixin(ClientWorld.class)
-public abstract class ClientWorldMixin extends World {
+@Mixin(ClientLevel.class)
+public abstract class ClientWorldMixin extends Level {
     @Shadow
     @Final
-    private DimensionRenderInfo effects;
+    private DimensionSpecialEffects effects;
     @Shadow
     private int skyFlashTime;
 
-    protected ClientWorldMixin(ISpawnWorldInfo p_i241925_1_, RegistryKey<World> p_i241925_2_, DimensionType p_i241925_3_, Supplier<IProfiler> p_i241925_4_, boolean p_i241925_5_, boolean p_i241925_6_, long p_i241925_7_) {
+    protected ClientWorldMixin(WritableLevelData p_i241925_1_, ResourceKey<Level> p_i241925_2_, DimensionType p_i241925_3_, Supplier<ProfilerFiller> p_i241925_4_, boolean p_i241925_5_, boolean p_i241925_6_, long p_i241925_7_) {
         super(p_i241925_1_, p_i241925_2_, p_i241925_3_, p_i241925_4_, p_i241925_5_, p_i241925_6_, p_i241925_7_);
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;animateTick(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)V"), method = "doAnimateTick(IIIILjava/util/Random;ZLnet/minecraft/util/math/BlockPos$Mutable;)V")
-    private void animateTick(Block block, BlockState state, World world, BlockPos pos, Random rand) {
+    private void animateTick(Block block, BlockState state, Level world, BlockPos pos, Random rand) {
         if (!AnimateTickEvent.onAnimateTick(state, world, pos, rand)) {
             block.animateTick(state, world, pos, rand);
         }
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;animateTick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)V"), method = "doAnimateTick(IIIILjava/util/Random;ZLnet/minecraft/util/math/BlockPos$Mutable;)V")
-    private void animateFluidTick(FluidState state, World world, BlockPos pos, Random random) {
+    private void animateFluidTick(FluidState state, Level world, BlockPos pos, Random random) {
         if (!AnimateFluidTickEvent.onAnimateFluidTick(world, pos, state, random)) {
             ((FluidInvokerMixin) state.getType()).callAnimateTick(world, pos, state, random);
         }
     }
 
     @Inject(at = @At("HEAD"), method = "getSkyColor", cancellable = true)
-    private void getSkyColor(BlockPos blockPos, float partialTicks, CallbackInfoReturnable<Vector3d> info) {
-        if (ACConfig.ValuesHolder.isSmoothSkyColorEnabled() && this.effects.skyType() == DimensionRenderInfo.FogType.NORMAL) {
-            Vector3d scaledOffset = Vector3d.atLowerCornerOf(blockPos).subtract(2.0D, 2.0D, 2.0D).scale(0.25D);
+    private void getSkyColor(BlockPos blockPos, float partialTicks, CallbackInfoReturnable<Vec3> info) {
+        if (ACConfig.ValuesHolder.isSmoothSkyColorEnabled() && this.effects.skyType() == DimensionSpecialEffects.SkyType.NORMAL) {
+            Vec3 scaledOffset = Vec3.atLowerCornerOf(blockPos).subtract(2.0D, 2.0D, 2.0D).scale(0.25D);
             BiomeManager biomemanager = this.getBiomeManager();
-            Vector3d sampledSkyColor = CubicSampler.gaussianSampleVec3(scaledOffset, (x, y, z) -> {
-                return Vector3d.fromRGB24(biomemanager.getNoiseBiomeAtQuart(x, y, z).getSkyColor());
+            Vec3 sampledSkyColor = CubicSampler.gaussianSampleVec3(scaledOffset, (x, y, z) -> {
+                return Vec3.fromRGB24(biomemanager.getNoiseBiomeAtQuart(x, y, z).getSkyColor());
             });
-            float celestialAngleFactor = MathHelper.clamp(MathHelper.cos(this.getTimeOfDay(partialTicks) * ((float) Math.PI * 2F)) * 2.0F + 0.5F, 0.0F, 1.0F);
+            float celestialAngleFactor = Mth.clamp(Mth.cos(this.getTimeOfDay(partialTicks) * ((float) Math.PI * 2F)) * 2.0F + 0.5F, 0.0F, 1.0F);
             float r = (float) sampledSkyColor.x * celestialAngleFactor;
             float g = (float) sampledSkyColor.y * celestialAngleFactor;
             float b = (float) sampledSkyColor.z * celestialAngleFactor;
@@ -98,7 +98,7 @@ public abstract class ClientWorldMixin extends World {
                 b = b * (1.0F - flash) + 1.0F * flash;
             }
 
-            info.setReturnValue(new Vector3d(r, g, b));
+            info.setReturnValue(new Vec3(r, g, b));
         }
     }
 }

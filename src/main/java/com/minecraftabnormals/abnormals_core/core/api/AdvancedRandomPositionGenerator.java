@@ -1,11 +1,11 @@
 package com.minecraftabnormals.abnormals_core.core.api;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -19,18 +19,18 @@ public final class AdvancedRandomPositionGenerator {
 	 * Finds a random target within xz and y
 	 */
 	@Nullable
-	public static Vector3d findRandomTarget(CreatureEntity creature, int xz, int y, boolean goDeep) {
+	public static Vec3 findRandomTarget(PathfinderMob creature, int xz, int y, boolean goDeep) {
 		return findRandomTargetBlock(creature, xz, y, null, goDeep);
 	}
 	
 	@Nullable
-	private static Vector3d findRandomTargetBlock(CreatureEntity creature, int xz, int y, @Nullable Vector3d targetVec, boolean goDeep) {
+	private static Vec3 findRandomTargetBlock(PathfinderMob creature, int xz, int y, @Nullable Vec3 targetVec, boolean goDeep) {
 		return generateRandomPos(creature, xz, y, targetVec, true, Math.PI / 2F, goDeep, creature::getWalkTargetValue);
 	}
 	
 	@Nullable
-	private static Vector3d generateRandomPos(CreatureEntity creature, int xz, int y, @Nullable Vector3d p_191379_3_, boolean p_191379_4_, double p_191379_5_, boolean goDeep, ToDoubleFunction<BlockPos> p_191379_7_) {
-		PathNavigator pathnavigator = creature.getNavigation();
+	private static Vec3 generateRandomPos(PathfinderMob creature, int xz, int y, @Nullable Vec3 p_191379_3_, boolean p_191379_4_, double p_191379_5_, boolean goDeep, ToDoubleFunction<BlockPos> p_191379_7_) {
+		PathNavigation pathnavigator = creature.getNavigation();
 		Random random = creature.getRandom();
 		boolean flag = creature.hasRestriction() ? creature.getRestrictCenter().closerThan(creature.position(), (double)(creature.getRestrictRadius() + (float)xz) + 1.0D) : false;
 		boolean flag1 = false;
@@ -78,18 +78,18 @@ public final class AdvancedRandomPositionGenerator {
 		}
 
 		if(flag1) {
-			return Vector3d.atCenterOf(blockpos);
+			return Vec3.atCenterOf(blockpos);
 		} else {
 			return null;
 		}
 	}
 	
 	@Nullable
-	private static BlockPos getBlockPos(Random rand, int xz, int y, @Nullable Vector3d Vector3d, double angle, boolean goDeep) {
+	private static BlockPos getBlockPos(Random rand, int xz, int y, @Nullable Vec3 Vector3d, double angle, boolean goDeep) {
 		if(Vector3d != null && !(angle >= Math.PI)) {
-			double d3 = MathHelper.atan2(Vector3d.z, Vector3d.x) - (double)((float)Math.PI / 2F);
+			double d3 = Mth.atan2(Vector3d.z, Vector3d.x) - (double)((float)Math.PI / 2F);
 			double d4 = d3 + (double)(2.0F * rand.nextFloat() - 1.0F) * angle;
-			double d0 = Math.sqrt(rand.nextDouble()) * (double)MathHelper.SQRT_OF_TWO * (double)xz;
+			double d0 = Math.sqrt(rand.nextDouble()) * (double)Mth.SQRT_OF_TWO * (double)xz;
 			double d1 = -d0 * Math.sin(d4);
 			double d2 = d0 * Math.cos(d4);
 			if(!(Math.abs(d1) > (double)xz) && !(Math.abs(d2) > (double)xz)) {
@@ -109,7 +109,7 @@ public final class AdvancedRandomPositionGenerator {
 		}
 	}
 	
-	private static BlockPos moveAboveSolid(BlockPos pos, CreatureEntity creature) {
+	private static BlockPos moveAboveSolid(BlockPos pos, PathfinderMob creature) {
 		if(!creature.level.getBlockState(pos).getMaterial().isSolid()) {
 			return pos;
 		} else {
@@ -122,7 +122,7 @@ public final class AdvancedRandomPositionGenerator {
 		}
 	}
 
-	private static boolean isWaterDestination(BlockPos pos, CreatureEntity creature) {
+	private static boolean isWaterDestination(BlockPos pos, PathfinderMob creature) {
 		return creature.level.getFluidState(pos).is(FluidTags.WATER);
 	}
 }

@@ -3,9 +3,9 @@ package com.minecraftabnormals.abnormals_core.core.util.modification;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * A generic {@link IDataProvider} implementation for {@link TargetedModifier}s
+ * A generic {@link DataProvider} implementation for {@link TargetedModifier}s
  *
  * @param <T> The type of object that the {@link TargetedModifier}s modify.
  * @param <S> The type of additional serialization object that the {@link TargetedModifier}s use.
@@ -30,7 +30,7 @@ import java.util.function.Function;
  * @see ModifierRegistry
  * @see ProviderEntry
  */
-public final class ModifierDataProvider<T, S, D> implements IDataProvider {
+public final class ModifierDataProvider<T, S, D> implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final DataGenerator dataGenerator;
 	private final String name;
@@ -83,7 +83,7 @@ public final class ModifierDataProvider<T, S, D> implements IDataProvider {
 	}
 
 	@Override
-	public void run(DirectoryCache directoryCache) {
+	public void run(HashCache directoryCache) {
 		Path outputFolder = this.dataGenerator.getOutputFolder();
 		Set<ResourceLocation> entryNames = Sets.newHashSet();
 		BiFunction<Path, ProviderEntry<T, S, D>, Path> pathResolver = this.pathResolver;
@@ -97,7 +97,7 @@ public final class ModifierDataProvider<T, S, D> implements IDataProvider {
 				Path resolvedPath = pathResolver.apply(outputFolder, entry);
 				try {
 					TargetedModifier<T, S, D> targetedModifier = entry.targetedModifier;
-					IDataProvider.save(gson, directoryCache, targetedModifier.serialize(additionalSerializationGetter.apply(targetedModifier), this.targetKeyName, modifierRegistry, entry.conditions), resolvedPath);
+					DataProvider.save(gson, directoryCache, targetedModifier.serialize(additionalSerializationGetter.apply(targetedModifier), this.targetKeyName, modifierRegistry, entry.conditions), resolvedPath);
 				} catch (IOException e) {
 					LOGGER.error("Couldn't save modifier {}", resolvedPath, e);
 				}

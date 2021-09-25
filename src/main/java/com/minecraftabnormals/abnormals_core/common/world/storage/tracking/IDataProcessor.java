@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.world.storage.tracking;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 /**
  * A simple interface that reads and writes NBT for a type of value.
@@ -15,7 +15,7 @@ public interface IDataProcessor<T> {
 	 * @param type An object of the type to write.
 	 * @return The object serialized to {@link CompoundNBT}.
 	 */
-	CompoundNBT write(T type);
+	CompoundTag write(T type);
 
 	/**
 	 * Reads a type from a {@link CompoundNBT}
@@ -23,5 +23,5 @@ public interface IDataProcessor<T> {
 	 * @param compound The {@link CompoundNBT} to read.
 	 * @return The type deserialized from a {@link CompoundNBT}.
 	 */
-	T read(CompoundNBT compound);
+	T read(CompoundTag compound);
 }

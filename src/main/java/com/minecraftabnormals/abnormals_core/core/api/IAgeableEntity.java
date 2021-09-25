@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.api;
 
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 
 /**
  * Use to make a living entity that doesn't extend AgeableEntity compatible with Quark's potato poisoning and

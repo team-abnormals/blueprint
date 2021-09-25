@@ -1,9 +1,9 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -15,9 +15,9 @@ import java.util.function.BiPredicate;
  */
 public class GenerationPiece {
 	private final List<BlockPart> blockPieces = Lists.newArrayList();
-	private final BiPredicate<IWorld, BlockPart> blockPlaceCondition;
+	private final BiPredicate<LevelAccessor, BlockPart> blockPlaceCondition;
 
-	public GenerationPiece(BiPredicate<IWorld, BlockPart> blockPlaceCondition) {
+	public GenerationPiece(BiPredicate<LevelAccessor, BlockPart> blockPlaceCondition) {
 		this.blockPlaceCondition = blockPlaceCondition;
 	}
 
@@ -37,7 +37,7 @@ public class GenerationPiece {
 	 * @param world - The world to place the piece in
 	 * @return - If all the blocks loaded in this piece can be placed
 	 */
-	public boolean canPlace(IWorld world) {
+	public boolean canPlace(LevelAccessor world) {
 		for (BlockPart blocks : this.blockPieces) {
 			if (!this.blockPlaceCondition.test(world, blocks)) {
 				return false;
@@ -51,7 +51,7 @@ public class GenerationPiece {
 	 *
 	 * @param world - The world to place the piece in
 	 */
-	public void place(IWorld world) {
+	public void place(LevelAccessor world) {
 		for (BlockPart blocks : this.blockPieces) {
 			world.setBlock(blocks.pos, blocks.state, 2);
 		}
@@ -62,7 +62,7 @@ public class GenerationPiece {
 	 *
 	 * @param world - The world to place the piece in
 	 */
-	public void tryToPlace(IWorld world) {
+	public void tryToPlace(LevelAccessor world) {
 		if (this.canPlace(world)) {
 			this.place(world);
 		}

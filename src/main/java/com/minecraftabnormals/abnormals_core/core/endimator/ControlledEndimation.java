@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.core.endimator;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 
 /**
  * Class to make animations that can be 'controlled' during their run time
@@ -90,7 +90,7 @@ public final class ControlledEndimation {
 	 * @return - a lerped value of the animation's previous tick and new tick
 	 */
 	public float getAnimationProgress() {
-		return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevTick, this.tick) / this.tickDuration;
+		return Mth.lerp(ClientInfo.getPartialTicks(), this.prevTick, this.tick) / this.tickDuration;
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public final class ControlledEndimation {
 	 * @return - a lerped value of the animation's previous tick and new tick
 	 */
 	public float getAnimationProgressServer() {
-		return MathHelper.lerp(1.0F, this.prevTick, this.tick) / this.tickDuration;
+		return Mth.lerp(1.0F, this.prevTick, this.tick) / this.tickDuration;
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public final class ControlledEndimation {
 	 * Can be used to save data about the animation when the world gets saved and for command use
 	 * Values must be synced(Server -> Client)
 	 */
-	public CompoundNBT write(CompoundNBT compound) {
+	public CompoundTag write(CompoundTag compound) {
 		compound.putInt("Tick", this.tick);
 		compound.putInt("PrevTick", this.prevTick);
 		compound.putBoolean("ShouldDecrement", this.shouldDecrement);
@@ -119,7 +119,7 @@ public final class ControlledEndimation {
 	 * Can be used to save data about the animation when the world gets saved and for command use
 	 * Values must be synced(Server -> Client)
 	 */
-	public void read(CompoundNBT nbt) {
+	public void read(CompoundTag nbt) {
 		this.tick = nbt.getInt("Tick");
 		this.prevTick = nbt.getInt("PrevTick");
 		this.shouldDecrement = nbt.getBoolean("ShouldDecrement");

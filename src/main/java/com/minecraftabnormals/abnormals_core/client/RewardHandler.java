@@ -13,12 +13,12 @@ import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import io.github.ocelot.sonar.common.util.OnlineRequest;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -59,7 +59,7 @@ public final class RewardHandler {
 				return;
 
 			try (InputStreamReader reader = new InputStreamReader(stream)) {
-				JsonObject object = JSONUtils.parse(reader);
+				JsonObject object = GsonHelper.parse(reader);
 				for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
 					if (entry.getKey().equals("properties")) {
 						rewardProperties = GSON.fromJson(entry.getValue(), RewardProperties.class);
@@ -83,11 +83,11 @@ public final class RewardHandler {
 
 	@SubscribeEvent
 	public static void onEvent(RenderPlayerEvent.Post event) {
-		PlayerEntity player = event.getPlayer();
-		UUID uuid = PlayerEntity.createPlayerUUID(player.getGameProfile());
+		Player player = event.getPlayer();
+		UUID uuid = Player.createPlayerUUID(player.getGameProfile());
 
 		if (REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
-			AbstractClientPlayerEntity clientPlayer = (AbstractClientPlayerEntity) player;
+			AbstractClientPlayer clientPlayer = (AbstractClientPlayer) player;
 			if (clientPlayer.isCapeLoaded() && clientPlayer.getCloakTextureLocation() == null) {
 				Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = clientPlayer.playerInfo.textureLocations;
 				playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);

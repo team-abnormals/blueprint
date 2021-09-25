@@ -4,10 +4,10 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.minecraftabnormals.abnormals_core.core.events.EntityTrackingEvent;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -136,7 +136,7 @@ public enum TrackedDataManager {
 		if (!target.level.isClientSide) {
 			Set<IDataManager.DataEntry<?>> entries = ((IDataManager) target).getEntries(true);
 			if (!entries.isEmpty()) {
-				NetworkUtil.updateTrackedData((ServerPlayerEntity) event.getPlayer(), target, entries);
+				NetworkUtil.updateTrackedData((ServerPlayer) event.getPlayer(), target, entries);
 			}
 		}
 	}
@@ -159,8 +159,8 @@ public enum TrackedDataManager {
 		if (event.isUpdating() || dataManager.isDirty()) {
 			Set<IDataManager.DataEntry<?>> entries = dataManager.getDirtyEntries();
 			if (!entries.isEmpty()) {
-				if (entity instanceof ServerPlayerEntity) {
-					NetworkUtil.updateTrackedData((ServerPlayerEntity) entity, entity, entries);
+				if (entity instanceof ServerPlayer) {
+					NetworkUtil.updateTrackedData((ServerPlayer) entity, entity, entries);
 				}
 				NetworkUtil.updateTrackedData(entity, entries);
 			}
@@ -170,7 +170,7 @@ public enum TrackedDataManager {
 
 	@SubscribeEvent
 	public void onPlayerClone(PlayerEvent.Clone event) {
-		PlayerEntity original = event.getOriginal();
+		Player original = event.getOriginal();
 		if (!original.level.isClientSide) {
 			Map<TrackedData<?>, IDataManager.DataEntry<?>> dataMap = ((IDataManager) original).getDataMap();
 			if (event.isWasDeath()) {

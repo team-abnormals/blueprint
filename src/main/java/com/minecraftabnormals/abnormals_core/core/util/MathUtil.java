@@ -1,9 +1,9 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 
@@ -15,16 +15,16 @@ import java.util.Random;
 public final class MathUtil {
 
 	/**
-	 * Gets the center of an {@link AxisAlignedBB} multiplied by a given multiplier.
+	 * Gets the center of an {@link AABB} multiplied by a given multiplier.
 	 *
-	 * @param bb          An {@link AxisAlignedBB} to get the center for.
+	 * @param bb          An {@link AABB} to get the center for.
 	 * @param xMultiplier A multiplier for the x bounds.
 	 * @param yMultiplier A multiplier for the y bounds.
 	 * @param zMultiplier A multiplier for the z bounds.
-	 * @return The center of an {@link AxisAlignedBB} multiplied by a given multiplier.
+	 * @return The center of an {@link AABB} multiplied by a given multiplier.
 	 */
-	public static Vector3d getCenterAdjusted(AxisAlignedBB bb, double xMultiplier, double yMultiplier, double zMultiplier) {
-		return new Vector3d(bb.minX + (bb.maxX - bb.minX) * xMultiplier, bb.minY + (bb.maxY - bb.minY) * yMultiplier, bb.minZ + (bb.maxZ - bb.minZ) * zMultiplier);
+	public static Vec3 getCenterAdjusted(AABB bb, double xMultiplier, double yMultiplier, double zMultiplier) {
+		return new Vec3(bb.minX + (bb.maxX - bb.minX) * xMultiplier, bb.minY + (bb.maxY - bb.minY) * yMultiplier, bb.minZ + (bb.maxZ - bb.minZ) * zMultiplier);
 	}
 
 	/**
@@ -37,7 +37,7 @@ public final class MathUtil {
 	 * @return The distance between two 2D points.
 	 */
 	public static double distanceBetweenPoints2d(double x1, double y1, double x2, double y2) {
-		return MathHelper.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+		return Mth.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
 
 	/**
@@ -105,15 +105,15 @@ public final class MathUtil {
 	}
 
 	/**
-	 * Interpolates two {@link Vector3d}s.
+	 * Interpolates two {@link Vec3}s.
 	 *
 	 * @param prev    The previous vector.
 	 * @param current The current vector.
 	 * @param ptc     The partial ticks to use for scaling the difference vector.
-	 * @return A {@link Vector3d} containing the interpolated values of the given vectors.
-	 * @see MathHelper#lerp(float, float, float)
+	 * @return A {@link Vec3} containing the interpolated values of the given vectors.
+	 * @see Mth#lerp(float, float, float)
 	 */
-	public static Vector3d lerp(Vector3d prev, Vector3d current, float ptc) {
+	public static Vec3 lerp(Vec3 prev, Vec3 current, float ptc) {
 		return prev.add(current.subtract(prev).scale(ptc));
 	}
 
@@ -132,10 +132,10 @@ public final class MathUtil {
 	 * @author SmellyModder (Luke Tonon)
 	 */
 	public static class CatmullRomSpline {
-		private final Vector3d[] points;
+		private final Vec3[] points;
 		private final float alpha;
 
-		public CatmullRomSpline(Vector3d[] points, SplineType splineType) {
+		public CatmullRomSpline(Vec3[] points, SplineType splineType) {
 			this.points = points;
 			this.alpha = splineType.getAlpha();
 		}
@@ -145,17 +145,17 @@ public final class MathUtil {
 		 * @return A {@link BlockPos} on the spline for a given progress.
 		 */
 		public BlockPos interpolate(float progress) {
-			Vector3d[] points = this.points;
+			Vec3[] points = this.points;
 			float sections = points.length - 3;
 			int currentPoint = (int) Math.min(Math.floor(progress * sections), sections - 1);
 			float alpha = this.alpha;
 
-			Vector3d point0 = points[currentPoint];
-			Vector3d point1 = points[currentPoint + 1];
+			Vec3 point0 = points[currentPoint];
+			Vec3 point1 = points[currentPoint + 1];
 			float t0 = computeT(point0, point1, alpha, 0.0F);
 
-			Vector3d point2 = points[currentPoint + 2];
-			Vector3d point3 = points[currentPoint + 3];
+			Vec3 point2 = points[currentPoint + 2];
+			Vec3 point3 = points[currentPoint + 3];
 			float t1 = computeT(point1, point2, alpha, t0);
 
 			float t = t0 + (progress * sections - (float) currentPoint) * (t1 - t0);
@@ -204,7 +204,7 @@ public final class MathUtil {
 			return point1 * multiplier1 + point2 * multiplier2;
 		}
 
-		private static float computeT(Vector3d point1, Vector3d point2, float alpha, float offset) {
+		private static float computeT(Vec3 point1, Vec3 point2, float alpha, float offset) {
 			return (float) Math.pow(point2.subtract(point1).length(), alpha) + offset;
 		}
 

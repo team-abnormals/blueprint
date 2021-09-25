@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.world.storage;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,12 +40,12 @@ public interface GlobalStorage {
 	 *
 	 * @return - The serialized NBT data of this {@link GlobalStorage}.
 	 */
-	CompoundNBT toTag();
+	CompoundTag toTag();
 
 	/**
 	 * Called when loading the saved NBT data for this {@link GlobalStorage}.
 	 *
 	 * @param tag - The deserialized NBT data of this {@link GlobalStorage}.
 	 */
-	void fromTag(CompoundNBT tag);
+	void fromTag(CompoundTag tag);
 }

@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.core.util.modification;
 
 import com.google.gson.Gson;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @see IModifier
  * @see ConfiguredModifier
  */
-public abstract class ModificationManager<T, S, D> extends JsonReloadListener {
+public abstract class ModificationManager<T, S, D> extends SimpleJsonResourceReloadListener {
 	private final Map<ResourceLocation, List<ConfiguredModifier<T, ?, S, D, ?>>> modifiers = new HashMap<>();
 
 	public ModificationManager(Gson gson, String string) {

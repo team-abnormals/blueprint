@@ -3,7 +3,7 @@ package com.minecraftabnormals.abnormals_core.common.loot.modification.modifiers
 import com.google.gson.Gson;
 import com.minecraftabnormals.abnormals_core.core.util.modification.IModifier;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.loot.LootPredicateManager;
+import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraftforge.event.LootTableLoadEvent;
 
 /**
@@ -13,5 +13,5 @@ import net.minecraftforge.event.LootTableLoadEvent;
  * @author SmellyModder (Luke Tonon)
  * @see IModifier
  */
-public interface ILootModifier<C> extends IModifier<LootTableLoadEvent, C, Gson, Pair<Gson, LootPredicateManager>> {
+public interface ILootModifier<C> extends IModifier<LootTableLoadEvent, C, Gson, Pair<Gson, PredicateManager>> {
 }

@@ -5,39 +5,46 @@ import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCond
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.loot.ConfigLootCondition;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.*;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.dispenser.IDispenseItemBehavior;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.ai.brain.task.GiveHeroGiftsTask;
-import net.minecraft.entity.merchant.villager.VillagerProfession;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootConditionType;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionBrewing;
-import net.minecraft.util.*;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.world.entity.ai.behavior.GiveGiftToHero;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElement;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ComposterBlock;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.FireBlock;
 
 public final class DataUtil {
 	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "func_193357_a", Potion.class, Item.class, Potion.class);
@@ -49,7 +56,7 @@ public final class DataUtil {
 		fire.setFlammable(block, encouragement, flammability);
 	}
 
-	public static void registerCompostable(IItemProvider item, float chance) {
+	public static void registerCompostable(ItemLike item, float chance) {
 		ComposterBlock.COMPOSTABLES.put(item.asItem(), chance);
 	}
 
@@ -61,7 +68,7 @@ public final class DataUtil {
 		}
 	}
 
-	public static void registerBlockColor(BlockColors blockColors, IBlockColor color, List<RegistryObject<Block>> blocksIn) {
+	public static void registerBlockColor(BlockColors blockColors, BlockColor color, List<RegistryObject<Block>> blocksIn) {
 		blocksIn.removeIf(block -> !block.isPresent());
 		if (blocksIn.size() > 0) {
 			Block[] blocks = new Block[blocksIn.size()];
@@ -72,7 +79,7 @@ public final class DataUtil {
 		}
 	}
 
-	public static void registerBlockItemColor(ItemColors blockColors, IItemColor color, List<RegistryObject<Block>> blocksIn) {
+	public static void registerBlockItemColor(ItemColors blockColors, ItemColor color, List<RegistryObject<Block>> blocksIn) {
 		blocksIn.removeIf(block -> !block.isPresent());
 		if (blocksIn.size() > 0) {
 			Block[] blocks = new Block[blocksIn.size()];
@@ -91,7 +98,7 @@ public final class DataUtil {
 	public static void registerVillagerGift(VillagerProfession profession) {
 		ResourceLocation name = profession.getRegistryName();
 		if (name != null) {
-			GiveHeroGiftsTask.gifts.put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
+			GiveGiftToHero.GIFTS.put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
 		}
 	}
 
@@ -148,28 +155,12 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Adds an {@link EnchantmentType} to an EnchantmentType array.
+	 * Checks if a given {@link ResourceLocation} matches at least one location of a {@link ResourceKey} in set of {@link ResourceKey}s.
 	 *
-	 * @param array   The array being modified.
-	 * @param element The enchantment being added.
-	 * @deprecated Will get changed in 1.17 to be generic.
+	 * @return If a given {@link ResourceLocation} matches at least one location of a {@link ResourceKey} in set of {@link ResourceKey}s.
 	 */
-	@Deprecated
-	public static EnchantmentType[] add(EnchantmentType[] array, EnchantmentType element) {
-		int arrayLength = Array.getLength(array);
-		EnchantmentType[] newArrayObject = (EnchantmentType[]) Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
-		System.arraycopy(array, 0, newArrayObject, 0, arrayLength);
-		array[array.length - 1] = element;
-		return array;
-	}
-
-	/**
-	 * Checks if a given {@link ResourceLocation} matches at least one location of a {@link RegistryKey} in set of {@link RegistryKey}s.
-	 *
-	 * @return If a given {@link ResourceLocation} matches at least one location of a {@link RegistryKey} in set of {@link RegistryKey}s.
-	 */
-	public static boolean matchesKeys(ResourceLocation loc, RegistryKey<?>... keys) {
-		for (RegistryKey<?> key : keys)
+	public static boolean matchesKeys(ResourceLocation loc, ResourceKey<?>... keys) {
+		for (ResourceKey<?> key : keys)
 			if (key.location().equals(loc))
 				return true;
 		return false;
@@ -177,7 +168,7 @@ public final class DataUtil {
 
 	/**
 	 * <p>Slates a {@link AlternativeDispenseBehavior} instance for later processing, where it will be used to register
-	 * an {@link IDispenseItemBehavior} that performs the new behavior if its condition is met and the behavior that was
+	 * an {@link DispenseItemBehavior} that performs the new behavior if its condition is met and the behavior that was
 	 * already registered if not. See {@link AlternativeDispenseBehavior} for details.
 	 *
 	 * <p>Since Abnormals Core handles registering the condition at the right time, mods should call this method as
@@ -198,13 +189,13 @@ public final class DataUtil {
 	 * @see DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)
 	 */
 	@Deprecated
-	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
+	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<BlockSource, ItemStack> condition, DispenseItemBehavior behavior) {
 		registerAlternativeDispenseBehavior(new AlternativeDispenseBehavior("", item, condition, behavior));
 	}
 
 	/**
 	 * Registers a {@link CustomNoteBlockInstrument} that will get used to play a custom note block sound if a
-	 * {@link IBlockSource} predicate (representing the position under the note block) passes.
+	 * {@link BlockSource} predicate (representing the position under the note block) passes.
 	 * See {@link CustomNoteBlockInstrument} for details.
 	 *
 	 * <p>Since Abnormals Core adds instruments to an internal list at the end of mod loading, mods should call
@@ -220,18 +211,18 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Adds a new {@link JigsawPiece} to a pre-existing {@link JigsawPattern}.
+	 * Adds a new {@link StructurePoolElement} to a pre-existing {@link StructurePoolElement}.
 	 *
 	 * @param toAdd    The {@link ResourceLocation} of the pattern to insert the new piece into.
-	 * @param newPiece The {@link JigsawPiece} to insert into {@code toAdd}.
+	 * @param newPiece The {@link StructurePoolElement} to insert into {@code toAdd}.
 	 * @param weight   The probability weight of {@code newPiece}.
 	 * @author abigailfails
 	 */
-	public static void addToJigsawPattern(ResourceLocation toAdd, JigsawPiece newPiece, int weight) {
-		JigsawPattern oldPool = WorldGenRegistries.TEMPLATE_POOL.get(toAdd);
+	public static void addToJigsawPattern(ResourceLocation toAdd, StructurePoolElement newPiece, int weight) {
+		StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(toAdd);
 		if (oldPool != null) {
 			oldPool.rawTemplates.add(Pair.of(newPiece, weight));
-			List<JigsawPiece> jigsawPieces = oldPool.templates;
+			List<StructurePoolElement> jigsawPieces = oldPool.templates;
 			for (int i = 0; i < weight; i++) {
 				jigsawPieces.add(newPiece);
 			}
@@ -239,7 +230,7 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Registers a {@link ConfigValueCondition.Serializer} and a {@link ConfigLootCondition.Serializer} under the name {@code "[modId]:config"}
+	 * Registers a {@link ConfigValueCondition.Serializer} and a {@link ConfigSerializer} under the name {@code "[modId]:config"}
 	 * that accepts the values of {@link ConfigKey} annotations for {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}
 	 * fields in the passed-in collection of objects, checking against the annotation's corresponding
 	 * {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} to determine whether the condition should pass.<br><br>
@@ -323,7 +314,7 @@ public final class DataUtil {
 			}
 		}
 		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, configValues));
-		Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(modId, "config"), new LootConditionType(new ConfigLootCondition.Serializer(modId, configValues)));
+		Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(modId, "config"), new LootItemConditionType(new ConfigLootCondition.ConfigSerializer(modId, configValues)));
 	}
 
 	/**
@@ -367,7 +358,7 @@ public final class DataUtil {
 
 	/**
 	 * When an instance of this class is registered using {@link DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)},
-	 * an {@link IDispenseItemBehavior} will get registered that will perform a new {@link IDispenseItemBehavior} if
+	 * an {@link DispenseItemBehavior} will get registered that will perform a new {@link DispenseItemBehavior} if
 	 * a condition is met and the behavior that was already in the registry if not. See constructor for details.
 	 *
 	 * <p>This works even if multiple mods
@@ -379,8 +370,8 @@ public final class DataUtil {
 	public static class AlternativeDispenseBehavior implements Comparable<AlternativeDispenseBehavior> {
 		protected final String modId;
 		protected final Item item;
-		protected final BiPredicate<IBlockSource, ItemStack> condition;
-		protected final IDispenseItemBehavior behavior;
+		protected final BiPredicate<BlockSource, ItemStack> condition;
+		protected final DispenseItemBehavior behavior;
 		protected final Comparator<String> modIdComparator;
 
 		/**
@@ -392,11 +383,11 @@ public final class DataUtil {
 		 *
 		 * @param modId     The ID of the mod registering the condition.
 		 * @param item      The {@link Item} to register the {@code behavior} for.
-		 * @param condition A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments,
+		 * @param condition A {@link BiPredicate} that takes in {@link BlockSource} and {@link ItemStack} arguments,
 		 *                  returning true if {@code behavior} should be performed.
-		 * @param behavior  The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
+		 * @param behavior  The {@link DispenseItemBehavior} that will be used if the {@code condition} is met.
 		 */
-		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior) {
+		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<BlockSource, ItemStack> condition, DispenseItemBehavior behavior) {
 			this(modId, item, condition, behavior, (id1, id2) -> 0);
 		}
 
@@ -420,15 +411,15 @@ public final class DataUtil {
 		 *
 		 * @param modId           The ID of the mod registering the condition.
 		 * @param item            The {@link Item} to register the {@code behavior} for.
-		 * @param condition       A {@link BiPredicate} that takes in {@link IBlockSource} and {@link ItemStack} arguments,
+		 * @param condition       A {@link BiPredicate} that takes in {@link BlockSource} and {@link ItemStack} arguments,
 		 *                        returning true if {@code behavior} should be performed.
-		 * @param behavior        The {@link IDispenseItemBehavior} that will be used if the {@code condition} is met.
+		 * @param behavior        The {@link DispenseItemBehavior} that will be used if the {@code condition} is met.
 		 * @param modIdComparator A {@link Comparator} that compares two strings. The first is {@code modId}, and the
 		 *                        second is the mod id for another behavior registered to the same item.
 		 *                        It should return 1 if {@code behavior} is to be registered after the other behavior, -1 if
 		 *                        it should go before, and 0 in any other case.
 		 */
-		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<IBlockSource, ItemStack> condition, IDispenseItemBehavior behavior, Comparator<String> modIdComparator) {
+		public AlternativeDispenseBehavior(String modId, Item item, BiPredicate<BlockSource, ItemStack> condition, DispenseItemBehavior behavior, Comparator<String> modIdComparator) {
 			this.modId = modId;
 			this.item = item;
 			this.condition = condition;
@@ -442,11 +433,11 @@ public final class DataUtil {
 		}
 
 		/**
-		 * Registers an {@link IDispenseItemBehavior} for {@code item} which performs {@code behavior} if
+		 * Registers an {@link DispenseItemBehavior} for {@code item} which performs {@code behavior} if
 		 * {@code condition} passes.
 		 */
 		public void register() {
-			IDispenseItemBehavior oldBehavior = DispenserBlock.DISPENSER_REGISTRY.get(item);
+			DispenseItemBehavior oldBehavior = DispenserBlock.DISPENSER_REGISTRY.get(item);
 			DispenserBlock.registerBehavior(item, (source, stack) -> condition.test(source, stack) ? behavior.dispense(source, stack) : oldBehavior.dispense(source, stack));
 		}
 	}
@@ -454,7 +445,7 @@ public final class DataUtil {
 	/**
 	 * When an instance of this class is registered using
 	 * {@link DataUtil#registerNoteBlockInstrument(CustomNoteBlockInstrument)}, note blocks will play a custom sound
-	 * if an {@link IBlockSource} predicate for the position under the note block passes. See constructor for details.
+	 * if an {@link BlockSource} predicate for the position under the note block passes. See constructor for details.
 	 *
 	 * <p>If multiple mods add new instruments the predicates may overlap, which is what
 	 * {@code modIdComparator} is intended to solve.</p>
@@ -464,7 +455,7 @@ public final class DataUtil {
 	public static class CustomNoteBlockInstrument implements Comparable<CustomNoteBlockInstrument> {
 		protected final String modId;
 		protected final Comparator<String> modIdComparator;
-		protected final Predicate<IBlockSource> condition;
+		protected final Predicate<BlockSource> condition;
 		private final SoundEvent sound;
 
 		/**
@@ -472,11 +463,11 @@ public final class DataUtil {
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
 		 * @param modId     The ID of the mod registering the condition.
-		 * @param condition A {@link Predicate} that takes in a {@link IBlockSource} instance that represents the
+		 * @param condition A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
 		 *                  position under the note block, returning true if {@code sound} should be played.
 		 * @param sound     The {@link SoundEvent} that will be played if {@code condition} is met.
 		 */
-		public CustomNoteBlockInstrument(String modId, Predicate<IBlockSource> condition, SoundEvent sound) {
+		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound) {
 			this(modId, condition, sound, (id1, id2) -> 0);
 		}
 
@@ -484,7 +475,7 @@ public final class DataUtil {
 		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
-		 * <p>If multiple mods add new instruments and the {@link IBlockSource} predicates overlap such that the order
+		 * <p>If multiple mods add new instruments and the {@link BlockSource} predicates overlap such that the order
 		 * that they are registered in matters, {@code modIdComparator} (where the first parameter is {@code modId} and
 		 * the second parameter is the mod ID of another {@link CustomNoteBlockInstrument} instance) can be used to
 		 * ensure this order regardless of which mod is loaded first.</p>
@@ -497,7 +488,7 @@ public final class DataUtil {
 		 * {@code (id1, id2) -> id2.equals("a") ? -1 : 0}.</p>
 		 *
 		 * @param modId           The ID of the mod registering the condition.
-		 * @param condition       A {@link Predicate} that takes in a {@link IBlockSource} instance that represents the
+		 * @param condition       A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
 		 *                        position under the note block, returning true if {@code sound} should be played.
 		 * @param sound           The {@link SoundEvent} that will be played if {@code condition} is met.
 		 * @param modIdComparator A {@link Comparator} that compares two strings. The first is {@code modId}, and the
@@ -505,7 +496,7 @@ public final class DataUtil {
 		 *                        It should return 1 if {@code condition} should be tested after the other instrument's,
 		 *                        -1 if it should go before, and 0 in any other case.
 		 */
-		public CustomNoteBlockInstrument(String modId, Predicate<IBlockSource> condition, SoundEvent sound, Comparator<String> modIdComparator) {
+		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound, Comparator<String> modIdComparator) {
 			this.modId = modId;
 			this.condition = condition;
 			this.sound = sound;
@@ -517,7 +508,7 @@ public final class DataUtil {
 			return this.modIdComparator.compare(this.modId, instrument.modId);
 		}
 
-		public boolean test(IBlockSource source) {
+		public boolean test(BlockSource source) {
 			return this.condition.test(source);
 		}
 

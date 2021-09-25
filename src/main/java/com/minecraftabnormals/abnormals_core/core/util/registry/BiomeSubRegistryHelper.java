@@ -1,10 +1,10 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
-import net.minecraft.util.LazyValue;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -57,19 +57,19 @@ public class BiomeSubRegistryHelper extends AbstractSubRegistryHelper<Biome> {
 	}
 
 	/**
-	 * A wrapper around a {@link Biome} {@link RegistryObject} for storing a biome's {@link RegistryKey}.
-	 * <p>This allows for a biome's {@link RegistryKey} to be cached.</p>
+	 * A wrapper around a {@link Biome} {@link RegistryObject} for storing a biome's {@link ResourceKey}.
+	 * <p>This allows for a biome's {@link ResourceKey} to be cached.</p>
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
 	public static final class KeyedBiome {
 		private static final ForgeRegistry<Biome> BIOME_REGISTRY = (ForgeRegistry<Biome>) ForgeRegistries.BIOMES;
 		private final RegistryObject<Biome> biome;
-		private final LazyValue<RegistryKey<Biome>> lazyKey;
+		private final LazyLoadedValue<ResourceKey<Biome>> lazyKey;
 
 		public KeyedBiome(RegistryObject<Biome> biome) {
 			this.biome = biome;
-			this.lazyKey = new LazyValue<>(() -> BIOME_REGISTRY.getKey(BIOME_REGISTRY.getID(this.biome.get())));
+			this.lazyKey = new LazyLoadedValue<>(() -> BIOME_REGISTRY.getKey(BIOME_REGISTRY.getID(this.biome.get())));
 		}
 
 		/**
@@ -93,13 +93,13 @@ public class BiomeSubRegistryHelper extends AbstractSubRegistryHelper<Biome> {
 		}
 
 		/**
-		 * Gets the {@link RegistryKey} of the biome stored in the {@link #biome} {@link RegistryObject}.
+		 * Gets the {@link ResourceKey} of the biome stored in the {@link #biome} {@link RegistryObject}.
 		 * <p>Only call this if {@link RegistryObject#isPresent()} returns true.</p>
 		 *
-		 * @return The {@link RegistryKey} of the biome stored in the {@link #biome} {@link RegistryObject}.
+		 * @return The {@link ResourceKey} of the biome stored in the {@link #biome} {@link RegistryObject}.
 		 * @see RegistryObject#get()
 		 */
-		public RegistryKey<Biome> getKey() {
+		public ResourceKey<Biome> getKey() {
 			return this.lazyKey.get();
 		}
 	}

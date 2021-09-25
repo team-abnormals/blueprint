@@ -29,16 +29,17 @@ import com.minecraftabnormals.abnormals_core.core.registry.ACLootConditions;
 import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.util.registry.BlockEntitySubRegistryHelper;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.minecraftabnormals.abnormals_core.core.util.registry.TileEntitySubRegistryHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.SignTileEntityRenderer;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.village.PointOfInterestType;
+import net.minecraft.client.renderer.blockentity.SignRenderer;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -49,17 +50,17 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -103,7 +104,7 @@ public final class AbnormalsCore {
 		REGISTRY_HELPER.getEntitySubHelper().register(modEventBus);
 		REGISTRY_HELPER.getTileEntitySubHelper().register(modEventBus);
 
-		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
+		modEventBus.addListener((ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
 			if (config.getSpec() == ACConfig.COMMON_SPEC) {
 				ACConfig.ValuesHolder.updateCommonValuesFromConfig(config);
@@ -114,12 +115,12 @@ public final class AbnormalsCore {
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event -> {
-				IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-				if (resourceManager instanceof IReloadableResourceManager) {
-					((IReloadableResourceManager) resourceManager).registerReloadListener(ENDIMATION_DATA_MANAGER);
+				ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+				if (resourceManager instanceof ReloadableResourceManager) {
+					((ReloadableResourceManager) resourceManager).registerReloadListener(ENDIMATION_DATA_MANAGER);
 				}
 			});
-			modEventBus.addListener(EventPriority.NORMAL, false, ModConfig.Reloading.class, event -> {
+			modEventBus.addListener(EventPriority.NORMAL, false, ModConfigEvent.Reloading.class, event -> {
 				if (event.getConfig().getModId().equals(AbnormalsCore.MODID)) NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
 			});
 			modEventBus.addListener(this::clientSetup);
@@ -147,7 +148,7 @@ public final class AbnormalsCore {
 
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ACTileEntities.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), SignTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), SignRenderer::new);
 
 		event.enqueueWork(SignManager::setupAtlas);
 	}
@@ -175,13 +176,13 @@ public final class AbnormalsCore {
 	}
 
 	private void replaceBeehivePOI() {
-		PointOfInterestType.BEEHIVE.matchingStates = Sets.newHashSet(PointOfInterestType.BEEHIVE.matchingStates);
-		Map<BlockState, PointOfInterestType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PointOfInterestType.class, null, "field_221073_u");
+		PoiType.BEEHIVE.matchingStates = Sets.newHashSet(PoiType.BEEHIVE.matchingStates);
+		Map<BlockState, PoiType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PoiType.class, null, "field_221073_u");
 		if (statePointOfInterestMap != null) {
-			for (Block block : TileEntitySubRegistryHelper.collectBlocks(AbnormalsBeehiveBlock.class)) {
+			for (Block block : BlockEntitySubRegistryHelper.collectBlocks(AbnormalsBeehiveBlock.class)) {
 				block.getStateDefinition().getPossibleStates().forEach(state -> {
-					statePointOfInterestMap.put(state, PointOfInterestType.BEEHIVE);
-					PointOfInterestType.BEEHIVE.matchingStates.add(state);
+					statePointOfInterestMap.put(state, PoiType.BEEHIVE);
+					PoiType.BEEHIVE.matchingStates.add(state);
 				});
 			}
 		}

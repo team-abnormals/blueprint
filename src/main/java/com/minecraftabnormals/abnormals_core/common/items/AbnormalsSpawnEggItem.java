@@ -1,11 +1,13 @@
 package com.minecraftabnormals.abnormals_core.common.items;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
+
+import net.minecraft.world.item.Item.Properties;
 
 /**
  * @author SmellyModder(Luke Tonon)
@@ -21,9 +23,9 @@ public class AbnormalsSpawnEggItem extends SpawnEggItem {
 	}
 
 	@Override
-	public EntityType<?> getType(@Nullable CompoundNBT compound) {
+	public EntityType<?> getType(@Nullable CompoundTag compound) {
 		if (compound != null && compound.contains(ENTITY_TAG, 10)) {
-			CompoundNBT entityTag = compound.getCompound(ENTITY_TAG);
+			CompoundTag entityTag = compound.getCompound(ENTITY_TAG);
 			if (entityTag.contains(ENTITY_ID_TAG, 8)) {
 				return EntityType.byString(entityTag.getString(ENTITY_ID_TAG)).orElse(this.entityType.get());
 			}

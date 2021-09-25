@@ -2,20 +2,22 @@ package com.minecraftabnormals.abnormals_core.common.advancement;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.ICriterionTrigger;
-import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.loot.ConditionArraySerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.SerializationContext;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
+
+import net.minecraft.advancements.CriterionTrigger.Listener;
 
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instance> {
+public final class EmptyTrigger implements CriterionTrigger<EmptyTrigger.Instance> {
 	private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
 	private final ResourceLocation id;
 
@@ -51,18 +53,18 @@ public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instan
 	}
 
 	@Override
-	public Instance createInstance(JsonObject object, ConditionArrayParser conditions) {
+	public Instance createInstance(JsonObject object, DeserializationContext conditions) {
 		return new Instance(this.id);
 	}
 
-	public void trigger(ServerPlayerEntity player) {
+	public void trigger(ServerPlayer player) {
 		Listeners listeners = this.listeners.get(player.getAdvancements());
 		if (listeners != null) {
 			listeners.trigger();
 		}
 	}
 
-	public static class Instance implements ICriterionInstance {
+	public static class Instance implements CriterionTriggerInstance {
 		private final ResourceLocation id;
 
 		Instance(ResourceLocation id) {
@@ -76,7 +78,7 @@ public final class EmptyTrigger implements ICriterionTrigger<EmptyTrigger.Instan
 		}
 
 		@Override
-		public JsonObject serializeToJson(ConditionArraySerializer conditions) {
+		public JsonObject serializeToJson(SerializationContext conditions) {
 			return new JsonObject();
 		}
 	}

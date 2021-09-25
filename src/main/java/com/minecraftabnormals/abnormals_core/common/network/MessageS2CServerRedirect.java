@@ -1,11 +1,11 @@
 package com.minecraftabnormals.abnormals_core.common.network;
 
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -21,11 +21,11 @@ public final class MessageS2CServerRedirect {
 		this.connectionAddress = address;
 	}
 
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeUtf(this.connectionAddress);
 	}
 
-	public static MessageS2CServerRedirect deserialize(PacketBuffer buf) {
+	public static MessageS2CServerRedirect deserialize(FriendlyByteBuf buf) {
 		return new MessageS2CServerRedirect(buf.readUtf());
 	}
 

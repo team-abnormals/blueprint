@@ -4,9 +4,9 @@ import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.mixin.client.ActiveRenderInfoInvokerMixin;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedOutEvent;
@@ -95,7 +95,7 @@ public enum ScreenShakeHandler {
 			} else {
 				Iterator<ShakeSource> sourceIterator = sources.iterator();
 				Entity entity = minecraft.cameraEntity;
-				Vector3d pos = entity != null ? entity.position() : Vector3d.ZERO;
+				Vec3 pos = entity != null ? entity.position() : Vec3.ZERO;
 				double intensityX = 0.0F, intensityY = 0.0F, intensityZ = 0.0F;
 				while (sourceIterator.hasNext()) {
 					ShakeSource shakingSource = sourceIterator.next();
@@ -103,7 +103,7 @@ public enum ScreenShakeHandler {
 					if (shakingSource.isStopped()) {
 						sourceIterator.remove();
 					} else {
-						Vector3d intensity = shakingSource.getIntensity(pos);
+						Vec3 intensity = shakingSource.getIntensity(pos);
 						double newIntensityX = intensityX + intensity.x;
 						double maxX = shakingSource.getMaxBuildupX();
 						if (newIntensityX <= maxX) {
@@ -138,7 +138,7 @@ public enum ScreenShakeHandler {
 		double screenEffectScale = ACConfig.ValuesHolder.getScreenShakeScale();
 		if (screenEffectScale > 0.0D) {
 			double partialTicks = event.getRenderPartialTicks();
-			double x = MathHelper.lerp(partialTicks, this.prevIntensityX, this.intensityX), y = MathHelper.lerp(partialTicks, this.prevIntensityY, this.intensityY), z = MathHelper.lerp(partialTicks, this.prevIntensityZ, this.intensityZ);
+			double x = Mth.lerp(partialTicks, this.prevIntensityX, this.intensityX), y = Mth.lerp(partialTicks, this.prevIntensityY, this.intensityY), z = Mth.lerp(partialTicks, this.prevIntensityZ, this.intensityZ);
 			if (x != 0.0F || y != 0.0F || z != 0.0F) {
 				((ActiveRenderInfoInvokerMixin) event.getInfo()).callMove(z * screenEffectScale, y * screenEffectScale, x * screenEffectScale);
 			}

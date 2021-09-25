@@ -12,24 +12,31 @@ import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsChestTil
 import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
 import com.minecraftabnormals.abnormals_core.core.api.SignManager;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.WoodType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.item.*;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
+
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DoubleHighBlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.SignItem;
+import net.minecraft.world.item.StandingAndWallBlockItem;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for blocks. This contains some useful registering methods for blocks.
@@ -58,10 +65,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 *
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}.
 	 */
-	public <B extends Block> RegistryObject<B> createBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createBlock(String name, Supplier<? extends B> supplier, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(group)));
 		return block;
@@ -111,10 +118,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
 	 * @param burnTime - How long the item will burn (measured in ticks)
-	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}.
 	 */
-	public <B extends Block> RegistryObject<B> createFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().tab(group)));
 		return block;
@@ -125,10 +132,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 *
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param group    - The {@link ItemGroup} for the {@link InjectedBlockItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link InjectedBlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}.
 	 */
-	public <B extends Block> RegistryObject<B> createInjectedBlock(String name, Item followItem, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createInjectedBlock(String name, Item followItem, Supplier<? extends B> supplier, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new InjectedBlockItem(followItem, block.get(), new Item.Properties().tab(group)));
 		return block;
@@ -140,43 +147,43 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
 	 * @param ister    - A supplier containing a callable {@link ItemStackTileEntityRenderer} for the {@link BlockItem}
-	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
-	public <B extends Block> RegistryObject<B> createBlockWithISTER(String name, Supplier<? extends B> supplier, Supplier<Callable<ItemStackTileEntityRenderer>> ister, @Nullable ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createBlockWithISTER(String name, Supplier<? extends B> supplier, Supplier<Callable<BlockEntityWithoutLevelRenderer>> ister, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(group).setISTER(ister)));
 		return block;
 	}
 
 	/**
-	 * Creates and registers a {@link Block} with a {@link TallBlockItem}
+	 * Creates and registers a {@link Block} with a {@link DoubleHighBlockItem}
 	 *
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param group    - The {@link ItemGroup} for the {@link TallBlockItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link DoubleHighBlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
-	 * @see TallBlockItem
+	 * @see DoubleHighBlockItem
 	 */
-	public <B extends Block> RegistryObject<B> createTallBlock(String name, Supplier<? extends B> supplier, ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createTallBlock(String name, Supplier<? extends B> supplier, CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new TallBlockItem(block.get(), new Item.Properties().tab(group)));
+		this.itemRegister.register(name, () -> new DoubleHighBlockItem(block.get(), new Item.Properties().tab(group)));
 		return block;
 	}
 
 	/**
-	 * Creates and registers {@link Block} with a {@link WallOrFloorItem}
+	 * Creates and registers {@link Block} with a {@link StandingAndWallBlockItem}
 	 *
 	 * @param name     - The block's name
 	 * @param supplier - The supplied floor {@link Block}
 	 * @param supplier - The supplied wall {@link Block}
-	 * @param group    - The {@link ItemGroup} for the {@link WallOrFloorItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link StandingAndWallBlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
-	 * @see WallOrFloorItem
+	 * @see StandingAndWallBlockItem
 	 */
-	public <B extends Block> RegistryObject<B> createWallOrFloorBlock(String name, Supplier<? extends B> supplier, Supplier<? extends B> wallSupplier, @Nullable ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createWallOrFloorBlock(String name, Supplier<? extends B> supplier, Supplier<? extends B> wallSupplier, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new WallOrFloorItem(block.get(), wallSupplier.get(), new Item.Properties().tab(group)));
+		this.itemRegister.register(name, () -> new StandingAndWallBlockItem(block.get(), wallSupplier.get(), new Item.Properties().tab(group)));
 		return block;
 	}
 
@@ -185,10 +192,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 *
 	 * @param name   - The block's name
 	 * @param rarity - The {@link Rarity} of the {@link BlockItem}
-	 * @param group  - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group  - The {@link CreativeModeTab} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
-	public <B extends Block> RegistryObject<B> createRareBlock(String name, Supplier<? extends B> supplier, Rarity rarity, @Nullable ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createRareBlock(String name, Supplier<? extends B> supplier, Rarity rarity, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().rarity(rarity).tab(group)));
 		return block;
@@ -199,10 +206,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 *
 	 * @param name       - The name for this {@link AbnormalsChestBlock}
 	 * @param properties - The properties for this {@link AbnormalsChestBlock}
-	 * @param group      - The ItemGroup for the BlockItem
+	 * @param group      - The CreativeModeTab for the BlockItem
 	 * @return A {@link RegistryObject} containing the created {@link AbnormalsChestBlock}
 	 */
-	public RegistryObject<AbnormalsChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
+	public RegistryObject<AbnormalsChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable CreativeModeTab group) {
 		String modId = this.parent.getModId();
 		RegistryObject<AbnormalsChestBlock> block = this.deferredRegister.register(name + "_chest", () -> new AbnormalsChestBlock(modId + ":" + name, properties));
 		ChestManager.putChestInfo(modId, name, false);
@@ -215,10 +222,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 *
 	 * @param name       - The name for this {@link AbnormalsTrappedChestBlock}
 	 * @param properties - The properties for this {@link AbnormalsTrappedChestBlock}
-	 * @param group      - The ItemGroup for the BlockItem
+	 * @param group      - The CreativeModeTab for the BlockItem
 	 * @return A {@link RegistryObject} containing the created {@link AbnormalsTrappedChestBlock}
 	 */
-	public RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable ItemGroup group) {
+	public RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable CreativeModeTab group) {
 		String modId = this.parent.getModId();
 		RegistryObject<AbnormalsTrappedChestBlock> block = this.deferredRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", properties));
 		ChestManager.putChestInfo(modId, name, true);
@@ -237,7 +244,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		WoodType type = SignManager.registerWoodType(WoodType.create(this.parent.getModId() + ":" + name));
 		RegistryObject<AbnormalsStandingSignBlock> standing = this.deferredRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.of(Material.WOOD).noCollission().strength(1.0F).sound(SoundType.WOOD), type));
 		RegistryObject<AbnormalsWallSignBlock> wall = this.deferredRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.of(Material.WOOD, color).noCollission().strength(1.0F).sound(SoundType.WOOD).dropsLike(standing.get()), type));
-		this.itemRegister.register(name + "_sign", () -> new SignItem(new Item.Properties().stacksTo(16).tab(ItemGroup.TAB_DECORATIONS), standing.get(), wall.get()));
+		this.itemRegister.register(name + "_sign", () -> new SignItem(new Item.Properties().stacksTo(16).tab(CreativeModeTab.TAB_DECORATIONS), standing.get(), wall.get()));
 		return Pair.of(standing, wall);
 	}
 
@@ -247,10 +254,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @param modId    - The mod id of the mod this block is compatible for, set to "indev" for dev tests
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
-	public <B extends Block> RegistryObject<B> createCompatBlock(String modId, String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createCompatBlock(String modId, String name, Supplier<? extends B> supplier, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
 		return block;
@@ -261,11 +268,11 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 *
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
-	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link BlockItem}
 	 * @param modIds   - The mod ids of the mods this block is compatible for
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
-	public <B extends Block> RegistryObject<B> createCompatBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group, String... modIds) {
+	public <B extends Block> RegistryObject<B> createCompatBlock(String name, Supplier<? extends B> supplier, @Nullable CreativeModeTab group, String... modIds) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(areModsLoaded(modIds) ? group : null)));
 		return block;
@@ -278,10 +285,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
 	 * @param burnTime - How many ticks this fuel block should burn for.
-	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link BlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
-	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String modId, String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group) {
+	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String modId, String name, Supplier<? extends B> supplier, int burnTime, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().tab(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
 		return block;
@@ -293,11 +300,11 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @param name     - The block's name
 	 * @param supplier - The supplied {@link Block}
 	 * @param burnTime - How many ticks this fuel block should burn for
-	 * @param group    - The {@link ItemGroup} for the {@link BlockItem}
+	 * @param group    - The {@link CreativeModeTab} for the {@link BlockItem}
 	 * @param modIds   - The mod ids of the mods this block is compatible for
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 */
-	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable ItemGroup group, String... modIds) {
+	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String name, Supplier<? extends B> supplier, int burnTime, @Nullable CreativeModeTab group, String... modIds) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().tab(areModsLoaded(modIds) ? group : null)));
 		return block;
@@ -313,8 +320,8 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String compatModId, String name, MaterialColor color) {
 		boolean isModLoaded = ModList.get().isLoaded(compatModId) || compatModId == "indev";
-		ItemGroup chestGroup = isModLoaded ? ItemGroup.TAB_DECORATIONS : null;
-		ItemGroup trappedChestGroup = isModLoaded ? ItemGroup.TAB_REDSTONE : null;
+		CreativeModeTab chestGroup = isModLoaded ? CreativeModeTab.TAB_DECORATIONS : null;
+		CreativeModeTab trappedChestGroup = isModLoaded ? CreativeModeTab.TAB_REDSTONE : null;
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
@@ -337,8 +344,8 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, MaterialColor color, String... modIds) {
 		boolean isInGroup = areModsLoaded(modIds);
-		ItemGroup chestGroup = isInGroup ? ItemGroup.TAB_DECORATIONS : null;
-		ItemGroup trappedChestGroup = isInGroup ? ItemGroup.TAB_REDSTONE : null;
+		CreativeModeTab chestGroup = isInGroup ? CreativeModeTab.TAB_DECORATIONS : null;
+		CreativeModeTab trappedChestGroup = isInGroup ? CreativeModeTab.TAB_REDSTONE : null;
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
@@ -352,7 +359,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static Callable<ItemStackTileEntityRenderer> chestISTER(boolean trapped) {
-		return () -> new ChestItemRenderer<TileEntity>(trapped ? AbnormalsTrappedChestTileEntity::new : AbnormalsChestTileEntity::new);
+	private static Callable<BlockEntityWithoutLevelRenderer> chestISTER(boolean trapped) {
+		return () -> new ChestItemRenderer<BlockEntity>(trapped ? AbnormalsTrappedChestTileEntity::new : AbnormalsChestTileEntity::new);
 	}
 }

@@ -4,14 +4,14 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.minecraftabnormals.abnormals_core.core.registry.ACLootConditions;
-import net.minecraft.entity.Entity;
-import net.minecraft.loot.ILootSerializer;
-import net.minecraft.loot.LootConditionType;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.loot.Serializer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.core.Registry;
 
 /**
  * A loot condition that passes if there is a raid at the entity's position.
@@ -22,7 +22,7 @@ import net.minecraft.util.registry.Registry;
  * </ul></p>
  * @author abigailfails
  */
-public class RaidCheckCondition implements ILootCondition {
+public class RaidCheckCondition implements LootItemCondition {
     private final boolean inverted;
 
     public RaidCheckCondition(boolean inverted) {
@@ -30,17 +30,17 @@ public class RaidCheckCondition implements ILootCondition {
     }
 
     @Override
-    public LootConditionType getType() {
+    public LootItemConditionType getType() {
         return Registry.LOOT_CONDITION_TYPE.get(ACLootConditions.RAID_CHECK);
     }
 
     @Override
     public boolean test(LootContext lootContext) {
-        Entity entity = lootContext.getParamOrNull(LootParameters.THIS_ENTITY);
+        Entity entity = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
         return inverted != (entity != null && lootContext.getLevel().getRaidAt(entity.blockPosition()) != null);
     }
 
-    public static class Serializer implements ILootSerializer<RaidCheckCondition> {
+    public static class RaidCheckSerializer implements Serializer<RaidCheckCondition> {
 
         @Override
         public void serialize(JsonObject json, RaidCheckCondition condition, JsonSerializationContext context) {
@@ -50,7 +50,7 @@ public class RaidCheckCondition implements ILootCondition {
 
         @Override
         public RaidCheckCondition deserialize(JsonObject json, JsonDeserializationContext context) {
-            return new RaidCheckCondition(JSONUtils.getAsBoolean(json, "inverted", false));
+            return new RaidCheckCondition(GsonHelper.getAsBoolean(json, "inverted", false));
         }
     }
 }

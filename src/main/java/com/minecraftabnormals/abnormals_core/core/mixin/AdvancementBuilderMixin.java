@@ -6,8 +6,8 @@ import com.minecraftabnormals.abnormals_core.core.events.AdvancementBuildingEven
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,7 +21,7 @@ public final class AdvancementBuilderMixin {
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Inject(at = @At(value = "NEW", target = "net/minecraft/advancements/Advancement$Builder", shift = At.Shift.BEFORE), method = "fromJson", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-	private static void modifyBuilder(JsonObject json, ConditionArrayParser conditionParser, CallbackInfoReturnable<Advancement.Builder> info, ResourceLocation resourcelocation, DisplayInfo displayinfo, AdvancementRewards advancementrewards, Map map, JsonArray jsonarray, String[][] astring) {
+	private static void modifyBuilder(JsonObject json, DeserializationContext conditionParser, CallbackInfoReturnable<Advancement.Builder> info, ResourceLocation resourcelocation, DisplayInfo displayinfo, AdvancementRewards advancementrewards, Map map, JsonArray jsonarray, String[][] astring) {
 		Advancement.Builder builder = new Advancement.Builder(resourcelocation, displayinfo, advancementrewards, map, astring);
 		AdvancementBuildingEvent.onBuildingAdvancement(builder, conditionParser.getAdvancementId());
 		info.setReturnValue(builder);

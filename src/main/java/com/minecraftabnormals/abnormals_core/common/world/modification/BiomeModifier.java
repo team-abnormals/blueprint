@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.world.modification;
 
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -12,10 +12,10 @@ import java.util.function.Consumer;
  * @author SmellyModder (Luke Tonon)
  */
 public class BiomeModifier implements IBiomeModifier {
-	private final BiPredicate<RegistryKey<Biome>, Biome> shouldModify;
+	private final BiPredicate<ResourceKey<Biome>, Biome> shouldModify;
 	private final Consumer<BiomeModificationContext> modifier;
 
-	public BiomeModifier(BiPredicate<RegistryKey<Biome>, Biome> shouldModify, Consumer<BiomeModificationContext> modifier) {
+	public BiomeModifier(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Consumer<BiomeModificationContext> modifier) {
 		this.shouldModify = shouldModify;
 		this.modifier = modifier;
 	}
@@ -27,6 +27,6 @@ public class BiomeModifier implements IBiomeModifier {
 
 	@Override
 	public boolean test(BiomeModificationContext context) {
-		return this.shouldModify.test(context.registryKey, context.biome);
+		return this.shouldModify.test(context.resourceKey, context.biome);
 	}
 }

@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.common.world.modification;
 
 import com.google.common.collect.Sets;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.Set;
@@ -15,28 +15,28 @@ import java.util.function.Supplier;
  * @author SmellyModder (Luke Tonon)
  */
 public final class BiomeModificationPredicates {
-	public static final BiPredicate<RegistryKey<Biome>, Biome> END_ONLY = forCategory(Biome.Category.THEEND);
-	public static final BiPredicate<RegistryKey<Biome>, Biome> NETHER_ONLY = forCategory(Biome.Category.NETHER);
-	public static final BiPredicate<RegistryKey<Biome>, Biome> OCEAN_ONLY = forCategory(Biome.Category.OCEAN);
+	public static final BiPredicate<ResourceKey<Biome>, Biome> END_ONLY = forCategory(Biome.BiomeCategory.THEEND);
+	public static final BiPredicate<ResourceKey<Biome>, Biome> NETHER_ONLY = forCategory(Biome.BiomeCategory.NETHER);
+	public static final BiPredicate<ResourceKey<Biome>, Biome> OCEAN_ONLY = forCategory(Biome.BiomeCategory.OCEAN);
 
 	/**
-	 * Creates a {@link BiPredicate} true for a certain {@link Biome} {@link RegistryKey}.
+	 * Creates a {@link BiPredicate} true for a certain {@link Biome} {@link ResourceKey}.
 	 *
-	 * @param biomeKey The {@link RegistryKey} of a {@link Biome}.
-	 * @return A {@link BiPredicate} true for only a certain {@link Biome} {@link RegistryKey}.
+	 * @param biomeKey The {@link ResourceKey} of a {@link Biome}.
+	 * @return A {@link BiPredicate} true for only a certain {@link Biome} {@link ResourceKey}.
 	 */
-	public static BiPredicate<RegistryKey<Biome>, Biome> forBiomeKey(RegistryKey<Biome> biomeKey) {
-		return (biomeRegistryKey, biome) -> biomeRegistryKey == biomeKey;
+	public static BiPredicate<ResourceKey<Biome>, Biome> forBiomeKey(ResourceKey<Biome> biomeKey) {
+		return (biomeResourceKey, biome) -> biomeResourceKey == biomeKey;
 	}
 
 	/**
-	 * Creates a {@link BiPredicate} true for any {@link Biome} {@link RegistryKey} in a set of {@link RegistryKey}s.
+	 * Creates a {@link BiPredicate} true for any {@link Biome} {@link ResourceKey} in a set of {@link ResourceKey}s.
 	 *
-	 * @param biomeKeys A set of {@link RegistryKey}s to test.
-	 * @return A {@link BiPredicate} true for any {@link Biome} {@link RegistryKey} in a set of {@link RegistryKey}s.
+	 * @param biomeKeys A set of {@link ResourceKey}s to test.
+	 * @return A {@link BiPredicate} true for any {@link Biome} {@link ResourceKey} in a set of {@link ResourceKey}s.
 	 */
-	public static BiPredicate<RegistryKey<Biome>, Biome> forBiomeKeys(Set<RegistryKey<Biome>> biomeKeys) {
-		return (biomeRegistryKey, biome) -> biomeKeys.contains(biomeRegistryKey);
+	public static BiPredicate<ResourceKey<Biome>, Biome> forBiomeKeys(Set<ResourceKey<Biome>> biomeKeys) {
+		return (biomeResourceKey, biome) -> biomeKeys.contains(biomeResourceKey);
 	}
 
 	/**
@@ -45,8 +45,8 @@ public final class BiomeModificationPredicates {
 	 * @param biomeIn A {@link Biome}.
 	 * @return A {@link BiPredicate} true for only a certain {@link Biome}
 	 */
-	public static BiPredicate<RegistryKey<Biome>, Biome> forBiome(Biome biomeIn) {
-		return (biomeRegistryKey, biome) -> biomeIn == biome;
+	public static BiPredicate<ResourceKey<Biome>, Biome> forBiome(Biome biomeIn) {
+		return (biomeResourceKey, biome) -> biomeIn == biome;
 	}
 
 	/**
@@ -56,8 +56,8 @@ public final class BiomeModificationPredicates {
 	 * @param biomeIn A {@link Supplier} for a {@link Biome}.
 	 * @return A {@link BiPredicate} true for only a certain {@link Biome}
 	 */
-	public static BiPredicate<RegistryKey<Biome>, Biome> forBiome(Supplier<Biome> biomeIn) {
-		return (biomeRegistryKey, biome) -> biomeIn.get() == biome;
+	public static BiPredicate<ResourceKey<Biome>, Biome> forBiome(Supplier<Biome> biomeIn) {
+		return (biomeResourceKey, biome) -> biomeIn.get() == biome;
 	}
 
 	/**
@@ -66,8 +66,8 @@ public final class BiomeModificationPredicates {
 	 * @param category A {@link Biome.Category}.
 	 * @return A {@link BiPredicate} true for a certain {@link Biome.Category}.
 	 */
-	public static BiPredicate<RegistryKey<Biome>, Biome> forCategory(Biome.Category category) {
-		return (biomeRegistryKey, biome) -> biome.getBiomeCategory() == category;
+	public static BiPredicate<ResourceKey<Biome>, Biome> forCategory(Biome.BiomeCategory category) {
+		return (biomeResourceKey, biome) -> biome.getBiomeCategory() == category;
 	}
 
 	/**
@@ -76,8 +76,8 @@ public final class BiomeModificationPredicates {
 	 * @param categories An array of {@link Biome.Category}s.
 	 * @return A {@link BiPredicate} true for a set of {@link Biome.Category}s.
 	 */
-	public static BiPredicate<RegistryKey<Biome>, Biome> forCategory(Biome.Category... categories) {
-		return (biomeRegistryKey, biome) -> Sets.newHashSet(categories).contains(biome.getBiomeCategory());
+	public static BiPredicate<ResourceKey<Biome>, Biome> forCategory(Biome.BiomeCategory... categories) {
+		return (biomeResourceKey, biome) -> Sets.newHashSet(categories).contains(biome.getBiomeCategory());
 	}
 
 	/**
@@ -86,8 +86,8 @@ public final class BiomeModificationPredicates {
 	 * @param type A {@link BiomeDictionary.Type} to test.
 	 * @return A {@link BiPredicate} that's true if a biome key contains a specified {@link BiomeDictionary.Type}.
 	 */
-	public static BiPredicate<RegistryKey<Biome>, Biome> forType(BiomeDictionary.Type type) {
-		return (biomeRegistryKey, biome) -> BiomeDictionary.hasType(biomeRegistryKey, type);
+	public static BiPredicate<ResourceKey<Biome>, Biome> forType(BiomeDictionary.Type type) {
+		return (biomeResourceKey, biome) -> BiomeDictionary.hasType(biomeResourceKey, type);
 	}
 
 	/**
@@ -96,9 +96,9 @@ public final class BiomeModificationPredicates {
 	 * @param types An array of {@link BiomeDictionary.Type}s to test.
 	 * @return A {@link BiPredicate} that's true if a biome key contains all of the {@link BiomeDictionary.Type}s specified in an array of {@link BiomeDictionary.Type}s.
 	 */
-	public static BiPredicate<RegistryKey<Biome>, Biome> forTypes(BiomeDictionary.Type... types) {
-		return (biomeRegistryKey, biome) -> {
-			Set<BiomeDictionary.Type> dictTypes = BiomeDictionary.getTypes(biomeRegistryKey);
+	public static BiPredicate<ResourceKey<Biome>, Biome> forTypes(BiomeDictionary.Type... types) {
+		return (biomeResourceKey, biome) -> {
+			Set<BiomeDictionary.Type> dictTypes = BiomeDictionary.getTypes(biomeResourceKey);
 			for (BiomeDictionary.Type type : types) {
 				if (!dictTypes.contains(type)) {
 					return false;
@@ -114,9 +114,9 @@ public final class BiomeModificationPredicates {
 	 * @param types An array of {@link BiomeDictionary.Type}s to test.
 	 * @return A {@link BiPredicate} that's true if a biome key contains one of the {@link BiomeDictionary.Type}s specified in an array of {@link BiomeDictionary.Type}s.
 	 */
-	public static BiPredicate<RegistryKey<Biome>, Biome> forAnyType(BiomeDictionary.Type... types) {
-		return (biomeRegistryKey, biome) -> {
-			Set<BiomeDictionary.Type> dictTypes = BiomeDictionary.getTypes(biomeRegistryKey);
+	public static BiPredicate<ResourceKey<Biome>, Biome> forAnyType(BiomeDictionary.Type... types) {
+		return (biomeResourceKey, biome) -> {
+			Set<BiomeDictionary.Type> dictTypes = BiomeDictionary.getTypes(biomeResourceKey);
 			for (BiomeDictionary.Type type : types) {
 				if (dictTypes.contains(type)) {
 					return true;

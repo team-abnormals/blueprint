@@ -8,18 +8,20 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
+
+import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier.Mode;
 
 /**
  * An {@link AdvancementModifier} extension that modifies the {@link DisplayInfo} of an advancement.
@@ -36,14 +38,14 @@ public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoMo
 		super(((element, conditionArrayParser) -> {
 			JsonObject object = element.getAsJsonObject();
 			Mode mode = Mode.deserialize(object);
-			Optional<ITextComponent> title = JSONUtils.isValidNode(object, "title") ? Optional.ofNullable(ITextComponent.Serializer.fromJson(object.get("title"))) : Optional.empty();
-			Optional<ITextComponent> description = JSONUtils.isValidNode(object, "description") ? Optional.ofNullable(ITextComponent.Serializer.fromJson(object.get("description"))) : Optional.empty();
-			Optional<ItemStack> icon = JSONUtils.isValidNode(object, "icon") ? Optional.of(deserializeIcon(JSONUtils.getAsJsonObject(object, "icon"))) : Optional.empty();
-			Optional<ResourceLocation> background = JSONUtils.isValidNode(object, "background") ? Optional.of(new ResourceLocation(JSONUtils.getAsString(object, "background"))) : Optional.empty();
-			Optional<FrameType> frameType = JSONUtils.isValidNode(object, "frame") ? Optional.of(FrameType.byName(JSONUtils.getAsString(object, "frame"))) : Optional.empty();
-			Optional<Boolean> showToast = JSONUtils.isValidNode(object, "show_toast") ? Optional.of(JSONUtils.getAsBoolean(object, "show_toast")) : Optional.empty();
-			Optional<Boolean> announceToChat = JSONUtils.isValidNode(object, "announce_to_chat") ? Optional.of(JSONUtils.getAsBoolean(object, "announce_to_chat")) : Optional.empty();
-			Optional<Boolean> hidden = JSONUtils.isValidNode(object, "hidden") ? Optional.of(JSONUtils.getAsBoolean(object, "hidden")) : Optional.empty();
+			Optional<Component> title = GsonHelper.isValidNode(object, "title") ? Optional.ofNullable(Component.Serializer.fromJson(object.get("title"))) : Optional.empty();
+			Optional<Component> description = GsonHelper.isValidNode(object, "description") ? Optional.ofNullable(Component.Serializer.fromJson(object.get("description"))) : Optional.empty();
+			Optional<ItemStack> icon = GsonHelper.isValidNode(object, "icon") ? Optional.of(deserializeIcon(GsonHelper.getAsJsonObject(object, "icon"))) : Optional.empty();
+			Optional<ResourceLocation> background = GsonHelper.isValidNode(object, "background") ? Optional.of(new ResourceLocation(GsonHelper.getAsString(object, "background"))) : Optional.empty();
+			Optional<FrameType> frameType = GsonHelper.isValidNode(object, "frame") ? Optional.of(FrameType.byName(GsonHelper.getAsString(object, "frame"))) : Optional.empty();
+			Optional<Boolean> showToast = GsonHelper.isValidNode(object, "show_toast") ? Optional.of(GsonHelper.getAsBoolean(object, "show_toast")) : Optional.empty();
+			Optional<Boolean> announceToChat = GsonHelper.isValidNode(object, "announce_to_chat") ? Optional.of(GsonHelper.getAsBoolean(object, "announce_to_chat")) : Optional.empty();
+			Optional<Boolean> hidden = GsonHelper.isValidNode(object, "hidden") ? Optional.of(GsonHelper.getAsBoolean(object, "hidden")) : Optional.empty();
 			return new Config(mode, title, description, icon, background, frameType, showToast, announceToChat, hidden);
 		}));
 	}
@@ -52,14 +54,14 @@ public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoMo
 		if (!object.has("item")) {
 			throw new JsonSyntaxException("Unsupported icon type, currently only items are supported (add 'item' key)");
 		} else {
-			Item item = JSONUtils.getAsItem(object, "item");
+			Item item = GsonHelper.getAsItem(object, "item");
 			if (object.has("data")) {
 				throw new JsonParseException("Disallowed data tag found");
 			} else {
 				ItemStack stack = new ItemStack(item);
 				if (object.has("nbt")) {
 					try {
-						CompoundNBT nbt = JsonToNBT.parseTag(JSONUtils.convertToString(object.get("nbt"), "nbt"));
+						CompoundTag nbt = TagParser.parseTag(GsonHelper.convertToString(object.get("nbt"), "nbt"));
 						stack.setTag(nbt);
 					} catch (CommandSyntaxException syntax) {
 						throw new JsonSyntaxException("Invalid nbt tag: " + syntax.getMessage());
@@ -75,8 +77,8 @@ public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoMo
 		if (config.mode == Mode.MODIFY) {
 			try {
 				DisplayInfo displayInfo = (DisplayInfo) DISPLAY_INFO_FIELD.get(builder);
-				ITextComponent title = config.title.orElse(displayInfo.getTitle());
-				ITextComponent description = config.description.orElse(displayInfo.getDescription());
+				Component title = config.title.orElse(displayInfo.getTitle());
+				Component description = config.description.orElse(displayInfo.getDescription());
 				ItemStack icon = config.icon.orElse((ItemStack) ICON_FIELD.get(displayInfo));
 				ResourceLocation background = config.background.orElse((ResourceLocation) BACKGROUND_FIELD.get(displayInfo));
 				FrameType frameType = config.frame.orElse(displayInfo.getFrame());
@@ -88,14 +90,14 @@ public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoMo
 				e.printStackTrace();
 			}
 		} else {
-			builder.display(new DisplayInfo(config.icon.orElse(ItemStack.EMPTY), config.title.orElse(StringTextComponent.EMPTY), config.description.orElse(StringTextComponent.EMPTY), config.background.orElse(null), config.frame.orElse(FrameType.TASK), config.showToast.orElse(true), config.announceToChat.orElse(true), config.hidden.orElse(false)));
+			builder.display(new DisplayInfo(config.icon.orElse(ItemStack.EMPTY), config.title.orElse(TextComponent.EMPTY), config.description.orElse(TextComponent.EMPTY), config.background.orElse(null), config.frame.orElse(FrameType.TASK), config.showToast.orElse(true), config.announceToChat.orElse(true), config.hidden.orElse(false)));
 		}
 	}
 
 	static class Config {
 		private final Mode mode;
-		private final Optional<ITextComponent> title;
-		private final Optional<ITextComponent> description;
+		private final Optional<Component> title;
+		private final Optional<Component> description;
 		private final Optional<ItemStack> icon;
 		private final Optional<ResourceLocation> background;
 		private final Optional<FrameType> frame;
@@ -103,7 +105,7 @@ public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoMo
 		private final Optional<Boolean> announceToChat;
 		private final Optional<Boolean> hidden;
 
-		Config(Mode mode, Optional<ITextComponent> title, Optional<ITextComponent> description, Optional<ItemStack> icon, Optional<ResourceLocation> background, Optional<FrameType> frame, Optional<Boolean> showToast, Optional<Boolean> announceToChat, Optional<Boolean> hidden) {
+		Config(Mode mode, Optional<Component> title, Optional<Component> description, Optional<ItemStack> icon, Optional<ResourceLocation> background, Optional<FrameType> frame, Optional<Boolean> showToast, Optional<Boolean> announceToChat, Optional<Boolean> hidden) {
 			this.mode = mode;
 			this.title = title;
 			this.description = description;

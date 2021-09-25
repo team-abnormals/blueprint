@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.api.banner;
 
-import net.minecraft.tileentity.BannerPattern;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.Locale;
 
@@ -36,12 +36,5 @@ public final class BannerManager {
 	 */
 	public static BannerPattern createPattern(String name, String id) {
 		return BannerPattern.create(name.toUpperCase(Locale.ROOT), name, id, false);
-	}
-
-	/**
-	 * This was added by mistake - it is not needed for banner patterns to work and will be removed in 1.17
-	 */
-	@Deprecated
-	public static synchronized void addPattern(BannerPattern pattern, IItemProvider craftingItem) {
 	}
 }

@@ -7,16 +7,16 @@ import com.minecraftabnormals.abnormals_core.common.advancement.modification.mod
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.events.AdvancementBuildingEvent;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.loot.LootPredicateManager;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.resources.IFutureReloadListener;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.SimpleReloadableResourceManager;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.world.level.storage.loot.PredicateManager;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,14 +34,14 @@ import java.util.Map;
  * @author SmellyModder (Luke Tonon)
  */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
-public final class AdvancementModificationManager extends JsonReloadListener {
+public final class AdvancementModificationManager extends SimpleJsonResourceReloadListener {
 	private static final Gson GSON = (new GsonBuilder()).create();
 	private static final Map<ResourceLocation, List<ConfiguredAdvancementModifier<?, ?>>> MODIFIERS = Maps.newHashMap();
 	private static AdvancementModificationManager INSTANCE;
 
-	private final LootPredicateManager lootPredicateManager;
+	private final PredicateManager lootPredicateManager;
 
-	private AdvancementModificationManager(LootPredicateManager lootPredicateManager) {
+	private AdvancementModificationManager(PredicateManager lootPredicateManager) {
 		super(GSON, "modifiers/advancements");
 		this.lootPredicateManager = lootPredicateManager;
 	}
@@ -62,14 +62,14 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 		//Advancement modifiers must load before advancements
 		Field field = AddReloadListenerEvent.class.getDeclaredField("dataPackRegistries");
 		field.setAccessible(true);
-		SimpleReloadableResourceManager reloadableResourceManager = (SimpleReloadableResourceManager) ((DataPackRegistries) field.get(event)).getResourceManager();
+		SimpleReloadableResourceManager reloadableResourceManager = (SimpleReloadableResourceManager) ((ServerResources) field.get(event)).getResourceManager();
 
-		List<IFutureReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_199015_d");
+		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_199015_d");
 		if (reloadListeners != null) {
 			reloadListeners.add(4, INSTANCE);
 		}
 
-		List<IFutureReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_219539_d");
+		List<PreparableReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_219539_d");
 		if (initTaskQueue != null) {
 			initTaskQueue.add(4, INSTANCE);
 		}
@@ -86,15 +86,15 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 		}
 	}
 
-	private static TargetedAdvancementModifier deserializeModifiers(JsonElement jsonElement, ConditionArrayParser conditionArrayParser) throws JsonParseException {
+	private static TargetedAdvancementModifier deserializeModifiers(JsonElement jsonElement, DeserializationContext conditionArrayParser) throws JsonParseException {
 		JsonObject object = jsonElement.getAsJsonObject();
-		ResourceLocation advancement = new ResourceLocation(JSONUtils.getAsString(object, "advancement"));
+		ResourceLocation advancement = new ResourceLocation(GsonHelper.getAsString(object, "advancement"));
 		List<ConfiguredAdvancementModifier<?, ?>> advancementModifiers = Lists.newArrayList();
-		JsonArray modifiers = JSONUtils.getAsJsonArray(object, "modifiers");
+		JsonArray modifiers = GsonHelper.getAsJsonArray(object, "modifiers");
 		modifiers.forEach(element -> {
 			JsonObject entry = element.getAsJsonObject();
-			String type = JSONUtils.getAsString(entry, "type");
-			if (!JSONUtils.isValidNode(entry, "conditions") || CraftingHelper.processConditions(JSONUtils.getAsJsonArray(entry, "conditions"))) {
+			String type = GsonHelper.getAsString(entry, "type");
+			if (!GsonHelper.isValidNode(entry, "conditions") || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(entry, "conditions"))) {
 				AdvancementModifier<?> modifier = AdvancementModifiers.getModifier(type);
 				if (modifier == null) {
 					throw new JsonParseException("Unknown Advancement Modifier type: " + type);
@@ -110,14 +110,14 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 	}
 
 	@Override
-	protected void apply(Map<ResourceLocation, JsonElement> map, IResourceManager resourceManager, IProfiler profiler) {
+	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler) {
 		MODIFIERS.clear();
 		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
 			ResourceLocation resourcelocation = entry.getKey();
 			if (resourcelocation.getPath().startsWith("_")) continue;
 
 			try {
-				TargetedAdvancementModifier targetedAdvancementModifier = deserializeModifiers(entry.getValue(), new ConditionArrayParser(resourcelocation, this.lootPredicateManager));
+				TargetedAdvancementModifier targetedAdvancementModifier = deserializeModifiers(entry.getValue(), new DeserializationContext(resourcelocation, this.lootPredicateManager));
 				MODIFIERS.computeIfAbsent(targetedAdvancementModifier.getTarget(), target -> {
 					return new ArrayList<>();
 				}).addAll(targetedAdvancementModifier.getConfiguredModifiers());

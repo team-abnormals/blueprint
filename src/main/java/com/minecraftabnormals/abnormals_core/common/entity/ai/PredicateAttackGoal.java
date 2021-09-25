@@ -1,41 +1,43 @@
 package com.minecraftabnormals.abnormals_core.common.entity.ai;
 
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.TargetGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.function.Predicate;
 
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
 /**
  * @author SmellyModder(Luke Tonon)
  */
 public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
-	private final Predicate<MobEntity> canOwnerTarget;
+	private final Predicate<Mob> canOwnerTarget;
 	private final Class<T> targetClass;
 	private final int targetChance;
 	private LivingEntity nearestTarget;
-	private EntityPredicate targetEntitySelector;
+	private TargetingConditions targetEntitySelector;
 
-	public PredicateAttackGoal(MobEntity goalOwnerIn, Class<T> targetClassIn, boolean checkSight, Predicate<MobEntity> canOwnerTarget) {
+	public PredicateAttackGoal(Mob goalOwnerIn, Class<T> targetClassIn, boolean checkSight, Predicate<Mob> canOwnerTarget) {
 		this(goalOwnerIn, targetClassIn, checkSight, false, canOwnerTarget);
 	}
 
-	public PredicateAttackGoal(MobEntity goalOwnerIn, Class<T> targetClassIn, boolean checkSight, boolean nearbyOnlyIn, Predicate<MobEntity> canOwnerTarget) {
+	public PredicateAttackGoal(Mob goalOwnerIn, Class<T> targetClassIn, boolean checkSight, boolean nearbyOnlyIn, Predicate<Mob> canOwnerTarget) {
 		this(goalOwnerIn, targetClassIn, 10, checkSight, nearbyOnlyIn, null, canOwnerTarget);
 	}
 
-	public PredicateAttackGoal(MobEntity goalOwnerIn, Class<T> targetClassIn, int targetChanceIn, boolean checkSight, boolean nearbyOnlyIn, @Nullable Predicate<LivingEntity> targetPredicate, Predicate<MobEntity> canOwnerTarget) {
+	public PredicateAttackGoal(Mob goalOwnerIn, Class<T> targetClassIn, int targetChanceIn, boolean checkSight, boolean nearbyOnlyIn, @Nullable Predicate<LivingEntity> targetPredicate, Predicate<Mob> canOwnerTarget) {
 		super(goalOwnerIn, checkSight, nearbyOnlyIn);
 		this.canOwnerTarget = canOwnerTarget;
 		this.targetClass = targetClassIn;
 		this.targetChance = targetChanceIn;
-		this.targetEntitySelector = (new EntityPredicate()).range(this.getFollowDistance()).selector(targetPredicate);
+		this.targetEntitySelector = (new TargetingConditions()).range(this.getFollowDistance()).selector(targetPredicate);
 		this.setFlags(EnumSet.of(Flag.TARGET));
 	}
 
@@ -48,12 +50,12 @@ public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
 		}
 	}
 
-	protected AxisAlignedBB getTargetableArea(double targetDistance) {
+	protected AABB getTargetableArea(double targetDistance) {
 		return this.mob.getBoundingBox().inflate(targetDistance, 4.0D, targetDistance);
 	}
 
 	protected void findNearestTarget() {
-		if (this.targetClass != PlayerEntity.class && this.targetClass != ServerPlayerEntity.class) {
+		if (this.targetClass != Player.class && this.targetClass != ServerPlayer.class) {
 			this.nearestTarget = this.mob.level.<T>getNearestLoadedEntity(this.targetClass, this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ(), this.getTargetableArea(this.getFollowDistance()));
 		} else {
 			this.nearestTarget = this.mob.level.getNearestPlayer(this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());

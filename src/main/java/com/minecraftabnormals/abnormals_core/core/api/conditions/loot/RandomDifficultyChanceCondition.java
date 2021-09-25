@@ -5,12 +5,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSyntaxException;
 import com.minecraftabnormals.abnormals_core.core.registry.ACLootConditions;
-import net.minecraft.loot.ILootSerializer;
-import net.minecraft.loot.LootConditionType;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.level.storage.loot.Serializer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.core.Registry;
 
 /**
  * A loot condition that defines a probability based on the current difficulty. Works the same as
@@ -28,7 +28,7 @@ import net.minecraft.util.registry.Registry;
  *
  * @author abigailfails
  */
-public class RandomDifficultyChanceCondition implements ILootCondition {
+public class RandomDifficultyChanceCondition implements LootItemCondition {
 	private final float defaultChance;
 	private final float peacefulChance;
 	private final float easyChance;
@@ -44,7 +44,7 @@ public class RandomDifficultyChanceCondition implements ILootCondition {
 	}
 
 	@Override
-	public LootConditionType getType() {
+	public LootItemConditionType getType() {
 		return Registry.LOOT_CONDITION_TYPE.get(ACLootConditions.RANDOM_DIFFICULTY_CHANCE);
 	}
 
@@ -68,7 +68,7 @@ public class RandomDifficultyChanceCondition implements ILootCondition {
 		return lootContext.getRandom().nextFloat() < chance;
 	}
 
-	public static class Serializer implements ILootSerializer<RandomDifficultyChanceCondition> {
+	public static class RandomDifficultyChanceSerializer implements Serializer<RandomDifficultyChanceCondition> {
 
 		public void serialize(JsonObject json, RandomDifficultyChanceCondition condition, JsonSerializationContext context) {
 			json.addProperty("default_chance", condition.defaultChance);
@@ -84,13 +84,13 @@ public class RandomDifficultyChanceCondition implements ILootCondition {
 
 		public RandomDifficultyChanceCondition deserialize(JsonObject json, JsonDeserializationContext context) {
 			if (json.has("default_chance")) {
-				return new RandomDifficultyChanceCondition(JSONUtils.getAsFloat(json, "default_chance"), getFloatOrMinus1(json, "peaceful"), getFloatOrMinus1(json, "easy"), getFloatOrMinus1(json, "normal"), getFloatOrMinus1(json, "hard"));
+				return new RandomDifficultyChanceCondition(GsonHelper.getAsFloat(json, "default_chance"), getFloatOrMinus1(json, "peaceful"), getFloatOrMinus1(json, "easy"), getFloatOrMinus1(json, "normal"), getFloatOrMinus1(json, "hard"));
 			}
 			throw new JsonSyntaxException("Missing 'default_chance', expected to find a float");
 		}
 
 		private static float getFloatOrMinus1(JsonObject json, String fieldName) {
-			return json.has(fieldName) ? JSONUtils.getAsFloat(json, fieldName) : -1.0F;
+			return json.has(fieldName) ? GsonHelper.getAsFloat(json, fieldName) : -1.0F;
 		}
 
 	}

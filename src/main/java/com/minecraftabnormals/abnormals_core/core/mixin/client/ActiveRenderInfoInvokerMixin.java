@@ -1,10 +1,10 @@
 package com.minecraftabnormals.abnormals_core.core.mixin.client;
 
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.Camera;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(ActiveRenderInfo.class)
+@Mixin(Camera.class)
 public interface ActiveRenderInfoInvokerMixin {
 	@Invoker
 	void callMove(double z, double y, double x);

@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.world.modification;
 
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -9,18 +9,18 @@ import net.minecraftforge.registries.ForgeRegistry;
 import javax.annotation.Nullable;
 
 /**
- * A container class for holding a {@link BiomeLoadingEvent} with the {@link Biome} that the event was fired for along with the biome's {@link RegistryKey}.
+ * A container class for holding a {@link BiomeLoadingEvent} with the {@link Biome} that the event was fired for along with the biome's {@link ResourceKey}.
  *
  * @author SmellyModder (Luke Tonon)
  */
 public final class BiomeModificationContext {
 	public final BiomeLoadingEvent event;
-	public final RegistryKey<Biome> registryKey;
+	public final ResourceKey<Biome> resourceKey;
 	public final Biome biome;
 
-	private BiomeModificationContext(BiomeLoadingEvent event, RegistryKey<Biome> registryKey, Biome biome) {
+	private BiomeModificationContext(BiomeLoadingEvent event, ResourceKey<Biome> resourceKey, Biome biome) {
 		this.event = event;
-		this.registryKey = registryKey;
+		this.resourceKey = resourceKey;
 		this.biome = biome;
 	}
 

@@ -4,13 +4,13 @@ import com.google.gson.*;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicate;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
-import net.minecraft.loot.ILootSerializer;
-import net.minecraft.loot.LootConditionType;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.level.storage.loot.Serializer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * @author abigailfails
  */
-public class ConfigLootCondition implements ILootCondition {
+public class ConfigLootCondition implements LootItemCondition {
     private final ForgeConfigSpec.ConfigValue<?> value;
     private final String valueID;
     private final Map<IConfigPredicate, Boolean> predicates;
@@ -37,7 +37,7 @@ public class ConfigLootCondition implements ILootCondition {
     }
 
     @Override
-    public LootConditionType getType() {
+    public LootItemConditionType getType() {
         return Registry.LOOT_CONDITION_TYPE.get(this.location);
     }
 
@@ -52,11 +52,11 @@ public class ConfigLootCondition implements ILootCondition {
         return this.inverted != returnValue;
     }
 
-    public static class Serializer implements ILootSerializer<ConfigLootCondition> {
+    public static class ConfigSerializer implements Serializer<ConfigLootCondition> {
         private final Map<String, ForgeConfigSpec.ConfigValue<?>> configValues;
         private final ResourceLocation location;
 
-        public Serializer(String modId, Map<String, ForgeConfigSpec.ConfigValue<?>> configValues) {
+        public ConfigSerializer(String modId, Map<String, ForgeConfigSpec.ConfigValue<?>> configValues) {
             this.location = new ResourceLocation(modId, "config");
             this.configValues = configValues;
         }
@@ -84,26 +84,26 @@ public class ConfigLootCondition implements ILootCondition {
         public ConfigLootCondition deserialize(JsonObject json, JsonDeserializationContext context) {
             if (!json.has("value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a string");
-            String name = JSONUtils.getAsString(json, "value");
+            String name = GsonHelper.getAsString(json, "value");
             ForgeConfigSpec.ConfigValue<?> configValue = this.configValues.get(name);
             if (configValue == null)
                 throw new JsonSyntaxException("No config value of name '" + name + "' found");
             Map<IConfigPredicate, Boolean> predicates = new HashMap<>();
-            if (JSONUtils.isValidNode(json, "predicates")) {
-                for (JsonElement predicateElement : JSONUtils.getAsJsonArray(json, "predicates")) {
+            if (GsonHelper.isValidNode(json, "predicates")) {
+                for (JsonElement predicateElement : GsonHelper.getAsJsonArray(json, "predicates")) {
                     if (!predicateElement.isJsonObject())
                         throw new JsonSyntaxException("Predicates must be an array of JsonObjects");
                     JsonObject predicateObject = predicateElement.getAsJsonObject();
-                    ResourceLocation type = new ResourceLocation(JSONUtils.getAsString(predicateObject, "type"));
+                    ResourceLocation type = new ResourceLocation(GsonHelper.getAsString(predicateObject, "type"));
                     IConfigPredicateSerializer<?> serializer = ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.get(type);
                     if (serializer == null)
                         throw new JsonSyntaxException("Unknown predicate type: " + type.toString());
-                    predicates.put(serializer.read(predicateObject), predicateObject.has("inverted") && JSONUtils.getAsBoolean(predicateObject, "inverted"));
+                    predicates.put(serializer.read(predicateObject), predicateObject.has("inverted") && GsonHelper.getAsBoolean(predicateObject, "inverted"));
                 }
             } else if (!(configValue.get() instanceof Boolean)) {
                 throw new JsonSyntaxException("Missing 'predicates' for non-boolean config value '" + name + "', expected to find an array");
             }
-            return new ConfigLootCondition(location, configValue, name, predicates, json.has("inverted") && JSONUtils.getAsBoolean(json, "inverted"));
+            return new ConfigLootCondition(location, configValue, name, predicates, json.has("inverted") && GsonHelper.getAsBoolean(json, "inverted"));
         }
     }
 }

@@ -2,7 +2,7 @@ package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 
 import com.google.gson.*;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.Objects;

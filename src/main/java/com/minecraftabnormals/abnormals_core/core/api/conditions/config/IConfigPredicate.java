@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 
 import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCondition;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 /**

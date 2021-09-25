@@ -2,46 +2,47 @@ package com.minecraftabnormals.abnormals_core.common.entity;
 
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.BoatRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 /**
  * @author SmellyModder (Luke Tonon)
  */
-public class AbnormalsBoatEntity extends BoatEntity {
-	private static final DataParameter<String> BOAT_TYPE = EntityDataManager.defineId(AbnormalsBoatEntity.class, DataSerializers.STRING);
+public class AbnormalsBoatEntity extends Boat {
+	private static final EntityDataAccessor<String> BOAT_TYPE = SynchedEntityData.defineId(AbnormalsBoatEntity.class, EntityDataSerializers.STRING);
 
-	public AbnormalsBoatEntity(EntityType<? extends BoatEntity> type, World world) {
+	public AbnormalsBoatEntity(EntityType<? extends Boat> type, Level world) {
 		super(type, world);
 		this.blocksBuilding = true;
 	}
 
-	public AbnormalsBoatEntity(World worldIn, double x, double y, double z) {
+	public AbnormalsBoatEntity(Level worldIn, double x, double y, double z) {
 		this(ACEntities.BOAT.get(), worldIn);
 		this.setPos(x, y, z);
-		this.setDeltaMovement(Vector3d.ZERO);
+		this.setDeltaMovement(Vec3.ZERO);
 		this.xo = x;
 		this.yo = y;
 		this.zo = z;
 	}
 
-	public AbnormalsBoatEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+	public AbnormalsBoatEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
 		this(ACEntities.BOAT.get(), world);
 	}
 
@@ -52,12 +53,12 @@ public class AbnormalsBoatEntity extends BoatEntity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundTag compound) {
 		compound.putString("Type", BoatRegistry.getNameForData(this.getBoat()));
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundTag compound) {
 		if (compound.contains("Type", Constants.NBT.TAG_STRING)) {
 			String type = compound.getString("Type");
 			BoatRegistry.BoatData data = BoatRegistry.getDataForBoat(type);
@@ -79,9 +80,9 @@ public class AbnormalsBoatEntity extends BoatEntity {
 						return;
 					}
 
-					this.causeFallDamage(this.fallDistance, 1.0F);
+					this.causeFallDamage(this.fallDistance, 1.0F, DamageSource.FALL);
 					if (!this.level.isClientSide && this.isAlive()) {
-						this.remove();
+						this.kill();
 						if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
 							for (int i = 0; i < 3; ++i) {
 								this.spawnAtLocation(this.getBoat().getPlankItem());
@@ -115,7 +116,7 @@ public class AbnormalsBoatEntity extends BoatEntity {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

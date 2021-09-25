@@ -3,8 +3,8 @@ package com.minecraftabnormals.abnormals_core.core.api.conditions.config;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 /**
@@ -45,7 +45,7 @@ public class ContainsPredicate implements IConfigPredicate {
 
         @Override
         public ContainsPredicate read(JsonObject json) {
-            if (!json.has("value") && !JSONUtils.isStringValue(json, "value"))
+            if (!json.has("value") && !GsonHelper.isStringValue(json, "value"))
                 throw new JsonSyntaxException("Missing 'value', expected to find a string");
             return new ContainsPredicate(json.get("value").getAsString());
         }

@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.endimator.instructions;
 
 import com.minecraftabnormals.abnormals_core.core.util.registry.BasicRegistry;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Registry class for {@link EndimationInstruction}s.

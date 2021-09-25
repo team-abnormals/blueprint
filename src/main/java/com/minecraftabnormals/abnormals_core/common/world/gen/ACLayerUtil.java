@@ -1,19 +1,19 @@
 package com.minecraftabnormals.abnormals_core.common.world.gen;
 
 import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.IExtendedNoiseRandom;
-import net.minecraft.world.gen.INoiseRandom;
-import net.minecraft.world.gen.area.IArea;
-import net.minecraft.world.gen.area.IAreaFactory;
-import net.minecraft.world.gen.area.LazyArea;
-import net.minecraft.world.gen.layer.Layer;
-import net.minecraft.world.gen.layer.LayerUtil;
-import net.minecraft.world.gen.layer.SmoothLayer;
-import net.minecraft.world.gen.layer.ZoomLayer;
-import net.minecraft.world.gen.layer.traits.IAreaTransformer0;
-import net.minecraft.world.gen.layer.traits.IAreaTransformer1;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.newbiome.context.BigContext;
+import net.minecraft.world.level.newbiome.context.Context;
+import net.minecraft.world.level.newbiome.area.Area;
+import net.minecraft.world.level.newbiome.area.AreaFactory;
+import net.minecraft.world.level.newbiome.area.LazyArea;
+import net.minecraft.world.level.newbiome.layer.Layer;
+import net.minecraft.world.level.newbiome.layer.Layers;
+import net.minecraft.world.level.newbiome.layer.SmoothLayer;
+import net.minecraft.world.level.newbiome.layer.ZoomLayer;
+import net.minecraft.world.level.newbiome.layer.traits.AreaTransformer0;
+import net.minecraft.world.level.newbiome.layer.traits.AreaTransformer1;
 
 import java.util.function.LongFunction;
 
@@ -29,12 +29,12 @@ public final class ACLayerUtil {
 	 *
 	 * @param lookupRegistry A {@link Registry} to lookup the biomes from.
 	 * @param contextFactory A {@link LongFunction} to use as a factory for the context.
-	 * @param <R>            The type of {@link IExtendedNoiseRandom} the factory creates.
+	 * @param <R>            The type of {@link BigContext} the factory creates.
 	 * @return A {@link Layer} containing randomized end biomes from the AC end biome registry.
 	 */
-	public static <R extends IExtendedNoiseRandom<LazyArea>> Layer createEndBiomeLayer(Registry<Biome> lookupRegistry, LongFunction<R> contextFactory) {
-		IAreaFactory<LazyArea> biomesFactory = new EndBiomesLayer(lookupRegistry).run(contextFactory.apply(1L));
-		biomesFactory = LayerUtil.zoom(100L, ZoomLayer.NORMAL, biomesFactory, 2, contextFactory);
+	public static <R extends BigContext<LazyArea>> Layer createEndBiomeLayer(Registry<Biome> lookupRegistry, LongFunction<R> contextFactory) {
+		AreaFactory<LazyArea> biomesFactory = new EndBiomesLayer(lookupRegistry).run(contextFactory.apply(1L));
+		biomesFactory = Layers.zoom(100L, ZoomLayer.NORMAL, biomesFactory, 2, contextFactory);
 
 		for (int i = 0; i < 3; i++) {
 			biomesFactory = ZoomLayer.NORMAL.run(contextFactory.apply(1000L + (long) i), biomesFactory);
@@ -44,10 +44,10 @@ public final class ACLayerUtil {
 		return new Layer(VoroniZoomLayer.INSTANCE.run(contextFactory.apply(10L), biomesFactory));
 	}
 
-	public enum VoroniZoomLayer implements IAreaTransformer1 {
+	public enum VoroniZoomLayer implements AreaTransformer1 {
 		INSTANCE;
 
-		public int applyPixel(IExtendedNoiseRandom<?> extendedNoiseRandom, IArea area, int p_215728_3_, int p_215728_4_) {
+		public int applyPixel(BigContext<?> extendedNoiseRandom, Area area, int p_215728_3_, int p_215728_4_) {
 			int i = p_215728_3_ - 2;
 			int j = p_215728_4_ - 2;
 			int k = i >> 2;
@@ -92,7 +92,7 @@ public final class ACLayerUtil {
 		}
 	}
 
-	static class EndBiomesLayer implements IAreaTransformer0 {
+	static class EndBiomesLayer implements AreaTransformer0 {
 		private final Registry<Biome> lookupRegistry;
 
 		EndBiomesLayer(Registry<Biome> lookupRegistry) {
@@ -100,7 +100,7 @@ public final class ACLayerUtil {
 		}
 
 		@Override
-		public int applyPixel(INoiseRandom random, int x, int z) {
+		public int applyPixel(Context random, int x, int z) {
 			return this.lookupRegistry.getId(this.lookupRegistry.get(BiomeUtil.getEndBiome(random)));
 		}
 	}

@@ -6,17 +6,16 @@ import com.minecraftabnormals.abnormals_core.common.items.AbnormalsBoatItem;
 import com.minecraftabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.minecraftabnormals.abnormals_core.common.items.FuelItem;
 import com.minecraftabnormals.abnormals_core.core.registry.BoatRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -25,6 +24,13 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DoubleHighBlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.StandingAndWallBlockItem;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for items. This contains some useful registering methods for items.
@@ -61,10 +67,10 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @param modId      - The mod id of the mod this item is compatible for, set to "indev" for dev tests
 	 * @param name       - The name for the item
 	 * @param properties - The item's properties
-	 * @param group      - The {@link ItemGroup} for the {@link Item}
+	 * @param group      - The {@link CreativeModeTab} for the {@link Item}
 	 * @return A {@link RegistryObject} containing the {@link Item}
 	 */
-	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, ItemGroup group) {
+	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, CreativeModeTab group) {
 		return this.deferredRegister.register(name, () -> new Item(properties.tab(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
 	}
 
@@ -73,11 +79,11 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 *
 	 * @param name       - The name for the item
 	 * @param properties - The item's properties
-	 * @param group      - The {@link ItemGroup} for the {@link Item}
+	 * @param group      - The {@link CreativeModeTab} for the {@link Item}
 	 * @param modIds     - The mod ids of the mods this block is compatible for
 	 * @return A {@link RegistryObject} containing the {@link Item}
 	 */
-	public RegistryObject<Item> createCompatItem(String name, Item.Properties properties, ItemGroup group, String... modIds) {
+	public RegistryObject<Item> createCompatItem(String name, Item.Properties properties, CreativeModeTab group, String... modIds) {
 		return this.deferredRegister.register(name, () -> new Item(properties.tab(areModsLoaded(modIds) ? group : null)));
 	}
 
@@ -92,7 +98,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @see AbnormalsSpawnEggItem
 	 */
 	public RegistryObject<AbnormalsSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<?>> supplier, int primaryColor, int secondaryColor) {
-		AbnormalsSpawnEggItem eggItem = new AbnormalsSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(ItemGroup.TAB_MISC));
+		AbnormalsSpawnEggItem eggItem = new AbnormalsSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
 		RegistryObject<AbnormalsSpawnEggItem> spawnEgg = this.deferredRegister.register(entityName + "_spawn_egg", () -> eggItem);
 		this.spawnEggs.add(eggItem);
 		return spawnEgg;
@@ -106,66 +112,66 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 */
 	public RegistryObject<Item> createBoatItem(String wood, RegistryObject<Block> block) {
 		String type = this.parent.getModId() + ":" + wood;
-		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new AbnormalsBoatItem(type, createSimpleItemProperty(1, ItemGroup.TAB_TRANSPORTATION)));
+		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new AbnormalsBoatItem(type, createSimpleItemProperty(1, CreativeModeTab.TAB_TRANSPORTATION)));
 		BoatRegistry.registerBoat(type, boat, block);
 		return boat;
 	}
 
 	/**
-	 * Creates and registers a {@link WallOrFloorItem}
+	 * Creates and registers a {@link StandingAndWallBlockItem}
 	 *
 	 * @param floorBlock - The floor {@link Block}
 	 * @param wallBlock  - The wall {@link Block}
-	 * @param itemGroup  - The {@link ItemGroup} for the {@link WallOrFloorItem}
-	 * @return The created {@link WallOrFloorItem}
-	 * @see WallOrFloorItem
+	 * @param itemGroup  - The {@link CreativeModeTab} for the {@link StandingAndWallBlockItem}
+	 * @return The created {@link StandingAndWallBlockItem}
+	 * @see StandingAndWallBlockItem
 	 */
-	public static BlockItem createWallOrFloorItem(Block floorBlock, Block wallBlock, ItemGroup itemGroup) {
-		return new WallOrFloorItem(floorBlock, wallBlock, new Item.Properties().tab(itemGroup));
+	public static BlockItem createStandingAndWallBlockItem(Block floorBlock, Block wallBlock, CreativeModeTab itemGroup) {
+		return new StandingAndWallBlockItem(floorBlock, wallBlock, new Item.Properties().tab(itemGroup));
 	}
 
 	/**
-	 * Creates and registers a {@link TallBlockItem}
+	 * Creates and registers a {@link DoubleHighBlockItem}
 	 *
 	 * @param blockForInput - The {@link Block} for the item
-	 * @param itemGroup     - The {@link ItemGroup} for the {@link TallBlockItem}
-	 * @return The created {@link TallBlockItem}
-	 * @see TallBlockItem
+	 * @param itemGroup     - The {@link CreativeModeTab} for the {@link DoubleHighBlockItem}
+	 * @return The created {@link DoubleHighBlockItem}
+	 * @see DoubleHighBlockItem
 	 */
-	public static BlockItem createTallBlockItem(Block blockForInput, ItemGroup itemGroup) {
-		return new TallBlockItem(blockForInput, new Item.Properties().tab(itemGroup));
+	public static BlockItem createDoubleHighBlockItem(Block blockForInput, CreativeModeTab itemGroup) {
+		return new DoubleHighBlockItem(blockForInput, new Item.Properties().tab(itemGroup));
 	}
 
 	/**
 	 * Creates a {@link FuelItem}
 	 *
 	 * @param burnTime  - How long the item will burn (measured in ticks)
-	 * @param itemGroup - The {@link ItemGroup} for the {@link FuelItem}
+	 * @param itemGroup - The {@link CreativeModeTab} for the {@link FuelItem}
 	 * @return The created {@link FuelItem}
 	 */
-	public static FuelItem createFuelItem(int burnTime, ItemGroup itemGroup) {
+	public static FuelItem createFuelItem(int burnTime, CreativeModeTab itemGroup) {
 		return new FuelItem(burnTime, new Item.Properties().tab(itemGroup));
 	}
 
 	/**
-	 * Creates a {@link BlockItem} with a specified {@link Block} and {@link ItemGroup}
+	 * Creates a {@link BlockItem} with a specified {@link Block} and {@link CreativeModeTab}
 	 *
 	 * @param blockForInput - The {@link Block} for the {@link BlockItem}
-	 * @param itemGroup     - The {@link ItemGroup} for the {@link BlockItem}, null to have it be in no group
+	 * @param itemGroup     - The {@link CreativeModeTab} for the {@link BlockItem}, null to have it be in no group
 	 * @return - The BlockItem
 	 */
-	public static BlockItem createSimpleBlockItem(Block blockForInput, @Nullable ItemGroup itemGroup) {
+	public static BlockItem createSimpleBlockItem(Block blockForInput, @Nullable CreativeModeTab itemGroup) {
 		return new BlockItem(blockForInput, new Item.Properties().tab(itemGroup));
 	}
 
 	/**
-	 * Creates a simple {@link Item.Properties} with a stack size and {@link ItemGroup}
+	 * Creates a simple {@link Item.Properties} with a stack size and {@link CreativeModeTab}
 	 *
 	 * @param stackSize - The item's max stack size
-	 * @param itemGroup - The item's ItemGroup
+	 * @param itemGroup - The item's CreativeModeTab
 	 * @return The simple {@link Item.Properties}
 	 */
-	public static Item.Properties createSimpleItemProperty(int stackSize, ItemGroup itemGroup) {
+	public static Item.Properties createSimpleItemProperty(int stackSize, CreativeModeTab itemGroup) {
 		return new Item.Properties().tab(itemGroup).stacksTo(stackSize);
 	}
 

@@ -1,12 +1,12 @@
 package com.minecraftabnormals.abnormals_core.common.network.particle;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;
@@ -31,7 +31,7 @@ public final class MessageS2CSpawnParticle {
 		this.motionZ = motionZ;
 	}
 
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeUtf(this.particleName);
 		buf.writeDouble(this.posX);
 		buf.writeDouble(this.posY);
@@ -41,7 +41,7 @@ public final class MessageS2CSpawnParticle {
 		buf.writeDouble(this.motionZ);
 	}
 
-	public static MessageS2CSpawnParticle deserialize(PacketBuffer buf) {
+	public static MessageS2CSpawnParticle deserialize(FriendlyByteBuf buf) {
 		String particleName = buf.readUtf();
 		double posX = buf.readDouble();
 		double posY = buf.readDouble();
@@ -56,8 +56,8 @@ public final class MessageS2CSpawnParticle {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				World world = ClientInfo.getClientPlayerWorld();
-				BasicParticleType particleType = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(message.particleName));
+				Level world = ClientInfo.getClientPlayerWorld();
+				SimpleParticleType particleType = (SimpleParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(message.particleName));
 
 				if (particleType != null) {
 					world.addParticle(particleType, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);

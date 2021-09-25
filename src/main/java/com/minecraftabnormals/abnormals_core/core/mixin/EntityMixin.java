@@ -8,13 +8,13 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.Track
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.events.EntityWalkEvent;
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,10 +27,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 import java.util.Set;
 
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager.DataEntry;
+
 @Mixin(Entity.class)
 public final class EntityMixin implements IDataManager {
 	@Shadow
-	private World level;
+	private Level level;
 
 	private Map<TrackedData<?>, DataEntry<?>> dataMap = Maps.newHashMap();
 	private boolean dirty = false;
@@ -98,12 +100,12 @@ public final class EntityMixin implements IDataManager {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;addAdditionalSaveData(Lnet/minecraft/nbt/CompoundNBT;)V", shift = At.Shift.BEFORE), method = "saveWithoutId")
-	private void writeTrackedData(CompoundNBT compound, CallbackInfoReturnable<CompoundNBT> info) {
+	private void writeTrackedData(CompoundTag compound, CallbackInfoReturnable<CompoundTag> info) {
 		if (!this.dataMap.isEmpty()) {
-			ListNBT dataListTag = new ListNBT();
+			ListTag dataListTag = new ListTag();
 			this.dataMap.forEach((trackedData, dataEntry) -> {
 				if (trackedData.shouldSave()) {
-					CompoundNBT dataTag = dataEntry.writeValue();
+					CompoundTag dataTag = dataEntry.writeValue();
 					dataTag.putString("Id", TrackedDataManager.INSTANCE.getKey(trackedData).toString());
 					dataListTag.add(dataTag);
 				}
@@ -113,11 +115,11 @@ public final class EntityMixin implements IDataManager {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundNBT;)V", shift = At.Shift.BEFORE), method = "load")
-	public void read(CompoundNBT compound, CallbackInfo info) {
+	public void read(CompoundTag compound, CallbackInfo info) {
 		if (compound.contains("ACTrackedData", Constants.NBT.TAG_LIST)) {
-			ListNBT dataListTag = compound.getList("ACTrackedData", Constants.NBT.TAG_COMPOUND);
+			ListTag dataListTag = compound.getList("ACTrackedData", Constants.NBT.TAG_COMPOUND);
 			dataListTag.forEach(nbt -> {
-				CompoundNBT dataTag = (CompoundNBT) nbt;
+				CompoundTag dataTag = (CompoundTag) nbt;
 				ResourceLocation id = new ResourceLocation(dataTag.getString("Id"));
 				TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(id);
 				if (trackedData != null && trackedData.shouldSave()) {
@@ -132,7 +134,7 @@ public final class EntityMixin implements IDataManager {
 	}
 
 	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;stepOn(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V"))
-	private void onEntityWalk(Block block, World world, BlockPos pos, Entity entity) {
+	private void onEntityWalk(Block block, Level world, BlockPos pos, Entity entity) {
 		if (!EntityWalkEvent.onEntityWalk(world, pos, entity)) {
 			block.stepOn(world, pos, entity);
 		}

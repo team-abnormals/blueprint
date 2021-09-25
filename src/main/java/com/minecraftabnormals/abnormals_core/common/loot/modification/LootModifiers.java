@@ -9,8 +9,8 @@ import com.minecraftabnormals.abnormals_core.core.util.modification.ModifierData
 import com.minecraftabnormals.abnormals_core.core.util.modification.ModifierRegistry;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.loot.LootPredicateManager;
-import net.minecraft.loot.LootSerializers;
+import net.minecraft.world.level.storage.loot.PredicateManager;
+import net.minecraft.world.level.storage.loot.Deserializers;
 import net.minecraftforge.event.LootTableLoadEvent;
 
 /**
@@ -19,8 +19,8 @@ import net.minecraftforge.event.LootTableLoadEvent;
  * @author SmellyModder (Luke Tonon)
  */
 public final class LootModifiers {
-	public static final ModifierRegistry<LootTableLoadEvent, Gson, Pair<Gson, LootPredicateManager>> REGISTRY = new ModifierRegistry<>();
-	private static final Gson GSON = LootSerializers.createLootTableSerializer().setPrettyPrinting().disableHtmlEscaping().create();
+	public static final ModifierRegistry<LootTableLoadEvent, Gson, Pair<Gson, PredicateManager>> REGISTRY = new ModifierRegistry<>();
+	private static final Gson GSON = Deserializers.createLootTableSerializer().setPrettyPrinting().disableHtmlEscaping().create();
 
 	public static final LootPoolEntriesModifier ENTRIES_MODIFIER = REGISTRY.register("entries", new LootPoolEntriesModifier());
 	public static final LootPoolsModifier POOLS_MODIFIER = REGISTRY.register("pools", new LootPoolsModifier());
@@ -36,7 +36,7 @@ public final class LootModifiers {
 	 * @return A new {@link ModifierDataProvider} for {@link ILootModifier}s.
 	 */
 	@SafeVarargs
-	public static ModifierDataProvider<LootTableLoadEvent, Gson, Pair<Gson, LootPredicateManager>> createDataProvider(DataGenerator dataGenerator, String name, String modId, ModifierDataProvider.ProviderEntry<LootTableLoadEvent, Gson, Pair<Gson, LootPredicateManager>>... toGenerate) {
+	public static ModifierDataProvider<LootTableLoadEvent, Gson, Pair<Gson, PredicateManager>> createDataProvider(DataGenerator dataGenerator, String name, String modId, ModifierDataProvider.ProviderEntry<LootTableLoadEvent, Gson, Pair<Gson, PredicateManager>>... toGenerate) {
 		return new ModifierDataProvider<>(dataGenerator, name, GSON, modId, "modifiers/loot_tables", REGISTRY, GSON, toGenerate);
 	}
 }

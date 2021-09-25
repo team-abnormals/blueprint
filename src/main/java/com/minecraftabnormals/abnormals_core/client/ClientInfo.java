@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.level.Level;
 
 public final class ClientInfo {
 	public static final Minecraft MINECRAFT = Minecraft.getInstance();
@@ -17,14 +17,14 @@ public final class ClientInfo {
 	/**
 	 * @return - The client player entity
 	 */
-	public static ClientPlayerEntity getClientPlayer() {
+	public static LocalPlayer getClientPlayer() {
 		return MINECRAFT.player;
 	}
 
 	/**
 	 * @return - The client player's world; equivalent to getting the client world
 	 */
-	public static World getClientPlayerWorld() {
+	public static Level getClientPlayerWorld() {
 		return ClientInfo.getClientPlayer().level;
 	}
 }

@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.client.screen.shaking;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 /**
  * An extension of {@link PositionedShakeSource} where the source belongs to an entity.

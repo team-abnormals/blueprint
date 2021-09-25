@@ -2,10 +2,10 @@ package com.minecraftabnormals.abnormals_core.core.util.item;
 
 import com.minecraftabnormals.abnormals_core.core.mixin.ItemInvokerMixin;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.NonNullList;
 
 import javax.annotation.Nonnull;
 
@@ -35,14 +35,14 @@ public final class ItemStackUtil {
 	}
 
 	/**
-	 * Used in {@link Item#fillItemGroup(ItemGroup, NonNullList)} and {@link Block#fillItemGroup(ItemGroup, NonNullList)} to fill an item after a specific item for a group.
+	 * Used in {@link Item#fillItemCategory(CreativeModeTab, NonNullList)} and {@link Block#fillItemCategory(CreativeModeTab, NonNullList)} to fill an item after a specific item for a group.
 	 *
 	 * @param item       The item to fill.
 	 * @param targetItem The item to fill after.
 	 * @param group      The group to fill it in.
 	 * @param items      The {@link NonNullList} of item stacks to search for the target item and inject the item in.
 	 */
-	public static void fillAfterItemForGroup(Item item, Item targetItem, ItemGroup group, NonNullList<ItemStack> items) {
+	public static void fillAfterItemForGroup(Item item, Item targetItem, CreativeModeTab group, NonNullList<ItemStack> items) {
 		if (isInGroup(item, group)) {
 			int targetIndex = findIndexOfItem(targetItem, items);
 			if (targetIndex != -1) {
@@ -68,13 +68,13 @@ public final class ItemStackUtil {
 	}
 
 	/**
-	 * Checks if an {@link Item} is in an {@link ItemGroup}.
+	 * Checks if an {@link Item} is in an {@link CreativeModeTab}.
 	 *
 	 * @param item  The {@link Item} to check.
-	 * @param group The {@link ItemGroup} to check.
-	 * @return Whether or not the item is in the {@link ItemGroup}.
+	 * @param group The {@link CreativeModeTab} to check.
+	 * @return Whether or not the item is in the {@link CreativeModeTab}.
 	 */
-	public static boolean isInGroup(Item item, @Nonnull ItemGroup group) {
+	public static boolean isInGroup(Item item, @Nonnull CreativeModeTab group) {
 		return ((ItemInvokerMixin) item).callAllowdedIn(group);
 	}
 }

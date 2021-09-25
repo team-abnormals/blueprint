@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.capability.chunkloading;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 /**
  * @author SmellyModder(Luke Tonon)

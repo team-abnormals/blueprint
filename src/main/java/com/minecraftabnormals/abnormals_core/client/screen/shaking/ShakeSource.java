@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.client.screen.shaking;
 
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * An interface representing a source that contributes to the intensity at which the screen shakes.
@@ -51,5 +51,5 @@ public interface ShakeSource {
 	 * @param pos The position of a camera.
 	 * @return The intensity of this source given the position of a camera.
 	 */
-	Vector3d getIntensity(Vector3d pos);
+	Vec3 getIntensity(Vec3 pos);
 }

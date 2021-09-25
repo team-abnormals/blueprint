@@ -2,12 +2,12 @@ package com.minecraftabnormals.abnormals_core.client.screen;
 
 import com.minecraftabnormals.abnormals_core.client.RewardHandler;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.DialogTexts;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.Locale;
@@ -20,7 +20,7 @@ public class SlabfishHatScreen extends Screen {
 	private final Screen parent;
 
 	public SlabfishHatScreen(Screen parent) {
-		super(new TranslationTextComponent(SLABFISH_SCREEN_KEY + ".title"));
+		super(new TranslatableComponent(SLABFISH_SCREEN_KEY + ".title"));
 		this.parent = parent;
 	}
 
@@ -36,7 +36,7 @@ public class SlabfishHatScreen extends Screen {
 				configValue.set(enabled);
 				button.setMessage(this.getOptionName(setting, enabled));
 				NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
-			}, (button, stack, mouseX, mouseY) -> this.renderTooltip(stack, this.font.split(new TranslationTextComponent("abnormals_core.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"), 200), mouseX, mouseY)));
+			}, (button, stack, mouseX, mouseY) -> this.renderTooltip(stack, this.font.split(new TranslatableComponent("abnormals_core.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"), 200), mouseX, mouseY)));
 			++i;
 		}
 
@@ -44,11 +44,11 @@ public class SlabfishHatScreen extends Screen {
 			++i;
 		}
 
-		this.addButton(new Button(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, DialogTexts.GUI_DONE, (button) -> this.getMinecraft().setScreen(this.parent)));
+		this.addButton(new Button(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, CommonComponents.GUI_DONE, (button) -> this.getMinecraft().setScreen(this.parent)));
 	}
 
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(stack);
 		drawCenteredString(stack, this.font, this.title, this.width / 2, 20, 16777215);
 		super.render(stack, mouseX, mouseY, partialTicks);
@@ -59,7 +59,7 @@ public class SlabfishHatScreen extends Screen {
 		this.getMinecraft().setScreen(this.parent);
 	}
 
-	private ITextComponent getOptionName(RewardHandler.SlabfishSetting setting, boolean enabled) {
-		return DialogTexts.optionStatus(new TranslationTextComponent("abnormals_core.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT)), enabled);
+	private Component getOptionName(RewardHandler.SlabfishSetting setting, boolean enabled) {
+		return CommonComponents.optionStatus(new TranslatableComponent("abnormals_core.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT)), enabled);
 	}
 }

@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.common.world.modification;
 
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeAmbience;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  */
 public final class BiomeAmbienceModifier extends BiomeModifier {
 
-	private BiomeAmbienceModifier(BiPredicate<RegistryKey<Biome>, Biome> shouldModify, Consumer<BiomeModificationContext> modifier) {
+	private BiomeAmbienceModifier(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Consumer<BiomeModificationContext> modifier) {
 		super(shouldModify, modifier);
 	}
 
@@ -28,7 +28,7 @@ public final class BiomeAmbienceModifier extends BiomeModifier {
 	 * @param ambience     A {@link BiomeAmbience} to replace it with.
 	 * @return A new {@link BiomeAmbienceModifier} that replaces a biome's {@link BiomeAmbience}.
 	 */
-	public static BiomeAmbienceModifier createAmbienceReplacer(BiPredicate<RegistryKey<Biome>, Biome> shouldModify, Supplier<BiomeAmbience> ambience) {
+	public static BiomeAmbienceModifier createAmbienceReplacer(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Supplier<BiomeSpecialEffects> ambience) {
 		return new BiomeAmbienceModifier(shouldModify, context -> context.event.setEffects(ambience.get()));
 	}
 

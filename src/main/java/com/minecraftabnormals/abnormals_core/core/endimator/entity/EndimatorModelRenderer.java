@@ -1,16 +1,16 @@
 package com.minecraftabnormals.abnormals_core.core.endimator.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.Direction;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * @author - SmellyModder(Luke Tonon)
  */
 @OnlyIn(Dist.CLIENT)
-public class EndimatorModelRenderer extends ModelRenderer {
+public class EndimatorModelRenderer extends ModelPart {
 	public float defaultRotationPointX, defaultRotationPointY, defaultRotationPointZ;
 	public float defaultRotateAngleX, defaultRotateAngleY, defaultRotateAngleZ;
 	public float defaultOffsetX, defaultOffsetY, defaultOffsetZ, offsetX, offsetY, offsetZ;
@@ -228,7 +228,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	}
 	
 	@Override
-	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void render(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		if (this.visible) {
 			if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
 				matrixStackIn.pushPose();
@@ -258,7 +258,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		}
 	}
 	
-	private void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	private void doRender(PoseStack.Pose matrixEntryIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		Matrix4f matrix4f = matrixEntryIn.pose();
 		Matrix3f matrix3f = matrixEntryIn.normal();
 

@@ -3,9 +3,9 @@ package com.minecraftabnormals.abnormals_core.core.registry;
 import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.TableLootEntry;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootTableReference;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -96,7 +96,7 @@ public final class LootInjectionRegistry {
 		 * @see LootPool
 		 */
 		public LootPool buildLootPool(String name, int weight, int quality) {
-			return LootPool.lootPool().add(TableLootEntry.lootTableReference(new ResourceLocation(this.modId, "injections/" + name)).setWeight(weight).setQuality(quality)).name(this.modId + name).build();
+			return LootPool.lootPool().add(LootTableReference.lootTableReference(new ResourceLocation(this.modId, "injections/" + name)).setWeight(weight).setQuality(quality)).name(this.modId + name).build();
 		}
 	}
 }
