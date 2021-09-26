@@ -12,30 +12,30 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class BELWRBlockItem extends BlockItem {
-	private final Supplier<LazyBELWR> belwr;
+public class BEWLRBlockItem extends BlockItem {
+	private final Supplier<LazyBEWLR> bewlr;
 
-	public BELWRBlockItem(Block block, Properties properties, Supplier<LazyBELWR> belwr) {
+	public BEWLRBlockItem(Block block, Properties properties, Supplier<LazyBEWLR> bewlr) {
 		super(block, properties);
-		this.belwr = belwr;
+		this.bewlr = bewlr;
 	}
 
 	@Override
 	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-		LazyBELWR belwr = this.belwr.get();
+		LazyBEWLR bewlr = this.bewlr.get();
 		consumer.accept(new IItemRenderProperties() {
 			@Override
 			public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
-				return belwr.get(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+				return bewlr.get(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
 			}
 		});
 	}
 
-	public static final class LazyBELWR {
+	public static final class LazyBEWLR {
 		private final BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> function;
 		private BlockEntityWithoutLevelRenderer value;
 
-		public LazyBELWR(BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> function) {
+		public LazyBEWLR(BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> function) {
 			this.function = function;
 		}
 

@@ -7,10 +7,10 @@ import net.minecraft.world.level.block.Block;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class BELWRFuelBlockItem extends BELWRBlockItem {
+public class BEWLRFuelBlockItem extends BEWLRBlockItem {
 	private final int burnTime;
 
-	public BELWRFuelBlockItem(Block block, Properties properties, Supplier<LazyBELWR> belwr, int burnTime) {
+	public BEWLRFuelBlockItem(Block block, Properties properties, Supplier<LazyBEWLR> belwr, int burnTime) {
 		super(block, properties, belwr);
 		this.burnTime = burnTime;
 	}
