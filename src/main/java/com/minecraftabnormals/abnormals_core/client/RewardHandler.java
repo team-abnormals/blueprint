@@ -8,6 +8,7 @@ import com.minecraftabnormals.abnormals_core.client.renderer.SlabfishHatLayerRen
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
+import com.minecraftabnormals.abnormals_core.core.sonar.OnlineRequest;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.Minecraft;
