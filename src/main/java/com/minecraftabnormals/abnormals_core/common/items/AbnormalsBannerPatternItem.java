@@ -8,8 +8,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.core.NonNullList;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class AbnormalsBannerPatternItem extends BannerPatternItem {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.PIGLIN_BANNER_PATTERN);
 

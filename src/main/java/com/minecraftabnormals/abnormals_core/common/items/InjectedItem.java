@@ -9,8 +9,6 @@ import net.minecraft.core.NonNullList;
 
 import java.util.Map;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class InjectedItem extends Item {
 	private static final Map<Item, TargetedItemGroupFiller> FILLER_MAP = Maps.newHashMap();
 	private final Item followItem;

@@ -11,7 +11,7 @@ import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 

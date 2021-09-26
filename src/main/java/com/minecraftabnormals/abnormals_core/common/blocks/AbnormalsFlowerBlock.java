@@ -11,8 +11,6 @@ import net.minecraft.core.NonNullList;
 
 import java.util.function.Supplier;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class AbnormalsFlowerBlock extends FlowerBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WITHER_ROSE);
 	private final Supplier<MobEffect> stewEffect;

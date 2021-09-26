@@ -7,8 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-import net.minecraft.world.item.Item.Properties;
-
 /**
  * @author SmellyModder(Luke Tonon)
  */

@@ -12,8 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
-import net.minecraft.advancements.CriterionTrigger.Listener;
-
 /**
  * @author - SmellyModder(Luke Tonon)
  */

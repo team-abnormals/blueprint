@@ -5,14 +5,13 @@ import com.minecraftabnormals.abnormals_core.client.model.SlabfishHatModel;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.ocelot.sonar.client.util.OnlineImageCache;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
@@ -22,9 +21,9 @@ public class SlabfishHatLayerRenderer extends RenderLayer<AbstractClientPlayer, 
 	public static OnlineImageCache REWARD_CACHE = new OnlineImageCache(AbnormalsCore.MODID, 1, TimeUnit.DAYS);
 	private final SlabfishHatModel model;
 
-	public SlabfishHatLayerRenderer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer, SlabfishHatModel slabfishModel) {
+	public SlabfishHatLayerRenderer(PlayerRenderer renderer) {
 		super(renderer);
-		this.model = slabfishModel;
+		this.model = new SlabfishHatModel(SlabfishHatModel.createBodyModel().bakeRoot());
 	}
 
 	@Override

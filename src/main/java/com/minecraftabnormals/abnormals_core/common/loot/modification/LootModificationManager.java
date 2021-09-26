@@ -19,6 +19,8 @@ import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -104,7 +106,7 @@ public final class LootModificationManager extends ModificationManager<LootTable
 
 		static {
 			try {
-				LOOT_POOL_CONSTRUCTOR = LootPool.class.getDeclaredConstructor(LootPoolEntryContainer[].class, LootItemCondition[].class, LootItemFunction[].class, RandomIntGenerator.class, RandomValueBounds.class, String.class);
+				LOOT_POOL_CONSTRUCTOR = LootPool.class.getDeclaredConstructor(LootPoolEntryContainer[].class, LootItemCondition[].class, LootItemFunction[].class, NumberProvider.class, NumberProvider.class, String.class);
 				LOOT_POOL_CONSTRUCTOR.setAccessible(true);
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();
@@ -112,16 +114,16 @@ public final class LootModificationManager extends ModificationManager<LootTable
 		}
 
 		@Override
-		public LootPool deserialize(JsonElement p_deserialize_1_, Type p_deserialize_2_, JsonDeserializationContext p_deserialize_3_) throws JsonParseException {
-			JsonObject jsonobject = GsonHelper.convertToJsonObject(p_deserialize_1_, "loot pool");
-			LootPoolEntryContainer[] alootentry = GsonHelper.getAsObject(jsonobject, "entries", p_deserialize_3_, LootPoolEntryContainer[].class);
-			LootItemCondition[] ailootcondition = GsonHelper.getAsObject(jsonobject, "conditions", new LootItemCondition[0], p_deserialize_3_, LootItemCondition[].class);
-			LootItemFunction[] ailootfunction = GsonHelper.getAsObject(jsonobject, "functions", new LootItemFunction[0], p_deserialize_3_, LootItemFunction[].class);
-			RandomIntGenerator irandomrange = RandomIntGenerators.deserialize(jsonobject.get("rolls"), p_deserialize_3_);
-			RandomValueBounds randomvaluerange = GsonHelper.getAsObject(jsonobject, "bonus_rolls", new RandomValueBounds(0.0F, 0.0F), p_deserialize_3_, RandomValueBounds.class);
+		public LootPool deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+			JsonObject jsonobject = GsonHelper.convertToJsonObject(element, "loot pool");
+			LootPoolEntryContainer[] alootentry = GsonHelper.getAsObject(jsonobject, "entries", context, LootPoolEntryContainer[].class);
+			LootItemCondition[] ailootcondition = GsonHelper.getAsObject(jsonobject, "conditions", new LootItemCondition[0], context, LootItemCondition[].class);
+			LootItemFunction[] ailootfunction = GsonHelper.getAsObject(jsonobject, "functions", new LootItemFunction[0], context, LootItemFunction[].class);
+			NumberProvider rolls = GsonHelper.getAsObject(jsonobject, "rolls", context, NumberProvider.class);
+			NumberProvider bonusRolls = GsonHelper.getAsObject(jsonobject, "bonus_rolls", ConstantValue.exactly(0.0F), context, NumberProvider.class);
 			if (jsonobject.has("name")) {
 				try {
-					return LOOT_POOL_CONSTRUCTOR.newInstance(alootentry, ailootcondition, ailootfunction, irandomrange, randomvaluerange, GsonHelper.getAsString(jsonobject, "name"));
+					return LOOT_POOL_CONSTRUCTOR.newInstance(alootentry, ailootcondition, ailootfunction, rolls, bonusRolls, GsonHelper.getAsString(jsonobject, "name"));
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					e.printStackTrace();
 					throw new JsonParseException("Could not initialize a new loot pool: " + e);

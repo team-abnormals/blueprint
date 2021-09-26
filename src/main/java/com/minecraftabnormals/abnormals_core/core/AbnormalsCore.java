@@ -8,7 +8,6 @@ import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock
 import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderCapability;
 import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderEvents;
 import com.minecraftabnormals.abnormals_core.common.network.MessageC2SUpdateSlabfishHat;
-import com.minecraftabnormals.abnormals_core.common.network.MessageS2CServerRedirect;
 import com.minecraftabnormals.abnormals_core.common.network.entity.MessageS2CEndimation;
 import com.minecraftabnormals.abnormals_core.common.network.entity.MessageS2CTeleportEntity;
 import com.minecraftabnormals.abnormals_core.common.network.entity.MessageS2CUpdateEntityData;
@@ -41,9 +40,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -57,7 +58,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.fmlclient.registry.ClientRegistry;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
@@ -124,11 +124,13 @@ public final class AbnormalsCore {
 			});
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(this::modelSetup);
+			modEventBus.addListener(this::rendererSetup);
 			modEventBus.addListener(RewardHandler::clientSetup);
 		});
 
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
 		modEventBus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
+		modEventBus.addListener(this::registerCapabilities);
 		context.registerConfig(ModConfig.Type.COMMON, ACConfig.COMMON_SPEC);
 		context.registerConfig(ModConfig.Type.CLIENT, ACConfig.CLIENT_SPEC);
 	}
@@ -138,18 +140,19 @@ public final class AbnormalsCore {
 			this.replaceBeehivePOI();
 			ACLootConditions.registerLootConditions();
 		});
-		ChunkLoaderCapability.register();
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MODID, "slabfish_head"), SLABFISH_SETTINGS);
 	}
 
 	private void clientSetup(FMLClientSetupEvent event) {
-		RenderingRegistry.registerEntityRenderingHandler(ACEntities.BOAT.get(), AbnormalsBoatRenderer::new);
-
-		ClientRegistry.bindTileEntityRenderer(ACTileEntities.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ACTileEntities.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ACTileEntities.SIGN.get(), SignRenderer::new);
-
 		event.enqueueWork(SignManager::setupAtlas);
+	}
+
+	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
+		event.registerEntityRenderer(ACEntities.BOAT.get(), AbnormalsBoatRenderer::new);
+
+		event.registerBlockEntityRenderer(ACTileEntities.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
+		event.registerBlockEntityRenderer(ACTileEntities.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
+		event.registerBlockEntityRenderer(ACTileEntities.SIGN.get(), SignRenderer::new);
 	}
 
 	private void postLoadingSetup(FMLLoadCompleteEvent event) {
@@ -157,6 +160,10 @@ public final class AbnormalsCore {
 			DataUtil.getSortedAlternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register);
 			CompatEvents.SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS = DataUtil.getSortedCustomNoteBlockInstruments();
 		});
+	}
+
+	private void registerCapabilities(RegisterCapabilitiesEvent event) {
+		ChunkLoaderCapability.register(event);
 	}
 
 	private void modelSetup(ModelRegistryEvent event) {
@@ -169,7 +176,6 @@ public final class AbnormalsCore {
 		CHANNEL.registerMessage(id++, MessageS2CEndimation.class, MessageS2CEndimation::serialize, MessageS2CEndimation::deserialize, MessageS2CEndimation::handle);
 		CHANNEL.registerMessage(id++, MessageS2CTeleportEntity.class, MessageS2CTeleportEntity::serialize, MessageS2CTeleportEntity::deserialize, MessageS2CTeleportEntity::handle);
 		CHANNEL.registerMessage(id++, MessageS2CSpawnParticle.class, MessageS2CSpawnParticle::serialize, MessageS2CSpawnParticle::deserialize, MessageS2CSpawnParticle::handle);
-		CHANNEL.registerMessage(id++, MessageS2CServerRedirect.class, MessageS2CServerRedirect::serialize, MessageS2CServerRedirect::deserialize, MessageS2CServerRedirect::handle);
 		CHANNEL.registerMessage(id++, MessageS2CUpdateEntityData.class, MessageS2CUpdateEntityData::serialize, MessageS2CUpdateEntityData::deserialize, MessageS2CUpdateEntityData::handle);
 		CHANNEL.registerMessage(id, MessageC2SUpdateSlabfishHat.class, MessageC2SUpdateSlabfishHat::serialize, MessageC2SUpdateSlabfishHat::deserialize, MessageC2SUpdateSlabfishHat::handle);
 	}

@@ -1,7 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.api.banner;
 
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraft.world.level.ItemLike;
 
 import java.util.Locale;
 

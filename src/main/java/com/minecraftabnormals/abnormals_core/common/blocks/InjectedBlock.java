@@ -10,8 +10,6 @@ import net.minecraft.core.NonNullList;
 
 import java.util.Map;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class InjectedBlock extends Block {
 	private static final Map<Item, TargetedItemGroupFiller> FILLER_MAP = Maps.newHashMap();
 	private final Item followItem;

@@ -25,8 +25,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class DirectionalVerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;

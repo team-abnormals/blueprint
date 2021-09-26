@@ -1,7 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.blocks.wood;
 
 import com.minecraftabnormals.abnormals_core.core.util.BlockUtil;
-import net.minecraft.block.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -12,7 +11,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChainBlock;
-import net.minecraft.world.level.block.Lantern;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,8 +22,10 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class WoodPostBlock extends Block implements SimpleWaterloggedBlock {
@@ -60,11 +60,11 @@ public class WoodPostBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-		switch (state.getValue(AXIS)) {
-			case X: return SHAPE_X;
-			case Y: return SHAPE_Y;
-			default: return SHAPE_Z;
-		}
+		return switch (state.getValue(AXIS)) {
+			case X -> SHAPE_X;
+			case Y -> SHAPE_Y;
+			default -> SHAPE_Z;
+		};
 	}
 
 	@Override
@@ -95,12 +95,13 @@ public class WoodPostBlock extends Block implements SimpleWaterloggedBlock {
 		for (BooleanProperty prop : CHAINED)
 			builder.add(prop);
 	}
-	
+
+	@Nullable
 	@Override
-	public BlockState getToolModifiedState(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, ToolType toolType) {
-		if (toolType == ToolType.AXE)
-			return block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().defaultBlockState()) : null;
-		return super.getToolModifiedState(state, world, pos, player, stack, toolType);
+	public BlockState getToolModifiedState(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, ToolAction action) {
+		if (action == ToolActions.AXE_STRIP)
+			return this.block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().defaultBlockState()) : null;
+		return super.getToolModifiedState(state, world, pos, player, stack, action);
 	}
 
 	private BlockState getRelevantState(Level world, BlockPos pos, Axis axis) {

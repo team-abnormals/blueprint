@@ -3,6 +3,8 @@ package com.minecraftabnormals.abnormals_core.common.capability.chunkloading;
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.abnormals_core.core.util.TickTask;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.LongArrayTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.server.level.ServerLevel;
 
@@ -61,5 +63,18 @@ public class ChunkLoader implements IChunkLoader {
 
 	public void scheduleChunkProcess(ChunkAccess chunk, Consumer<ChunkAccess> chunkProcess, int ticks) {
 		this.scheduledChunkProcesses.add(new TickTask<>(chunk, chunkProcess, ticks));
+	}
+
+	@Override
+	public Tag serializeNBT() {
+		return new LongArrayTag(this.loadedPositions);
+	}
+
+	@Override
+	public void deserializeNBT(Tag nbt) {
+		this.loadedPositions.clear();
+		for (Long pos : ((LongArrayTag) nbt).getAsLongArray()) {
+			this.addPos(BlockPos.of(pos));
+		}
 	}
 }

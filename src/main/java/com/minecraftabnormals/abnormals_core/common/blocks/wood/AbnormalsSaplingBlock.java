@@ -8,8 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.NonNullList;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class AbnormalsSaplingBlock extends SaplingBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.DARK_OAK_SAPLING);
 

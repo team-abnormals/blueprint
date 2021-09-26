@@ -7,8 +7,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class ThatchVerticalSlabBlock extends VerticalSlabBlock {
 	public ThatchVerticalSlabBlock(Properties properties) {
 		super(properties);

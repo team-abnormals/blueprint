@@ -12,11 +12,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 
 import java.util.function.Supplier;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class WoodBlock extends RotatedPillarBlock {
 	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_HYPHAE);
@@ -28,10 +27,10 @@ public class WoodBlock extends RotatedPillarBlock {
 	}
 
 	@Override
-	public BlockState getToolModifiedState(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, ToolType toolType) {
-		if (toolType == ToolType.AXE)
-			return block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().defaultBlockState()) : null;
-		return super.getToolModifiedState(state, world, pos, player, stack, toolType);
+	public BlockState getToolModifiedState(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, ToolAction action) {
+		if (action == ToolActions.AXE_STRIP)
+			return this.block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().defaultBlockState()) : null;
+		return super.getToolModifiedState(state, world, pos, player, stack, action);
 	}
 
 	@Override

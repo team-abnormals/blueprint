@@ -31,7 +31,7 @@ public class SlabfishHatScreen extends Screen {
 		for (RewardHandler.SlabfishSetting setting : RewardHandler.SlabfishSetting.values()) {
 			ForgeConfigSpec.ConfigValue<Boolean> configValue = setting.getConfigValue();
 
-			this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, this.getOptionName(setting, configValue.get()), (button) -> {
+			this.addRenderableWidget(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, this.getOptionName(setting, configValue.get()), (button) -> {
 				boolean enabled = !configValue.get();
 				configValue.set(enabled);
 				button.setMessage(this.getOptionName(setting, enabled));
@@ -44,7 +44,7 @@ public class SlabfishHatScreen extends Screen {
 			++i;
 		}
 
-		this.addButton(new Button(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, CommonComponents.GUI_DONE, (button) -> this.getMinecraft().setScreen(this.parent)));
+		this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, CommonComponents.GUI_DONE, (button) -> this.getMinecraft().setScreen(this.parent)));
 	}
 
 	@Override

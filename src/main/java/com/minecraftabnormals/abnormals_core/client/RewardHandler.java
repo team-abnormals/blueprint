@@ -4,14 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import com.minecraftabnormals.abnormals_core.client.model.SlabfishHatModel;
 import com.minecraftabnormals.abnormals_core.client.renderer.SlabfishHatLayerRenderer;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import io.github.ocelot.sonar.common.util.OnlineRequest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -21,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.Util;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -71,14 +70,19 @@ public final class RewardHandler {
 				LOGGER.error("Failed to parse rewards.", e);
 			}
 		}, Minecraft.getInstance());
-
-		for (PlayerRenderer renderer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values())
-			renderer.addLayer(new SlabfishHatLayerRenderer(renderer, new SlabfishHatModel()));
 	}
 
 	@Nullable
 	public static RewardProperties getRewardProperties() {
 		return rewardProperties;
+	}
+
+	@SubscribeEvent
+	public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+		event.getSkins().forEach(skin -> {
+			PlayerRenderer renderer = event.getSkin(skin);
+			renderer.addLayer(new SlabfishHatLayerRenderer(renderer));
+		});
 	}
 
 	@SubscribeEvent

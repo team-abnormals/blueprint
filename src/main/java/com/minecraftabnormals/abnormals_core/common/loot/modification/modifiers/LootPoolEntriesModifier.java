@@ -5,17 +5,16 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.PredicateManager;
-import net.minecraft.loot.LootTable;
 import net.minecraft.util.GsonHelper;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An {@link ILootModifier} that modifies the entries of a {@link LootPool} in a {@link LootTable}.
+ * An {@link ILootModifier} that modifies the entries of a {@link LootPool} in a {@link net.minecraft.world.level.storage.loot.LootTable}.
  *
  * @author SmellyModder (Luke Tonon)
  */

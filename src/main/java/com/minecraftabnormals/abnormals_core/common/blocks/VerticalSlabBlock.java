@@ -26,8 +26,6 @@ import net.minecraft.world.level.LevelAccessor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;

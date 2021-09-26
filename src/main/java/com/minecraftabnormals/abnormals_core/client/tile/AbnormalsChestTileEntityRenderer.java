@@ -4,15 +4,15 @@ import com.minecraftabnormals.abnormals_core.client.ChestManager;
 import com.minecraftabnormals.abnormals_core.core.api.IChestBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.block.*;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.blockentity.BrightnessCombiner;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
@@ -30,54 +30,37 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class AbnormalsChestTileEntityRenderer<T extends BlockEntity & LidBlockEntity> extends BlockEntityRenderer<T> {
+public class AbnormalsChestTileEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
 	public static Block itemBlock = null;
-	
-	public final ModelPart singleLid;
-	public final ModelPart singleBottom;
-	public final ModelPart singleLatch;
-	public final ModelPart rightLid;
-	public final ModelPart rightBottom;
-	public final ModelPart rightLatch;
-	public final ModelPart leftLid;
-	public final ModelPart leftBottom;
-	public final ModelPart leftLatch;
+
+	private final ModelPart lid;
+	private final ModelPart bottom;
+	private final ModelPart lock;
+	private final ModelPart doubleLeftLid;
+	private final ModelPart doubleLeftBottom;
+	private final ModelPart doubleLeftLock;
+	private final ModelPart doubleRightLid;
+	private final ModelPart doubleRightBottom;
+	private final ModelPart doubleRightLock;
 	public boolean isChristmas;
 
-	public AbnormalsChestTileEntityRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
-		super(rendererDispatcherIn);
+	public AbnormalsChestTileEntityRenderer(BlockEntityRendererProvider.Context context) {
 		Calendar calendar = Calendar.getInstance();
 		if (calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DATE) >= 24 && calendar.get(Calendar.DATE) <= 26) {
 			this.isChristmas = true;
 		}
-
-		this.singleBottom = new ModelPart(64, 64, 0, 19);
-		this.singleBottom.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
-		this.singleLid = new ModelPart(64, 64, 0, 0);
-		this.singleLid.addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
-		this.singleLid.y = 9.0F;
-		this.singleLid.z = 1.0F;
-		this.singleLatch = new ModelPart(64, 64, 0, 0);
-		this.singleLatch.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
-		this.singleLatch.y = 8.0F;
-		this.rightBottom = new ModelPart(64, 64, 0, 19);
-		this.rightBottom.addBox(1.0F, 0.0F, 1.0F, 15.0F, 10.0F, 14.0F, 0.0F);
-		this.rightLid = new ModelPart(64, 64, 0, 0);
-		this.rightLid.addBox(1.0F, 0.0F, 0.0F, 15.0F, 5.0F, 14.0F, 0.0F);
-		this.rightLid.y = 9.0F;
-		this.rightLid.z = 1.0F;
-		this.rightLatch = new ModelPart(64, 64, 0, 0);
-		this.rightLatch.addBox(15.0F, -1.0F, 15.0F, 1.0F, 4.0F, 1.0F, 0.0F);
-		this.rightLatch.y = 8.0F;
-		this.leftBottom = new ModelPart(64, 64, 0, 19);
-		this.leftBottom.addBox(0.0F, 0.0F, 1.0F, 15.0F, 10.0F, 14.0F, 0.0F);
-		this.leftLid = new ModelPart(64, 64, 0, 0);
-		this.leftLid.addBox(0.0F, 0.0F, 0.0F, 15.0F, 5.0F, 14.0F, 0.0F);
-		this.leftLid.y = 9.0F;
-		this.leftLid.z = 1.0F;
-		this.leftLatch = new ModelPart(64, 64, 0, 0);
-		this.leftLatch.addBox(0.0F, -1.0F, 15.0F, 1.0F, 4.0F, 1.0F, 0.0F);
-		this.leftLatch.y = 8.0F;
+		ModelPart modelpart = context.bakeLayer(ModelLayers.CHEST);
+		this.bottom = modelpart.getChild("bottom");
+		this.lid = modelpart.getChild("lid");
+		this.lock = modelpart.getChild("lock");
+		ModelPart modelpart1 = context.bakeLayer(ModelLayers.DOUBLE_CHEST_LEFT);
+		this.doubleLeftBottom = modelpart1.getChild("bottom");
+		this.doubleLeftLid = modelpart1.getChild("lid");
+		this.doubleLeftLock = modelpart1.getChild("lock");
+		ModelPart modelpart2 = context.bakeLayer(ModelLayers.DOUBLE_CHEST_RIGHT);
+		this.doubleRightBottom = modelpart2.getChild("bottom");
+		this.doubleRightLid = modelpart2.getChild("lid");
+		this.doubleRightLock = modelpart2.getChild("lock");
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -109,12 +92,12 @@ public class AbnormalsChestTileEntityRenderer<T extends BlockEntity & LidBlockEn
 			VertexConsumer ivertexbuilder = this.getChestMaterial(tileEntityIn, chesttype).buffer(bufferIn, RenderType::entityCutout);
 			if (flag1) {
 				if (chesttype == ChestType.LEFT) {
-					this.render(matrixStackIn, ivertexbuilder, this.leftLid, this.leftLatch, this.leftBottom, f1, i, combinedOverlayIn);
+					this.render(matrixStackIn, ivertexbuilder, this.doubleLeftLid, this.doubleLeftLock, this.doubleLeftBottom, f1, i, combinedOverlayIn);
 				} else {
-					this.render(matrixStackIn, ivertexbuilder, this.rightLid, this.rightLatch, this.rightBottom, f1, i, combinedOverlayIn);
+					this.render(matrixStackIn, ivertexbuilder, this.doubleRightLid, this.doubleRightLock, this.doubleRightBottom, f1, i, combinedOverlayIn);
 				}
 			} else {
-				this.render(matrixStackIn, ivertexbuilder, this.singleLid, this.singleLatch, this.singleBottom, f1, i, combinedOverlayIn);
+				this.render(matrixStackIn, ivertexbuilder, this.lid, this.lock, this.bottom, f1, i, combinedOverlayIn);
 			}
 
 			matrixStackIn.popPose();
@@ -123,25 +106,20 @@ public class AbnormalsChestTileEntityRenderer<T extends BlockEntity & LidBlockEn
 
 	public Material getChestMaterial(T t, ChestType type) {
 		if (this.isChristmas) {
-			switch (type) {
-				default:
-				case SINGLE:	return Sheets.CHEST_XMAS_LOCATION;
-				case LEFT: 		return Sheets.CHEST_XMAS_LOCATION_LEFT;
-				case RIGHT: 	return Sheets.CHEST_XMAS_LOCATION_RIGHT;
-			}
+			return switch (type) {
+				case SINGLE -> Sheets.CHEST_XMAS_LOCATION;
+				case LEFT -> Sheets.CHEST_XMAS_LOCATION_LEFT;
+				case RIGHT -> Sheets.CHEST_XMAS_LOCATION_RIGHT;
+			};
 		} else {
 			Block inventoryBlock = itemBlock;
 			if (inventoryBlock == null) inventoryBlock = t.getBlockState().getBlock();
 			ChestManager.ChestInfo chestInfo = ChestManager.getInfoForChest(((IChestBlock) inventoryBlock).getChestType());
-			switch (type) {
-				default:
-				case SINGLE:
-					return chestInfo != null ? chestInfo.getSingleMaterial() : Sheets.CHEST_LOCATION;
-				case LEFT:
-					return chestInfo != null ? chestInfo.getLeftMaterial() : Sheets.CHEST_LOCATION_LEFT;
-				case RIGHT:
-					return chestInfo != null ? chestInfo.getRightMaterial() : Sheets.CHEST_LOCATION_RIGHT;
-			}
+			return switch (type) {
+				case SINGLE -> chestInfo != null ? chestInfo.getSingleMaterial() : Sheets.CHEST_LOCATION;
+				case LEFT -> chestInfo != null ? chestInfo.getLeftMaterial() : Sheets.CHEST_LOCATION_LEFT;
+				case RIGHT -> chestInfo != null ? chestInfo.getRightMaterial() : Sheets.CHEST_LOCATION_RIGHT;
+			};
 		}
 	}
 

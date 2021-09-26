@@ -12,18 +12,30 @@ import net.minecraftforge.common.util.Constants;
  * Handles saving registered {@link GlobalStorage}s.
  *
  * @author SmellyModder (Luke Tonon)
- * @see net.minecraft.world.storage.WorldSavedData
+ * @see SavedData
  */
 public final class GlobalStorageManager extends SavedData {
 	private static final String KEY = AbnormalsCore.MODID + "_storage";
 	private static boolean loaded = false;
 
 	private GlobalStorageManager() {
-		super(KEY);
+		super();
 	}
 
 	public static GlobalStorageManager getOrCreate(ServerLevel world) {
-		return world.getDataStorage().computeIfAbsent(GlobalStorageManager::new, KEY);
+		return world.getDataStorage().computeIfAbsent(compound -> {
+			loaded = true;
+			ListTag storageTags = compound.getList("storages", Constants.NBT.TAG_COMPOUND);
+
+			for (int i = 0; i < storageTags.size(); i++) {
+				CompoundTag storageTag = storageTags.getCompound(i);
+				GlobalStorage storage = GlobalStorage.STORAGES.get(new ResourceLocation(storageTag.getString("id")));
+				if (storage != null) {
+					storage.fromTag(storageTag);
+				}
+			}
+			return new GlobalStorageManager();
+		}, GlobalStorageManager::new, KEY);
 	}
 
 	public static boolean isLoaded() {
@@ -40,20 +52,6 @@ public final class GlobalStorageManager extends SavedData {
 		});
 		compound.put("storages", storageList);
 		return compound;
-	}
-
-	@Override
-	public void load(CompoundTag compound) {
-		loaded = true;
-		ListTag storageTags = compound.getList("storages", Constants.NBT.TAG_COMPOUND);
-
-		for (int i = 0; i < storageTags.size(); i++) {
-			CompoundTag storageTag = storageTags.getCompound(i);
-			GlobalStorage storage = GlobalStorage.STORAGES.get(new ResourceLocation(storageTag.getString("id")));
-			if (storage != null) {
-				storage.fromTag(storageTag);
-			}
-		}
 	}
 
 	@Override

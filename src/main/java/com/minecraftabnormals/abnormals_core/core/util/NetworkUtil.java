@@ -2,7 +2,6 @@ package com.minecraftabnormals.abnormals_core.core.util;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.common.network.MessageC2SUpdateSlabfishHat;
-import com.minecraftabnormals.abnormals_core.common.network.MessageS2CServerRedirect;
 import com.minecraftabnormals.abnormals_core.common.network.entity.MessageS2CEndimation;
 import com.minecraftabnormals.abnormals_core.common.network.entity.MessageS2CTeleportEntity;
 import com.minecraftabnormals.abnormals_core.common.network.entity.MessageS2CUpdateEntityData;
@@ -11,12 +10,9 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IData
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,12 +20,6 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Set;
-
-import net.minecraft.client.gui.screens.ConnectScreen;
-import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -80,43 +70,6 @@ public final class NetworkUtil {
 		if (!entity.level.isClientSide) {
 			AbnormalsCore.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CEndimation(entity.getId(), ArrayUtils.indexOf(entity.getEndimations(), endimationToPlay)));
 			entity.setPlayingEndimation(endimationToPlay);
-		}
-	}
-
-	/**
-	 * Send a packet to the client to redirect them to another server
-	 *
-	 * @param address The address to connect to
-	 */
-	public static void redirectToServer(ServerPlayer player, String address) {
-		AbnormalsCore.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MessageS2CServerRedirect(address));
-	}
-
-	/**
-	 * Send a packet to all clients to redirect them to another server
-	 *
-	 * @param address The address to connect to
-	 */
-	public static void redirectAllToServer(String address) {
-		AbnormalsCore.CHANNEL.send(PacketDistributor.ALL.noArg(), new MessageS2CServerRedirect(address));
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static void redirectToServer(String address) {
-		Minecraft minecraft = ClientInfo.MINECRAFT;
-		Level world = minecraft.level;
-		Screen currentScreen = minecraft.screen;
-		boolean integrated = minecraft.isLocalServer();
-
-		if (world != null) {
-			world.disconnect();
-			minecraft.clearLevel(new GenericDirtMessageScreen(new TranslatableComponent(integrated ? "menu.savingLevel" : "abnormals_core.message.redirect")));
-
-			TitleScreen menuScreen = new TitleScreen();
-			minecraft.setScreen(integrated ? menuScreen : new JoinMultiplayerScreen(menuScreen));
-
-			if (currentScreen != null)
-				minecraft.setScreen(new ConnectScreen(currentScreen, minecraft, new ServerData("Redirect", address, false)));
 		}
 	}
 

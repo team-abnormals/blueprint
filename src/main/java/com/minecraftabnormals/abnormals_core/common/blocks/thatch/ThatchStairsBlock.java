@@ -7,8 +7,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class ThatchStairsBlock extends StairBlock {
 	@SuppressWarnings("deprecation")
 	public ThatchStairsBlock(BlockState state, Properties properties) {

@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.text.*;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * A codec for {@link ITextComponent}s.
+ * A codec for {@link Component}s.
  * <p>Current missing the ability to serialize styles.</p>
  *
  * @author SmellyModder (Luke Tonon)
@@ -70,8 +69,7 @@ public enum ITextComponentCodec implements Codec<Component> {
 											return DataResult.error(error.get().message());
 										} else {
 											objects[i] = dataResult.result().get();
-											if (objects[i] instanceof TextComponent) {
-												TextComponent stringTextComponent = (TextComponent) objects[i];
+											if (objects[i] instanceof TextComponent stringTextComponent) {
 												if (stringTextComponent.getStyle().isEmpty() && stringTextComponent.getSiblings().isEmpty()) {
 													objects[i] = stringTextComponent.getText();
 												}
@@ -111,7 +109,7 @@ public enum ITextComponentCodec implements Codec<Component> {
 					} else if (has(mapLike, "selector")) {
 						Either<String, String> selectorOrError = getString(ops, mapLike.get("selector"));
 						if (selectorOrError.left().isPresent()) {
-							formattableTextComponent = new SelectorComponent(selectorOrError.left().get());
+							formattableTextComponent = new SelectorComponent(selectorOrError.left().get(), Optional.empty());
 						} else {
 							return DataResult.error(selectorOrError.right().get());
 						}
@@ -142,14 +140,14 @@ public enum ITextComponentCodec implements Codec<Component> {
 							if (has(mapLike, "block")) {
 								Either<String, String> blockOrError = getString(ops, mapLike.get("block"));
 								if (blockOrError.left().isPresent()) {
-									formattableTextComponent = new NbtComponent.BlockNbtComponent(string, interpret, blockOrError.left().get());
+									formattableTextComponent = new NbtComponent.BlockNbtComponent(string, interpret, blockOrError.left().get(), Optional.empty());
 								} else {
 									return DataResult.error(blockOrError.right().get());
 								}
 							} else if (has(mapLike, "entity")) {
 								Either<String, String> entityOrError = getString(ops, mapLike.get("entity"));
 								if (entityOrError.left().isPresent()) {
-									formattableTextComponent = new NbtComponent.EntityNbtComponent(string, interpret, entityOrError.left().get());
+									formattableTextComponent = new NbtComponent.EntityNbtComponent(string, interpret, entityOrError.left().get(), Optional.empty());
 								} else {
 									return DataResult.error(entityOrError.right().get());
 								}
@@ -160,7 +158,7 @@ public enum ITextComponentCodec implements Codec<Component> {
 
 								Either<String, String> storageOrError = getString(ops, mapLike.get("storage"));
 								if (storageOrError.left().isPresent()) {
-									formattableTextComponent = new NbtComponent.StorageNbtComponent(string, interpret, new ResourceLocation(storageOrError.left().get()));
+									formattableTextComponent = new NbtComponent.StorageNbtComponent(string, interpret, new ResourceLocation(storageOrError.left().get()), Optional.empty());
 								} else {
 									return DataResult.error(storageOrError.right().get());
 								}
@@ -249,8 +247,7 @@ public enum ITextComponentCodec implements Codec<Component> {
 
 		if (input instanceof TextComponent) {
 			mapBuilder.add("text", ops.createString(((TextComponent) input).getText()));
-		} else if (input instanceof TranslatableComponent) {
-			TranslatableComponent translationTextComponent = (TranslatableComponent) input;
+		} else if (input instanceof TranslatableComponent translationTextComponent) {
 			mapBuilder.add("translate", ops.createString(((TranslatableComponent) input).getKey()));
 			Object[] formatArgs = translationTextComponent.getArgs();
 			if (formatArgs != null && formatArgs.length > 0) {
@@ -268,8 +265,7 @@ public enum ITextComponentCodec implements Codec<Component> {
 				}
 				mapBuilder.add("with", with.build(ops.empty()));
 			}
-		} else if (input instanceof ScoreComponent) {
-			ScoreComponent scoreTextComponent = (ScoreComponent) input;
+		} else if (input instanceof ScoreComponent scoreTextComponent) {
 			RecordBuilder<T> scoreMapBuilder = ops.mapBuilder();
 			scoreMapBuilder.add("name", ops.createString(scoreTextComponent.getName()));
 			scoreMapBuilder.add("objective", ops.createString(scoreTextComponent.getObjective()));
@@ -279,11 +275,10 @@ public enum ITextComponentCodec implements Codec<Component> {
 		} else if (input instanceof KeybindComponent) {
 			mapBuilder.add("keybind", ops.createString(((KeybindComponent) input).getName()));
 		} else {
-			if (!(input instanceof NbtComponent)) {
+			if (!(input instanceof NbtComponent nbtTextComponent)) {
 				return DataResult.error("Don't know how to encode " + input + " as a Component");
 			}
 
-			NbtComponent nbtTextComponent = (NbtComponent) input;
 			mapBuilder.add("nbt", ops.createString(nbtTextComponent.getNbtPath()));
 			mapBuilder.add("interpret", ops.createBoolean(nbtTextComponent.isInterpreting()));
 			if (nbtTextComponent instanceof NbtComponent.BlockNbtComponent) {
