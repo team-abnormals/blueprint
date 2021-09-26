@@ -5,10 +5,10 @@ import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import core.ACTest;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 @Test
 @Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -26,7 +26,7 @@ public final class TestItems {
 		}
 
 		private RegistryObject<Item> createTest() {
-			return this.deferredRegister.register("test", () -> new Item(new Item.Properties().tab(ItemGroup.TAB_FOOD)));
+			return this.deferredRegister.register("test", () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_FOOD)));
 		}
 
 	}

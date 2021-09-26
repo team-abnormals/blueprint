@@ -6,14 +6,14 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.Track
 import com.minecraftabnormals.abnormals_core.core.util.TradeUtil;
 import core.registry.TestItems;
 import core.registry.TestTriggers;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.merchant.villager.VillagerProfession;
-import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -29,11 +29,11 @@ public final class TestEvents {
 	@SubscribeEvent
 	public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
 		Entity entity = event.getTarget();
-		if (entity instanceof CowEntity || entity instanceof PlayerEntity) {
+		if (entity instanceof Cow || entity instanceof Player) {
 			if (!entity.level.isClientSide) {
-				PlayerEntity player = event.getPlayer();
-				if (player instanceof ServerPlayerEntity) {
-					TestTriggers.EMPTY_TEST.trigger((ServerPlayerEntity) player);
+				Player player = event.getPlayer();
+				if (player instanceof ServerPlayer) {
+					TestTriggers.EMPTY_TEST.trigger((ServerPlayer) player);
 				}
 				TrackedDataManager.INSTANCE.setValue(entity, ACTest.TEST_TRACKED_DATA, true);
 			} else {
@@ -45,7 +45,7 @@ public final class TestEvents {
 	@SubscribeEvent
 	public static void onLivingTick(LivingEvent.LivingUpdateEvent event) {
 		LivingEntity entity = event.getEntityLiving();
-		if (entity.level.isClientSide && (entity instanceof CowEntity || entity instanceof PlayerEntity) && TrackedDataManager.INSTANCE.getValue(entity, ACTest.TEST_TRACKED_DATA)) {
+		if (entity.level.isClientSide && (entity instanceof Cow || entity instanceof Player) && TrackedDataManager.INSTANCE.getValue(entity, ACTest.TEST_TRACKED_DATA)) {
 			Random rand = entity.getRandom();
 			for (int i = 0; i < 2; ++i) {
 				entity.level.addParticle(ParticleTypes.PORTAL, entity.getRandomX(0.5D), entity.getRandomY() - 0.25D, entity.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(), (rand.nextDouble() - 0.5D) * 2.0D);

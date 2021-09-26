@@ -4,7 +4,7 @@ import com.minecraftabnormals.abnormals_core.common.advancement.EmptyTrigger;
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import core.ACTest;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 
 @Test

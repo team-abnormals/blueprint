@@ -2,38 +2,40 @@ package common.world;
 
 import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public final class TestSplineFeature extends Feature<NoFeatureConfig> {
-	private static final Vector3d UP = new Vector3d(0.0F, 1.0F, 0.0F);
+public final class TestSplineFeature extends Feature<NoneFeatureConfiguration> {
+	private static final Vec3 UP = new Vec3(0.0F, 1.0F, 0.0F);
 
-	public TestSplineFeature(Codec<NoFeatureConfig> codec) {
+	public TestSplineFeature(Codec<NoneFeatureConfiguration> codec) {
 		super(codec);
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+		BlockPos pos = context.origin();
+		Random rand = context.random();
 		BlockPos end = pos.offset(rand.nextInt(33) - rand.nextInt(33), rand.nextInt(33) - rand.nextInt(33), rand.nextInt(33) - rand.nextInt(33));
-		List<Vector3d> points = new ArrayList<>();
-		Vector3d startVec = Vector3d.atLowerCornerOf(pos);
-		Vector3d endVec = Vector3d.atLowerCornerOf(end);
-		Vector3d difference = endVec.subtract(startVec);
-		Vector3d normalizedDifference = difference.normalize();
-		Vector3d anchorStart = startVec.subtract(normalizedDifference).add(0, -6, 0);
-		Vector3d anchorEnd = endVec.add(normalizedDifference).add(0, -6, 0);
+		List<Vec3> points = new ArrayList<>();
+		Vec3 startVec = Vec3.atLowerCornerOf(pos);
+		Vec3 endVec = Vec3.atLowerCornerOf(end);
+		Vec3 difference = endVec.subtract(startVec);
+		Vec3 normalizedDifference = difference.normalize();
+		Vec3 anchorStart = startVec.subtract(normalizedDifference).add(0, -6, 0);
+		Vec3 anchorEnd = endVec.add(normalizedDifference).add(0, -6, 0);
 		points.add(anchorStart);
 		points.add(startVec);
-		Vector3d offset = UP.cross(normalizedDifference);
+		Vec3 offset = UP.cross(normalizedDifference);
 		double offsetX = offset.x;
 		double offsetZ = offset.z;
 		for (int i = 0; i < 6; i++) {
@@ -41,9 +43,10 @@ public final class TestSplineFeature extends Feature<NoFeatureConfig> {
 		}
 		points.add(endVec);
 		points.add(anchorEnd);
-		MathUtil.CatmullRomSpline catmullRomSpline = new MathUtil.CatmullRomSpline(points.toArray(new Vector3d[0]), MathUtil.CatmullRomSpline.SplineType.CENTRIPETAL);
+		MathUtil.CatmullRomSpline catmullRomSpline = new MathUtil.CatmullRomSpline(points.toArray(new Vec3[0]), MathUtil.CatmullRomSpline.SplineType.CENTRIPETAL);
 		int steps = (int) (20 + Math.sqrt(pos.distSqr(end)) * 4);
 		BlockPos prevPos = null;
+		WorldGenLevel level = context.level();
 		for (int i = 0; i < steps; i++) {
 			float progress = i / (float) steps;
 			BlockPos interpolatedPos = catmullRomSpline.interpolate(progress);
@@ -51,7 +54,7 @@ public final class TestSplineFeature extends Feature<NoFeatureConfig> {
 				continue;
 			}
 			prevPos = interpolatedPos;
-			world.setBlock(interpolatedPos, Blocks.DIAMOND_BLOCK.defaultBlockState(), 2);
+			level.setBlock(interpolatedPos, Blocks.DIAMOND_BLOCK.defaultBlockState(), 2);
 		}
 		return true;
 	}

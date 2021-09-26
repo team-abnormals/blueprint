@@ -3,9 +3,9 @@ package core.registry;
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.util.registry.SoundSubRegistryHelper;
 import core.ACTest;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 @Test
 @Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
