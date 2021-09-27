@@ -16,7 +16,7 @@ public final class TrackedEntityMixin {
 	@Final
 	private Entity entity;
 
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;hasImpulse:Z", ordinal = 2, shift = At.Shift.AFTER), method = "sendChanges")
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/Entity;hasImpulse:Z", ordinal = 2, shift = At.Shift.AFTER), method = "sendChanges")
 	private void update(CallbackInfo info) {
 		EntityTrackingEvent.onEntityTracking(this.entity, true);
 	}

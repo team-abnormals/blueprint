@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(RegionHillsLayer.class)
 public abstract class HillsLayerMixin implements AreaTransformer2, DimensionOffset1Transformer {
-	@Inject(method = "applyPixel", at = @At(value = "INVOKE_ASSIGN", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/gen/INoiseRandom;nextRandom(I)I"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	@Inject(method = "applyPixel", at = @At(value = "INVOKE_ASSIGN", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/level/newbiome/context/Context;nextRandom(I)I"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void transformVariants(Context rand, Area area1, Area area2, int x, int z, CallbackInfoReturnable<Integer> cir, int i, int j, int k) {
 		ResourceKey<Biome> hill = BiomeUtil.getHillBiome(Biomes.byId(i), rand);
 		if (hill != null) {

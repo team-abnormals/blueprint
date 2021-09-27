@@ -15,6 +15,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Constants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -97,7 +98,7 @@ public final class EntityMixin implements IDataManager {
 		return dirtyEntries;
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;addAdditionalSaveData(Lnet/minecraft/nbt/CompoundNBT;)V", shift = At.Shift.BEFORE), method = "saveWithoutId")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;addAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", shift = At.Shift.BEFORE), method = "saveWithoutId")
 	private void writeTrackedData(CompoundTag compound, CallbackInfoReturnable<CompoundTag> info) {
 		if (!this.dataMap.isEmpty()) {
 			ListTag dataListTag = new ListTag();
@@ -112,7 +113,7 @@ public final class EntityMixin implements IDataManager {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundNBT;)V", shift = At.Shift.BEFORE), method = "load")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", shift = At.Shift.BEFORE), method = "load")
 	public void read(CompoundTag compound, CallbackInfo info) {
 		if (compound.contains("ACTrackedData", Constants.NBT.TAG_LIST)) {
 			ListTag dataListTag = compound.getList("ACTrackedData", Constants.NBT.TAG_COMPOUND);
@@ -131,10 +132,10 @@ public final class EntityMixin implements IDataManager {
 		}
 	}
 
-	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;stepOn(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V"))
-	private void onEntityWalk(Block block, Level world, BlockPos pos, Entity entity) {
-		if (!EntityWalkEvent.onEntityWalk(world, pos, entity)) {
-			block.stepOn(world, pos, entity);
+	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;stepOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/Entity;)V"))
+	private void onEntityWalk(Block block, Level level, BlockPos pos, BlockState state, Entity entity) {
+		if (!EntityWalkEvent.onEntityWalk(level, pos, entity)) {
+			block.stepOn(level, pos, state, entity);
 		}
 	}
 }

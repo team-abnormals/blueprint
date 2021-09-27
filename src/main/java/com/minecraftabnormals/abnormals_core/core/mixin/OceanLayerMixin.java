@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
  */
 @Mixin(OceanLayer.class)
 public final class OceanLayerMixin {
-    @Inject(method = "applyPixel", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/gen/ImprovedNoiseGenerator;noise(DDDDD)D", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    @Inject(method = "applyPixel", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/levelgen/synth/ImprovedNoise;noise(DDD)D", shift = At.Shift.AFTER, ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void applyPixel(Context p_215735_1_, int p_215735_2_, int p_215735_3_, CallbackInfoReturnable<Integer> cir, ImprovedNoise improvednoisegenerator, double d0) {
         BiomeUtil.OceanType type;
         if (d0 > 0.4D) {

@@ -44,7 +44,7 @@ public abstract class EndBiomeProviderMixin extends BiomeSource {
 		this.noiseBiomeLayer = ACLayerUtil.createEndBiomeLayer(biomes, (seedModifier) -> new LazyAreaContext(25, seed, seedModifier));
 	}
 
-	@Inject(at = @At("RETURN"), method = "getNoiseBiome(III)Lnet/minecraft/world/biome/Biome;", cancellable = true)
+	@Inject(at = @At("RETURN"), method = "getNoiseBiome(III)Lnet/minecraft/world/level/biome/Biome;", cancellable = true)
 	private void addEndBiomes(int x, int y, int z, CallbackInfoReturnable<Biome> info) {
 		Biome oldBiome = info.getReturnValue();
 		if (oldBiome == this.highlands || oldBiome == this.midlands || oldBiome == this.barrens) {

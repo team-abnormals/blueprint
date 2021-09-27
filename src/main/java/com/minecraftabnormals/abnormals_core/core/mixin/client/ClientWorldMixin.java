@@ -57,9 +57,9 @@ public abstract class ClientWorldMixin extends Level {
     }
 
     @Inject(at = @At("HEAD"), method = "getSkyColor", cancellable = true)
-    private void getSkyColor(BlockPos blockPos, float partialTicks, CallbackInfoReturnable<Vec3> info) {
+    private void getSkyColor(Vec3 vec3, float partialTicks, CallbackInfoReturnable<Vec3> info) {
         if (ACConfig.ValuesHolder.isSmoothSkyColorEnabled() && this.effects.skyType() == DimensionSpecialEffects.SkyType.NORMAL) {
-            Vec3 scaledOffset = Vec3.atLowerCornerOf(blockPos).subtract(2.0D, 2.0D, 2.0D).scale(0.25D);
+            Vec3 scaledOffset = vec3.subtract(2.0D, 2.0D, 2.0D).scale(0.25D);
             BiomeManager biomemanager = this.getBiomeManager();
             Vec3 sampledSkyColor = CubicSampler.gaussianSampleVec3(scaledOffset, (x, y, z) -> {
                 return Vec3.fromRGB24(biomemanager.getNoiseBiomeAtQuart(x, y, z).getSkyColor());
