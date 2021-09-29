@@ -42,14 +42,14 @@ public abstract class ClientWorldMixin extends Level {
         super(p_i241925_1_, p_i241925_2_, p_i241925_3_, p_i241925_4_, p_i241925_5_, p_i241925_6_, p_i241925_7_);
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;animateTick(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)V"), method = "doAnimateTick(IIIILjava/util/Random;ZLnet/minecraft/util/math/BlockPos$Mutable;)V")
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;animateTick(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Ljava/util/Random;)V"), method = "doAnimateTick(IIIILjava/util/Random;Lnet/minecraft/client/multiplayer/ClientLevel$MarkerParticleStatus;Lnet/minecraft/core/BlockPos$MutableBlockPos;)V")
     private void animateTick(Block block, BlockState state, Level world, BlockPos pos, Random rand) {
         if (!AnimateTickEvent.onAnimateTick(state, world, pos, rand)) {
             block.animateTick(state, world, pos, rand);
         }
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;animateTick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)V"), method = "doAnimateTick(IIIILjava/util/Random;ZLnet/minecraft/util/math/BlockPos$Mutable;)V")
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/material/FluidState;animateTick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Ljava/util/Random;)V"), method = "doAnimateTick(IIIILjava/util/Random;Lnet/minecraft/client/multiplayer/ClientLevel$MarkerParticleStatus;Lnet/minecraft/core/BlockPos$MutableBlockPos;)V")
     private void animateFluidTick(FluidState state, Level world, BlockPos pos, Random random) {
         if (!AnimateFluidTickEvent.onAnimateFluidTick(world, pos, state, random)) {
             ((FluidInvokerMixin) state.getType()).callAnimateTick(world, pos, state, random);

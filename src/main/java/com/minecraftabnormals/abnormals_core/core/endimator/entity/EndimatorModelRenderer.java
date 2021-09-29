@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.core.Direction;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
@@ -13,6 +12,9 @@ import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Much like the vanilla RendererModel but can store data of default values and has some more advanced features;
@@ -36,28 +38,13 @@ public class EndimatorModelRenderer extends ModelPart {
 	/**
 	 * @param model - Entity model this ModelRenderer belongs to
 	 */
-	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> model) {
-		super(model);
+	public EndimatorModelRenderer(List<Cube> cubes, Map<String, ModelPart> children) {
+		super(cubes, children);
 		this.setScale(1.0F, 1.0F, 1.0F);
-		model.addBoxToSavedBoxes(this);
-		model.accept(this);
-		this.setTexSize(model.texWidth, model.texHeight);
 	}
-	
-	/**
-	 * Texture offset constuctor 
-	 * @param model - Entity model this ModelRenderer belongs to
-	 * @param textureOffsetX - X offset on the texture
-	 * @param textureOffsetY - Y offset on the texture
-	 */
-	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> model, int textureOffsetX, int textureOffsetY) {
-		this(model.texWidth, model.texHeight, textureOffsetX, textureOffsetY);
-		model.addBoxToSavedBoxes(this);
-		model.accept(this);
-	}
-	
-	public EndimatorModelRenderer(int textureWidthIn, int textureHeightIn, int textureOffsetXIn, int textureOffsetYIn) {
-		super(textureWidthIn, textureHeightIn, textureOffsetXIn, textureOffsetYIn);
+
+	public EndimatorModelRenderer(ModelPart from) {
+		super(from.cubes, from.children);
 		this.setScale(1.0F, 1.0F, 1.0F);
 	}
 	
@@ -77,52 +64,6 @@ public class EndimatorModelRenderer extends ModelPart {
 	 */
 	public String getName() {
 		return this.name;
-	}
-	
-	/**
-	 * Performs the same function as vanilla's setTextureOffset
-	 */
-	@Override
-	public EndimatorModelRenderer texOffs(int x, int y) {
-		this.textureOffsetX = x;
-		this.textureOffsetY = y;
-		return this;
-	}
-	
-	@Override
-	public EndimatorModelRenderer setTexSize(int textureWidthIn, int textureHeightIn) {
-		this.textureWidth = (float)textureWidthIn;
-		this.textureHeight = (float)textureHeightIn;
-		return this;
-	}
-	
-	@Override
-	public EndimatorModelRenderer addBox(String partName, float x, float y, float z, int width, int height, int depth, float delta, int texX, int texY) {
-		this.texOffs(texX, texY);
-		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, (float)width, (float)height, (float)depth, delta, delta, delta, this.mirror, false);
-		return this;
-	}
-
-	public EndimatorModelRenderer addBox(float x, float y, float z, float width, float height, float depth) {
-		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, this.mirror, false);
-		return this;
-	}
-
-	public EndimatorModelRenderer addBox(float x, float y, float z, float width, float height, float depth, boolean mirrorIn) {
-		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, mirrorIn, false);
-		return this;
-	}
-
-	public void addBox(float x, float y, float z, float width, float height, float depth, float delta) {
-		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, this.mirror, false);
-	}
-
-	public void addBox(float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ) {
-		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, this.mirror, false);
-	}
-
-	public void addBox(float x, float y, float z, float width, float height, float depth, float delta, boolean mirrorIn) {
-		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, mirrorIn, false);
 	}
 
 	private void addBox(int texOffX, int texOffY, float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ, boolean mirorIn, boolean p_228305_13_) {

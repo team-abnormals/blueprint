@@ -3,27 +3,33 @@ package client;
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import common.entities.TestEndimatedEntity;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 
 @Test
 public final class TestEndimatedEntityModel<E extends TestEndimatedEntity> extends EndimatorEntityModel<E> {
 	private EndimatorModelRenderer cube;
 
 	public TestEndimatedEntityModel() {
-		this.texWidth = 64;
-		this.texHeight = 32;
-		this.cube = new EndimatorModelRenderer(this, 0, 0);
-		this.cube.setPos(0.0F, 16.0F, 0.0F);
-		this.cube.addBox(-8.0F, -8.0F, -8.0F, 16, 16, 16, 0.0F);
-		this.cube.setName("cube");
-
+		this.cube = new EndimatorModelRenderer(createLayer().bakeRoot().getChild("cube"));
 		this.setDefaultBoxValues();
 	}
 
+	private static LayerDefinition createLayer() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition partdefinition = meshdefinition.getRoot();
+		partdefinition.addOrReplaceChild("cube", CubeListBuilder.create().addBox(-8.0F, -8.0F, -8.0F, 16, 16, 16), PartPose.offset(0.0F, 16.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 32);
+	}
+
 	@Override
-	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.cube.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}

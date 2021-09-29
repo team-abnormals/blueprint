@@ -11,9 +11,9 @@ import net.minecraft.world.level.newbiome.layer.Layer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
@@ -25,6 +25,9 @@ public abstract class EndBiomeProviderMixin extends BiomeSource {
 	private Registry<Biome> biomes;
 	@Shadow
 	@Final
+	private long seed;
+	@Shadow
+	@Final
 	private Biome highlands;
 	@Shadow
 	@Final
@@ -32,16 +35,11 @@ public abstract class EndBiomeProviderMixin extends BiomeSource {
 	@Shadow
 	@Final
 	private Biome barrens;
-
-	private Layer noiseBiomeLayer;
+	@Unique
+	private final Layer noiseBiomeLayer = ACLayerUtil.createEndBiomeLayer(this.biomes, (seedModifier) -> new LazyAreaContext(25, this.seed, seedModifier));
 
 	private EndBiomeProviderMixin(List<Biome> biomes) {
 		super(biomes);
-	}
-
-	@Inject(at = @At("RETURN"), method = "<init>")
-	private void init(Registry<Biome> lookupRegistry, long seed, CallbackInfo info) {
-		this.noiseBiomeLayer = ACLayerUtil.createEndBiomeLayer(biomes, (seedModifier) -> new LazyAreaContext(25, seed, seedModifier));
 	}
 
 	@Inject(at = @At("RETURN"), method = "getNoiseBiome(III)Lnet/minecraft/world/level/biome/Biome;", cancellable = true)

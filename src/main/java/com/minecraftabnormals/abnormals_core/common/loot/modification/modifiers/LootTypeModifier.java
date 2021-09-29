@@ -16,12 +16,12 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 
 /**
- * An {@link ILootModifier} that modifies the {@link LootParameterSet} of a {@link LootTable}.
+ * An {@link ILootModifier} that modifies the {@link LootContextParamSet} of a {@link LootTable}.
  *
  * @author SmellyModder (Luke Tonon)
  */
 public final class LootTypeModifier implements ILootModifier<LootContextParamSet> {
-	private static final Field PARAMETER_SET = ObfuscationReflectionHelper.findField(LootTable.class, "field_216127_d");
+	private static final Field PARAMETER_SET = ObfuscationReflectionHelper.findField(LootTable.class, "f_79108_");
 
 	@Override
 	public void modify(LootTableLoadEvent event, LootContextParamSet config) {

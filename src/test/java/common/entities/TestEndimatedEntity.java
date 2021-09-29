@@ -5,9 +5,9 @@ import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import core.ACTest;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.Level;
 
 @Test
 public class TestEndimatedEntity extends EndimatedEntity {
@@ -15,8 +15,8 @@ public class TestEndimatedEntity extends EndimatedEntity {
 	public static final Endimation GROW_ANIMATION = new Endimation(20);
 	public static final Endimation DEATH_ANIMATION = new Endimation(ACTest.REGISTRY_HELPER.prefix("death_test"), 30);
 
-	public TestEndimatedEntity(EntityType<? extends CreatureEntity> type, World worldIn) {
-		super(type, worldIn);
+	public TestEndimatedEntity(EntityType<? extends PathfinderMob> type, Level level) {
+		super(type, level);
 	}
 
 	@Override

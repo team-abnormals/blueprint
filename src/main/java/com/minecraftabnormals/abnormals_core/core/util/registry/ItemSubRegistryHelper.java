@@ -39,7 +39,7 @@ import net.minecraft.world.item.StandingAndWallBlockItem;
  * @see AbstractSubRegistryHelper
  */
 public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
-	private static final Field EGGS_FIELD = ObfuscationReflectionHelper.findField(SpawnEggItem.class, "field_195987_b");
+	private static final Field EGGS_FIELD = ObfuscationReflectionHelper.findField(SpawnEggItem.class, "f_43201_");
 	protected final Set<AbnormalsSpawnEggItem> spawnEggs = Sets.newHashSet();
 
 	public ItemSubRegistryHelper(RegistryHelper parent, DeferredRegister<Item> deferredRegister) {

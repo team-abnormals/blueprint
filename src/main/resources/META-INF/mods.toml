@@ -5,7 +5,7 @@ license = "https://github.com/team-abnormals/abnormals-core/blob/main/LICENSE.tx
 
 [[mods]]
     modId = "abnormals_core"
-    version = "3.3.0"
+    version = "5.0.0"
     logoFile = "logo.png"
     itemIcon = "minecraft:creeper_head"
     configBackground = "abnormals_core:textures/blueprint.png"
@@ -21,13 +21,13 @@ license = "https://github.com/team-abnormals/abnormals-core/blob/main/LICENSE.tx
 [[dependencies.abnormals_core]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.16.5,1.17)"
+    versionRange = "[1.17.1,)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.abnormals_core]]
     modId = "forge"
     mandatory = true
-    versionRange = "[36.2.0,)"
+    versionRange = "[37.0.59,)"
     ordering = "NONE"
     side = "BOTH"
