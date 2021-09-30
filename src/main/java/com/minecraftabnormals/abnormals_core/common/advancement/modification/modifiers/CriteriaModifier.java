@@ -22,7 +22,7 @@ import java.util.Optional;
  * @author SmellyModder (Luke Tonon)
  */
 public final class CriteriaModifier extends AdvancementModifier<CriteriaModifier.Config> {
-	public static final Field REQUIREMENTS_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "field_192066_f");
+	public static final Field REQUIREMENTS_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "f_138337_");
 
 	public CriteriaModifier() {
 		super(((element, conditionArrayParser) -> {

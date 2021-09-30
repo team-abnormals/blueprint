@@ -64,14 +64,9 @@ public final class AdvancementModificationManager extends SimpleJsonResourceRelo
 		field.setAccessible(true);
 		SimpleReloadableResourceManager reloadableResourceManager = (SimpleReloadableResourceManager) ((ServerResources) field.get(event)).getResourceManager();
 
-		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_199015_d");
+		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "f_10871_");
 		if (reloadListeners != null) {
 			reloadListeners.add(4, INSTANCE);
-		}
-
-		List<PreparableReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "field_219539_d");
-		if (initTaskQueue != null) {
-			initTaskQueue.add(4, INSTANCE);
 		}
 	}
 

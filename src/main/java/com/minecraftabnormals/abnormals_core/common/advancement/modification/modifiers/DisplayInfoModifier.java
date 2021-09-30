@@ -27,10 +27,10 @@ import java.util.Optional;
  * @author SmellyModder (Luke Tonon)
  */
 public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoModifier.Config> {
-	private static final Field DISPLAY_INFO_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "field_192063_c");
-	private static final Field ICON_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "field_192301_b");
-	private static final Field BACKGROUND_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "field_192302_c");
-	private static final Field SHOW_TOAST_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "field_193226_f");
+	private static final Field DISPLAY_INFO_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "f_138334_");
+	private static final Field ICON_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14960_");
+	private static final Field BACKGROUND_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14961_");
+	private static final Field SHOW_TOAST_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14963_");
 
 	public DisplayInfoModifier() {
 		super(((element, conditionArrayParser) -> {

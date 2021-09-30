@@ -25,7 +25,7 @@ public final class TestSplineFeature extends Feature<NoneFeatureConfiguration> {
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
 		BlockPos pos = context.origin();
 		Random rand = context.random();
-		BlockPos end = pos.offset(rand.nextInt(33) - rand.nextInt(33), rand.nextInt(33) - rand.nextInt(33), rand.nextInt(33) - rand.nextInt(33));
+		BlockPos end = pos.offset(rand.nextInt(16) - rand.nextInt(16), rand.nextInt(33) - rand.nextInt(33), rand.nextInt(16) - rand.nextInt(16));
 		List<Vec3> points = new ArrayList<>();
 		Vec3 startVec = Vec3.atLowerCornerOf(pos);
 		Vec3 endVec = Vec3.atLowerCornerOf(end);

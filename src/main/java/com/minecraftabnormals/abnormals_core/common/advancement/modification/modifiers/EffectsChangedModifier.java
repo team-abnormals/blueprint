@@ -20,8 +20,8 @@ import java.util.Map;
  * @author SmellyModder (Luke Tonon)
  */
 public final class EffectsChangedModifier extends AdvancementModifier<EffectsChangedModifier.Config> {
-	private static final Field INSTANCE_EFFECTS_FIELD = ObfuscationReflectionHelper.findField(EffectsChangedTrigger.TriggerInstance.class, "field_193196_a");
-	private static final Field PREDICATE_EFFECTS_FIELD = ObfuscationReflectionHelper.findField(MobEffectsPredicate.class, "field_193474_b");
+	private static final Field INSTANCE_EFFECTS_FIELD = ObfuscationReflectionHelper.findField(EffectsChangedTrigger.TriggerInstance.class, "f_26774_");
+	private static final Field PREDICATE_EFFECTS_FIELD = ObfuscationReflectionHelper.findField(MobEffectsPredicate.class, "f_56548_");
 
 	public EffectsChangedModifier() {
 		super((element, conditionArrayParser) -> {

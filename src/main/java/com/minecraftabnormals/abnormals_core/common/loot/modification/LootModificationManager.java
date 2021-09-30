@@ -73,14 +73,9 @@ public final class LootModificationManager extends ModificationManager<LootTable
 		INSTANCE = new LootModificationManager(dataPackRegistries.getPredicateManager());
 		//Loot modifiers must load before loot tables
 		SimpleReloadableResourceManager simpleReloadableResourceManager = (SimpleReloadableResourceManager) dataPackRegistries.getResourceManager();
-		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, simpleReloadableResourceManager, "field_199015_d");
+		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, simpleReloadableResourceManager, "f_10871_");
 		if (reloadListeners != null) {
 			reloadListeners.add(2, INSTANCE);
-		}
-
-		List<PreparableReloadListener> initTaskQueue = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, simpleReloadableResourceManager, "field_219539_d");
-		if (initTaskQueue != null) {
-			initTaskQueue.add(2, INSTANCE);
 		}
 	}
 

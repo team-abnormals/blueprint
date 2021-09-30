@@ -182,7 +182,7 @@ public final class AbnormalsCore {
 
 	private void replaceBeehivePOI() {
 		PoiType.BEEHIVE.matchingStates = Sets.newHashSet(PoiType.BEEHIVE.matchingStates);
-		Map<BlockState, PoiType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PoiType.class, null, "field_221073_u");
+		Map<BlockState, PoiType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PoiType.class, null, "f_27323_");
 		if (statePointOfInterestMap != null) {
 			for (Block block : BlockEntitySubRegistryHelper.collectBlocks(AbnormalsBeehiveBlock.class)) {
 				block.getStateDefinition().getPossibleStates().forEach(state -> {

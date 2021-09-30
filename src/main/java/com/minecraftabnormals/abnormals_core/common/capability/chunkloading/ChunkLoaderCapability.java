@@ -16,7 +16,7 @@ public class ChunkLoaderCapability {
 	public static Capability<IChunkLoader> CHUNK_LOAD_CAP = null;
 
 	public static void register(RegisterCapabilitiesEvent event) {
-		event.register(ChunkLoaderCapability.class);
+		event.register(IChunkLoader.class);
 	}
 
 	public static class Provider implements ICapabilityProvider {
