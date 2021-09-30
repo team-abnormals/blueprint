@@ -14,7 +14,6 @@
     "LanternBlockMixin",
     "LayerUtilMixin",
     "MixOceansLayerMixin",
-    "NetherBiomeProviderPresetMixin",
     "OceanLayerMixin",
     "ServerWorldMixin",
     "ShoreLayerMixin",
@@ -26,6 +25,7 @@
     "client.ClientWorldMixin",
     "client.CustomizeSkinScreenMixin",
     "client.MinecraftMixin",
+    "client.ModelLayersMixin",
     "client.PlayerRendererMixin"
   ],
   "injectors": {
