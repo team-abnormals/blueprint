@@ -6,27 +6,27 @@
   "refmap": "abnormals_core.refmap.json",
   "mixins": [
     "AdvancementBuilderMixin",
-    "EndBiomeProviderMixin",
     "EntityMixin",
     "FluidInvokerMixin",
-    "HillsLayerMixin",
     "ItemInvokerMixin",
     "LanternBlockMixin",
-    "LayerUtilMixin",
-    "MixOceansLayerMixin",
+    "LayersMixin",
     "OceanLayerMixin",
-    "ServerWorldMixin",
+    "OceanMixerLayerMixin",
+    "RegionHillsLayerMixin",
+    "ServerEntityMixin",
+    "ServerLevelMixin",
     "ShoreLayerMixin",
     "SpawnEggItemMixin",
-    "TrackedEntityMixin"
+    "TheEndBiomeSourceMixin"
   ],
   "client": [
-    "client.ActiveRenderInfoInvokerMixin",
-    "client.ClientWorldMixin",
-    "client.CustomizeSkinScreenMixin",
+    "client.CameraInvokerMixin",
+    "client.ClientLevelMixin",
     "client.MinecraftMixin",
     "client.ModelLayersMixin",
-    "client.PlayerRendererMixin"
+    "client.PlayerRendererMixin",
+    "client.SkinCustomizationScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

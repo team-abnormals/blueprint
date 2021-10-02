@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 //TODO: Enable once Forge fixes the mixin bug with ModifyArgs
 @Mixin(MultiNoiseBiomeSource.Preset.class)
-public final class NetherBiomeProviderPresetMixin {
+public final class MultiNoiseBiomeSourcePresetMixin {
 
 	//Not sure why @ModifyArg wouldn't work?
 	@ModifyArgs(method = "*(Lnet/minecraft/world/level/biome/MultiNoiseBiomeSource$Preset;Lnet/minecraft/core/Registry;Ljava/lang/Long;)Lnet/minecraft/world/level/biome/MultiNoiseBiomeSource;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/biome/MultiNoiseBiomeSource;<init>(JLjava/util/List;Ljava/util/Optional;)V"))

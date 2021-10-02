@@ -16,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(SkinCustomizationScreen.class)
-public final class CustomizeSkinScreenMixin extends OptionsSubScreen {
+public final class SkinCustomizationScreenMixin extends OptionsSubScreen {
 
-	private CustomizeSkinScreenMixin(Screen previousScreen, Options gameSettingsObj, Component textComponent) {
+	private SkinCustomizationScreenMixin(Screen previousScreen, Options gameSettingsObj, Component textComponent) {
 		super(previousScreen, gameSettingsObj, textComponent);
 	}
 

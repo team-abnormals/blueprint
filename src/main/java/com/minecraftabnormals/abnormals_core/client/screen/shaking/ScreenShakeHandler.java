@@ -2,7 +2,7 @@ package com.minecraftabnormals.abnormals_core.client.screen.shaking;
 
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
-import com.minecraftabnormals.abnormals_core.core.mixin.client.ActiveRenderInfoInvokerMixin;
+import com.minecraftabnormals.abnormals_core.core.mixin.client.CameraInvokerMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.util.Mth;
@@ -140,7 +140,7 @@ public enum ScreenShakeHandler {
 			double partialTicks = event.getRenderPartialTicks();
 			double x = Mth.lerp(partialTicks, this.prevIntensityX, this.intensityX), y = Mth.lerp(partialTicks, this.prevIntensityY, this.intensityY), z = Mth.lerp(partialTicks, this.prevIntensityZ, this.intensityZ);
 			if (x != 0.0F || y != 0.0F || z != 0.0F) {
-				((ActiveRenderInfoInvokerMixin) event.getInfo()).callMove(z * screenEffectScale, y * screenEffectScale, x * screenEffectScale);
+				((CameraInvokerMixin) event.getInfo()).callMove(z * screenEffectScale, y * screenEffectScale, x * screenEffectScale);
 			}
 		}
 	}

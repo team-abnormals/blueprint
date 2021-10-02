@@ -23,11 +23,10 @@ import java.util.concurrent.Executor;
  * @author SmellyModder (Luke Tonon)
  */
 @Mixin(ServerLevel.class)
-public final class ServerWorldMixin {
+public final class ServerLevelMixin {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void init(MinecraftServer server, Executor workerExecutor, LevelStorageSource.LevelStorageAccess levelSave, ServerLevelData serverWorldInfo, ResourceKey<Level> resourceKey, DimensionType dimensionType, ChunkProgressListener statusListener, ChunkGenerator chunkGenerator, boolean bl, long l, List<CustomSpawner> list, boolean bl2, CallbackInfo info) {
-		//Overworld
 		if (resourceKey == Level.OVERWORLD) {
 			GlobalStorageManager.getOrCreate((ServerLevel) (Object) this);
 		}

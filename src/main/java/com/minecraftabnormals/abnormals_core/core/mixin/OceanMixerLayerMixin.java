@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
  * @author ExpensiveKoala
  */
 @Mixin(OceanMixerLayer.class)
-public final class MixOceansLayerMixin {
+public final class OceanMixerLayerMixin {
     // Inject before if statement checking if deep ocean
     @Inject(method = "applyPixel", at = @At(value = "CONSTANT", args = "intValue=24", ordinal = 0, shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     public void applyPixel(Context iNoiseRandom, Area deepArea, Area tempArea, int x, int y, CallbackInfoReturnable<Integer> cir, int i, int j) {

@@ -16,7 +16,7 @@ public final class ModelLayersMixin {
 	@Inject(at = @At("HEAD"), method = "createSignModelName", cancellable = true)
 	private static void createSignModelName(WoodType type, CallbackInfoReturnable<ModelLayerLocation> info) {
 		ResourceLocation location = new ResourceLocation(type.name());
-		info.setReturnValue(new ModelLayerLocation(new ResourceLocation(location.getNamespace(), "entity/signs/" + location.getPath()), "main"));
+		info.setReturnValue(new ModelLayerLocation(new ResourceLocation(location.getNamespace(), "sign/" + location.getPath()), "main"));
 	}
 
 }

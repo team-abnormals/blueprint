@@ -31,14 +31,14 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 @Mixin(ClientLevel.class)
-public abstract class ClientWorldMixin extends Level {
+public abstract class ClientLevelMixin extends Level {
     @Shadow
     @Final
     private DimensionSpecialEffects effects;
     @Shadow
     private int skyFlashTime;
 
-    protected ClientWorldMixin(WritableLevelData p_i241925_1_, ResourceKey<Level> p_i241925_2_, DimensionType p_i241925_3_, Supplier<ProfilerFiller> p_i241925_4_, boolean p_i241925_5_, boolean p_i241925_6_, long p_i241925_7_) {
+    protected ClientLevelMixin(WritableLevelData p_i241925_1_, ResourceKey<Level> p_i241925_2_, DimensionType p_i241925_3_, Supplier<ProfilerFiller> p_i241925_4_, boolean p_i241925_5_, boolean p_i241925_6_, long p_i241925_7_) {
         super(p_i241925_1_, p_i241925_2_, p_i241925_3_, p_i241925_4_, p_i241925_5_, p_i241925_6_, p_i241925_7_);
     }
 
@@ -56,6 +56,7 @@ public abstract class ClientWorldMixin extends Level {
         }
     }
 
+    //TODO: Remove this; Vanilla now does this.
     @Inject(at = @At("HEAD"), method = "getSkyColor", cancellable = true)
     private void getSkyColor(Vec3 vec3, float partialTicks, CallbackInfoReturnable<Vec3> info) {
         if (ACConfig.ValuesHolder.isSmoothSkyColorEnabled() && this.effects.skyType() == DimensionSpecialEffects.SkyType.NORMAL) {

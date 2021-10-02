@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(TheEndBiomeSource.class)
-public abstract class EndBiomeProviderMixin extends BiomeSource {
+public abstract class TheEndBiomeSourceMixin extends BiomeSource {
 	@Shadow
 	@Final
 	private Registry<Biome> biomes;
@@ -36,7 +36,7 @@ public abstract class EndBiomeProviderMixin extends BiomeSource {
 	@Unique
 	private Layer noiseBiomeLayer;
 
-	private EndBiomeProviderMixin(List<Biome> biomes) {
+	private TheEndBiomeSourceMixin(List<Biome> biomes) {
 		super(biomes);
 	}
 

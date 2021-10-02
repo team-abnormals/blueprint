@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * @author ExpensiveKoala
  */
 @Mixin(Layers.class)
-public final class LayerUtilMixin {
+public final class LayersMixin {
     @Inject(method = "isOcean", at = @At("HEAD"), cancellable = true)
     private static void isOcean(int biomeIn, CallbackInfoReturnable<Boolean> cir) {
         ResourceKey<Biome> biome = Biomes.byId(biomeIn);
