@@ -1,10 +1,13 @@
 package com.minecraftabnormals.abnormals_core.common.advancement.modification.modifiers;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier;
+import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
@@ -13,22 +16,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * An {@link AdvancementModifier} extension that modifies the rewards of an advancement.
+ * An {@link IAdvancementModifier} implementation that modifies the rewards of an advancement.
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class RewardsModifier extends AdvancementModifier<RewardsModifier.Config> {
+public final class RewardsModifier implements IAdvancementModifier<RewardsModifier.Config> {
 
-	public RewardsModifier() {
-		super(((element, conditionArrayParser) -> {
-			JsonObject object = element.getAsJsonObject();
-			Mode mode = Mode.deserialize(object);
-			Optional<Integer> experience = GsonHelper.isValidNode(object, "experience") ? Optional.of(GsonHelper.getAsInt(object, "experience")) : Optional.empty();
-			Optional<List<ResourceLocation>> loot = deserializeResourceList(object, "loot");
-			Optional<List<ResourceLocation>> recipes = deserializeResourceList(object, "recipes");
-			Optional<ResourceLocation> function = GsonHelper.isValidNode(object, "function") ? Optional.of(new ResourceLocation(GsonHelper.getAsString(object, "function"))) : Optional.empty();
-			return new Config(mode, experience, loot, recipes, function);
-		}));
+	private static JsonArray serializeResourceList(List<ResourceLocation> resources) {
+		JsonArray array = new JsonArray();
+		resources.forEach(resourceLocation -> array.add(resourceLocation.toString()));
+		return array;
 	}
 
 	private static Optional<List<ResourceLocation>> deserializeResourceList(JsonObject object, String key) {
@@ -73,14 +70,36 @@ public final class RewardsModifier extends AdvancementModifier<RewardsModifier.C
 		}
 	}
 
-	static class Config {
+	@Override
+	public JsonElement serialize(Config config, Void additional) throws JsonParseException {
+		JsonObject object = new JsonObject();
+		config.mode.serialize(object);
+		config.experience.ifPresent(experience -> object.addProperty("experience", experience));
+		config.loot.ifPresent(loot -> object.add("loot", serializeResourceList(loot)));
+		config.recipes.ifPresent(recipes -> object.add("recipes", serializeResourceList(recipes)));
+		config.function.ifPresent(function -> object.addProperty("function", function.toString()));
+		return object;
+	}
+
+	@Override
+	public Config deserialize(JsonElement element, DeserializationContext additional) throws JsonParseException {
+		JsonObject object = element.getAsJsonObject();
+		Mode mode = Mode.deserialize(object);
+		Optional<Integer> experience = GsonHelper.isValidNode(object, "experience") ? Optional.of(GsonHelper.getAsInt(object, "experience")) : Optional.empty();
+		Optional<List<ResourceLocation>> loot = deserializeResourceList(object, "loot");
+		Optional<List<ResourceLocation>> recipes = deserializeResourceList(object, "recipes");
+		Optional<ResourceLocation> function = GsonHelper.isValidNode(object, "function") ? Optional.of(new ResourceLocation(GsonHelper.getAsString(object, "function"))) : Optional.empty();
+		return new Config(mode, experience, loot, recipes, function);
+	}
+
+	public static class Config {
 		private final Mode mode;
 		private final Optional<Integer> experience;
 		private final Optional<List<ResourceLocation>> loot;
 		private final Optional<List<ResourceLocation>> recipes;
 		private final Optional<ResourceLocation> function;
 
-		Config(Mode mode, Optional<Integer> experience, Optional<List<ResourceLocation>> loot, Optional<List<ResourceLocation>> recipes, Optional<ResourceLocation> function) {
+		public Config(Mode mode, Optional<Integer> experience, Optional<List<ResourceLocation>> loot, Optional<List<ResourceLocation>> recipes, Optional<ResourceLocation> function) {
 			this.mode = mode;
 			this.experience = experience;
 			this.loot = loot;

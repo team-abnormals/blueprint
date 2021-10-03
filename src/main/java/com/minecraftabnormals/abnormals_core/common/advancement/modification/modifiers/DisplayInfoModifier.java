@@ -1,13 +1,15 @@
 package com.minecraftabnormals.abnormals_core.common.advancement.modification.modifiers;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
-import com.minecraftabnormals.abnormals_core.common.advancement.modification.AdvancementModifier;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
@@ -22,31 +24,15 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 /**
- * An {@link AdvancementModifier} extension that modifies the {@link DisplayInfo} of an advancement.
+ * An {@link IAdvancementModifier} implementation that modifies the {@link DisplayInfo} of an advancement.
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoModifier.Config> {
+public final class DisplayInfoModifier implements IAdvancementModifier<DisplayInfoModifier.Config> {
 	private static final Field DISPLAY_INFO_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "f_138334_");
 	private static final Field ICON_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14960_");
 	private static final Field BACKGROUND_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14961_");
 	private static final Field SHOW_TOAST_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14963_");
-
-	public DisplayInfoModifier() {
-		super(((element, conditionArrayParser) -> {
-			JsonObject object = element.getAsJsonObject();
-			Mode mode = Mode.deserialize(object);
-			Optional<Component> title = GsonHelper.isValidNode(object, "title") ? Optional.ofNullable(Component.Serializer.fromJson(object.get("title"))) : Optional.empty();
-			Optional<Component> description = GsonHelper.isValidNode(object, "description") ? Optional.ofNullable(Component.Serializer.fromJson(object.get("description"))) : Optional.empty();
-			Optional<ItemStack> icon = GsonHelper.isValidNode(object, "icon") ? Optional.of(deserializeIcon(GsonHelper.getAsJsonObject(object, "icon"))) : Optional.empty();
-			Optional<ResourceLocation> background = GsonHelper.isValidNode(object, "background") ? Optional.of(new ResourceLocation(GsonHelper.getAsString(object, "background"))) : Optional.empty();
-			Optional<FrameType> frameType = GsonHelper.isValidNode(object, "frame") ? Optional.of(FrameType.byName(GsonHelper.getAsString(object, "frame"))) : Optional.empty();
-			Optional<Boolean> showToast = GsonHelper.isValidNode(object, "show_toast") ? Optional.of(GsonHelper.getAsBoolean(object, "show_toast")) : Optional.empty();
-			Optional<Boolean> announceToChat = GsonHelper.isValidNode(object, "announce_to_chat") ? Optional.of(GsonHelper.getAsBoolean(object, "announce_to_chat")) : Optional.empty();
-			Optional<Boolean> hidden = GsonHelper.isValidNode(object, "hidden") ? Optional.of(GsonHelper.getAsBoolean(object, "hidden")) : Optional.empty();
-			return new Config(mode, title, description, icon, background, frameType, showToast, announceToChat, hidden);
-		}));
-	}
 
 	private static ItemStack deserializeIcon(JsonObject object) {
 		if (!object.has("item")) {
@@ -92,7 +78,45 @@ public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoMo
 		}
 	}
 
-	static class Config {
+	@SuppressWarnings("deprecation")
+	@Override
+	public JsonElement serialize(Config config, Void additional) throws JsonParseException {
+		JsonObject jsonObject = new JsonObject();
+		config.mode.serialize(jsonObject);
+		config.title.ifPresent(title -> jsonObject.add("title", Component.Serializer.toJsonTree(title)));
+		config.description.ifPresent(description -> jsonObject.add("description", Component.Serializer.toJsonTree(description)));
+		config.icon.ifPresent(icon -> {
+			JsonObject iconObject = new JsonObject();
+			iconObject.addProperty("item", Registry.ITEM.getKey(icon.getItem()).toString());
+			if (icon.hasTag()) {
+				iconObject.addProperty("nbt", icon.getTag().toString());
+			}
+			jsonObject.add("icon", iconObject);
+		});
+		config.background.ifPresent(background -> jsonObject.addProperty("background", background.toString()));
+		config.frame.ifPresent(frame -> jsonObject.addProperty("frame", frame.getName()));
+		config.showToast.ifPresent(showToast -> jsonObject.addProperty("show_toast", showToast));
+		config.announceToChat.ifPresent(announceToChat -> jsonObject.addProperty("announce_to_chat", announceToChat));
+		config.hidden.ifPresent(hidden -> jsonObject.addProperty("hidden", hidden));
+		return jsonObject;
+	}
+
+	@Override
+	public Config deserialize(JsonElement element, DeserializationContext additional) throws JsonParseException {
+		JsonObject object = element.getAsJsonObject();
+		Mode mode = Mode.deserialize(object);
+		Optional<Component> title = GsonHelper.isValidNode(object, "title") ? Optional.ofNullable(Component.Serializer.fromJson(object.get("title"))) : Optional.empty();
+		Optional<Component> description = GsonHelper.isValidNode(object, "description") ? Optional.ofNullable(Component.Serializer.fromJson(object.get("description"))) : Optional.empty();
+		Optional<ItemStack> icon = GsonHelper.isValidNode(object, "icon") ? Optional.of(deserializeIcon(GsonHelper.getAsJsonObject(object, "icon"))) : Optional.empty();
+		Optional<ResourceLocation> background = GsonHelper.isValidNode(object, "background") ? Optional.of(new ResourceLocation(GsonHelper.getAsString(object, "background"))) : Optional.empty();
+		Optional<FrameType> frameType = GsonHelper.isValidNode(object, "frame") ? Optional.of(FrameType.byName(GsonHelper.getAsString(object, "frame"))) : Optional.empty();
+		Optional<Boolean> showToast = GsonHelper.isValidNode(object, "show_toast") ? Optional.of(GsonHelper.getAsBoolean(object, "show_toast")) : Optional.empty();
+		Optional<Boolean> announceToChat = GsonHelper.isValidNode(object, "announce_to_chat") ? Optional.of(GsonHelper.getAsBoolean(object, "announce_to_chat")) : Optional.empty();
+		Optional<Boolean> hidden = GsonHelper.isValidNode(object, "hidden") ? Optional.of(GsonHelper.getAsBoolean(object, "hidden")) : Optional.empty();
+		return new Config(mode, title, description, icon, background, frameType, showToast, announceToChat, hidden);
+	}
+
+	public static class Config {
 		private final Mode mode;
 		private final Optional<Component> title;
 		private final Optional<Component> description;
@@ -103,7 +127,7 @@ public final class DisplayInfoModifier extends AdvancementModifier<DisplayInfoMo
 		private final Optional<Boolean> announceToChat;
 		private final Optional<Boolean> hidden;
 
-		Config(Mode mode, Optional<Component> title, Optional<Component> description, Optional<ItemStack> icon, Optional<ResourceLocation> background, Optional<FrameType> frame, Optional<Boolean> showToast, Optional<Boolean> announceToChat, Optional<Boolean> hidden) {
+		public Config(Mode mode, Optional<Component> title, Optional<Component> description, Optional<ItemStack> icon, Optional<ResourceLocation> background, Optional<FrameType> frame, Optional<Boolean> showToast, Optional<Boolean> announceToChat, Optional<Boolean> hidden) {
 			this.mode = mode;
 			this.title = title;
 			this.description = description;
