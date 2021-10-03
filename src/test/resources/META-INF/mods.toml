@@ -13,7 +13,7 @@ license="https://github.com/minecraftabnormals/Abnormals-Core/blob/master/LICENS
 [[dependencies.ac_test]]
     modId="forge"
     mandatory=true
-    versionRange="[37.0.59,)"
+    versionRange="[37.0.78,)"
     ordering="NONE"
     side="BOTH"
 

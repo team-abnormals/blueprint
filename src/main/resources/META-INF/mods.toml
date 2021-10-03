@@ -28,6 +28,6 @@ license = "https://github.com/team-abnormals/abnormals-core/blob/main/LICENSE.tx
 [[dependencies.abnormals_core]]
     modId = "forge"
     mandatory = true
-    versionRange = "[37.0.59,)"
+    versionRange = "[37.0.78,)"
     ordering = "NONE"
     side = "BOTH"

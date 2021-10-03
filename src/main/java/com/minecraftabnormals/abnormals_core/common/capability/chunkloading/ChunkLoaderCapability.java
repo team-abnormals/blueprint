@@ -12,8 +12,7 @@ import javax.annotation.Nullable;
  * @author SmellyModder(Luke Tonon)
  */
 public class ChunkLoaderCapability {
-	@CapabilityInject(IChunkLoader.class)
-	public static Capability<IChunkLoader> CHUNK_LOAD_CAP = null;
+	public static Capability<IChunkLoader> CHUNK_LOAD_CAP = CapabilityManager.get(new CapabilityToken<>(){});
 
 	public static void register(RegisterCapabilitiesEvent event) {
 		event.register(IChunkLoader.class);
