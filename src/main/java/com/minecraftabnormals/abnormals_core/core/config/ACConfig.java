@@ -46,8 +46,6 @@ public final class ACConfig {
 	}
 
 	public static final class Client {
-		@ConfigKey("smooth_sky_color_enabled")
-		public final ConfigValue<Boolean> enableSmoothSkyColor;
 		@ConfigKey("screen_shake_scale")
 		public final ConfigValue<Double> screenShakeScale;
 		@ConfigKey("max_screen_shakers")
@@ -57,11 +55,6 @@ public final class ACConfig {
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Client only settings for Abnormals Core.")
 			.push("client");
-
-			this.enableSmoothSkyColor = builder
-					.comment("If sky color transition should be smooth; Default: True")
-					.translation(makeTranslation("smooth_sky_color"))
-					.define("smoothSkyColor", true);
 
 			this.screenShakeScale = builder
 					.comment("Scale for screen shake effects; Default: 1.0")
@@ -137,7 +130,6 @@ public final class ACConfig {
 		private static boolean poisonPotatoCompatEnabled;
 		private static boolean poisonEffect;
 		private static double poisonChance;
-		private static boolean smoothSkyColorEnabled;
 		private static double screenShakeScale;
 		private static int maxScreenShakers;
 
@@ -148,7 +140,6 @@ public final class ACConfig {
 		}
 
 		public static void updateClientValuesFromConfig(ModConfig config) {
-			smoothSkyColorEnabled = ACConfig.CLIENT.enableSmoothSkyColor.get();
 			screenShakeScale = ACConfig.CLIENT.screenShakeScale.get();
 			maxScreenShakers = ACConfig.CLIENT.maxScreenShakers.get();
 		}
@@ -163,10 +154,6 @@ public final class ACConfig {
 
 		public static double poisonEffectChance() {
 			return poisonChance;
-		}
-
-		public static boolean isSmoothSkyColorEnabled() {
-			return smoothSkyColorEnabled;
 		}
 
 		public static double getScreenShakeScale() {
