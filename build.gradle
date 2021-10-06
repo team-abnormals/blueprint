@@ -75,9 +75,17 @@ minecraft {
     }
 }
 
+repositories {
+    maven {
+        url "https://maven.jaackson.me"
+    }
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
 
+    // Push mixin to the game module
+    implementation fg.deobf("me.jaackson:mixin-hack:1.0.0")
     annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
 }
 
@@ -94,21 +102,23 @@ jar {
                 "MixinConfigs"            : project.modId + ".mixins.json"
         ])
     }
-    classifier = "slim"
-    finalizedBy "reobfJar"
-    finalizedBy "sourcesJar"
+    finalizedBy 'reobfJar'
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
-    preserveFileTimestamps = false
-    reproducibleFileOrder = true
-    archiveClassifier = "sources"
+task sourcesJar(type: Jar) {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    archiveClassifier.set('sources')
+    from sourceSets.main.allJava
+}
+
+artifacts {
+    archives sourcesJar
 }
 
 publishing {
     publications {
         maven(MavenPublication) {
+            artifact jar
             artifact sourcesJar
         }
     }

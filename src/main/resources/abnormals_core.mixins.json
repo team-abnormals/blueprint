@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "com.minecraftabnormals.abnormals_core.core.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "minVersion": "0.8",
   "refmap": "abnormals_core.refmap.json",
   "mixins": [
@@ -11,6 +11,7 @@
     "ItemInvokerMixin",
     "LanternBlockMixin",
     "LayersMixin",
+    "MultiNoiseBiomeSourcePresetMixin",
     "OceanLayerMixin",
     "OceanMixerLayerMixin",
     "RegionHillsLayerMixin",
