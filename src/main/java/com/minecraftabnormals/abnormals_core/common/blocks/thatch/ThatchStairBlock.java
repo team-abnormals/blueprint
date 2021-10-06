@@ -7,9 +7,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ThatchStairsBlock extends StairBlock {
-	@SuppressWarnings("deprecation")
-	public ThatchStairsBlock(BlockState state, Properties properties) {
+@SuppressWarnings("deprecation")
+public class ThatchStairBlock extends StairBlock {
+
+	public ThatchStairBlock(BlockState state, Properties properties) {
 		super(state, properties);
 	}
 
@@ -23,4 +24,5 @@ public class ThatchStairsBlock extends StairBlock {
 	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
 		return true;
 	}
+
 }

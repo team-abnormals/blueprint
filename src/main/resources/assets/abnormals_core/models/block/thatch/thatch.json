@@ -2,8 +2,6 @@
 	"parent": "block/block",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"thatch": "#thatch",
-		"extrudes": "#extrudes",
 		"particle": "#thatch"
 	},
 	"elements": [

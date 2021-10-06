@@ -6,6 +6,7 @@ import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestB
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.thatch.ThatchStairBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.wood.WoodPostBlock;
 import com.minecraftabnormals.abnormals_core.core.annotations.Test;
@@ -41,4 +42,5 @@ public final class TestBlocks {
 	public static final RegistryObject<Block> TEST_STRIPPED_POST = HELPER.createBlock("test_stripped_post", () -> new WoodPostBlock(Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> TEST_POST = HELPER.createBlock("test_post", () -> new WoodPostBlock(TEST_STRIPPED_POST, Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> TEST_HEDGE = HELPER.createBlock("test_hedge", () -> new HedgeBlock(Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_DECORATIONS);
+	public static final RegistryObject<Block> TEST_THATCH_STAIRS = HELPER.createBlock("test_thatch_stairs", () -> new ThatchStairBlock(Blocks.DIRT.defaultBlockState(), Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_DECORATIONS);
 }
