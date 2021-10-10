@@ -5,46 +5,44 @@ import com.minecraftabnormals.abnormals_core.core.api.conditions.ConfigValueCond
 import com.minecraftabnormals.abnormals_core.core.api.conditions.config.IConfigPredicateSerializer;
 import com.minecraftabnormals.abnormals_core.core.api.conditions.loot.ConfigLootCondition;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.Util;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockSource;
+import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.ai.behavior.GiveGiftToHero;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElement;
+import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.FireBlock;
 
 public final class DataUtil {
 	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "m_43513_", Potion.class, Item.class, Potion.class);
@@ -99,6 +97,43 @@ public final class DataUtil {
 		ResourceLocation name = profession.getRegistryName();
 		if (name != null) {
 			GiveGiftToHero.GIFTS.put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
+		}
+	}
+
+	/**
+	 * Makes a concatenation of two arrays of the same type.
+	 * <p>Useful for adding onto hardcoded arrays.</p>
+	 *
+	 * @param array A base array to add onto.
+	 * @param toAdd An array to add onto the base array.
+	 * @param <T>   The type of elements in the arrays.
+	 * @return A concatenation of two arrays of the same type.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] concatArrays(T[] array, @Nonnull T... toAdd) {
+		int arrayLength = array.length;
+		int toAddLength = toAdd.length;
+		T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), arrayLength + toAddLength);
+		System.arraycopy(array, 0, newArray, 0, arrayLength);
+		System.arraycopy(toAdd, 0, newArray, arrayLength, toAddLength);
+		return newArray;
+	}
+
+	/**
+	 * Concatenates an array from a given {@link Field} with a given array.
+	 * <p>Useful for adding onto inaccessible hardcoded arrays.</p>
+	 *
+	 * @param arrayField A field to get the base array to add onto.
+	 * @param object     An object to use when getting the base array from {@code arrayField}.
+	 * @param toAdd      An array to add onto the base array.
+	 * @param <T>        The type of elements in the arrays.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> void concatArrays(Field arrayField, @Nullable Object object, @Nonnull T... toAdd) {
+		try {
+			arrayField.set(object, concatArrays((T[]) arrayField.get(object), toAdd));
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 	}
 
