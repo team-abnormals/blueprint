@@ -3,7 +3,6 @@ package com.minecraftabnormals.abnormals_core.core.config;
 import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -13,11 +12,14 @@ public final class ACConfig {
 
 	public static class Common {
 		@ConfigKey("quark_poison_potato_compat_enabled")
-		public final ConfigValue<Boolean> poisonPotatoCompatEnabled;
+		public final ConfigValue<Boolean> poisonPotatoCompatEnabledValue;
+		public boolean poisonPotatoCompatEnabled;
 		@ConfigKey("potato_poison_effect")
-		public final ConfigValue<Boolean> poisonEffect;
+		public final ConfigValue<Boolean> poisonEffectValue;
+		public boolean poisonEffect;
 		@ConfigKey("potato_poison_chance")
-		public final ConfigValue<Double> poisonChance;
+		public final ConfigValue<Double> poisonChanceValue;
+		public double poisonChance;
 		
 		Common(ForgeConfigSpec.Builder builder) {
 			builder.comment("Common only settings for Abnormals Core, this will affect all depending mods")
@@ -25,17 +27,17 @@ public final class ACConfig {
 
 			builder.comment("Compatibility with Quark's poisonous potatoes feature")
 			.push("poisonousPotatoCompat");
-			this.poisonPotatoCompatEnabled = builder
+			this.poisonPotatoCompatEnabledValue = builder
 					.comment("If baby mobs can be fed a poisonous potato to stunt their growth when Quark is installed; Default: True")
 					.translation(makeTranslation("poison_potato_compat_enabled"))
 					.define("poisonPotatoCompatEnabled", true);
 
-			this.poisonEffect = builder
+			this.poisonEffectValue = builder
 					.comment("If growth stunting should give baby mobs poison; Default: True")
 					.translation(makeTranslation("poison_effect"))
 					.define("poisonEffect", true);
 
-			this.poisonChance = builder
+			this.poisonChanceValue = builder
 					.comment("The chance to stunt baby mob growth when feeding a poisonous potato; Default: 0.1")
 					.translation(makeTranslation("poison_chance"))
 					.defineInRange("poisonChance", 0.1, 0, 1);
@@ -43,25 +45,34 @@ public final class ACConfig {
 			builder.pop();
 			builder.pop();
 		}
+
+		public void load() {
+			this.poisonPotatoCompatEnabled = this.poisonPotatoCompatEnabledValue.get();
+			this.poisonEffect = this.poisonEffectValue.get();
+			this.poisonChance = this.poisonChanceValue.get();
+		}
 	}
 
 	public static final class Client {
 		@ConfigKey("screen_shake_scale")
-		public final ConfigValue<Double> screenShakeScale;
+		public final ConfigValue<Double> screenShakeScaleValue;
+		public double screenShakeScale;
 		@ConfigKey("max_screen_shakers")
-		public final ConfigValue<Integer> maxScreenShakers;
+		public final ConfigValue<Integer> maxScreenShakersValue;
+		public int maxScreenShakers;
+
 		public final SlabfishSettings slabfishSettings;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Client only settings for Abnormals Core.")
 			.push("client");
 
-			this.screenShakeScale = builder
+			this.screenShakeScaleValue = builder
 					.comment("Scale for screen shake effects; Default: 1.0")
 					.translation(makeTranslation("screen_shake_scale"))
 					.defineInRange("screenShakeScale", 1.0D, 0.0D, 1.0D);
 
-			this.maxScreenShakers = builder
+			this.maxScreenShakersValue = builder
 					.comment("Max amount of sources that can contribute to screen shaking, adjustable for performance and preference reasons. 0 will disable the addition of shake sources; Default: 256")
 					.translation(makeTranslation("max_screen_shakers"))
 					.defineInRange("maxScreenShakers", 256, 0, Integer.MAX_VALUE);
@@ -69,6 +80,11 @@ public final class ACConfig {
 			this.slabfishSettings = new SlabfishSettings(builder);
 
 			builder.pop();
+		}
+
+		public void load() {
+			this.screenShakeScale = this.screenShakeScaleValue.get();
+			this.maxScreenShakers = this.maxScreenShakersValue.get();
 		}
 	}
 
@@ -124,45 +140,6 @@ public final class ACConfig {
 		final Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Client::new);
 		CLIENT_SPEC = clientSpecPair.getRight();
 		CLIENT = clientSpecPair.getLeft();
-	}
-	
-	public static class ValuesHolder {
-		private static boolean poisonPotatoCompatEnabled;
-		private static boolean poisonEffect;
-		private static double poisonChance;
-		private static double screenShakeScale;
-		private static int maxScreenShakers;
-
-		public static void updateCommonValuesFromConfig(ModConfig config) {
-			poisonPotatoCompatEnabled = ACConfig.COMMON.poisonPotatoCompatEnabled.get();
-			poisonEffect = ACConfig.COMMON.poisonEffect.get();
-			poisonChance = ACConfig.COMMON.poisonChance.get();
-		}
-
-		public static void updateClientValuesFromConfig(ModConfig config) {
-			screenShakeScale = ACConfig.CLIENT.screenShakeScale.get();
-			maxScreenShakers = ACConfig.CLIENT.maxScreenShakers.get();
-		}
-
-		public static boolean isPoisonPotatoCompatEnabled() {
-			return poisonPotatoCompatEnabled;
-		}
-
-		public static boolean shouldPoisonEntity() {
-			return poisonEffect;
-		}
-
-		public static double poisonEffectChance() {
-			return poisonChance;
-		}
-
-		public static double getScreenShakeScale() {
-			return screenShakeScale;
-		}
-
-		public static int getMaxScreenShakers() {
-			return maxScreenShakers;
-		}
 	}
 
 }

@@ -106,9 +106,9 @@ public final class AbnormalsCore {
 		modEventBus.addListener((ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
 			if (config.getSpec() == ACConfig.COMMON_SPEC) {
-				ACConfig.ValuesHolder.updateCommonValuesFromConfig(config);
+				ACConfig.COMMON.load();
 			} else if (config.getSpec() == ACConfig.CLIENT_SPEC) {
-				ACConfig.ValuesHolder.updateClientValuesFromConfig(config);
+				ACConfig.CLIENT.load();
 			}
 		});
 

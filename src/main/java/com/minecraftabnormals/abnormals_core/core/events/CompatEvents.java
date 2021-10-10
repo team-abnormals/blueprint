@@ -49,14 +49,14 @@ public final class CompatEvents {
 	public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
 		Entity target = event.getTarget();
 		ItemStack stack = event.getItemStack();
-		if (target instanceof IAgeableEntity && ((IAgeableEntity) target).hasGrowthProgress() && stack.getItem() == Items.POISONOUS_POTATO && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
+		if (target instanceof IAgeableEntity && ((IAgeableEntity) target).hasGrowthProgress() && stack.getItem() == Items.POISONOUS_POTATO && ACConfig.COMMON.poisonPotatoCompatEnabled && ModList.get().isLoaded("quark")) {
 			Player player = event.getPlayer();
 			CompoundTag persistentData = target.getPersistentData();
 			if (((IAgeableEntity) target).canAge(true) && !persistentData.getBoolean(POISON_TAG)) {
-				if (target.level.random.nextDouble() < ACConfig.ValuesHolder.poisonEffectChance()) {
+				if (target.level.random.nextDouble() < ACConfig.COMMON.poisonChance) {
 					target.playSound(SoundEvents.GENERIC_EAT, 0.5f, 0.25f);
 					persistentData.putBoolean(POISON_TAG, true);
-					if (ACConfig.ValuesHolder.shouldPoisonEntity()) {
+					if (ACConfig.COMMON.poisonEffect) {
 						((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.POISON, 200));
 					}
 				} else {
@@ -72,7 +72,7 @@ public final class CompatEvents {
 	@SubscribeEvent
 	public static void onUpdateEntity(LivingEvent.LivingUpdateEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof IAgeableEntity && ACConfig.ValuesHolder.isPoisonPotatoCompatEnabled() && ModList.get().isLoaded("quark")) {
+		if (entity instanceof IAgeableEntity && ACConfig.COMMON.poisonPotatoCompatEnabled && ModList.get().isLoaded("quark")) {
 			if (entity.getPersistentData().getBoolean(POISON_TAG)) ((IAgeableEntity) entity).resetGrowthProgress();
 		}
 	}

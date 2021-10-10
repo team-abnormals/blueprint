@@ -78,7 +78,7 @@ public enum ScreenShakeHandler {
 	 */
 	public boolean addShakeSource(ShakeSource source) {
 		List<ShakeSource> sources = this.sources;
-		if (sources.size() >= ACConfig.ValuesHolder.getMaxScreenShakers()) return false;
+		if (sources.size() >= ACConfig.CLIENT.maxScreenShakers) return false;
 		sources.add(source);
 		return true;
 	}
@@ -135,12 +135,12 @@ public enum ScreenShakeHandler {
 	}
 
 	private void shakeCamera(EntityViewRenderEvent.CameraSetup event) {
-		double screenEffectScale = ACConfig.ValuesHolder.getScreenShakeScale();
-		if (screenEffectScale > 0.0D) {
+		double screenShakeScale = ACConfig.CLIENT.screenShakeScale;
+		if (screenShakeScale > 0.0D) {
 			double partialTicks = event.getRenderPartialTicks();
 			double x = Mth.lerp(partialTicks, this.prevIntensityX, this.intensityX), y = Mth.lerp(partialTicks, this.prevIntensityY, this.intensityY), z = Mth.lerp(partialTicks, this.prevIntensityZ, this.intensityZ);
 			if (x != 0.0F || y != 0.0F || z != 0.0F) {
-				((CameraInvokerMixin) event.getInfo()).callMove(z * screenEffectScale, y * screenEffectScale, x * screenEffectScale);
+				((CameraInvokerMixin) event.getInfo()).callMove(z * screenShakeScale, y * screenShakeScale, x * screenShakeScale);
 			}
 		}
 	}
