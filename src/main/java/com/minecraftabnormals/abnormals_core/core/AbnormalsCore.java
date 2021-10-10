@@ -3,7 +3,7 @@ package com.minecraftabnormals.abnormals_core.core;
 import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.client.RewardHandler;
 import com.minecraftabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
-import com.minecraftabnormals.abnormals_core.client.tile.AbnormalsChestBlockEntityRenderer;
+import com.minecraftabnormals.abnormals_core.client.renderer.block.AbnormalsChestBlockEntityRenderer;
 import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderCapability;
 import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderEvents;

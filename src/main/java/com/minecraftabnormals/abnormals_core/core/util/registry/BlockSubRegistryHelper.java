@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
 import com.minecraftabnormals.abnormals_core.client.ChestManager;
-import com.minecraftabnormals.abnormals_core.client.renderer.ChestBlockEntityWithoutLevelRenderer;
+import com.minecraftabnormals.abnormals_core.client.renderer.block.ChestBlockEntityWithoutLevelRenderer;
 import com.minecraftabnormals.abnormals_core.common.blockentity.AbnormalsTrappedChestBlockEntity;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;

@@ -1,4 +1,4 @@
-package com.minecraftabnormals.abnormals_core.client.tile;
+package com.minecraftabnormals.abnormals_core.client.renderer.block;
 
 import com.minecraftabnormals.abnormals_core.client.ChestManager;
 import com.minecraftabnormals.abnormals_core.core.api.IChestBlock;

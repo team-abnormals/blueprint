@@ -1,6 +1,5 @@
-package com.minecraftabnormals.abnormals_core.client.renderer;
+package com.minecraftabnormals.abnormals_core.client.renderer.block;
 
-import com.minecraftabnormals.abnormals_core.client.tile.AbnormalsChestBlockEntityRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
