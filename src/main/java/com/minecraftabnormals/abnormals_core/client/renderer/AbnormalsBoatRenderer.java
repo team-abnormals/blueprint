@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.client.renderer;
 
-import com.minecraftabnormals.abnormals_core.common.entity.AbnormalsBoatEntity;
+import com.minecraftabnormals.abnormals_core.common.entity.AbnormalsBoat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.BoatModel;
@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoatEntity> {
+public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoat> {
 	private final BoatModel model;
 
 	public AbnormalsBoatRenderer(EntityRendererProvider.Context context) {
@@ -27,10 +27,10 @@ public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoatEntity> {
 	}
 
 	@Override
-	public void render(AbnormalsBoatEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-		matrixStackIn.pushPose();
-		matrixStackIn.translate(0.0D, 0.375D, 0.0D);
-		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
+	public void render(AbnormalsBoat entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource source, int packedLightIn) {
+		poseStack.pushPose();
+		poseStack.translate(0.0D, 0.375D, 0.0D);
+		poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
 		float f = (float) entity.getHurtTime() - partialTicks;
 		float f1 = entity.getDamage() - partialTicks;
 		if (f1 < 0.0F) {
@@ -38,27 +38,27 @@ public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoatEntity> {
 		}
 
 		if (f > 0.0F) {
-			matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(Mth.sin(f) * f * f1 / 10.0F * (float) entity.getHurtDir()));
+			poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.sin(f) * f * f1 / 10.0F * (float) entity.getHurtDir()));
 		}
 
 		float f2 = entity.getBubbleAngle(partialTicks);
 		if (!Mth.equal(f2, 0.0F)) {
-			matrixStackIn.mulPose(new Quaternion(new Vector3f(1.0F, 0.0F, 1.0F), entity.getBubbleAngle(partialTicks), true));
+			poseStack.mulPose(new Quaternion(new Vector3f(1.0F, 0.0F, 1.0F), entity.getBubbleAngle(partialTicks), true));
 		}
 
-		matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
-		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+		poseStack.scale(-1.0F, -1.0F, 1.0F);
+		poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 		this.model.setupAnim(entity, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
-		VertexConsumer ivertexbuilder = bufferIn.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
-		this.model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-		VertexConsumer ivertexbuilder1 = bufferIn.getBuffer(RenderType.waterMask());
-		this.model.waterPatch().render(matrixStackIn, ivertexbuilder1, packedLightIn, OverlayTexture.NO_OVERLAY);
-		matrixStackIn.popPose();
-		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+		VertexConsumer vertexConsumer = source.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
+		this.model.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		VertexConsumer vertexConsumer1 = source.getBuffer(RenderType.waterMask());
+		this.model.waterPatch().render(poseStack, vertexConsumer1, packedLightIn, OverlayTexture.NO_OVERLAY);
+		poseStack.popPose();
+		super.render(entity, entityYaw, partialTicks, poseStack, source, packedLightIn);
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(AbnormalsBoatEntity entity) {
+	public ResourceLocation getTextureLocation(AbnormalsBoat entity) {
 		return entity.getBoat().getTexture();
 	}
 }

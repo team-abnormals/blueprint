@@ -7,7 +7,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@SuppressWarnings("deprecation")
 public class ThatchVerticalSlabBlock extends VerticalSlabBlock {
+
 	public ThatchVerticalSlabBlock(Properties properties) {
 		super(properties);
 	}
@@ -22,4 +24,5 @@ public class ThatchVerticalSlabBlock extends VerticalSlabBlock {
 	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
 		return true;
 	}
+
 }

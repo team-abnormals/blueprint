@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class AbnormalsChestTileEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
+public class AbnormalsChestBlockEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
 	public static Block itemBlock = null;
 
 	private final ModelPart lid;
@@ -44,7 +44,7 @@ public class AbnormalsChestTileEntityRenderer<T extends BlockEntity & LidBlockEn
 	private final ModelPart doubleRightLock;
 	public boolean isChristmas;
 
-	public AbnormalsChestTileEntityRenderer(BlockEntityRendererProvider.Context context) {
+	public AbnormalsChestBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
 		Calendar calendar = Calendar.getInstance();
 		if (calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DATE) >= 24 && calendar.get(Calendar.DATE) <= 26) {
 			this.isChristmas = true;

@@ -80,16 +80,16 @@ public final class CompatEvents {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onNoteBlockPlay(NoteBlockEvent.Play event) {
 		if (SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS  != null) {
-			Level world = (Level) event.getWorld();
-			if (!world.isClientSide()) {
+			Level level = (Level) event.getWorld();
+			if (!level.isClientSide()) {
 				BlockPos pos = event.getPos();
-				BlockSource source = new BlockSourceImpl((ServerLevel) world, pos.relative(Direction.DOWN));
+				BlockSource source = new BlockSourceImpl((ServerLevel) level, pos.relative(Direction.DOWN));
 				for (DataUtil.CustomNoteBlockInstrument instrument : SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS) {
 					if (instrument.test(source)) {
 						SoundEvent sound = instrument.getSound();
 						double note = event.getVanillaNoteId();
-						world.playSound(null, pos, sound, SoundSource.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
-						NetworkUtil.spawnParticle(NOTE_KEY, world.dimension(), pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
+						level.playSound(null, pos, sound, SoundSource.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
+						NetworkUtil.spawnParticle(NOTE_KEY, level.dimension(), pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
 						event.setCanceled(true);
 						break;
 					}

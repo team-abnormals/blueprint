@@ -19,8 +19,8 @@ import java.util.Random;
 public final class AnimateTickEvent extends BlockEvent {
     private final Random random;
 
-    public AnimateTickEvent(BlockState state, Level world, BlockPos pos, Random rand) {
-        super(world, pos, state);
+    public AnimateTickEvent(BlockState state, Level level, BlockPos pos, Random rand) {
+        super(level, pos, state);
         this.random = rand;
     }
 
@@ -31,12 +31,12 @@ public final class AnimateTickEvent extends BlockEvent {
     /**
      * Fires the {@link AnimateTickEvent} for a given {@link BlockState}, {@link Level}, {@link BlockPos} and {@link Random}.
      * @param state The {@link BlockState} that {@link net.minecraft.world.level.block.Block#animateTick Block.animateTick()} is being fired for.
-     * @param world The {@link Level} that the {@code state} is in.
+     * @param level The {@link Level} that the {@code state} is in.
      * @param pos The {@link BlockPos} that the {@code state} is at.
      * @param rand The {@link Random} to be used for randomizing particle placement.
      */
-    public static boolean onAnimateTick(BlockState state, Level world, BlockPos pos, Random rand) {
-        return MinecraftForge.EVENT_BUS.post(new AnimateTickEvent(state, world, pos, rand));
+    public static boolean onAnimateTick(BlockState state, Level level, BlockPos pos, Random rand) {
+        return MinecraftForge.EVENT_BUS.post(new AnimateTickEvent(state, level, pos, rand));
     }
 
     @Override

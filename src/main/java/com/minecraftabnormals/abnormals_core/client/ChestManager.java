@@ -69,7 +69,7 @@ public final class ChestManager {
 		}
 
 		/**
-		 * Adds the internal textures to the stitch event and intializes the {@link RenderMaterial}s.
+		 * Adds the internal textures to the stitch event and initializes the {@link Material}s.
 		 *
 		 * @param event A {@link TextureStitchEvent.Pre} to setup this info from.
 		 */
@@ -84,9 +84,9 @@ public final class ChestManager {
 		}
 
 		/**
-		 * Gets this info's default/single {@link RenderMaterial}.
+		 * Gets this info's default/single {@link Material}.
 		 *
-		 * @return This info's default/single {@link RenderMaterial}.
+		 * @return This info's default/single {@link Material}.
 		 */
 		@OnlyIn(Dist.CLIENT)
 		public Material getSingleMaterial() {
@@ -94,9 +94,9 @@ public final class ChestManager {
 		}
 
 		/**
-		 * Gets this info's left {@link RenderMaterial}.
+		 * Gets this info's left {@link Material}.
 		 *
-		 * @return This info's left {@link RenderMaterial}.
+		 * @return This info's left {@link Material}.
 		 */
 		@OnlyIn(Dist.CLIENT)
 		public Material getLeftMaterial() {
@@ -104,9 +104,9 @@ public final class ChestManager {
 		}
 
 		/**
-		 * Gets this info's right {@link RenderMaterial}.
+		 * Gets this info's right {@link Material}.
 		 *
-		 * @return This info's right {@link RenderMaterial}.
+		 * @return This info's right {@link Material}.
 		 */
 		@OnlyIn(Dist.CLIENT)
 		public Material getRightMaterial() {

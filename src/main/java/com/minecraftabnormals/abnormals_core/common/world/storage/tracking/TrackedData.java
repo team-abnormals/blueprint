@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 /**
  * This class works as an information holder for a type to be tracked. <p>This class keeps track of the following information: </p>
- * <p>This data's {@link IDataProcessor} for writing/reading packet data and saved world data.</p>
+ * <p>This data's {@link IDataProcessor} for writing/reading packet data and saved level data.</p>
  * <p>A {@link Supplier} representing the default value getter for this data.</p>
  * <p>A {@link SyncType} for how this data should be synced.</p>
  * <p>A boolean, {@link #save}, if this data should be saved and reloaded.</p>

@@ -62,6 +62,7 @@ public class BiomeSubRegistryHelper extends AbstractSubRegistryHelper<Biome> {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
+	@SuppressWarnings("deprecation")
 	public static final class KeyedBiome {
 		private static final ForgeRegistry<Biome> BIOME_REGISTRY = (ForgeRegistry<Biome>) ForgeRegistries.BIOMES;
 		private final RegistryObject<Biome> biome;

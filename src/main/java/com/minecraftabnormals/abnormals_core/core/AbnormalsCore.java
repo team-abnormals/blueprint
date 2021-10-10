@@ -3,7 +3,7 @@ package com.minecraftabnormals.abnormals_core.core;
 import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.client.RewardHandler;
 import com.minecraftabnormals.abnormals_core.client.renderer.AbnormalsBoatRenderer;
-import com.minecraftabnormals.abnormals_core.client.tile.AbnormalsChestTileEntityRenderer;
+import com.minecraftabnormals.abnormals_core.client.tile.AbnormalsChestBlockEntityRenderer;
 import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderCapability;
 import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderEvents;
@@ -23,9 +23,9 @@ import com.minecraftabnormals.abnormals_core.core.api.model.FullbrightModel;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
 import com.minecraftabnormals.abnormals_core.core.endimator.EndimationDataManager;
 import com.minecraftabnormals.abnormals_core.core.events.CompatEvents;
+import com.minecraftabnormals.abnormals_core.core.registry.ACBlockEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.ACLootConditions;
-import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
 import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.abnormals_core.core.util.registry.BlockEntitySubRegistryHelper;
@@ -87,7 +87,7 @@ public final class AbnormalsCore {
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ChunkLoaderEvents());
 
-		this.setupMessages();
+		this.registerMessages();
 
 		CraftingHelper.register(new QuarkFlagRecipeCondition.Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
@@ -101,7 +101,7 @@ public final class AbnormalsCore {
 		DataUtil.registerConfigPredicate(new MatchesPredicate.Serializer());
 
 		REGISTRY_HELPER.getEntitySubHelper().register(modEventBus);
-		REGISTRY_HELPER.getTileEntitySubHelper().register(modEventBus);
+		REGISTRY_HELPER.getBlockEntitySubHelper().register(modEventBus);
 
 		modEventBus.addListener((ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
@@ -150,9 +150,9 @@ public final class AbnormalsCore {
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(ACEntities.BOAT.get(), AbnormalsBoatRenderer::new);
 
-		event.registerBlockEntityRenderer(ACTileEntities.CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		event.registerBlockEntityRenderer(ACTileEntities.TRAPPED_CHEST.get(), AbnormalsChestTileEntityRenderer::new);
-		event.registerBlockEntityRenderer(ACTileEntities.SIGN.get(), SignRenderer::new);
+		event.registerBlockEntityRenderer(ACBlockEntities.CHEST.get(), AbnormalsChestBlockEntityRenderer::new);
+		event.registerBlockEntityRenderer(ACBlockEntities.TRAPPED_CHEST.get(), AbnormalsChestBlockEntityRenderer::new);
+		event.registerBlockEntityRenderer(ACBlockEntities.SIGN.get(), SignRenderer::new);
 	}
 
 	private void postLoadingSetup(FMLLoadCompleteEvent event) {
@@ -170,14 +170,13 @@ public final class AbnormalsCore {
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), FullbrightModel.Loader.INSTANCE);
 	}
 
-	private void setupMessages() {
+	private void registerMessages() {
 		int id = -1;
-
-		CHANNEL.registerMessage(id++, MessageS2CEndimation.class, MessageS2CEndimation::serialize, MessageS2CEndimation::deserialize, MessageS2CEndimation::handle);
-		CHANNEL.registerMessage(id++, MessageS2CTeleportEntity.class, MessageS2CTeleportEntity::serialize, MessageS2CTeleportEntity::deserialize, MessageS2CTeleportEntity::handle);
-		CHANNEL.registerMessage(id++, MessageS2CSpawnParticle.class, MessageS2CSpawnParticle::serialize, MessageS2CSpawnParticle::deserialize, MessageS2CSpawnParticle::handle);
-		CHANNEL.registerMessage(id++, MessageS2CUpdateEntityData.class, MessageS2CUpdateEntityData::serialize, MessageS2CUpdateEntityData::deserialize, MessageS2CUpdateEntityData::handle);
-		CHANNEL.registerMessage(id, MessageC2SUpdateSlabfishHat.class, MessageC2SUpdateSlabfishHat::serialize, MessageC2SUpdateSlabfishHat::deserialize, MessageC2SUpdateSlabfishHat::handle);
+		CHANNEL.registerMessage(++id, MessageS2CEndimation.class, MessageS2CEndimation::serialize, MessageS2CEndimation::deserialize, MessageS2CEndimation::handle);
+		CHANNEL.registerMessage(++id, MessageS2CTeleportEntity.class, MessageS2CTeleportEntity::serialize, MessageS2CTeleportEntity::deserialize, MessageS2CTeleportEntity::handle);
+		CHANNEL.registerMessage(++id, MessageS2CSpawnParticle.class, MessageS2CSpawnParticle::serialize, MessageS2CSpawnParticle::deserialize, MessageS2CSpawnParticle::handle);
+		CHANNEL.registerMessage(++id, MessageS2CUpdateEntityData.class, MessageS2CUpdateEntityData::serialize, MessageS2CUpdateEntityData::deserialize, MessageS2CUpdateEntityData::handle);
+		CHANNEL.registerMessage(++id, MessageC2SUpdateSlabfishHat.class, MessageC2SUpdateSlabfishHat::serialize, MessageC2SUpdateSlabfishHat::deserialize, MessageC2SUpdateSlabfishHat::handle);
 	}
 
 	private void replaceBeehivePOI() {

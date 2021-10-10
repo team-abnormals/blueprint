@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.client.renderer;
 
-import com.minecraftabnormals.abnormals_core.client.tile.AbnormalsChestTileEntityRenderer;
+import com.minecraftabnormals.abnormals_core.client.tile.AbnormalsChestBlockEntityRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,11 +20,11 @@ public class ChestBlockEntityWithoutLevelRenderer<C extends BlockEntity> extends
 	}
 
 	@Override
-	public void renderByItem(ItemStack itemStackIn, TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+	public void renderByItem(ItemStack itemStackIn, TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		BlockItem blockItem = (BlockItem) itemStackIn.getItem();
-		AbnormalsChestTileEntityRenderer.itemBlock = blockItem.getBlock();
-		super.renderByItem(itemStackIn, transformType, matrixStack, buffer, combinedLight, combinedOverlay);
-		AbnormalsChestTileEntityRenderer.itemBlock = null;
+		AbnormalsChestBlockEntityRenderer.itemBlock = blockItem.getBlock();
+		super.renderByItem(itemStackIn, transformType, poseStack, buffer, combinedLight, combinedOverlay);
+		AbnormalsChestBlockEntityRenderer.itemBlock = null;
 	}
 
 }

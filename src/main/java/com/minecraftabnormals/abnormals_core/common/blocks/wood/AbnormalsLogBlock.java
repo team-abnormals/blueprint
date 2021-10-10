@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.blocks.wood;
 
 import com.minecraftabnormals.abnormals_core.core.util.BlockUtil;
-import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
+import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemCategoryFiller;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -18,7 +18,7 @@ import net.minecraftforge.common.ToolActions;
 import java.util.function.Supplier;
 
 public class AbnormalsLogBlock extends RotatedPillarBlock {
-	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WARPED_STEM);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_STEM);
 	private final Supplier<Block> block;
 
 	public AbnormalsLogBlock(Supplier<Block> strippedBlock, Properties properties) {

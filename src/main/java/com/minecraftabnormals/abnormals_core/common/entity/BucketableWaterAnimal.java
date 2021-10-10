@@ -18,11 +18,11 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 
-public abstract class BucketableWaterMobEntity extends WaterAnimal implements IBucketableEntity {
-	private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(BucketableWaterMobEntity.class, EntityDataSerializers.BOOLEAN);
+public abstract class BucketableWaterAnimal extends WaterAnimal implements IBucketableEntity {
+	private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(BucketableWaterAnimal.class, EntityDataSerializers.BOOLEAN);
 
-	public BucketableWaterMobEntity(EntityType<? extends BucketableWaterMobEntity> type, Level world) {
-		super(type, world);
+	public BucketableWaterAnimal(EntityType<? extends BucketableWaterAnimal> type, Level level) {
+		super(type, level);
 	}
 
 	protected void defineSynchedData() {

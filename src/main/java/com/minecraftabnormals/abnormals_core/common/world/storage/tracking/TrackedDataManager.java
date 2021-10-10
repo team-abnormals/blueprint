@@ -2,7 +2,7 @@ package com.minecraftabnormals.abnormals_core.common.world.storage.tracking;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.minecraftabnormals.abnormals_core.core.events.EntityTrackingEvent;
+import com.minecraftabnormals.abnormals_core.core.events.EntityChangedEvent;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -153,7 +153,7 @@ public enum TrackedDataManager {
 	}
 
 	@SubscribeEvent
-	public void onEntityTracked(EntityTrackingEvent event) {
+	public void onEntityTracked(EntityChangedEvent event) {
 		Entity entity = event.getEntity();
 		IDataManager dataManager = (IDataManager) entity;
 		if (event.isUpdating() || dataManager.isDirty()) {

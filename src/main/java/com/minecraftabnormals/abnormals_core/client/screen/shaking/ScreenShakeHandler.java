@@ -74,7 +74,7 @@ public enum ScreenShakeHandler {
 	 * <p>Use this to add a {@link ShakeSource} to affect the screen shaking.</p>
 	 *
 	 * @param source A {@link ShakeSource} to add.
-	 * @return If the amount of sources doesn't exceed the maximum amount of shakers ({@link ACConfig.ValuesHolder#getMaxScreenShakers()}).
+	 * @return If the amount of sources doesn't exceed the maximum amount of shakers ({@link ACConfig.Client#maxScreenShakers}).
 	 */
 	public boolean addShakeSource(ShakeSource source) {
 		List<ShakeSource> sources = this.sources;

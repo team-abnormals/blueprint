@@ -38,7 +38,7 @@ public final class MessageS2CTeleportEntity {
 
 	public static void handle(MessageS2CTeleportEntity message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		Entity entity = ClientInfo.getClientPlayerWorld().getEntity(message.entityId);
+		Entity entity = ClientInfo.getClientPlayerLevel().getEntity(message.entityId);
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				if (entity != null) {

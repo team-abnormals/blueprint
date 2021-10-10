@@ -25,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 
+@SuppressWarnings("deprecation")
 public class DirectionalVerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -54,7 +55,7 @@ public class DirectionalVerticalSlabBlock extends Block implements SimpleWaterlo
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		if (state.getValue(TYPE) == VerticalSlabType.HALF) {
-			switch ((Direction) state.getValue(FACING)) {
+			switch (state.getValue(FACING)) {
 				default:
 				case NORTH:
 					return NORTH_AABB;
@@ -114,7 +115,6 @@ public class DirectionalVerticalSlabBlock extends Block implements SimpleWaterlo
 		return state.getValue(TYPE) != VerticalSlabType.DOUBLE && SimpleWaterloggedBlock.super.canPlaceLiquid(worldIn, pos, state, fluidIn);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (stateIn.getValue(WATERLOGGED)) {
@@ -128,7 +128,7 @@ public class DirectionalVerticalSlabBlock extends Block implements SimpleWaterlo
 		return type == PathComputationType.WATER && worldIn.getFluidState(pos).is(FluidTags.WATER);
 	}
 
-	public static enum VerticalSlabType implements StringRepresentable {
+	public enum VerticalSlabType implements StringRepresentable {
 		HALF("half"),
 		DOUBLE("double");
 

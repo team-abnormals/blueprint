@@ -46,8 +46,8 @@ public class ConfigLootCondition implements LootItemCondition {
         boolean returnValue;
         if (predicates.size() > 0) {
             returnValue = this.predicates.keySet().stream().allMatch(c -> this.predicates.get(c) != c.test(value));
-        } else if (value.get() instanceof Boolean) {
-            returnValue = (Boolean) value.get();
+        } else if (value.get() instanceof Boolean bool) {
+            returnValue = bool;
         } else throw new IllegalStateException("Predicates required for non-boolean ConfigLootCondition, but none found");
         return this.inverted != returnValue;
     }

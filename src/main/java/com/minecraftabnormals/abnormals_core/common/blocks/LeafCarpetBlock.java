@@ -11,6 +11,7 @@ import net.minecraft.world.level.BlockGetter;
 
 import javax.annotation.Nonnull;
 
+@SuppressWarnings("deprecation")
 public class LeafCarpetBlock extends Block {
 	private static final VoxelShape SHAPE = box(0, 0, 0, 16, 1, 16);
 

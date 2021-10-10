@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.items;
 
-import com.minecraftabnormals.abnormals_core.common.entity.AbnormalsBoatEntity;
-import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
+import com.minecraftabnormals.abnormals_core.common.entity.AbnormalsBoat;
+import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemCategoryFiller;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class AbnormalsBoatItem extends Item {
-	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.DARK_OAK_BOAT);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.DARK_OAK_BOAT);
 	private static final Predicate<Entity> COLLISION_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
 	private final String type;
 
@@ -46,34 +46,34 @@ public class AbnormalsBoatItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
 		ItemStack itemstack = playerIn.getItemInHand(handIn);
-		HitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.ANY);
-		if (raytraceresult.getType() == HitResult.Type.MISS) {
+		HitResult hitResult = getPlayerPOVHitResult(level, playerIn, ClipContext.Fluid.ANY);
+		if (hitResult.getType() == HitResult.Type.MISS) {
 			return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
 		} else {
 			Vec3 vec3d = playerIn.getViewVector(1.0F);
-			List<Entity> list = worldIn.getEntities(playerIn, playerIn.getBoundingBox().expandTowards(vec3d.scale(5.0D)).inflate(1.0D), COLLISION_PREDICATE);
+			List<Entity> list = level.getEntities(playerIn, playerIn.getBoundingBox().expandTowards(vec3d.scale(5.0D)).inflate(1.0D), COLLISION_PREDICATE);
 			if (!list.isEmpty()) {
 				Vec3 vec3d1 = playerIn.getEyePosition(1.0F);
 
 				for (Entity entity : list) {
-					AABB axisalignedbb = entity.getBoundingBox().inflate((double) entity.getPickRadius());
-					if (axisalignedbb.contains(vec3d1)) {
+					AABB aabb = entity.getBoundingBox().inflate(entity.getPickRadius());
+					if (aabb.contains(vec3d1)) {
 						return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
 					}
 				}
 			}
 
-			if (raytraceresult.getType() == HitResult.Type.BLOCK) {
-				AbnormalsBoatEntity boatentity = new AbnormalsBoatEntity(worldIn, raytraceresult.getLocation().x, raytraceresult.getLocation().y, raytraceresult.getLocation().z);
-				boatentity.setBoat(this.type);
-				boatentity.setYRot(playerIn.getYRot());
-				if (!worldIn.noCollision(boatentity, boatentity.getBoundingBox().inflate(-0.1D))) {
+			if (hitResult.getType() == HitResult.Type.BLOCK) {
+				AbnormalsBoat boat = new AbnormalsBoat(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z);
+				boat.setBoat(this.type);
+				boat.setYRot(playerIn.getYRot());
+				if (!level.noCollision(boat, boat.getBoundingBox().inflate(-0.1D))) {
 					return new InteractionResultHolder<>(InteractionResult.FAIL, itemstack);
 				} else {
-					if (!worldIn.isClientSide) {
-						worldIn.addFreshEntity(boatentity);
+					if (!level.isClientSide) {
+						level.addFreshEntity(boat);
 					}
 
 					if (!playerIn.getAbilities().instabuild) {
@@ -97,33 +97,32 @@ public class AbnormalsBoatItem extends Item {
 			this.type = type;
 		}
 
-		@SuppressWarnings("deprecation")
-		public ItemStack execute(BlockSource iBlockSource, ItemStack stack) {
-			Direction direction = iBlockSource.getBlockState().getValue(DispenserBlock.FACING);
-			Level world = iBlockSource.getLevel();
-			double x = iBlockSource.x() + (double) ((float) direction.getStepX() * 1.125f);
-			double y = iBlockSource.y() + (double) ((float) direction.getStepY() * 1.125f);
-			double z = iBlockSource.z() + (double) ((float) direction.getStepZ() * 1.125f);
-			BlockPos pos = iBlockSource.getPos().relative(direction);
+		public ItemStack execute(BlockSource source, ItemStack stack) {
+			Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+			Level level = source.getLevel();
+			double x = source.x() + (double) ((float) direction.getStepX() * 1.125f);
+			double y = source.y() + (double) ((float) direction.getStepY() * 1.125f);
+			double z = source.z() + (double) ((float) direction.getStepZ() * 1.125f);
+			BlockPos pos = source.getPos().relative(direction);
 			double adjustY;
-			if (world.getFluidState(pos).is(FluidTags.WATER)) {
+			if (level.getFluidState(pos).is(FluidTags.WATER)) {
 				adjustY = 1d;
 			} else {
-				if (!world.getBlockState(pos).isAir() || !world.getFluidState(pos.below()).is(FluidTags.WATER)) {
-					return this.defaultDispenseItemBehavior.dispense(iBlockSource, stack);
+				if (!level.getBlockState(pos).isAir() || !level.getFluidState(pos.below()).is(FluidTags.WATER)) {
+					return this.defaultDispenseItemBehavior.dispense(source, stack);
 				}
 				adjustY = 0d;
 			}
-			AbnormalsBoatEntity boat = new AbnormalsBoatEntity(world, x, y + adjustY, z);
+			AbnormalsBoat boat = new AbnormalsBoat(level, x, y + adjustY, z);
 			boat.setBoat(this.type);
 			boat.setYRot(direction.toYRot());
-			world.addFreshEntity(boat);
+			level.addFreshEntity(boat);
 			stack.shrink(1);
 			return stack;
 		}
 
-		protected void playSound(BlockSource iBlockSource) {
-			iBlockSource.getLevel().levelEvent(1000, iBlockSource.getPos(), 0);
+		protected void playSound(BlockSource source) {
+			source.getLevel().levelEvent(1000, source.getPos(), 0);
 		}
 	}
 }

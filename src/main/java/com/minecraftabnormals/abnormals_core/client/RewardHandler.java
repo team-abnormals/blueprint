@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import com.minecraftabnormals.abnormals_core.client.renderer.SlabfishHatLayerRenderer;
+import com.minecraftabnormals.abnormals_core.client.renderer.SlabfishHatRenderLayer;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.config.ACConfig;
@@ -82,7 +82,7 @@ public final class RewardHandler {
 	public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
 		event.getSkins().forEach(skin -> {
 			PlayerRenderer renderer = event.getSkin(skin);
-			renderer.addLayer(new SlabfishHatLayerRenderer(renderer));
+			renderer.addLayer(new SlabfishHatRenderLayer(renderer));
 		});
 	}
 

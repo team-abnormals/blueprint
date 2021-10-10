@@ -115,7 +115,7 @@ public class RegistryHelper {
 	}
 
 	@Nonnull
-	public <T extends AbstractSubRegistryHelper<BlockEntityType<?>>> T getTileEntitySubHelper() {
+	public <T extends AbstractSubRegistryHelper<BlockEntityType<?>>> T getBlockEntitySubHelper() {
 		return this.getSubHelper(ForgeRegistries.BLOCK_ENTITIES);
 	}
 

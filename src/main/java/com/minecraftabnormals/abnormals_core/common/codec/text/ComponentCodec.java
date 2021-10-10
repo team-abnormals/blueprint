@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public enum ITextComponentCodec implements Codec<Component> {
+public enum ComponentCodec implements Codec<Component> {
 	INSTANCE;
 
 	private static <T> Either<String, String> getString(DynamicOps<T> ops, T value) {

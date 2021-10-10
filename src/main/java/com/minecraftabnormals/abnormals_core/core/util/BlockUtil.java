@@ -74,8 +74,7 @@ public final class BlockUtil {
 	}
 
 	public static AABB rotateHorizontalBB(AABB bb, BBRotation rotation) {
-		AABB newBB = bb;
-		return rotation.rotateBB(newBB);
+		return rotation.rotateBB(bb);
 	}
 
 	public enum BBRotation {

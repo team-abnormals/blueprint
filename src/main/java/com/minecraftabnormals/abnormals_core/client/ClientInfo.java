@@ -24,7 +24,7 @@ public final class ClientInfo {
 	/**
 	 * @return - The client player's world; equivalent to getting the client world
 	 */
-	public static Level getClientPlayerWorld() {
+	public static Level getClientPlayerLevel() {
 		return ClientInfo.getClientPlayer().level;
 	}
 }

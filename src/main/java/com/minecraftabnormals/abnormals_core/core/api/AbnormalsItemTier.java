@@ -6,50 +6,51 @@ import net.minecraft.util.LazyLoadedValue;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("deprecation")
 public class AbnormalsItemTier implements Tier {
-	private final int harvestLevel;
-	private final int maxUses;
-	private final float efficiency;
-	private final float attackDamage;
-	private final int enchantability;
-	private final LazyLoadedValue<Ingredient> repairMaterial;
+	private final int level;
+	private final int uses;
+	private final float speed;
+	private final float damage;
+	private final int enchantmentValue;
+	private final LazyLoadedValue<Ingredient> repairIngredient;
 
-	public AbnormalsItemTier(int harvestLevelIn, int maxUsesIn, float efficiencyIn, float attackDamageIn, int enchantabilityIn, Supplier<Ingredient> repairMaterialIn) {
-		this.harvestLevel = harvestLevelIn;
-		this.maxUses = maxUsesIn;
-		this.efficiency = efficiencyIn;
-		this.attackDamage = attackDamageIn;
-		this.enchantability = enchantabilityIn;
-		this.repairMaterial = new LazyLoadedValue<>(repairMaterialIn);
+	public AbnormalsItemTier(int levelIn, int usesIn, float speedIn, float damageIn, int enchantmentValueIn, Supplier<Ingredient> repairIngredientIn) {
+		this.level = levelIn;
+		this.uses = usesIn;
+		this.speed = speedIn;
+		this.damage = damageIn;
+		this.enchantmentValue = enchantmentValueIn;
+		this.repairIngredient = new LazyLoadedValue<>(repairIngredientIn);
 	}
 
 	@Override
 	public int getUses() {
-		return maxUses;
+		return uses;
 	}
 
 	@Override
 	public float getSpeed() {
-		return efficiency;
+		return this.speed;
 	}
 
 	@Override
 	public float getAttackDamageBonus() {
-		return attackDamage;
+		return this.damage;
 	}
 
 	@Override
 	public int getLevel() {
-		return harvestLevel;
+		return this.level;
 	}
 
 	@Override
 	public int getEnchantmentValue() {
-		return enchantability;
+		return this.enchantmentValue;
 	}
 
 	@Override
 	public Ingredient getRepairIngredient() {
-		return repairMaterial.get();
+		return this.repairIngredient.get();
 	}
 }

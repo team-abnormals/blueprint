@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.DispenserBlock;
 
-public final class SpawnEggDispenseBehavior extends DefaultDispenseItemBehavior {
+public final class SpawnEggDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
 	@Override
 	public ItemStack execute(BlockSource source, ItemStack stack) {

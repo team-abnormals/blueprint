@@ -63,9 +63,8 @@ public final class BoatRegistry {
 		}
 
 		private ResourceLocation processTexture(String texture) {
-			String parentString = texture;
-			String modId = findModId(parentString);
-			String wood = findWood(parentString);
+			String modId = findModId(texture);
+			String wood = findWood(texture);
 			return new ResourceLocation(modId, "textures/entity/boat/" + wood + ".png");
 		}
 

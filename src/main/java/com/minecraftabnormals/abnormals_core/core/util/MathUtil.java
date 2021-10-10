@@ -213,7 +213,7 @@ public final class MathUtil {
 			CENTRIPETAL(0.5F),
 			CHORDAL(1.0F);
 
-			private float alpha;
+			private final float alpha;
 
 			SplineType(float alpha) {
 				this.alpha = alpha;

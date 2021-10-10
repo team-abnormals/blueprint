@@ -18,17 +18,17 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.TimeUnit;
 
-public class SlabfishHatLayerRenderer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
+public class SlabfishHatRenderLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 	public static OnlineImageCache REWARD_CACHE = new OnlineImageCache(AbnormalsCore.MODID, 1, TimeUnit.DAYS);
 	private final SlabfishHatModel model;
 
-	public SlabfishHatLayerRenderer(PlayerRenderer renderer) {
+	public SlabfishHatRenderLayer(PlayerRenderer renderer) {
 		super(renderer);
 		this.model = new SlabfishHatModel(SlabfishHatModel.createBodyModel().bakeRoot());
 	}
 
 	@Override
-	public void render(PoseStack stack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void render(PoseStack stack, MultiBufferSource source, int packedLight, AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		RewardHandler.RewardProperties properties = RewardHandler.getRewardProperties();
 		if (properties == null)
 			return;
@@ -59,14 +59,14 @@ public class SlabfishHatLayerRenderer extends RenderLayer<AbstractClientPlayer, 
 		ModelPart backpack = this.model.backpack;
 
 		body.copyFrom(this.getParentModel().head);
-		body.render(stack, buffer.getBuffer(slabfish.isTranslucent() ? RenderType.entityTranslucent(typeLocation) : RenderType.entityCutout(typeLocation)), packedLight, OverlayTexture.NO_OVERLAY);
+		body.render(stack, source.getBuffer(slabfish.isTranslucent() ? RenderType.entityTranslucent(typeLocation) : RenderType.entityCutout(typeLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 
 		if (sweaterLocation != null)
-			body.render(stack, buffer.getBuffer(RenderType.entityCutout(sweaterLocation)), packedLight, OverlayTexture.NO_OVERLAY);
+			body.render(stack, source.getBuffer(RenderType.entityCutout(sweaterLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 
 		if (backpackLocation != null) {
 			backpack.copyFrom(body);
-			backpack.render(stack, buffer.getBuffer(RenderType.entityCutout(backpackLocation)), packedLight, OverlayTexture.NO_OVERLAY);
+			backpack.render(stack, source.getBuffer(RenderType.entityCutout(backpackLocation)), packedLight, OverlayTexture.NO_OVERLAY);
 		}
 	}
 }

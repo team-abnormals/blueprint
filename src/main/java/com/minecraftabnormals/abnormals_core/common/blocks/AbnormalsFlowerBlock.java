@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.blocks;
 
-import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
+import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemCategoryFiller;
 import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,7 @@ import net.minecraft.core.NonNullList;
 import java.util.function.Supplier;
 
 public class AbnormalsFlowerBlock extends FlowerBlock {
-	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.WITHER_ROSE);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WITHER_ROSE);
 	private final Supplier<MobEffect> stewEffect;
 	private final int stewEffectDuration;
 

@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.common.blocks.chest;
 
-import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
+import com.minecraftabnormals.abnormals_core.common.blockentity.AbnormalsTrappedChestBlockEntity;
 import com.minecraftabnormals.abnormals_core.core.api.IChestBlock;
-import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.minecraftabnormals.abnormals_core.core.registry.ACBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,7 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 	public final String type;
 
 	public AbnormalsTrappedChestBlock(String type, Properties props) {
-		super(props, () -> ACTileEntities.TRAPPED_CHEST.get());
+		super(props, ACBlockEntities.TRAPPED_CHEST::get);
 		this.type = type;
 	}
 
@@ -30,7 +30,7 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new AbnormalsTrappedChestTileEntity(pos, state);
+		return new AbnormalsTrappedChestBlockEntity(pos, state);
 	}
 
 	@Override

@@ -20,8 +20,8 @@ public abstract class EndimatedEntity extends PathfinderMob implements IEndimate
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	
-	public EndimatedEntity(EntityType<? extends PathfinderMob> type, Level world) {
-		super(type, world);
+	public EndimatedEntity(EntityType<? extends PathfinderMob> type, Level level) {
+		super(type, level);
 	}
 	
 	@Override

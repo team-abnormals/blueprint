@@ -9,56 +9,57 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("deprecation")
 public class AbnormalsArmorMaterial implements ArmorMaterial {
-	private static final int[] MAX_DAMAGE_ARRAY = new int[]{13, 15, 16, 11};
+	private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
 	private final ResourceLocation name;
-	private final int maxDamageFactor;
-	private final int[] damageReductionAmountArray;
-	private final int enchantability;
-	private final Supplier<SoundEvent> soundEvent;
+	private final int durabilityMultiplier;
+	private final int[] slotProtections;
+	private final int enchantmentValue;
+	private final Supplier<SoundEvent> sound;
 	private final float toughness;
 	private final float knockbackResistance;
-	private final LazyLoadedValue<Ingredient> repairMaterial;
-	
+	private final LazyLoadedValue<Ingredient> repairIngredient;
+
 	@Deprecated
-	public AbnormalsArmorMaterial(ResourceLocation name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, SoundEvent soundEvent, float toughness, float knockbackResistance, Supplier<Ingredient> repairMaterial) {
-		this(name, maxDamageFactor, damageReductionAmountArray, enchantability, () -> soundEvent, toughness, knockbackResistance, repairMaterial);
+	public AbnormalsArmorMaterial(ResourceLocation name, int durabilityMultiplier, int[] slotProtections, int enchantmentValue, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
+		this(name, durabilityMultiplier, slotProtections, enchantmentValue, () -> sound, toughness, knockbackResistance, repairIngredient);
 	}
 
-	public AbnormalsArmorMaterial(ResourceLocation name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, Supplier<SoundEvent> soundEvent, float toughness, float knockbackResistance, Supplier<Ingredient> repairMaterial) {
+	public AbnormalsArmorMaterial(ResourceLocation name, int durabilityMultiplier, int[] slotProtections, int enchantmentValue, Supplier<SoundEvent> sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
 		this.name = name;
-		this.maxDamageFactor = maxDamageFactor;
-		this.damageReductionAmountArray = damageReductionAmountArray;
-		this.enchantability = enchantability;
-		this.soundEvent = soundEvent;
+		this.durabilityMultiplier = durabilityMultiplier;
+		this.slotProtections = slotProtections;
+		this.enchantmentValue = enchantmentValue;
+		this.sound = sound;
 		this.toughness = toughness;
 		this.knockbackResistance = knockbackResistance;
-		this.repairMaterial = new LazyLoadedValue<>(repairMaterial);
+		this.repairIngredient = new LazyLoadedValue<>(repairIngredient);
 	}
 
 	@Override
 	public int getDurabilityForSlot(EquipmentSlot slotIn) {
-		return MAX_DAMAGE_ARRAY[slotIn.getIndex()] * this.maxDamageFactor;
+		return HEALTH_PER_SLOT[slotIn.getIndex()] * this.durabilityMultiplier;
 	}
 
 	@Override
 	public int getDefenseForSlot(EquipmentSlot slotIn) {
-		return this.damageReductionAmountArray[slotIn.getIndex()];
+		return this.slotProtections[slotIn.getIndex()];
 	}
 
 	@Override
 	public int getEnchantmentValue() {
-		return this.enchantability;
+		return this.enchantmentValue;
 	}
 
 	@Override
 	public SoundEvent getEquipSound() {
-		return this.soundEvent.get();
+		return this.sound.get();
 	}
 
 	@Override
 	public Ingredient getRepairIngredient() {
-		return this.repairMaterial.get();
+		return this.repairIngredient.get();
 	}
 
 	@Override

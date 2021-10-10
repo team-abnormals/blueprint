@@ -24,9 +24,9 @@ public class ChunkLoaderEvents {
 
 	@SubscribeEvent
 	public void tickChunkLoader(WorldTickEvent event) {
-		Level world = event.world;
-		if (!world.isClientSide && event.phase == Phase.START) {
-			world.getCapability(ChunkLoaderCapability.CHUNK_LOAD_CAP).ifPresent(IChunkLoader::tick);
+		Level level = event.world;
+		if (!level.isClientSide && event.phase == Phase.START) {
+			level.getCapability(ChunkLoaderCapability.CHUNK_LOAD_CAP).ifPresent(IChunkLoader::tick);
 		}
 	}
 

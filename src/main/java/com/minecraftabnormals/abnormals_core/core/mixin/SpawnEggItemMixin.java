@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.mixin;
 
-import com.minecraftabnormals.abnormals_core.core.util.item.filling.AlphabeticalItemGroupFiller;
+import com.minecraftabnormals.abnormals_core.core.util.item.filling.AlphabeticalItemCategoryFiller;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
  */
 @Mixin(SpawnEggItem.class)
 public final class SpawnEggItemMixin extends Item {
-	private static final AlphabeticalItemGroupFiller FILLER = AlphabeticalItemGroupFiller.forClass(SpawnEggItem.class);
+	private static final AlphabeticalItemCategoryFiller FILLER = AlphabeticalItemCategoryFiller.forClass(SpawnEggItem.class);
 
 	private SpawnEggItemMixin(Properties properties) {
 		super(properties);

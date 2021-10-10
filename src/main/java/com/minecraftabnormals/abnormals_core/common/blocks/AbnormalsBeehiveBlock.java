@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.common.blocks;
 
-import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
-import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
+import com.minecraftabnormals.abnormals_core.core.registry.ACBlockEntities;
+import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemCategoryFiller;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
@@ -15,8 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings("deprecation")
 public class AbnormalsBeehiveBlock extends BeehiveBlock {
-	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.BEEHIVE);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.BEEHIVE);
 
 	public AbnormalsBeehiveBlock(Properties properties) {
 		super(properties);
@@ -25,7 +26,7 @@ public class AbnormalsBeehiveBlock extends BeehiveBlock {
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return ACTileEntities.BEEHIVE.get().create(pos, state);
+		return ACBlockEntities.BEEHIVE.get().create(pos, state);
 	}
 
 	@Override
@@ -38,7 +39,6 @@ public class AbnormalsBeehiveBlock extends BeehiveBlock {
 		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
 		return mirrorIn == Mirror.NONE ? state : state.rotate(mirrorIn.getRotation(state.getValue(FACING)));

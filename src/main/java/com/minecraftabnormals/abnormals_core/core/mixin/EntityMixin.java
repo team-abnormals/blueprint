@@ -7,7 +7,7 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.SyncT
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import com.minecraftabnormals.abnormals_core.core.events.EntityWalkEvent;
+import com.minecraftabnormals.abnormals_core.core.events.EntityStepEvent;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
@@ -134,7 +134,7 @@ public final class EntityMixin implements IDataManager {
 
 	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;stepOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/Entity;)V"))
 	private void onEntityWalk(Block block, Level level, BlockPos pos, BlockState state, Entity entity) {
-		if (!EntityWalkEvent.onEntityWalk(level, pos, entity)) {
+		if (!EntityStepEvent.onEntityStep(level, pos, entity)) {
 			block.stepOn(level, pos, state, entity);
 		}
 	}

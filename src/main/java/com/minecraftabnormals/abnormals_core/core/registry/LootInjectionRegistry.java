@@ -19,6 +19,7 @@ import java.util.Set;
  * @author SmellyModder (Luke Tonon)
  * @see LootPool
  */
+//TODO: Possible remove this?
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID)
 public final class LootInjectionRegistry {
 	private static final Set<Pair<Set<ResourceLocation>, LootPool>> POOL_INJECTORS = Sets.newHashSet();

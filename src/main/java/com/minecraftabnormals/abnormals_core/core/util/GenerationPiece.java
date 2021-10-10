@@ -34,12 +34,12 @@ public class GenerationPiece {
 	/**
 	 * Checks if all the blocks loaded in this piece can be placed
 	 *
-	 * @param world - The world to place the piece in
+	 * @param level - The level to place the piece in
 	 * @return - If all the blocks loaded in this piece can be placed
 	 */
-	public boolean canPlace(LevelAccessor world) {
+	public boolean canPlace(LevelAccessor level) {
 		for (BlockPart blocks : this.blockPieces) {
-			if (!this.blockPlaceCondition.test(world, blocks)) {
+			if (!this.blockPlaceCondition.test(level, blocks)) {
 				return false;
 			}
 		}
@@ -49,26 +49,26 @@ public class GenerationPiece {
 	/**
 	 * Places the piece
 	 *
-	 * @param world - The world to place the piece in
+	 * @param level - The level to place the piece in
 	 */
-	public void place(LevelAccessor world) {
+	public void place(LevelAccessor level) {
 		for (BlockPart blocks : this.blockPieces) {
-			world.setBlock(blocks.pos, blocks.state, 2);
+			level.setBlock(blocks.pos, blocks.state, 2);
 		}
 	}
 
 	/**
-	 * Sees if the piece can be placed and then if it can places it
+	 * Sees if the piece can be placed and then if it can, places it
 	 *
-	 * @param world - The world to place the piece in
+	 * @param level - The level to place the piece in
 	 */
-	public void tryToPlace(LevelAccessor world) {
-		if (this.canPlace(world)) {
-			this.place(world);
+	public void tryToPlace(LevelAccessor level) {
+		if (this.canPlace(level)) {
+			this.place(level);
 		}
 	}
 
-	public class BlockPart {
+	public static class BlockPart {
 		public final BlockState state;
 		public final BlockPos pos;
 

@@ -56,11 +56,11 @@ public final class MessageS2CSpawnParticle {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				Level world = ClientInfo.getClientPlayerWorld();
+				Level level = ClientInfo.getClientPlayerLevel();
 				SimpleParticleType particleType = (SimpleParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(message.particleName));
 
 				if (particleType != null) {
-					world.addParticle(particleType, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
+					level.addParticle(particleType, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
 				}
 			});
 		}

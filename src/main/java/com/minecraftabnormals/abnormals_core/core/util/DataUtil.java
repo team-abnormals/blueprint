@@ -230,7 +230,7 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Registers a {@link ConfigValueCondition.Serializer} and a {@link ConfigSerializer} under the name {@code "[modId]:config"}
+	 * Registers a {@link ConfigValueCondition.Serializer} under the name {@code "[modId]:config"}
 	 * that accepts the values of {@link ConfigKey} annotations for {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue}
 	 * fields in the passed-in collection of objects, checking against the annotation's corresponding
 	 * {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} to determine whether the condition should pass.<br><br>

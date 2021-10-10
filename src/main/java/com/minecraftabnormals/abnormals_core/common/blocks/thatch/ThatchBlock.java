@@ -7,6 +7,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@SuppressWarnings("deprecation")
 public class ThatchBlock extends Block {
 
 	public ThatchBlock(Properties properties) {

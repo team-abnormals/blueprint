@@ -21,7 +21,7 @@ public class TypedBlockEntityWithoutLevelRenderer<BE extends BlockEntity> extend
 	}
 
 	@Override
-	public void renderByItem(ItemStack itemStackIn, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-		this.blockEntityRenderDispatcher.renderItem(this.be, matrixStack, buffer, combinedLight, combinedOverlay);
+	public void renderByItem(ItemStack itemStackIn, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource source, int combinedLight, int combinedOverlay) {
+		this.blockEntityRenderDispatcher.renderItem(this.be, poseStack, source, combinedLight, combinedOverlay);
 	}
 }

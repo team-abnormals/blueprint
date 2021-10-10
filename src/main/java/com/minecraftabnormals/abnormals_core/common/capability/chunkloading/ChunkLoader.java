@@ -13,18 +13,18 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Can load and unload Chunks, as well as schedule tick tasks on Chunks
+ * Can load and unload Chunks, as well as schedule tick tasks on Chunks.
  *
  * @author SmellyModder(Luke Tonon)
  */
 public class ChunkLoader implements IChunkLoader {
 	@Nullable
-	private final ServerLevel world;
+	private final ServerLevel level;
 	public final List<Long> loadedPositions = Lists.newArrayList();
 	private final List<TickTask<ChunkAccess>> scheduledChunkProcesses = Lists.newArrayList();
 
-	public ChunkLoader(@Nullable ServerLevel world) {
-		this.world = world;
+	public ChunkLoader(@Nullable ServerLevel level) {
+		this.level = level;
 	}
 
 	@Override
@@ -56,8 +56,9 @@ public class ChunkLoader implements IChunkLoader {
 	}
 
 	private void forceChunk(BlockPos pos, boolean load) {
-		if (this.world != null) {
-			this.world.setChunkForced(pos.getX() >> 4, pos.getZ() >> 4, load);
+		ServerLevel level = this.level;
+		if (level != null) {
+			level.setChunkForced(pos.getX() >> 4, pos.getZ() >> 4, load);
 		}
 	}
 

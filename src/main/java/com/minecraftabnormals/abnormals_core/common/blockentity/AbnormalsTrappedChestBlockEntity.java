@@ -1,13 +1,14 @@
-package com.minecraftabnormals.abnormals_core.common.tileentity;
+package com.minecraftabnormals.abnormals_core.common.blockentity;
 
-import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.minecraftabnormals.abnormals_core.core.registry.ACBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class AbnormalsTrappedChestTileEntity extends AbnormalsChestTileEntity {
-	public AbnormalsTrappedChestTileEntity(BlockPos pos, BlockState state) {
-		super(ACTileEntities.TRAPPED_CHEST.get(), pos, state);
+public class AbnormalsTrappedChestBlockEntity extends AbnormalsChestBlockEntity {
+
+	public AbnormalsTrappedChestBlockEntity(BlockPos pos, BlockState state) {
+		super(ACBlockEntities.TRAPPED_CHEST.get(), pos, state);
 	}
 
 	@Override
@@ -15,4 +16,5 @@ public class AbnormalsTrappedChestTileEntity extends AbnormalsChestTileEntity {
 		super.signalOpenCount(level, pos, state, int1, int2);
 		level.updateNeighborsAt(this.worldPosition.below(), this.getBlockState().getBlock());
 	}
+
 }

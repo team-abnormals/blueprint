@@ -2,6 +2,7 @@ package com.minecraftabnormals.abnormals_core.core.util.registry;
 
 import com.minecraftabnormals.abnormals_core.client.ChestManager;
 import com.minecraftabnormals.abnormals_core.client.renderer.ChestBlockEntityWithoutLevelRenderer;
+import com.minecraftabnormals.abnormals_core.common.blockentity.AbnormalsTrappedChestBlockEntity;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
@@ -10,8 +11,7 @@ import com.minecraftabnormals.abnormals_core.common.items.BEWLRBlockItem;
 import com.minecraftabnormals.abnormals_core.common.items.BEWLRFuelBlockItem;
 import com.minecraftabnormals.abnormals_core.common.items.FuelBlockItem;
 import com.minecraftabnormals.abnormals_core.common.items.InjectedBlockItem;
-import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsChestTileEntity;
-import com.minecraftabnormals.abnormals_core.common.tileentity.AbnormalsTrappedChestTileEntity;
+import com.minecraftabnormals.abnormals_core.common.blockentity.AbnormalsChestBlockEntity;
 import com.minecraftabnormals.abnormals_core.core.api.SignManager;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -161,7 +161,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 * @see DoubleHighBlockItem
 	 */
-	public <B extends Block> RegistryObject<B> createTallBlock(String name, Supplier<? extends B> supplier, CreativeModeTab group) {
+	public <B extends Block> RegistryObject<B> createDoubleHighBlock(String name, Supplier<? extends B> supplier, CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new DoubleHighBlockItem(block.get(), new Item.Properties().tab(group)));
 		return block;
@@ -172,12 +172,12 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 *
 	 * @param name     - The block's name
 	 * @param supplier - The supplied floor {@link Block}
-	 * @param supplier - The supplied wall {@link Block}
+	 * @param wallSupplier - The supplied wall {@link Block}
 	 * @param group    - The {@link CreativeModeTab} for the {@link StandingAndWallBlockItem}
 	 * @return A {@link RegistryObject} containing the created {@link Block}
 	 * @see StandingAndWallBlockItem
 	 */
-	public <B extends Block> RegistryObject<B> createWallOrFloorBlock(String name, Supplier<? extends B> supplier, Supplier<? extends B> wallSupplier, @Nullable CreativeModeTab group) {
+	public <B extends Block> RegistryObject<B> createStandingAndWallBlock(String name, Supplier<? extends B> supplier, Supplier<? extends B> wallSupplier, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new StandingAndWallBlockItem(block.get(), wallSupplier.get(), new Item.Properties().tab(group)));
 		return block;
@@ -357,9 +357,9 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	@OnlyIn(Dist.CLIENT)
 	private static BEWLRBlockItem.LazyBEWLR chestBEWLR(boolean trapped) {
 		return trapped ? new BEWLRBlockItem.LazyBEWLR((dispatcher, entityModelSet) -> {
-			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new AbnormalsTrappedChestTileEntity(BlockPos.ZERO, Blocks.TRAPPED_CHEST.defaultBlockState()));
+			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new AbnormalsTrappedChestBlockEntity(BlockPos.ZERO, Blocks.TRAPPED_CHEST.defaultBlockState()));
 		}) : new BEWLRBlockItem.LazyBEWLR((dispatcher, entityModelSet) -> {
-			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new AbnormalsChestTileEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()));
+			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new AbnormalsChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()));
 		});
 	}
 }

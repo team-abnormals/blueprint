@@ -1,7 +1,7 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
 import com.google.common.collect.Sets;
-import com.minecraftabnormals.abnormals_core.common.dispenser.SpawnEggDispenseBehavior;
+import com.minecraftabnormals.abnormals_core.common.dispenser.SpawnEggDispenseItemBehavior;
 import com.minecraftabnormals.abnormals_core.common.items.AbnormalsBoatItem;
 import com.minecraftabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
 import com.minecraftabnormals.abnormals_core.common.items.FuelItem;
@@ -198,7 +198,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 		if (!this.spawnEggs.isEmpty()) {
 			event.enqueueWork(() -> {
 				for (AbnormalsSpawnEggItem spawnEggItem : this.spawnEggs) {
-					DispenserBlock.registerBehavior(spawnEggItem, new SpawnEggDispenseBehavior());
+					DispenserBlock.registerBehavior(spawnEggItem, new SpawnEggDispenseItemBehavior());
 				}
 			});
 		}

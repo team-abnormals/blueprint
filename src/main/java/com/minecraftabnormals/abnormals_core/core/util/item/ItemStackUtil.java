@@ -33,16 +33,16 @@ public final class ItemStackUtil {
 		return -1;
 	}
 
-	/** Block#fillItemCategory
+	/**
 	 * Used in {@link Item#fillItemCategory(CreativeModeTab, NonNullList)} and {@link (CreativeModeTab, NonNullList)} to fill an item after a specific item for a group.
 	 *
 	 * @param item       The item to fill.
 	 * @param targetItem The item to fill after.
-	 * @param group      The group to fill it in.
+	 * @param tab        The tab to fill it in.
 	 * @param items      The {@link NonNullList} of item stacks to search for the target item and inject the item in.
 	 */
-	public static void fillAfterItemForGroup(Item item, Item targetItem, CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (isInGroup(item, group)) {
+	public static void fillAfterItemForCategory(Item item, Item targetItem, CreativeModeTab tab, NonNullList<ItemStack> items) {
+		if (isAllowedInTab(item, tab)) {
 			int targetIndex = findIndexOfItem(targetItem, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(item));
@@ -69,11 +69,11 @@ public final class ItemStackUtil {
 	/**
 	 * Checks if an {@link Item} is in an {@link CreativeModeTab}.
 	 *
-	 * @param item  The {@link Item} to check.
-	 * @param group The {@link CreativeModeTab} to check.
-	 * @return Whether or not the item is in the {@link CreativeModeTab}.
+	 * @param item The {@link Item} to check.
+	 * @param tab  The {@link CreativeModeTab} to check.
+	 * @return Whether the item is in the {@link CreativeModeTab}.
 	 */
-	public static boolean isInGroup(Item item, @Nonnull CreativeModeTab group) {
-		return ((ItemInvokerMixin) item).callAllowdedIn(group);
+	public static boolean isAllowedInTab(Item item, @Nonnull CreativeModeTab tab) {
+		return ((ItemInvokerMixin) item).callAllowdedIn(tab);
 	}
 }

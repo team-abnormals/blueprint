@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.core.mixin;
 
-import com.minecraftabnormals.abnormals_core.core.events.EntityTrackingEvent;
+import com.minecraftabnormals.abnormals_core.core.events.EntityChangedEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerEntity;
 import org.spongepowered.asm.mixin.Final;
@@ -18,11 +18,11 @@ public final class ServerEntityMixin {
 
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/Entity;hasImpulse:Z", ordinal = 2, shift = At.Shift.AFTER), method = "sendChanges")
 	private void sendImpulse(CallbackInfo info) {
-		EntityTrackingEvent.onEntityTracking(this.entity, true);
+		EntityChangedEvent.onEntitySendChanges(this.entity, true);
 	}
 
 	@Inject(at = @At("HEAD"), method = "sendChanges")
 	private void sendChanges(CallbackInfo info) {
-		EntityTrackingEvent.onEntityTracking(this.entity, false);
+		EntityChangedEvent.onEntitySendChanges(this.entity, false);
 	}
 }

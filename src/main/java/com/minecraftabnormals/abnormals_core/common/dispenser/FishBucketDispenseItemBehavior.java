@@ -9,17 +9,19 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 
-public final class FishBucketDispenseBehavior extends DefaultDispenseItemBehavior {
+public final class FishBucketDispenseItemBehavior extends DefaultDispenseItemBehavior {
+
 	@Override
 	public ItemStack execute(BlockSource source, ItemStack stack) {
 		BucketItem bucketitem = (BucketItem) stack.getItem();
 		BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-		Level world = source.getLevel();
-		if (bucketitem.emptyContents(null, world, blockpos, null)) {
-			bucketitem.checkExtraContent(null, world, stack, blockpos);
+		Level level = source.getLevel();
+		if (bucketitem.emptyContents(null, level, blockpos, null)) {
+			bucketitem.checkExtraContent(null, level, stack, blockpos);
 			return new ItemStack(Items.BUCKET);
 		} else {
 			return new DefaultDispenseItemBehavior().dispense(source, stack);
 		}
 	}
+
 }

@@ -12,7 +12,7 @@ import java.util.Map;
  * This main purpose of this interface is for storing global data for a Minecraft Save.
  *
  * @author SmellyModder (Luke Tonon)
- * @see net.minecraft.world.storage.WorldSavedData
+ * @see net.minecraft.world.level.saveddata.SavedData
  */
 public interface GlobalStorage {
 	Map<ResourceLocation, GlobalStorage> STORAGES = new HashMap<>();

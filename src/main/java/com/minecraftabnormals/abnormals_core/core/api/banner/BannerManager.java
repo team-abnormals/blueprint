@@ -8,7 +8,6 @@ import java.util.Locale;
  * @author bageldotjpg
  */
 public final class BannerManager {
-
 	/**
 	 * Adds a banner pattern, with one prefix for both the name and ID.
 	 * Example: BannerManager.createPattern("mca", "test", "tst");

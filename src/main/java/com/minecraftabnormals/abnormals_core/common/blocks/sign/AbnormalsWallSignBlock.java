@@ -1,6 +1,6 @@
 package com.minecraftabnormals.abnormals_core.common.blocks.sign;
 
-import com.minecraftabnormals.abnormals_core.core.registry.ACTileEntities;
+import com.minecraftabnormals.abnormals_core.core.registry.ACBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,7 +15,7 @@ public class AbnormalsWallSignBlock extends WallSignBlock implements IAbnormalsS
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return ACTileEntities.SIGN.get().create(pos, state);
+		return ACBlockEntities.SIGN.get().create(pos, state);
 	}
 
 }

@@ -10,6 +10,7 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IData
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceKey;
@@ -27,8 +28,8 @@ import java.util.Set;
  */
 public final class NetworkUtil {
 	/**
-	 * All other parameters work same as world#addParticle
-	 * <p>Used for adding particles to client worlds from the server side</p>
+	 * All other parameters work the same in {@link Level#addParticle(ParticleOptions, double, double, double, double, double, double)}.
+	 * <p>Used for adding particles to client levels from the server side</p>
 	 * @param name The registry name of the particle
 	 */
 	public static void spawnParticle(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
@@ -36,8 +37,8 @@ public final class NetworkUtil {
 	}
 
 	/**
-	 * All other parameters work same as world#addParticle
-	 * <p>Used for adding particles to client worlds from the server side</p>
+	 * All other parameters work the same in {@link Level#addParticle(ParticleOptions, double, double, double, double, double, double)}.
+	 * <p>Used for adding particles to client levels from the server side</p>
 	 * <p>Only sends the packet to players in {@code dimension}</p>
 	 *
 	 * @param name The registry name of the particle
