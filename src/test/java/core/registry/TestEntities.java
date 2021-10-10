@@ -1,6 +1,5 @@
 package core.registry;
 
-import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.util.registry.EntitySubRegistryHelper;
 import common.entities.TestEndimatedEntity;
 import core.ACTest;
@@ -13,7 +12,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
-@Test
 @Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class TestEntities {
 	private static final EntitySubRegistryHelper HELPER = ACTest.REGISTRY_HELPER.getEntitySubHelper();

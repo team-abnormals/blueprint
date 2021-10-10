@@ -1,12 +1,10 @@
 package common.world;
 
 import com.minecraftabnormals.abnormals_core.common.world.storage.GlobalStorage;
-import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Random;
 
-@Test
 public final class TestGlobalStorage implements GlobalStorage {
 	private int testInt;
 

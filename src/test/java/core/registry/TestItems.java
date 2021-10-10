@@ -1,7 +1,6 @@
 package core.registry;
 
 import com.minecraftabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
-import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import core.ACTest;
@@ -10,7 +9,6 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
-@Test
 @Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class TestItems {
 	private static final Helper HELPER = ACTest.REGISTRY_HELPER.getItemSubHelper();

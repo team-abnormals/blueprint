@@ -1,6 +1,5 @@
 package common.blocks;
 
-import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.util.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +16,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nullable;
 
 
-@Test
 public class RotatedVoxelShapeTestBlock extends HorizontalDirectionalBlock {
 
 	public RotatedVoxelShapeTestBlock(Properties properties) {

@@ -1,6 +1,5 @@
 package common.entities;
 
-import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
@@ -9,7 +8,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 
-@Test
 public class TestEndimatedEntity extends EndimatedEntity {
 	public static final Endimation SINK_ANIMATION = new Endimation(20);
 	public static final Endimation GROW_ANIMATION = new Endimation(20);

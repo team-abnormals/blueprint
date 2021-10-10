@@ -2,7 +2,6 @@ package common.blocks;
 
 import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoader;
 import com.minecraftabnormals.abnormals_core.common.capability.chunkloading.ChunkLoaderCapability;
-import com.minecraftabnormals.abnormals_core.core.annotations.Test;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -14,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
 
-@Test
 public class ChunkLoadTestBlock extends Block {
 
 	public ChunkLoadTestBlock(Properties properties) {
