@@ -27,9 +27,9 @@ public final class TargetedItemCategoryFiller implements IItemCategoryFiller {
 	}
 
 	@Override
-	public void fillItem(Item item, CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (ItemStackUtil.isAllowedInTab(item, group)) {
-			OffsetValue offset = this.offsetMap.computeIfAbsent(group, (key) -> new OffsetValue());
+	public void fillItem(Item item, CreativeModeTab tab, NonNullList<ItemStack> items) {
+		if (ItemStackUtil.isAllowedInTab(item, tab)) {
+			OffsetValue offset = this.offsetMap.computeIfAbsent(tab, (key) -> new OffsetValue());
 			Set<Item> itemsProcessed = offset.itemsProcessed;
 			if (itemsProcessed.contains(item)) {
 				offset.reset();
