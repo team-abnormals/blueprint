@@ -9,10 +9,11 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.common.util.Constants;
 
 /**
- * Handles saving registered {@link GlobalStorage}s.
+ * Handles the reading and writing of registered {@link GlobalStorage}s.
  *
  * @author SmellyModder (Luke Tonon)
  * @see SavedData
+ * @see GlobalStorage
  */
 public final class GlobalStorageManager extends SavedData {
 	private static final String KEY = AbnormalsCore.MODID + "_storage";

@@ -2,27 +2,29 @@ package com.minecraftabnormals.abnormals_core.common.entity;
 
 import com.minecraftabnormals.abnormals_core.core.registry.ACEntities;
 import com.minecraftabnormals.abnormals_core.core.registry.BoatRegistry;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 /**
+ * A {@link Boat} extension responsible for Abnormals Core's boats.
+ *
  * @author SmellyModder (Luke Tonon)
  */
 public class AbnormalsBoat extends Boat {
@@ -107,12 +109,12 @@ public class AbnormalsBoat extends Boat {
 		return this.getBoat().getBoatItem();
 	}
 
-	public void setBoat(String boat) {
-		this.entityData.set(BOAT_TYPE, boat);
-	}
-
 	public BoatRegistry.BoatData getBoat() {
 		return BoatRegistry.getDataForBoat(this.entityData.get(BOAT_TYPE));
+	}
+
+	public void setBoat(String boat) {
+		this.entityData.set(BOAT_TYPE, boat);
 	}
 
 	@Override

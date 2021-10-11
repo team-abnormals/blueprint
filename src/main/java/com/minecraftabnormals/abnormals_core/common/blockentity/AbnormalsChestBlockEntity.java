@@ -2,11 +2,14 @@ package com.minecraftabnormals.abnormals_core.common.blockentity;
 
 import com.minecraftabnormals.abnormals_core.core.registry.ACBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+/**
+ * A {@link ChestBlockEntity} extension used for Abnormals Core's chests.
+ */
 public class AbnormalsChestBlockEntity extends ChestBlockEntity {
 
 	protected AbnormalsChestBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {

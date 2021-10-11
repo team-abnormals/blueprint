@@ -18,10 +18,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This class is basically an external version of the {@link net.minecraft.network.datasync.EntityDataManager} System.
+ * This class is basically an external version of the {@link net.minecraft.network.syncher.SynchedEntityData} System.
  * <p>
- * The {@link net.minecraft.network.datasync.EntityDataManager} System is used in Minecraft to sync data on entities from the server to clients.
- * This system is very similar to the {@link net.minecraft.network.datasync.EntityDataManager} System with a few differences.
+ * The {@link net.minecraft.network.syncher.SynchedEntityData} System is used in Minecraft to sync data on entities from the server to clients.
+ * This system is very similar to the {@link net.minecraft.network.syncher.SynchedEntityData} System with a few differences.
  * One difference being all reading and writing is done with NBT so it can be used for both networking and storage.
  * These differences and advantages may make these more favorable than capabilities depending on the use case.
  * </p>
@@ -136,7 +136,7 @@ public enum TrackedDataManager {
 		if (!target.level.isClientSide) {
 			Set<IDataManager.DataEntry<?>> entries = ((IDataManager) target).getEntries(true);
 			if (!entries.isEmpty()) {
-				NetworkUtil.updateTrackedData((ServerPlayer) event.getPlayer(), target, entries);
+				NetworkUtil.updateTrackedData((ServerPlayer) event.getPlayer(), target.getId(), entries);
 			}
 		}
 	}
@@ -160,7 +160,7 @@ public enum TrackedDataManager {
 			Set<IDataManager.DataEntry<?>> entries = dataManager.getDirtyEntries();
 			if (!entries.isEmpty()) {
 				if (entity instanceof ServerPlayer) {
-					NetworkUtil.updateTrackedData((ServerPlayer) entity, entity, entries);
+					NetworkUtil.updateTrackedData((ServerPlayer) entity, entity.getId(), entries);
 				}
 				NetworkUtil.updateTrackedData(entity, entries);
 			}

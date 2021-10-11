@@ -5,22 +5,23 @@ import com.minecraftabnormals.abnormals_core.core.util.TickTask;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Can load and unload Chunks, as well as schedule tick tasks on Chunks.
+ * An {@link IChunkLoader} implementation that can load and unload Chunks, as well as schedule tick tasks on Chunks.
  *
  * @author SmellyModder(Luke Tonon)
+ * @see IChunkLoader
  */
 public class ChunkLoader implements IChunkLoader {
+	public final List<Long> loadedPositions = Lists.newArrayList();
 	@Nullable
 	private final ServerLevel level;
-	public final List<Long> loadedPositions = Lists.newArrayList();
 	private final List<TickTask<ChunkAccess>> scheduledChunkProcesses = Lists.newArrayList();
 
 	public ChunkLoader(@Nullable ServerLevel level) {
@@ -62,6 +63,13 @@ public class ChunkLoader implements IChunkLoader {
 		}
 	}
 
+	/**
+	 * Schedules a process to happen on a chunk after a specified time.
+	 *
+	 * @param chunk        Access to the chunk to perform the process on.
+	 * @param chunkProcess The process to perform.
+	 * @param ticks        The delay until the process is performed.
+	 */
 	public void scheduleChunkProcess(ChunkAccess chunk, Consumer<ChunkAccess> chunkProcess, int ticks) {
 		this.scheduledChunkProcesses.add(new TickTask<>(chunk, chunkProcess, ticks));
 	}

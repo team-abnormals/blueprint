@@ -10,18 +10,18 @@ import net.minecraft.nbt.CompoundTag;
  */
 public interface IDataProcessor<T> {
 	/**
-	 * Writes a type to a {@link CompoundNBT}.
+	 * Writes a type to a {@link CompoundTag}.
 	 *
 	 * @param type An object of the type to write.
-	 * @return The object serialized to {@link CompoundNBT}.
+	 * @return The object serialized to {@link CompoundTag}.
 	 */
 	CompoundTag write(T type);
 
 	/**
-	 * Reads a type from a {@link CompoundNBT}
+	 * Reads a type from a {@link CompoundTag}.
 	 *
-	 * @param compound The {@link CompoundNBT} to read.
-	 * @return The type deserialized from a {@link CompoundNBT}.
+	 * @param compound The {@link CompoundTag} to read.
+	 * @return The type deserialized from a {@link CompoundTag}.
 	 */
 	T read(CompoundTag compound);
 }

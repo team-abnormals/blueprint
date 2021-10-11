@@ -5,15 +5,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSyntaxException;
 import com.minecraftabnormals.abnormals_core.core.registry.ACLootConditions;
-import net.minecraft.world.level.storage.loot.Serializer;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.core.Registry;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.Serializer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 /**
- * A loot condition that defines a probability based on the current difficulty. Works the same as
+ * A {@link LootItemCondition} implementation that defines a probability based on the current difficulty. Works the same as
  * {@code random_difficulty_chance} in Bedrock edition.
  *
  * <p>Arguments:
@@ -70,6 +70,10 @@ public class RandomDifficultyChanceCondition implements LootItemCondition {
 
 	public static class RandomDifficultyChanceSerializer implements Serializer<RandomDifficultyChanceCondition> {
 
+		private static float getFloatOrMinus1(JsonObject json, String fieldName) {
+			return json.has(fieldName) ? GsonHelper.getAsFloat(json, fieldName) : -1.0F;
+		}
+
 		public void serialize(JsonObject json, RandomDifficultyChanceCondition condition, JsonSerializationContext context) {
 			json.addProperty("default_chance", condition.defaultChance);
 			if (condition.peacefulChance >= 0)
@@ -87,10 +91,6 @@ public class RandomDifficultyChanceCondition implements LootItemCondition {
 				return new RandomDifficultyChanceCondition(GsonHelper.getAsFloat(json, "default_chance"), getFloatOrMinus1(json, "peaceful"), getFloatOrMinus1(json, "easy"), getFloatOrMinus1(json, "normal"), getFloatOrMinus1(json, "hard"));
 			}
 			throw new JsonSyntaxException("Missing 'default_chance', expected to find a float");
-		}
-
-		private static float getFloatOrMinus1(JsonObject json, String fieldName) {
-			return json.has(fieldName) ? GsonHelper.getAsFloat(json, fieldName) : -1.0F;
 		}
 
 	}

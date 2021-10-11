@@ -7,6 +7,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
+/**
+ * A {@link StandingSignBlock} extension used for Abnormals Core's standing signs.
+ */
 public class AbnormalsStandingSignBlock extends StandingSignBlock implements IAbnormalsSign {
 
 	public AbnormalsStandingSignBlock(Properties properties, WoodType woodType) {

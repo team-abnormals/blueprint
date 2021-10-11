@@ -9,9 +9,9 @@ import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /**
- * Message for telling clients to begin playing an animation on an {@link IEndimatedEntity}
+ * The message for telling clients to begin playing an animation on an {@link IEndimatedEntity}.
  *
- * @author - SmellyModder(Luke Tonon)
+ * @author SmellyModder (Luke Tonon)
  */
 public final class MessageS2CEndimation {
 	private int entityId;

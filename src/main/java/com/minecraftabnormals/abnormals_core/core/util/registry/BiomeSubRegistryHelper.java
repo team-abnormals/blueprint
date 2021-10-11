@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
-import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;

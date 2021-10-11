@@ -3,9 +3,9 @@ package com.minecraftabnormals.abnormals_core.client.screen;
 import com.minecraftabnormals.abnormals_core.client.RewardHandler;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -13,6 +13,10 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import java.util.Locale;
 
 /**
+ * The {@link Screen} responsible for the slabfish patreon settings.
+ *
+ * <p>For more information, visit the <a href="https://www.patreon.com/teamabnormals">Patreon</a>></p>
+ *
  * @author Jackson
  */
 public class SlabfishHatScreen extends Screen {

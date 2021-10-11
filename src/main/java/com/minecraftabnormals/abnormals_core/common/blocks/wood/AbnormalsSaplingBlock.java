@@ -8,6 +8,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.NonNullList;
 
+/**
+ * A {@link SaplingBlock} extension that fills its item after the latest vanilla sapling item.
+ */
 public class AbnormalsSaplingBlock extends SaplingBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.DARK_OAK_SAPLING);
 

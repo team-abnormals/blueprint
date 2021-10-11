@@ -10,7 +10,7 @@ import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /**
- * Message for syncing Slabfish hat customization settings.
+ * Message for syncing Slabfish hat customization settings to the server.
  *
  * @author Jackson
  */

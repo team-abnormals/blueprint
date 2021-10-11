@@ -10,6 +10,9 @@ import net.minecraft.core.NonNullList;
 
 import java.util.Map;
 
+/**
+ * A {@link Block} extension that fills its item after a defined {@link #followItem}.
+ */
 public class InjectedBlock extends Block {
 	private static final Map<Item, TargetedItemCategoryFiller> FILLER_MAP = Maps.newHashMap();
 	private final Item followItem;

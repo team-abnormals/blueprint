@@ -7,6 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.NonNullList;
 
+/**
+ * A {@link FenceGateBlock} extension that fills its item after the latest vanilla wooden fence gate item.
+ */
 public class WoodFenceGateBlock extends FenceGateBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_FENCE_GATE);
 

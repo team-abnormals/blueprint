@@ -61,20 +61,20 @@ public final class BiomeModificationPredicates {
 	}
 
 	/**
-	 * Creates a {@link BiPredicate} true for a certain {@link Biome.Category}.
+	 * Creates a {@link BiPredicate} true for a certain {@link Biome.BiomeCategory}.
 	 *
-	 * @param category A {@link Biome.Category}.
-	 * @return A {@link BiPredicate} true for a certain {@link Biome.Category}.
+	 * @param category A {@link Biome.BiomeCategory}.
+	 * @return A {@link BiPredicate} true for a certain {@link Biome.BiomeCategory}.
 	 */
 	public static BiPredicate<ResourceKey<Biome>, Biome> forCategory(Biome.BiomeCategory category) {
 		return (biomeResourceKey, biome) -> biome.getBiomeCategory() == category;
 	}
 
 	/**
-	 * Creates a {@link BiPredicate} true for a set of {@link Biome.Category}s.
+	 * Creates a {@link BiPredicate} true for a set of {@link Biome.BiomeCategory}s.
 	 *
-	 * @param categories An array of {@link Biome.Category}s.
-	 * @return A {@link BiPredicate} true for a set of {@link Biome.Category}s.
+	 * @param categories An array of {@link Biome.BiomeCategory}s.
+	 * @return A {@link BiPredicate} true for a set of {@link Biome.BiomeCategory}s.
 	 */
 	public static BiPredicate<ResourceKey<Biome>, Biome> forCategory(Biome.BiomeCategory... categories) {
 		return (biomeResourceKey, biome) -> Sets.newHashSet(categories).contains(biome.getBiomeCategory());

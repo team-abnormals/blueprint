@@ -7,6 +7,9 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
+/**
+ * A {@link BlockItem} extension that stores a specified burn time for the item.
+ */
 public class FuelBlockItem extends BlockItem {
 	private final int burnTime;
 

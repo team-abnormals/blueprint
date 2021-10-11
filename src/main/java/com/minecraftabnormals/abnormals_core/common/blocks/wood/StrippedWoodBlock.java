@@ -7,6 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.NonNullList;
 
+/**
+ * A {@link RotatedPillarBlock} extension that fills its item after the latest vanilla stripped wood item.
+ */
 public class StrippedWoodBlock extends RotatedPillarBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.STRIPPED_WARPED_HYPHAE);
 

@@ -16,6 +16,9 @@ import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * The {@link EntityRenderer} responsible for the rendering of Abnormals Core's boat entities.
+ */
 @OnlyIn(Dist.CLIENT)
 public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoat> {
 	private final BoatModel model;

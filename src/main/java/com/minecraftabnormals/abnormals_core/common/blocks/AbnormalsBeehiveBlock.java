@@ -15,6 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
+/**
+ * A {@link BeehiveBlock} extension that fills its item after the vanilla beehive item.
+ */
 @SuppressWarnings("deprecation")
 public class AbnormalsBeehiveBlock extends BeehiveBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.BEEHIVE);

@@ -24,7 +24,7 @@ public class SoundSubRegistryHelper extends AbstractSubRegistryHelper<SoundEvent
 	/**
 	 * Creates and registers a {@link SoundEvent}.
 	 *
-	 * @param name - The sound's name.
+	 * @param name The sound's name.
 	 * @return A {@link RegistryObject} containing the created {@link SoundEvent}.
 	 */
 	public RegistryObject<SoundEvent> createSoundEvent(String name) {

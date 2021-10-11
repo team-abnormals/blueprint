@@ -5,6 +5,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+/**
+ * An {@link AbnormalsChestBlockEntity} extension used for Abnormals Core's trapped chests.
+ */
 public class AbnormalsTrappedChestBlockEntity extends AbnormalsChestBlockEntity {
 
 	public AbnormalsTrappedChestBlockEntity(BlockPos pos, BlockState state) {

@@ -9,6 +9,9 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;
 
+/**
+ * An {@link ArmorMaterial} implementation made for simple creation of {@link ArmorMaterial} instances.
+ */
 @SuppressWarnings("deprecation")
 public class AbnormalsArmorMaterial implements ArmorMaterial {
 	private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};

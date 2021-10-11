@@ -8,6 +8,12 @@ import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
+/**
+ * A {@link BEWLRBlockItem} extension that stores a specified burn time for the item.
+ *
+ * @author SmellyModder (Luke Tonon)
+ * @see BEWLRBlockItem
+ */
 public class BEWLRFuelBlockItem extends BEWLRBlockItem {
 	private final int burnTime;
 

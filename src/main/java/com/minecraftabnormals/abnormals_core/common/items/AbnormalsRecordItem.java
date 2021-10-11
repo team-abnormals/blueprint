@@ -7,6 +7,9 @@ import net.minecraft.world.item.*;
 
 import java.util.function.Supplier;
 
+/**
+ * A {@link RecordItem} extension that fills itself after the latest vanilla music disc item.
+ */
 public class AbnormalsRecordItem extends RecordItem {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MUSIC_DISC_PIGSTEP);
 

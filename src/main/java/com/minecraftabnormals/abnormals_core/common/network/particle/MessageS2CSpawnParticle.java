@@ -12,9 +12,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.function.Supplier;
 
 /**
- * Message for telling the client to spawn particles
+ * Message for telling the client to spawn a particle.
  *
- * @author - SmellyModder(Luke Tonon)
+ * @author SmellyModder(Luke Tonon)
  */
 public final class MessageS2CSpawnParticle {
 	public String particleName;

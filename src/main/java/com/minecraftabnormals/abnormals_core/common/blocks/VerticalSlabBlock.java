@@ -26,6 +26,9 @@ import net.minecraft.world.level.LevelAccessor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * A {@link Block} extension for vertical slab compatibility with the Quark mod.
+ */
 @SuppressWarnings("deprecation")
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);

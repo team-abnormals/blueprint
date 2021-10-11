@@ -7,6 +7,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
+/**
+ * A {@link WallSignBlock} extension used for Abnormals Core's wall signs.
+ */
 public class AbnormalsWallSignBlock extends WallSignBlock implements IAbnormalsSign {
 
 	public AbnormalsWallSignBlock(Properties properties, WoodType woodType) {

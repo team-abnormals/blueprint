@@ -11,6 +11,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * The {@link TypedBlockEntityWithoutLevelRenderer} responsible for rendering the items of Abnormals Core's chests.
+ *
+ * @param <C> The type of {@link BlockEntity} the renderer is for.
+ */
 @OnlyIn(Dist.CLIENT)
 public class ChestBlockEntityWithoutLevelRenderer<C extends BlockEntity> extends TypedBlockEntityWithoutLevelRenderer<C> {
 

@@ -8,6 +8,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
+/**
+ * Registry class for the built-in {@link EntityType}s.
+ */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ACEntities {
 	private static final EntitySubRegistryHelper HELPER = AbnormalsCore.REGISTRY_HELPER.getEntitySubHelper();

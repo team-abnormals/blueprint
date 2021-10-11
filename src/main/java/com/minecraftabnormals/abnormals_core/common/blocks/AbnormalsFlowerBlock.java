@@ -11,6 +11,9 @@ import net.minecraft.core.NonNullList;
 
 import java.util.function.Supplier;
 
+/**
+ * A {@link FlowerBlock} extension that stores information about the flower's stew effect and fills its item after the latest vanilla flower item.
+ */
 public class AbnormalsFlowerBlock extends FlowerBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WITHER_ROSE);
 	private final Supplier<MobEffect> stewEffect;

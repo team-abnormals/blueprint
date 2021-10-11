@@ -7,6 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.NonNullList;
 
+/**
+ * A {@link WoodButtonBlock} extension that fills its item after the latest vanilla wood button item.
+ */
 public class AbnormalsWoodButtonBlock extends WoodButtonBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_BUTTON);
 

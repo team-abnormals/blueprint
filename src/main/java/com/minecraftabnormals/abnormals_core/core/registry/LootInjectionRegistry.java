@@ -3,9 +3,9 @@ package com.minecraftabnormals.abnormals_core.core.registry;
 import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,7 +37,7 @@ public final class LootInjectionRegistry {
 	 * Adds a {@link LootPool} to be injected into a {@link Set} of loot locations.
 	 * <p>This method is synchronized, making it is safe to call during mod loading.</p>
 	 *
-	 * @param locations The {@link Set} of loot locations. (e.g. A set containing {@link net.minecraft.loot.LootTables#CHESTS_IGLOO_CHEST} and {@link net.minecraft.loot.LootTables#CHESTS_JUNGLE_TEMPLE})
+	 * @param locations The {@link Set} of loot locations. (e.g. A set containing {@link net.minecraft.world.level.storage.loot.BuiltInLootTables#IGLOO_CHEST} and {@link net.minecraft.world.level.storage.loot.BuiltInLootTables#JUNGLE_TEMPLE})
 	 * @param lootPool  The {@link LootPool} to inject into the {@link Set} of loot locations.
 	 */
 	public static synchronized void addLootInjector(Set<ResourceLocation> locations, LootPool lootPool) {

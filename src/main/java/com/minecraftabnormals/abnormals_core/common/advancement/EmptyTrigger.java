@@ -2,18 +2,20 @@ package com.minecraftabnormals.abnormals_core.common.advancement;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.server.PlayerAdvancements;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
 
 /**
- * @author - SmellyModder(Luke Tonon)
+ * A {@link CriterionTrigger} implementation designed for advancements that can only be triggered in code.
+ *
+ * @author SmellyModder (Luke Tonon)
  */
 public final class EmptyTrigger implements CriterionTrigger<EmptyTrigger.Instance> {
 	private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();

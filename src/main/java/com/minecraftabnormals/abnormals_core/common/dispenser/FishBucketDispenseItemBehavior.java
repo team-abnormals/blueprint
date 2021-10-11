@@ -9,6 +9,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 
+/**
+ * A {@link DefaultDispenseItemBehavior} extension used to dispense the contents of a Fish {@link BucketItem}.
+ */
 public final class FishBucketDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
 	@Override

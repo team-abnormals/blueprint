@@ -96,6 +96,5 @@ public final class CompatEvents {
 				}
 			}
 		}
-
 	}
 }

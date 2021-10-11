@@ -7,6 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.NonNullList;
 
+/**
+ * A {@link DoorBlock} extension that fills its item after the latest vanilla wooden door item.
+ */
 public class WoodDoorBlock extends DoorBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_DOOR);
 

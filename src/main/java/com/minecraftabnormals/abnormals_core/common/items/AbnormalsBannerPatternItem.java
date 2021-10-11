@@ -8,6 +8,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.core.NonNullList;
 
+/**
+ * A {@link BannerPatternItem} extension that fills itself after the latest vanilla banner pattern item.
+ */
 public class AbnormalsBannerPatternItem extends BannerPatternItem {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.PIGLIN_BANNER_PATTERN);
 

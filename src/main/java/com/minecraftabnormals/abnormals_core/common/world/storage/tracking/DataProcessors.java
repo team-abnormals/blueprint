@@ -9,12 +9,13 @@ import java.util.UUID;
 
 /**
  * This class contains the built-in {@link IDataProcessor}s.
- * Use these fields for some primitive types or basic types. Feel free to make PRs to add more of these!
+ * Use these fields for some primitive types or basic types.
+ * <p>Feel free to make PRs to add more of these!</p>
  *
  * @author SmellyModder (Luke Tonon)
  */
 public final class DataProcessors {
-	public static final IDataProcessor<Boolean> BOOLEAN = new IDataProcessor<Boolean>() {
+	public static final IDataProcessor<Boolean> BOOLEAN = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(Boolean bool) {
@@ -30,7 +31,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<Byte> BYTE = new IDataProcessor<Byte>() {
+	public static final IDataProcessor<Byte> BYTE = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(Byte abyte) {
@@ -46,7 +47,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<Short> SHORT = new IDataProcessor<Short>() {
+	public static final IDataProcessor<Short> SHORT = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(Short ashort) {
@@ -62,7 +63,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<Integer> INT = new IDataProcessor<Integer>() {
+	public static final IDataProcessor<Integer> INT = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(Integer integer) {
@@ -78,7 +79,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<Long> LONG = new IDataProcessor<Long>() {
+	public static final IDataProcessor<Long> LONG = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(Long along) {
@@ -94,7 +95,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<Float> FLOAT = new IDataProcessor<Float>() {
+	public static final IDataProcessor<Float> FLOAT = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(Float afloat) {
@@ -110,7 +111,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<Double> DOUBLE = new IDataProcessor<Double>() {
+	public static final IDataProcessor<Double> DOUBLE = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(Double aDouble) {
@@ -126,7 +127,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<String> STRING = new IDataProcessor<String>() {
+	public static final IDataProcessor<String> STRING = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(String aString) {
@@ -142,7 +143,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<BlockPos> POS = new IDataProcessor<BlockPos>() {
+	public static final IDataProcessor<BlockPos> POS = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(BlockPos pos) {
@@ -158,7 +159,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<UUID> UUID = new IDataProcessor<UUID>() {
+	public static final IDataProcessor<UUID> UUID = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(UUID uuid) {
@@ -174,7 +175,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<CompoundTag> COMPOUND = new IDataProcessor<CompoundTag>() {
+	public static final IDataProcessor<CompoundTag> COMPOUND = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(CompoundTag compound) {
@@ -188,7 +189,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<ItemStack> STACK = new IDataProcessor<ItemStack>() {
+	public static final IDataProcessor<ItemStack> STACK = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(ItemStack stack) {
@@ -202,7 +203,7 @@ public final class DataProcessors {
 
 	};
 
-	public static final IDataProcessor<ResourceLocation> RESOURCE_LOCATION = new IDataProcessor<ResourceLocation>() {
+	public static final IDataProcessor<ResourceLocation> RESOURCE_LOCATION = new IDataProcessor<>() {
 
 		@Override
 		public CompoundTag write(ResourceLocation resourceLocation) {

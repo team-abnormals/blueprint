@@ -11,7 +11,7 @@ import java.util.Set;
  * This interface handles all the management of the {@link TrackedData}s on an object.
  * This can effectively be used on any object type, but the groundwork must be done yourself.
  * If you wish to have this be used on a type of object other than an entity take a look at how this interface is used for the entity tracking system.
- * <p> This is Mixin'd into {@link net.minecraft.entity.Entity} so casting an {@link net.minecraft.entity.Entity} to it is safe. </p>
+ * <p>This is Mixin'd into {@link net.minecraft.world.entity.Entity}, so casting an {@link net.minecraft.world.entity.Entity} to this interface is safe.</p>
  *
  * @author SmellyModder (Luke Tonon)
  */
@@ -43,9 +43,19 @@ public interface IDataManager {
 	 */
 	void clean();
 
-	void setDataMap(Map<TrackedData<?>, DataEntry<?>> dataEntryMap);
-
+	/**
+	 * Gets the map that stores all the {@link TrackedData} and their corresponding {@link DataEntry}s.
+	 *
+	 * @return The map that stores all the {@link TrackedData} and their corresponding {@link DataEntry}s.
+	 */
 	Map<TrackedData<?>, DataEntry<?>> getDataMap();
+
+	/**
+	 * Sets the map that stores all the {@link TrackedData} and their corresponding {@link DataEntry}s.
+	 *
+	 * @param dataEntryMap A new data map.
+	 */
+	void setDataMap(Map<TrackedData<?>, DataEntry<?>> dataEntryMap);
 
 	/**
 	 * @return The dirty entries.
@@ -59,10 +69,12 @@ public interface IDataManager {
 	Set<DataEntry<?>> getEntries(boolean syncToAll);
 
 	/**
-	 * A entry class for a {@link TrackedData}.
+	 * A value class for a {@link TrackedData} key.
+	 *
+	 * @author SmellyModder (Luke Tonon)
 	 */
 	class DataEntry<T> {
-		private TrackedData<T> trackedData;
+		private final TrackedData<T> trackedData;
 		private T value;
 		private boolean dirty;
 
@@ -71,36 +83,12 @@ public interface IDataManager {
 			this.value = trackedData.getDefaultValue();
 		}
 
-		public TrackedData<T> getTrackedData() {
-			return this.trackedData;
-		}
-
-		public T getValue() {
-			return this.value;
-		}
-
-		public void setValue(T value, boolean dirty) {
-			this.value = value;
-			this.dirty = dirty;
-		}
-
-		public void markDirty() {
-			this.dirty = true;
-		}
-
-		public boolean isDirty() {
-			return this.dirty;
-		}
-
-		public void clean() {
-			this.dirty = false;
-		}
-
-		public void write(FriendlyByteBuf buffer) {
-			buffer.writeVarInt(TrackedDataManager.INSTANCE.getId(this.trackedData));
-			buffer.writeNbt(this.writeValue());
-		}
-
+		/**
+		 * Reads a new entry from a {@link FriendlyByteBuf} instance.
+		 *
+		 * @param buffer A {@link FriendlyByteBuf} to read a new entry from.
+		 * @return A new entry from a {@link FriendlyByteBuf} instance.
+		 */
 		public static DataEntry<?> read(FriendlyByteBuf buffer) {
 			int id = buffer.readVarInt();
 			TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(id);
@@ -110,10 +98,83 @@ public interface IDataManager {
 			return entry;
 		}
 
+		/**
+		 * Gets this entry's {@link #trackedData}.
+		 *
+		 * @return This entry's {@link #trackedData}.
+		 */
+		public TrackedData<T> getTrackedData() {
+			return this.trackedData;
+		}
+
+		/**
+		 * Gets this entry's {@link #value}.
+		 *
+		 * @return This entry's {@link #value}.
+		 */
+		public T getValue() {
+			return this.value;
+		}
+
+		/**
+		 * Sets the {@link #value} of this entry.
+		 *
+		 * @param value A new value.
+		 * @param dirty If this entry should now be marked dirty.
+		 */
+		public void setValue(T value, boolean dirty) {
+			this.value = value;
+			this.dirty = dirty;
+		}
+
+		/**
+		 * Marks this entry dirty.
+		 */
+		public void markDirty() {
+			this.dirty = true;
+		}
+
+		/**
+		 * Checks if this entry is marked dirty.
+		 *
+		 * @return If this entry is marked dirty.
+		 */
+		public boolean isDirty() {
+			return this.dirty;
+		}
+
+		/**
+		 * Marks this entry as clean (not dirty).
+		 */
+		public void clean() {
+			this.dirty = false;
+		}
+
+		/**
+		 * Writes this entry to a {@link FriendlyByteBuf} instance.
+		 *
+		 * @param buffer A {@link FriendlyByteBuf} to write this entry to.
+		 */
+		public void write(FriendlyByteBuf buffer) {
+			buffer.writeVarInt(TrackedDataManager.INSTANCE.getId(this.trackedData));
+			buffer.writeNbt(this.writeValue());
+		}
+
+		/**
+		 * Writes this entry's {@link #value} into a {@link CompoundTag}.
+		 *
+		 * @return This entry's {@link #value} as a {@link CompoundTag}.
+		 */
 		public CompoundTag writeValue() {
 			return this.getTrackedData().getProcessor().write(this.value);
 		}
 
+		/**
+		 * Reads a new {@link #value} for this entry from a {@link CompoundTag}.
+		 *
+		 * @param compound A {@link CompoundTag} to read from.
+		 * @param dirty    If this entry should now be marked dirty.
+		 */
 		public void readValue(CompoundTag compound, boolean dirty) {
 			this.value = this.getTrackedData().getProcessor().read(compound);
 			this.dirty = dirty;

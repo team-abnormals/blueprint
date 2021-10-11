@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 /**
+ * The message for updating data about a {@link IDataManager} on clients.
+ *
  * @author SmellyModder (Luke Tonon)
  */
 public final class MessageS2CUpdateEntityData {

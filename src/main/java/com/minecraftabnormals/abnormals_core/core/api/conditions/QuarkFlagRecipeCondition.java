@@ -9,18 +9,19 @@ import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.fml.ModList;
 
 /**
- * Recipe Condition that uses Quark's flags without making use of Quark's classes
+ * An {@link ICondition} implementation that uses the Quark mod's flags without making use of Quark's classes.
+ *
  * @author SmellyModder(Luke Tonon)
  */
 public final class QuarkFlagRecipeCondition implements ICondition {
 	private final ResourceLocation location;
 	private final String flag;
-	
+
 	public QuarkFlagRecipeCondition(ResourceLocation location, String flag) {
 		this.location = location;
 		this.flag = flag;
 	}
-	
+
 	@Override
 	public ResourceLocation getID() {
 		return this.location;
@@ -36,7 +37,7 @@ public final class QuarkFlagRecipeCondition implements ICondition {
 		}
 		return false;
 	}
-	
+
 	public static class Serializer implements IConditionSerializer<QuarkFlagRecipeCondition> {
 		private final ResourceLocation location;
 

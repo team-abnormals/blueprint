@@ -8,6 +8,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
+/**
+ * A {@link BeehiveBlockEntity} extension used for Abnormals Core's beehives.
+ */
 public class AbnormalsBeehiveBlockEntity extends BeehiveBlockEntity {
 
 	public AbnormalsBeehiveBlockEntity(BlockPos pos, BlockState state) {

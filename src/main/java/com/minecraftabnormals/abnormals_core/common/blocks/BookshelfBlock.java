@@ -5,6 +5,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 
+/**
+ * A {@link Block} extension that has the same enchantment power bonus as the vanilla bookshelf.
+ */
 public class BookshelfBlock extends Block {
 
 	public BookshelfBlock(Properties properties) {

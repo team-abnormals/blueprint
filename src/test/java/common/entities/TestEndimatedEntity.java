@@ -33,7 +33,7 @@ public class TestEndimatedEntity extends EndimatedEntity {
 //			int x = pos.getX();
 //			int y = pos.getY();
 //			int z = pos.getZ();
-//			GenerationUtils.fillAreaWithBlockCube(this.world, this.getRNG(), x - 2, y - 1, z - 2, x + 2, y + 1, z + 2, GenerationUtils.IS_AIR, new BlockPlacementEntry(Blocks.ANVIL.getDefaultState(), 1), new BlockPlacementEntry(Blocks.BEDROCK.getDefaultState(), 4), new BlockPlacementEntry(Blocks.BIRCH_WOOD.getDefaultState(), 8));
+//			GenerationUtils.fillAreaWithBlockCube(this.world, this.getRNG(), x - 2, y - 1, z - 2, x + 2, y + 1, z + 2, GenerationUtils.IS_AIR, new WeightedStateEntry(Blocks.ANVIL.getDefaultState(), 1), new WeightedStateEntry(Blocks.BEDROCK.getDefaultState(), 4), new WeightedStateEntry(Blocks.BIRCH_WOOD.getDefaultState(), 8));
 //		}
 	}
 

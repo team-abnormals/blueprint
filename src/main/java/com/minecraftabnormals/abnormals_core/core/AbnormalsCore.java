@@ -65,6 +65,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
+/**
+ * Mod class for the Abnormals Core mod.
+ *
+ * @author SmellyModder (Luke Tonon)
+ * @author bageldotjpg
+ * @author Jackson
+ * @author abigailfails
+ */
 @Mod(AbnormalsCore.MODID)
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AbnormalsCore {

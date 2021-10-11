@@ -1,8 +1,8 @@
 package com.minecraftabnormals.abnormals_core.core.util;
 
-import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
@@ -13,7 +13,6 @@ import java.util.Random;
  * @author SmellyModder(Luke Tonon)
  */
 public final class MathUtil {
-
 	/**
 	 * Gets the center of an {@link AABB} multiplied by a given multiplier.
 	 *
@@ -140,8 +139,17 @@ public final class MathUtil {
 			this.alpha = splineType.getAlpha();
 		}
 
+		private static double multiplyPoints(double point1, double point2, double multiplier1, double multiplier2) {
+			return point1 * multiplier1 + point2 * multiplier2;
+		}
+
+		private static float computeT(Vec3 point1, Vec3 point2, float alpha, float offset) {
+			return (float) Math.pow(point2.subtract(point1).length(), alpha) + offset;
+		}
+
 		/**
 		 * Gets a position on the spline from a given progress percentage.
+		 *
 		 * @return A {@link BlockPos} on the spline for a given progress.
 		 */
 		public BlockPos interpolate(float progress) {
@@ -200,14 +208,9 @@ public final class MathUtil {
 			return new BlockPos(multiplyPoints(B1x, B2x, CMultiplier1, CMultiplier2), multiplyPoints(B1y, B2y, CMultiplier1, CMultiplier2), multiplyPoints(B1z, B2z, CMultiplier1, CMultiplier2));
 		}
 
-		private static double multiplyPoints(double point1, double point2, double multiplier1, double multiplier2) {
-			return point1 * multiplier1 + point2 * multiplier2;
-		}
-
-		private static float computeT(Vec3 point1, Vec3 point2, float alpha, float offset) {
-			return (float) Math.pow(point2.subtract(point1).length(), alpha) + offset;
-		}
-
+		/**
+		 * The different types of splines and their corresponding alpha values.
+		 */
 		public enum SplineType {
 			STANDARD(0.0F),
 			CENTRIPETAL(0.5F),
@@ -224,5 +227,4 @@ public final class MathUtil {
 			}
 		}
 	}
-
 }

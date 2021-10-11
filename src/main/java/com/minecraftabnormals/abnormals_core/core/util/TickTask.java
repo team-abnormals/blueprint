@@ -20,6 +20,9 @@ public final class TickTask<T> {
 		this.tickDuration = tickDuration;
 	}
 
+	/**
+	 * Updates this task.
+	 */
 	public void tick() {
 		if (!this.paused) this.ticks++;
 
@@ -28,10 +31,20 @@ public final class TickTask<T> {
 		}
 	}
 
+	/**
+	 * Sets if this task is paused.
+	 *
+	 * @param paused If this task should be paused.
+	 */
 	public void setPaused(boolean paused) {
 		this.paused = paused;
 	}
 
+	/**
+	 * Checks if this task is complete.
+	 *
+	 * @return If this task is complete.
+	 */
 	public boolean isComplete() {
 		return this.ticks >= this.tickDuration;
 	}

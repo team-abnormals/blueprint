@@ -4,32 +4,32 @@ import com.minecraftabnormals.abnormals_core.client.ChestManager;
 import com.minecraftabnormals.abnormals_core.core.api.IChestBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.renderer.blockentity.BrightnessCombiner;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.world.level.block.state.properties.ChestType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BrightnessCombiner;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.DoubleBlockCombiner;
-import net.minecraft.core.Direction;
-import com.mojang.math.Vector3f;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.ChestType;
 
 import java.util.Calendar;
 
-import net.minecraft.world.level.block.AbstractChestBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.state.BlockState;
-
+/**
+ * The {@link BlockEntityRenderer} responsible for the rendering of Abnormals Core's chests.
+ *
+ * @param <T> The type of {@link LidBlockEntity} the renderer is for.
+ */
 public class AbnormalsChestBlockEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
 	public static Block itemBlock = null;
 
@@ -84,7 +84,7 @@ public class AbnormalsChestBlockEntityRenderer<T extends BlockEntity & LidBlockE
 			} else {
 				icallbackwrapper = DoubleBlockCombiner.Combiner::acceptNone;
 			}
-			
+
 			float f1 = icallbackwrapper.apply(ChestBlock.opennessCombiner(tileEntityIn)).get(partialTicks);
 			f1 = 1.0F - f1;
 			f1 = 1.0F - f1 * f1 * f1;
@@ -124,7 +124,7 @@ public class AbnormalsChestBlockEntityRenderer<T extends BlockEntity & LidBlockE
 	}
 
 	public void render(PoseStack matrixStack, VertexConsumer builder, ModelPart chestLid, ModelPart chestLatch, ModelPart chestBottom, float lidAngle, int combinedLightIn, int combinedOverlayIn) {
-		chestLid.xRot = -(lidAngle * ((float)Math.PI / 2F));
+		chestLid.xRot = -(lidAngle * ((float) Math.PI / 2F));
 		chestLatch.xRot = chestLid.xRot;
 		chestLid.render(matrixStack, builder, combinedLightIn, combinedOverlayIn);
 		chestLatch.render(matrixStack, builder, combinedLightIn, combinedOverlayIn);

@@ -2,22 +2,28 @@ package com.minecraftabnormals.abnormals_core.common.entity;
 
 import com.minecraftabnormals.abnormals_core.core.api.IBucketableEntity;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
+/**
+ * A {@link WaterAnimal} extension that implements {@link IBucketableEntity}.
+ * <p>This is simply a {@link WaterAnimal} that can be bucketed.</p>
+ *
+ * @see IBucketableEntity
+ */
 public abstract class BucketableWaterAnimal extends WaterAnimal implements IBucketableEntity {
 	private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(BucketableWaterAnimal.class, EntityDataSerializers.BOOLEAN);
 

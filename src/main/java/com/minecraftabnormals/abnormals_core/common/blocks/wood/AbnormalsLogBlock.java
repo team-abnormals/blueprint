@@ -17,6 +17,9 @@ import net.minecraftforge.common.ToolActions;
 
 import java.util.function.Supplier;
 
+/**
+ * A {@link RotatedPillarBlock} extension that fills its item after the latest vanilla log item.
+ */
 public class AbnormalsLogBlock extends RotatedPillarBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_STEM);
 	private final Supplier<Block> block;

@@ -29,6 +29,12 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.function.Predicate;
 
+/**
+ * An {@link Item} extension used for Abnormals Core's boats.
+ * <p>This {@link Item} will also fill itself after the latest vanilla boat item.</p>
+ *
+ * @author SmellyModder (Luke Tonon)
+ */
 public class AbnormalsBoatItem extends Item {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.DARK_OAK_BOAT);
 	private static final Predicate<Entity> COLLISION_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);

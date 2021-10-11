@@ -1,10 +1,10 @@
 package com.minecraftabnormals.abnormals_core.core.util.registry;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
@@ -14,7 +14,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.function.BiFunction;
 
 /**
- * A basic {@link AbstractSubRegistryHelper} for entities. This contains some useful registering methods for entities.
+ * A basic {@link AbstractSubRegistryHelper} for entities.
+ * <p>This contains some useful registering methods for entities.</p>
  *
  * @author SmellyModder (Luke Tonon)
  * @see AbstractSubRegistryHelper
@@ -32,40 +33,40 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	/**
 	 * Creates and registers an {@link EntityType} with the type of a {@link LivingEntity}.
 	 *
-	 * @param name                 - The entity's name.
-	 * @param factory              - The entity's factory.
-	 * @param entityClassification - The entity's classification.
-	 * @param width                - The width of the entity's bounding box.
-	 * @param height               - The height of the entity's bounding box.
-	 * @return A {@link RegistryObject} containing the created {@link EntityType}
+	 * @param name                 The entity's name.
+	 * @param factory              The entity's factory.
+	 * @param entityClassification The entity's classification.
+	 * @param width                The width of the entity's bounding box.
+	 * @param height               The height of the entity's bounding box.
+	 * @return A {@link RegistryObject} containing the created {@link EntityType}.
 	 */
 	public <E extends LivingEntity> RegistryObject<EntityType<E>> createLivingEntity(String name, EntityType.EntityFactory<E> factory, MobCategory entityClassification, float width, float height) {
 		return this.deferredRegister.register(name, () -> createLivingEntity(factory, entityClassification, name, width, height));
 	}
 
 	/**
-	 * Creates and registers an {@link EntityType} with the type of a {@link Entity}.
+	 * Creates and registers an {@link EntityType} with the type of {@link Entity}.
 	 *
-	 * @param name                 - The entity's name.
-	 * @param factory              - The entity's factory.
-	 * @param clientFactory        - The entity's client factory.
-	 * @param entityClassification - The entity's classification.
-	 * @param width                - The width of the entity's bounding box.
-	 * @param height               - The height of the entity's bounding box.
-	 * @return A {@link RegistryObject} containing the created {@link EntityType}
+	 * @param name                 The entity's name.
+	 * @param factory              The entity's factory.
+	 * @param clientFactory        The entity's client factory.
+	 * @param entityClassification The entity's classification.
+	 * @param width                The width of the entity's bounding box.
+	 * @param height               The height of the entity's bounding box.
+	 * @return A {@link RegistryObject} containing the created {@link EntityType}.
 	 */
 	public <E extends Entity> RegistryObject<EntityType<E>> createEntity(String name, EntityType.EntityFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, Level, E> clientFactory, MobCategory entityClassification, float width, float height) {
 		return this.deferredRegister.register(name, () -> createEntity(factory, clientFactory, entityClassification, name, width, height));
 	}
 
 	/**
-	 * Creates an {@link EntityType} with the type of a {@link LivingEntity}.
+	 * Creates an {@link EntityType} with the type of {@link LivingEntity}.
 	 *
-	 * @param name                 - The entity's name.
-	 * @param factory              - The entity's factory.
-	 * @param entityClassification - The entity's classification.
-	 * @param width                - The width of the entity's bounding box.
-	 * @param height               - The height of the entity's bounding box.
+	 * @param name                 The entity's name.
+	 * @param factory              The entity's factory.
+	 * @param entityClassification The entity's classification.
+	 * @param width                The width of the entity's bounding box.
+	 * @param height               The height of the entity's bounding box.
 	 * @return The created {@link EntityType}.
 	 */
 	public <E extends LivingEntity> EntityType<E> createLivingEntity(EntityType.EntityFactory<E> factory, MobCategory entityClassification, String name, float width, float height) {
@@ -79,14 +80,14 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	}
 
 	/**
-	 * Creates an {@link EntityType} with the type of a {@link Entity}.
+	 * Creates an {@link EntityType} with the type of {@link Entity}.
 	 *
-	 * @param name                 - The entity's name.
-	 * @param factory              - The entity's factory.
-	 * @param clientFactory        - The entity's client factory.
-	 * @param entityClassification - The entity's classification.
-	 * @param width                - The width of the entity's bounding box.
-	 * @param height               - The height of the entity's bounding box.
+	 * @param name                 The entity's name.
+	 * @param factory              The entity's factory.
+	 * @param clientFactory        The entity's client factory.
+	 * @param entityClassification The entity's classification.
+	 * @param width                The width of the entity's bounding box.
+	 * @param height               The height of the entity's bounding box.
 	 * @return The created {@link EntityType}.
 	 */
 	public <E extends Entity> EntityType<E> createEntity(EntityType.EntityFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, Level, E> clientFactory, MobCategory entityClassification, String name, float width, float height) {

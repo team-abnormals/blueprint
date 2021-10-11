@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
+ * A {@link SpawnEggItem} extension that supports deferred entity registration.
+ *
  * @author SmellyModder(Luke Tonon)
  */
 public class AbnormalsSpawnEggItem extends SpawnEggItem {

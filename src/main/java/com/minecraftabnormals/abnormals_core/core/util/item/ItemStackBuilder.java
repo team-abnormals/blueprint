@@ -1,22 +1,23 @@
 package com.minecraftabnormals.abnormals_core.core.util.item;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
 /**
  * A simple utility class for building {@link ItemStack}s.
+ *
  * @author SmellyModder (Luke Tonon)
  */
 public class ItemStackBuilder {
@@ -94,7 +95,7 @@ public class ItemStackBuilder {
 	 *
 	 * @param text The name to set.
 	 * @return This builder.
-	 * @see ItemStack#setDisplayName(ITextComponent).
+	 * @see ItemStack#setHoverName(Component).
 	 */
 	public ItemStackBuilder setName(@Nullable Component text) {
 		this.stack.setHoverName(text);
@@ -121,13 +122,13 @@ public class ItemStackBuilder {
 	}
 
 	/**
-	 * Adds an {@link AttributeModifier} for an {@link Attribute} for an {@link EquipmentSlotType} on the stack.
+	 * Adds an {@link AttributeModifier} for an {@link Attribute} for an {@link EquipmentSlot} on the stack.
 	 *
 	 * @param attribute The attribute to apply the {@link AttributeModifier} for.
 	 * @param modifier  The {@link AttributeModifier} to apply to the {@link Attribute}.
 	 * @param slot      The slot for when the {@link AttributeModifier} should be applied.
 	 * @return This builder.
-	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
+	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlot).
 	 */
 	public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, @Nullable EquipmentSlot slot) {
 		this.stack.addAttributeModifier(attribute, modifier, slot);
@@ -135,14 +136,14 @@ public class ItemStackBuilder {
 	}
 
 	/**
-	 * Adds an {@link AttributeModifier} for an {@link Attribute} for a multiple {@link EquipmentSlotType}s on the stack.
+	 * Adds an {@link AttributeModifier} for an {@link Attribute} for a multiple {@link EquipmentSlot}s on the stack.
 	 *
 	 * @param attribute The attribute to apply the {@link AttributeModifier} for.
 	 * @param modifier  The {@link AttributeModifier} to apply to the {@link Attribute}.
 	 * @param slots     The slots for when the {@link AttributeModifier} should be applied.
 	 * @return This builder.
-	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
-	 * @see #addAttributeModifier(Attribute, AttributeModifier, EquipmentSlotType).
+	 * @see ItemStack#addAttributeModifier(Attribute, AttributeModifier, EquipmentSlot).
+	 * @see #addAttributeModifier(Attribute, AttributeModifier, EquipmentSlot).
 	 */
 	public ItemStackBuilder addAttributeModifier(Attribute attribute, AttributeModifier modifier, EquipmentSlot... slots) {
 		for (EquipmentSlot slot : slots) {

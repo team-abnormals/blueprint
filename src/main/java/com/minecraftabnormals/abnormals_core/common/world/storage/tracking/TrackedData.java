@@ -28,26 +28,57 @@ public class TrackedData<T> {
 		this.persistent = persistent;
 	}
 
+	/**
+	 * Gets this data's {@link #processor}.
+	 *
+	 * @return This data's {@link #processor}.
+	 */
 	public IDataProcessor<T> getProcessor() {
 		return this.processor;
 	}
 
+	/**
+	 * Gets this data's {@link #syncType}.
+	 *
+	 * @return This data's {@link #syncType}.
+	 */
 	public SyncType getSyncType() {
 		return this.syncType;
 	}
 
+	/**
+	 * Gets the value of this data's {@link #defaultValue}.
+	 *
+	 * @return The value of this data's {@link #defaultValue}.
+	 */
 	public T getDefaultValue() {
 		return this.defaultValue.get();
 	}
 
+	/**
+	 * Checks if this data should get saved.
+	 *
+	 * @return If this data should get saved.
+	 */
 	public boolean shouldSave() {
 		return this.save;
 	}
 
+	/**
+	 * Checks if this data is persistent.
+	 *
+	 * @return If this data is persistent.
+	 */
 	public boolean isPersistent() {
 		return this.persistent;
 	}
 
+	/**
+	 * The builder class for {@link TrackedData}.
+	 *
+	 * @param <T> The type to track.
+	 * @author SmellyModder (Luke Tonon)
+	 */
 	public static class Builder<T> {
 		private final IDataProcessor<T> processor;
 		private final Supplier<T> defaultValue;

@@ -1,12 +1,15 @@
 package com.minecraftabnormals.abnormals_core.common.blocks.thatch;
 
 import com.minecraftabnormals.abnormals_core.common.blocks.VerticalSlabBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * A {@link VerticalSlabBlock} extension with certain methods overridden to accommodate models for thatch-type vertical slabs.
+ */
 @SuppressWarnings("deprecation")
 public class ThatchVerticalSlabBlock extends VerticalSlabBlock {
 

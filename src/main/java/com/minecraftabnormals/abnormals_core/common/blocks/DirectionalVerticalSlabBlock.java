@@ -25,6 +25,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 
+/**
+ * A {@link Block} extension for directional vertical slab compatibility with the Quark mod.
+ */
 @SuppressWarnings("deprecation")
 public class DirectionalVerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
 	public static final EnumProperty<VerticalSlabType> TYPE = EnumProperty.create("type", VerticalSlabType.class);

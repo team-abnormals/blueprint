@@ -21,10 +21,10 @@ public interface GlobalStorage {
 	 * Adds a {@link GlobalStorage} to the {@link #STORAGES} map and returns the {@link GlobalStorage}.
 	 * Use this to have your {@link GlobalStorage} be saved and loaded.
 	 *
-	 * @param key     - The id of the storage.
-	 * @param storage - The {@link GlobalStorage} to add to the {@link #STORAGES} map.
-	 * @param <S>     - The type of {@link GlobalStorage}.
-	 * @return - The supplied {@link GlobalStorage}.
+	 * @param key     The ID of the storage.
+	 * @param storage The {@link GlobalStorage} to add to the {@link #STORAGES} map.
+	 * @param <S>     The type of {@link GlobalStorage}.
+	 * @return The supplied {@link GlobalStorage}.
 	 * @throws IllegalStateException if the storage is created after {@link GlobalStorageManager} has loaded its NBT.
 	 */
 	static <S extends GlobalStorage> S createStorage(ResourceLocation key, S storage) {
@@ -38,14 +38,14 @@ public interface GlobalStorage {
 	/**
 	 * Called when saving this {@link GlobalStorage} to NBT.
 	 *
-	 * @return - The serialized NBT data of this {@link GlobalStorage}.
+	 * @return The serialized NBT data of this {@link GlobalStorage}.
 	 */
 	CompoundTag toTag();
 
 	/**
 	 * Called when loading the saved NBT data for this {@link GlobalStorage}.
 	 *
-	 * @param tag - The deserialized NBT data of this {@link GlobalStorage}.
+	 * @param tag The deserialized NBT data of this {@link GlobalStorage}.
 	 */
 	void fromTag(CompoundTag tag);
 }

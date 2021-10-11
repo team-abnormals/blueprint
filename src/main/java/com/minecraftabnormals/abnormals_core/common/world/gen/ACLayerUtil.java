@@ -3,11 +3,11 @@ package com.minecraftabnormals.abnormals_core.common.world.gen;
 import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.newbiome.context.BigContext;
-import net.minecraft.world.level.newbiome.context.Context;
 import net.minecraft.world.level.newbiome.area.Area;
 import net.minecraft.world.level.newbiome.area.AreaFactory;
 import net.minecraft.world.level.newbiome.area.LazyArea;
+import net.minecraft.world.level.newbiome.context.BigContext;
+import net.minecraft.world.level.newbiome.context.Context;
 import net.minecraft.world.level.newbiome.layer.Layer;
 import net.minecraft.world.level.newbiome.layer.Layers;
 import net.minecraft.world.level.newbiome.layer.SmoothLayer;
@@ -41,10 +41,13 @@ public final class ACLayerUtil {
 		}
 
 		biomesFactory = SmoothLayer.INSTANCE.run(contextFactory.apply(100L), biomesFactory);
-		return new Layer(VoroniZoomLayer.INSTANCE.run(contextFactory.apply(10L), biomesFactory));
+		return new Layer(VoronoiZoomLayer.INSTANCE.run(contextFactory.apply(10L), biomesFactory));
 	}
 
-	public enum VoroniZoomLayer implements AreaTransformer1 {
+	/**
+	 * An {@link AreaTransformer1} implementation for performing a voronoi zoom.
+	 */
+	public enum VoronoiZoomLayer implements AreaTransformer1 {
 		INSTANCE;
 
 		public int applyPixel(BigContext<?> extendedNoiseRandom, Area area, int p_215728_3_, int p_215728_4_) {
@@ -92,6 +95,11 @@ public final class ACLayerUtil {
 		}
 	}
 
+	/**
+	 * An {@link AreaTransformer0} implementation that handles the applying of modded end biomes.
+	 *
+	 * @author SmellyModder (Luke Tonon)
+	 */
 	static class EndBiomesLayer implements AreaTransformer0 {
 		private final Registry<Biome> lookupRegistry;
 
@@ -101,7 +109,8 @@ public final class ACLayerUtil {
 
 		@Override
 		public int applyPixel(Context random, int x, int z) {
-			return this.lookupRegistry.getId(this.lookupRegistry.get(BiomeUtil.getEndBiome(random)));
+			Registry<Biome> lookupRegistry = this.lookupRegistry;
+			return lookupRegistry.getId(lookupRegistry.get(BiomeUtil.getEndBiome(random)));
 		}
 	}
 }

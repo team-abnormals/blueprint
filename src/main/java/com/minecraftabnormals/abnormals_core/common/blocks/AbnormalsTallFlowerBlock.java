@@ -7,6 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.NonNullList;
 
+/**
+ * A {@link TallFlowerBlock} extension that fills its item after the latest vanilla tall flower item.
+ */
 public class AbnormalsTallFlowerBlock extends TallFlowerBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.PEONY);
 

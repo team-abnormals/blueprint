@@ -6,10 +6,15 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
+ * Class for storing all the information about the Abnormals Core config.
+ *
  * @author SmellyModder(Luke Tonon)
  */
 public final class ACConfig {
 
+	/**
+	 * Class that stores all the information about the Abnormals Core common config.
+	 */
 	public static class Common {
 		@ConfigKey("quark_poison_potato_compat_enabled")
 		public final ConfigValue<Boolean> poisonPotatoCompatEnabledValue;
@@ -46,6 +51,9 @@ public final class ACConfig {
 			builder.pop();
 		}
 
+		/**
+		 * Caches the common config values.
+		 */
 		public void load() {
 			this.poisonPotatoCompatEnabled = this.poisonPotatoCompatEnabledValue.get();
 			this.poisonEffect = this.poisonEffectValue.get();
@@ -53,6 +61,9 @@ public final class ACConfig {
 		}
 	}
 
+	/**
+	 * Class that stores all the information about the Abnormals Core client config.
+	 */
 	public static final class Client {
 		@ConfigKey("screen_shake_scale")
 		public final ConfigValue<Double> screenShakeScaleValue;
@@ -82,12 +93,18 @@ public final class ACConfig {
 			builder.pop();
 		}
 
+		/**
+		 * Caches some client config values.
+		 */
 		public void load() {
 			this.screenShakeScale = this.screenShakeScaleValue.get();
 			this.maxScreenShakers = this.maxScreenShakersValue.get();
 		}
 	}
 
+	/**
+	 * Class that stores all the information about the Slabfish Patreon Hat settings.
+	 */
 	public static final class SlabfishSettings {
 		@ConfigKey("slabfish_hat_enabled")
 		public final ConfigValue<Boolean> enabled;

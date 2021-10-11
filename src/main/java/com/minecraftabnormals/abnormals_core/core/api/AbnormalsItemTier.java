@@ -6,6 +6,9 @@ import net.minecraft.util.LazyLoadedValue;
 
 import java.util.function.Supplier;
 
+/**
+ * A {@link Tier} implementation made for simple creation of {@link Tier} instances.
+ */
 @SuppressWarnings("deprecation")
 public class AbnormalsItemTier implements Tier {
 	private final int level;

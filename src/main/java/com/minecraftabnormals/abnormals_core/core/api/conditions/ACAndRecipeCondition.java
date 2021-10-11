@@ -5,8 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
@@ -15,17 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A special version of the {@link net.minecraftforge.common.crafting.conditions.AndCondition} that stops reading if a false condition is met.
+ * <p>This is useful for testing another condition only if the former conditions are met.</p>
+ *
  * @author SmellyModder (Luke Tonon)
  */
 public final class ACAndRecipeCondition implements ICondition {
 	private final ResourceLocation location;
 	private final List<ICondition> children;
-	
+
 	public ACAndRecipeCondition(ResourceLocation location, List<ICondition> children) {
 		this.location = location;
 		this.children = children;
 	}
-	
+
 	@Override
 	public ResourceLocation getID() {
 		return this.location;

@@ -19,6 +19,9 @@ import net.minecraft.world.level.material.Fluid;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
+/**
+ * A {@link BucketItem} extension that can empty out entities typed of {@link BucketableWaterAnimal}.
+ */
 public class MobBucketItem extends BucketItem {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.TROPICAL_FISH_BUCKET);
 	private final Supplier<EntityType<? extends BucketableWaterAnimal>> entityType;

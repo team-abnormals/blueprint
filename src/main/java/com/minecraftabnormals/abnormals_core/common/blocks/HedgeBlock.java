@@ -17,6 +17,9 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
+/**
+ * A {@link Block} extension for hedge compatibility with the Quark mod.
+ */
 public class HedgeBlock extends FenceBlock {
 	public static final Tag<Block> HEDGES = BlockTags.createOptional(new ResourceLocation("quark", "hedges"));
 	private static final BooleanProperty EXTEND = BooleanProperty.create("extend");

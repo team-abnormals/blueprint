@@ -11,6 +11,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 
+/**
+ * The {@link Model} for the slabfish patreon hat.
+ * <p>For more information, visit the <a href="https://www.patreon.com/teamabnormals">Patreon</a>></p>
+ */
 public class SlabfishHatModel extends Model {
 	public final ModelPart body;
 	public final ModelPart backpack;

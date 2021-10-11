@@ -13,6 +13,8 @@ import java.util.EnumSet;
 import java.util.function.Predicate;
 
 /**
+ * A {@link TargetGoal} extension that allows for conditioning the targeting of the owner.
+ *
  * @author SmellyModder(Luke Tonon)
  */
 public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
@@ -20,7 +22,7 @@ public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
 	private final Class<T> targetClass;
 	private final int targetChance;
 	private LivingEntity nearestTarget;
-	private TargetingConditions targetEntitySelector;
+	private final TargetingConditions targetEntitySelector;
 
 	public PredicateAttackGoal(Mob goalOwnerIn, Class<T> targetClassIn, boolean checkSight, Predicate<Mob> canOwnerTarget) {
 		this(goalOwnerIn, targetClassIn, checkSight, false, canOwnerTarget);

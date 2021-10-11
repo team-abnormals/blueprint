@@ -12,6 +12,8 @@ import java.util.Random;
 import java.util.function.ToDoubleFunction;
 
 /**
+ * This class contains some useful methods for generating random positions.
+ *
  * @author SmellyModder(Luke Tonon)
  */
 public final class AdvancedRandomPos {

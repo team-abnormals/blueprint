@@ -10,6 +10,9 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+/**
+ * A {@link ChestBlock} extension used for Abnormals Core's chests.
+ */
 public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
 	public final String type;
 

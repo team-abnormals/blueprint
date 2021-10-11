@@ -14,6 +14,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
+/**
+ * Registry class for the built-in {@link BlockEntityType}s.
+ */
 @Mod.EventBusSubscriber(modid = AbnormalsCore.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ACBlockEntities {
 	public static final BlockEntitySubRegistryHelper HELPER = AbnormalsCore.REGISTRY_HELPER.getBlockEntitySubHelper();

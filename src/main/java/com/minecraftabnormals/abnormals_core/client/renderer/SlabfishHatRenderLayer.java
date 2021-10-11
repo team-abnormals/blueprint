@@ -18,6 +18,10 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The {@link RenderLayer} responsible for the rendering of the slabfish patreon hats.
+ * <p>For more information, visit the <a href="https://www.patreon.com/teamabnormals">Patreon</a>></p>
+ */
 public class SlabfishHatRenderLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 	public static OnlineImageCache REWARD_CACHE = new OnlineImageCache(AbnormalsCore.MODID, 1, TimeUnit.DAYS);
 	private final SlabfishHatModel model;

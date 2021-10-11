@@ -9,9 +9,9 @@ import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /**
- * Message for teleporting the entity from the server
+ * The message for teleporting the entity from the server.
  *
- * @author SmellyModder(Luke Tonon)
+ * @author SmellyModder (Luke Tonon)
  */
 public final class MessageS2CTeleportEntity {
 	private int entityId;

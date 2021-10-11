@@ -16,6 +16,12 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * A {@link BlockItem} extension that supports lazily loaded custom item stack renderers.
+ *
+ * @author SmellyModder (Luke Tonon)
+ * @see BEWLRBlockItem.LazyBEWLR
+ */
 public class BEWLRBlockItem extends BlockItem {
 	@Nullable
 	private final Supplier<LazyBEWLR> bewlr;
@@ -42,7 +48,10 @@ public class BEWLRBlockItem extends BlockItem {
 	}
 
 	/**
-	 * It's best if we don't have to create a new {@link BlockEntityRenderDispatcher} instance every time the item is rendered.
+	 * A caching class for custom {@link BlockEntityWithoutLevelRenderer}s used on items.
+	 * <p>Without caching, a new {@link BlockEntityRenderDispatcher} instance would have to get created every time the item is rendered.</p>
+	 *
+	 * @author SmellyModder (Luke Tonon)
 	 */
 	public static final class LazyBEWLR {
 		private final BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> cacheFunction;

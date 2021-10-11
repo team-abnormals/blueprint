@@ -9,6 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.DispenserBlock;
 
+/**
+ * A {@link DefaultDispenseItemBehavior} extension used to dispense {@link SpawnEggItem} instances.
+ */
 public final class SpawnEggDispenseItemBehavior extends DefaultDispenseItemBehavior {
 
 	@Override

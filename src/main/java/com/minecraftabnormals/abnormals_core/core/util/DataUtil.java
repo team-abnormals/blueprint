@@ -44,20 +44,47 @@ import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
+/**
+ * A utility class containing some useful stuff related to Minecraft data modification.
+ *
+ * @author bageldotjpg
+ * @author SmellyModder (Luke Tonon)
+ * @author abigailfails
+ */
 public final class DataUtil {
 	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "m_43513_", Potion.class, Item.class, Potion.class);
 	private static final Vector<AlternativeDispenseBehavior> ALTERNATIVE_DISPENSE_BEHAVIORS = new Vector<>();
 	private static final Vector<CustomNoteBlockInstrument> CUSTOM_NOTE_BLOCK_INSTRUMENTS = new Vector<>();
 
+	/**
+	 * Registers a given {@link Block} to be flammable.
+	 *
+	 * @param block         A {@link Block} to be flammable.
+	 * @param encouragement The encouragement for the block.
+	 * @param flammability  The flammability for the block.
+	 */
 	public static void registerFlammable(Block block, int encouragement, int flammability) {
 		FireBlock fire = (FireBlock) Blocks.FIRE;
 		fire.setFlammable(block, encouragement, flammability);
 	}
 
+	/**
+	 * Registers a given {@link ItemLike} to be compostable.
+	 *
+	 * @param item   An {@link ItemLike} to be compostable.
+	 * @param chance The compost chance for the item.
+	 */
 	public static void registerCompostable(ItemLike item, float chance) {
 		ComposterBlock.COMPOSTABLES.put(item.asItem(), chance);
 	}
 
+	/**
+	 * Adds a potion mix.
+	 *
+	 * @param input    An input {@link Potion}.
+	 * @param reactant A reactant {@link Item}.
+	 * @param result   A resulting {@link Potion}.
+	 */
 	public static void addMix(Potion input, Item reactant, Potion result) {
 		try {
 			ADD_MIX_METHOD.invoke(null, input, reactant, result);
@@ -66,6 +93,13 @@ public final class DataUtil {
 		}
 	}
 
+	/**
+	 * Registers a {@link BlockColor} for a list of blocks.
+	 *
+	 * @param blockColors The {@link BlockColors} to register to.
+	 * @param color       A {@link BlockColor} to use.
+	 * @param blocksIn    A list of blocks to register.
+	 */
 	public static void registerBlockColor(BlockColors blockColors, BlockColor color, List<RegistryObject<Block>> blocksIn) {
 		blocksIn.removeIf(block -> !block.isPresent());
 		if (blocksIn.size() > 0) {
@@ -77,14 +111,21 @@ public final class DataUtil {
 		}
 	}
 
-	public static void registerBlockItemColor(ItemColors blockColors, ItemColor color, List<RegistryObject<Block>> blocksIn) {
+	/**
+	 * Registers an {@link ItemColor} for a list of block items.
+	 *
+	 * @param itemColors The {@link ItemColors} to register to.
+	 * @param color      An {@link ItemColor} to use.
+	 * @param blocksIn   A list of blocks to register.
+	 */
+	public static void registerBlockItemColor(ItemColors itemColors, ItemColor color, List<RegistryObject<Block>> blocksIn) {
 		blocksIn.removeIf(block -> !block.isPresent());
 		if (blocksIn.size() > 0) {
 			Block[] blocks = new Block[blocksIn.size()];
 			for (int i = 0; i < blocksIn.size(); i++) {
 				blocks[i] = blocksIn.get(i).get();
 			}
-			blockColors.register(color, blocks);
+			itemColors.register(color, blocks);
 		}
 	}
 
