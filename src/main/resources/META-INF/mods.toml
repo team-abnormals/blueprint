@@ -1,31 +1,31 @@
 modLoader = "javafml"
 loaderVersion = "[32,)"
-issueTrackerURL = "https://github.com/team-abnormals/abnormals-core/issues"
-license = "https://github.com/team-abnormals/abnormals-core/blob/main/LICENSE.txt"
+issueTrackerURL = "https://github.com/team-abnormals/blueprint/issues"
+license = "https://github.com/team-abnormals/blueprintcore/blob/main/LICENSE.txt"
 
 [[mods]]
-    modId = "abnormals_core"
+    modId = "blueprint"
     version = "5.0.0"
     logoFile = "logo.png"
     itemIcon = "minecraft:creeper_head"
-    configBackground = "abnormals_core:textures/blueprint.png"
+    configBackground = "blueprint:textures/blueprint.png"
     authors = "Team Abnormals"
     credits = "SmellyModder, bageldotjpg, Jackson"
-    displayURL = "https://www.teamabnormals.com/mods/abnormals-core"
-    displayName = "Abnormals Core"
+    displayURL = "https://www.teamabnormals.com/mods/blueprint"
+    displayName = "Blueprint"
     description = '''
     The library mod used by all Abnormals mods. Adds support for various types of blocks, helps with registering, and adds tons of misc. utils.
     Also comes with Endimator, an animation library that supports data-driven and coded animations.
     '''
 
-[[dependencies.abnormals_core]]
+[[dependencies.blueprint]]
     modId = "minecraft"
     mandatory = true
     versionRange = "[1.17.1,)"
     ordering = "NONE"
     side = "BOTH"
 
-[[dependencies.abnormals_core]]
+[[dependencies.blueprint]]
     modId = "forge"
     mandatory = true
     versionRange = "[37.0.78,)"

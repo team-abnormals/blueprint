@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "": { "model": "blueprint_test:block/test_chest" }
+    }
+}

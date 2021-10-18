@@ -1,32 +1,34 @@
-modLoader="javafml"
-loaderVersion="[32,)"
-issueTrackerURL="https://github.com/minecraftabnormals/Abnormals-Core/issues"
-license="https://github.com/minecraftabnormals/Abnormals-Core/blob/master/LICENSE.txt"
+modLoader = "javafml"
+loaderVersion = "[32,)"
+issueTrackerURL = "https://github.com/team-abnormals/blueprint/issues"
+license = "https://github.com/team-abnormals/blueprintcore/blob/main/LICENSE.txt"
 
 [[mods]]
-    modId="ac_test"
-    version="1.0.0"
-    displayName="Abnormals Core Test"
-    authors="SmellyModder (Luke Tonon), bageldotjpg"
-    description='''Test/Example Mod for Abnormals Core.'''
+    modId = "blueprint_test"
+    version = "1.0.0"
+    displayName = "Blueprint Test"
+    authors = "SmellyModder (Luke Tonon), bageldotjpg"
+    description ='''
+    Test/Example Mod for Abnormals Core.
+    '''
 
-[[dependencies.ac_test]]
-    modId="forge"
-    mandatory=true
-    versionRange="[37.0.78,)"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.blueprint_test]]
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "[1.17.1,)"
+    ordering = "NONE"
+    side = "BOTH"
 
-[[dependencies.ac_test]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.17.1,)"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.blueprint_test]]
+    modId = "forge"
+    mandatory = true
+    versionRange = "[37.0.78,)"
+    ordering = "NONE"
+    side = "BOTH"
 
-[[dependencies.ac_test]]
-    modId="abnormals_core"
-    mandatory=true
-    versionRange="[2.1.0,)"
-    ordering="AFTER"
-    side="BOTH"
+[[dependencies.blueprint_test]]
+    modId = "blueprint"
+    mandatory = true
+    versionRange = "[5.0.0,)"
+    ordering = "AFTER"
+    side = "BOTH"

@@ -1,6 +1,6 @@
 package common.world;
 
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.teamabnormals.blueprint.core.util.MathUtil;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;

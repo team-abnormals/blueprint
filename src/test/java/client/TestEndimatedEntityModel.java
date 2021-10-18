@@ -1,10 +1,10 @@
 package client;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatorModelRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import common.entities.TestEndimatedEntity;
+import common.entity.TestEndimatedEntity;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;

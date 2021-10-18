@@ -19,7 +19,7 @@ mixin {
 }
 
 version = "${project.minecraft}-${project.modVersion}"
-group = "com.minecraftabnormals"
+group = "com.teamabnormals"
 archivesBaseName = project.modId
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(16)
@@ -34,7 +34,7 @@ minecraft {
             property "forge.logging.console.level", "debug"
             arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
-                abnormals_core {
+                blueprint {
                     source sourceSets.main
                 }
                 ac_test {
@@ -48,7 +48,7 @@ minecraft {
             property "forge.logging.console.level", "debug"
             arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
-                abnormals_core {
+                blueprint {
                     source sourceSets.main
                 }
                 ac_test {
@@ -64,7 +64,7 @@ minecraft {
             property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
             args "--mod", project.modId, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources")
             mods {
-                abnormals_core {
+                blueprint {
                     source sourceSets.main
                 }
                 ac_test {

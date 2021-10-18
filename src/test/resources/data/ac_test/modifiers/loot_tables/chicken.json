@@ -6,14 +6,14 @@
 			"conditions": [
 				{
 					"type": "forge:mod_loaded",
-					"modid": "abnormals_core"
+					"modid": "blueprint"
 				}
 			],
 			"config": {
 				"replace": true,
 				"pools": [
 					{
-						"name": "ac_test:chicken",
+						"name": "blueprint_test:chicken",
 						"rolls": 1,
 						"entries": [
 							{

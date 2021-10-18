@@ -1,0 +1,7 @@
+{
+	"parent": "blueprint:block/thatch/thatch_stairs_inner_top",
+	"textures": {
+		"thatch": "blueprint_test:block/test_thatch",
+		"extrudes": "blueprint_test:block/test_thatch_extrudes"
+	}
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "blueprint:block/hedge_post",
+  "textures": {
+    "log": "minecraft:block/coarse_dirt",
+    "leaf": "minecraft:block/dirt"
+  }
+}

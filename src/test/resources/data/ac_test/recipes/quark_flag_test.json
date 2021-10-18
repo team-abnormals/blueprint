@@ -11,12 +11,12 @@
     }
   },
   "result": {
-    "item": "abnormals_core:example",
+    "item": "blueprint:example",
     "count": 1
   },
   "conditions": [
     {
-      "type": "abnormals_core:quark_flag",
+      "type": "blueprint:quark_flag",
       "flag": "variant_ladders"
     }
   ]

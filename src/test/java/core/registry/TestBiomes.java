@@ -1,9 +1,9 @@
 package core.registry;
 
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeAmbienceModifier;
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
-import com.minecraftabnormals.abnormals_core.core.util.registry.BiomeSubRegistryHelper;
-import core.ACTest;
+import com.teamabnormals.blueprint.common.world.modification.BiomeAmbienceModifier;
+import com.teamabnormals.blueprint.common.world.modification.BiomeModificationPredicates;
+import com.teamabnormals.blueprint.core.util.registry.BiomeSubRegistryHelper;
+import core.BlueprintTest;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.worldgen.*;
 import net.minecraft.sounds.Musics;
@@ -15,9 +15,9 @@ import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class TestBiomes {
-	public static final BiomeSubRegistryHelper HELPER = ACTest.REGISTRY_HELPER.getBiomeSubHelper();
+	public static final BiomeSubRegistryHelper HELPER = BlueprintTest.REGISTRY_HELPER.getBiomeSubHelper();
 
 	public static final BiomeSubRegistryHelper.KeyedBiome TEST_AMBIENCE = HELPER.createBiomeWithModifiers("test_ambience", TestBiomes::createAmbienceBiome, (biomeRegistryObject, biomeModificationManager) -> {
 		biomeModificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(BiomeModificationPredicates.forBiome(biomeRegistryObject), () -> new BiomeSpecialEffects.Builder().waterColor(415924).waterFogColor(329011).fogColor(1268463).skyColor(1).ambientParticle(new AmbientParticleSettings(ParticleTypes.ENCHANT, 0.00725F)).ambientLoopSound(TestSounds.AMBIENCE_TEST.get()).ambientMoodSound(new AmbientMoodSettings(TestSounds.AMBIENCE_TEST.get(), 6000, 8, 2.0D)).backgroundMusic(Musics.END_BOSS).build()));

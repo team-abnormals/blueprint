@@ -1,19 +1,19 @@
 package core.registry;
 
-import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.HedgeBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsStandingSignBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.sign.AbnormalsWallSignBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.thatch.ThatchStairBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.wood.WoodPostBlock;
-import com.minecraftabnormals.abnormals_core.core.util.registry.BlockSubRegistryHelper;
+import com.teamabnormals.blueprint.common.block.AbnormalsBeehiveBlock;
+import com.teamabnormals.blueprint.common.block.HedgeBlock;
+import com.teamabnormals.blueprint.common.block.chest.AbnormalsChestBlock;
+import com.teamabnormals.blueprint.common.block.chest.AbnormalsTrappedChestBlock;
+import com.teamabnormals.blueprint.common.block.sign.AbnormalsStandingSignBlock;
+import com.teamabnormals.blueprint.common.block.sign.AbnormalsWallSignBlock;
+import com.teamabnormals.blueprint.common.block.thatch.ThatchStairBlock;
+import com.teamabnormals.blueprint.common.block.wood.AbnormalsLogBlock;
+import com.teamabnormals.blueprint.common.block.wood.WoodPostBlock;
+import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
 import com.mojang.datafixers.util.Pair;
-import common.blocks.ChunkLoadTestBlock;
-import common.blocks.RotatedVoxelShapeTestBlock;
-import core.ACTest;
+import common.block.ChunkLoadTestBlock;
+import common.block.RotatedVoxelShapeTestBlock;
+import core.BlueprintTest;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -22,9 +22,9 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
-@Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class TestBlocks {
-	private static final BlockSubRegistryHelper HELPER = ACTest.REGISTRY_HELPER.getBlockSubHelper();
+	private static final BlockSubRegistryHelper HELPER = BlueprintTest.REGISTRY_HELPER.getBlockSubHelper();
 
 	public static final RegistryObject<Block> BLOCK = HELPER.createBlock("block", () -> new Block(Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> TEST_LOADER = HELPER.createBlock("test_loader", () -> new ChunkLoadTestBlock(Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_BUILDING_BLOCKS);

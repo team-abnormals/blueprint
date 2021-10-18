@@ -1,0 +1,6 @@
+{
+	"blueprint.config.quark_sign_editing": "Edição de placa do Quark",
+	"blueprint.config.require_empty_hand": "A edição de placa do Quark requer uma mão vazia",
+	"blueprint.message.redirect": "Redirecionando",
+	"entity.blueprint.boat": "Bote"
+}

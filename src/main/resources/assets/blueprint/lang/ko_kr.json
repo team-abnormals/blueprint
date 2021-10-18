@@ -1,0 +1,5 @@
+{
+	"blueprint.config.quark_sign_editing": "쿼크 기호 편집",
+	"blueprint.config.require_empty_hand": "쿼크 기호 편집에 빈 손이 필요합니다.",
+	"entity.blueprint.boat": "보트"
+}

@@ -1,17 +1,17 @@
 package core.registry;
 
-import com.minecraftabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
-import com.minecraftabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
-import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
-import core.ACTest;
+import com.teamabnormals.blueprint.common.item.AbnormalsSpawnEggItem;
+import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
+import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
+import core.BlueprintTest;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
-@Mod.EventBusSubscriber(modid = ACTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class TestItems {
-	private static final Helper HELPER = ACTest.REGISTRY_HELPER.getItemSubHelper();
+	private static final Helper HELPER = BlueprintTest.REGISTRY_HELPER.getItemSubHelper();
 
 	public static final RegistryObject<Item> ITEM = HELPER.createTest();
 	public static final RegistryObject<AbnormalsSpawnEggItem> COW_SPAWN_EGG = HELPER.createSpawnEggItem("test", TestEntities.COW::get, 100, 200);

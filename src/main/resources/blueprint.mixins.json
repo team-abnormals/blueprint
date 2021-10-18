@@ -1,0 +1,34 @@
+{
+  "required": true,
+  "package": "com.teamabnormals.blueprint.core.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "minVersion": "0.8",
+  "refmap": "blueprint.refmap.json",
+  "mixins": [
+    "AdvancementBuilderMixin",
+    "EntityMixin",
+    "FluidInvokerMixin",
+    "ItemInvokerMixin",
+    "LanternBlockMixin",
+    "LayersMixin",
+    "MultiNoiseBiomeSourcePresetMixin",
+    "OceanLayerMixin",
+    "OceanMixerLayerMixin",
+    "RegionHillsLayerMixin",
+    "ServerEntityMixin",
+    "ServerLevelMixin",
+    "ShoreLayerMixin",
+    "SpawnEggItemMixin",
+    "TheEndBiomeSourceMixin"
+  ],
+  "client": [
+    "client.CameraInvokerMixin",
+    "client.ClientLevelMixin",
+    "client.MinecraftMixin",
+    "client.PlayerRendererMixin",
+    "client.SkinCustomizationScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

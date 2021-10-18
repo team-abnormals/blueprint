@@ -1,9 +1,9 @@
 package core;
 
-import com.minecraftabnormals.abnormals_core.client.screen.shaking.EntityShakeSource;
-import com.minecraftabnormals.abnormals_core.client.screen.shaking.ScreenShakeHandler;
-import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
-import com.minecraftabnormals.abnormals_core.core.util.TradeUtil;
+import com.teamabnormals.blueprint.client.screen.shaking.EntityShakeSource;
+import com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler;
+import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
+import com.teamabnormals.blueprint.core.util.TradeUtil;
 import core.registry.TestItems;
 import core.registry.TestTriggers;
 import net.minecraft.core.particles.ParticleTypes;
@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid = ACTest.MOD_ID)
+@Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID)
 public final class TestEvents {
 
 	@SubscribeEvent
@@ -35,7 +35,7 @@ public final class TestEvents {
 				if (player instanceof ServerPlayer) {
 					TestTriggers.EMPTY_TEST.trigger((ServerPlayer) player);
 				}
-				TrackedDataManager.INSTANCE.setValue(entity, ACTest.TEST_TRACKED_DATA, true);
+				TrackedDataManager.INSTANCE.setValue(entity, BlueprintTest.TEST_TRACKED_DATA, true);
 			} else {
 				ScreenShakeHandler.INSTANCE.addShakeSource(new EntityShakeSource(entity, 100, 0.1F, 0.1F, 0.02F, 0.2F, 0.2F, 0.04F, 0.98F, 0.98F, 0.99F));
 			}
@@ -45,7 +45,7 @@ public final class TestEvents {
 	@SubscribeEvent
 	public static void onLivingTick(LivingEvent.LivingUpdateEvent event) {
 		LivingEntity entity = event.getEntityLiving();
-		if (entity.level.isClientSide && (entity instanceof Cow || entity instanceof Player) && TrackedDataManager.INSTANCE.getValue(entity, ACTest.TEST_TRACKED_DATA)) {
+		if (entity.level.isClientSide && (entity instanceof Cow || entity instanceof Player) && TrackedDataManager.INSTANCE.getValue(entity, BlueprintTest.TEST_TRACKED_DATA)) {
 			Random rand = entity.getRandom();
 			for (int i = 0; i < 2; ++i) {
 				entity.level.addParticle(ParticleTypes.PORTAL, entity.getRandomX(0.5D), entity.getRandomY() - 0.25D, entity.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(), (rand.nextDouble() - 0.5D) * 2.0D);

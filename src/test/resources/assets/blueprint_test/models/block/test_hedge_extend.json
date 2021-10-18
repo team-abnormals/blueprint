@@ -1,0 +1,6 @@
+{
+  "parent": "blueprint:block/hedge_extend",
+  "textures": {
+    "leaf": "minecraft:block/dirt"
+  }
+}

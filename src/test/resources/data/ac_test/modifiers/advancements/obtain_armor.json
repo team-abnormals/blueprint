@@ -5,19 +5,19 @@
       "type": "display",
       "conditions": [
         {
-          "type": "abnormals_core:config",
+          "type": "blueprint:config",
           "value": "slabfish_hat_backpack_enabled",
           "inverted": true
         },
         {
           "type": "forge:mod_loaded",
-          "modid": "abnormals_core"
+          "modid": "blueprint"
         }
       ],
       "config": {
         "mode": "modify",
         "title": {
-          "translate": "ac_test.advancements.husbandry.obtain_armor.title"
+          "translate": "blueprint_test.advancements.husbandry.obtain_armor.title"
         },
         "description": {
           "text": "How do you intend to suit up when you have the slabfish backpack turned off !!!!"

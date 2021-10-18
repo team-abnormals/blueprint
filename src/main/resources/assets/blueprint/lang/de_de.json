@@ -1,0 +1,17 @@
+{
+	"blueprint.config.quark_sign_editing": "Schild herausgeben",
+	"blueprint.config.require_empty_hand": "Schild herausgeben braucht einen leeren Hand",
+	"blueprint.config.slabfish_hat.enabled": "Slabfishhut",
+	"blueprint.config.slabfish_hat.enabled.tooltip": "Den Slabfishhutes umschalten. Für Patrons des Levels 2+ verfügbar.",
+	"blueprint.config.slabfish_hat.sweater": "Pulli",
+	"blueprint.config.slabfish_hat.sweater.tooltip": "Den Pulli des Slabfishhutes umschalten. Für Patrons des Levels 2+ verfügbar.",
+	"blueprint.config.slabfish_hat.backpack": "Rucksack",
+	"blueprint.config.slabfish_hat.backpack.tooltip": "Den Rucksack des Slabfishhutes umschalten. Für Patrons des Levels 3+ verfügbar.",
+	"blueprint.config.slabfish_hat.type": "Typ",
+	"blueprint.config.slabfish_hat.type.tooltip": "Den Typ des Slabfishhutes umschalten. Für Patrons des Levels 4+ verfügbar.",
+	"blueprint.screen.slabfish_settings": "Slabfisheinstellungen...",
+	"blueprint.screen.slabfish_settings.title": "Slabfisheinstellungen",
+	"blueprint.screen.slabfish_settings.tooltip": "Einstellungen für den Slabfishhut der Patrons des Team Abnormals. Werde Patron auf %s.",
+	"blueprint.message.redirect": "Umleiten",
+	"entity.blueprint.boat": "Boot"
+}

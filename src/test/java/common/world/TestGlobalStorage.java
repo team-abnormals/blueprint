@@ -1,6 +1,6 @@
 package common.world;
 
-import com.minecraftabnormals.abnormals_core.common.world.storage.GlobalStorage;
+import com.teamabnormals.blueprint.common.world.storage.GlobalStorage;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Random;

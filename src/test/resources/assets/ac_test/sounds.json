@@ -1,9 +1,0 @@
-{
-	"ambient.end_city.test":
-    {
-        "category": "ambient",
-        "sounds": [
-        	{ "name": "ac_test:ambient/ambience" }
-        ]
-    }
-}

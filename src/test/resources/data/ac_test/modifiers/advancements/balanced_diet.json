@@ -20,7 +20,7 @@
 	  "config": {
 		"mode": "modify",
 		"title": {
-		  "translate": "ac_test.advancements.husbandry.balanced_diet.title"
+		  "translate": "blueprint_test.advancements.husbandry.balanced_diet.title"
 		},
 		"description": {
 		  "text": "Momma."
