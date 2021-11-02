@@ -1,0 +1,64 @@
+{
+	"parts": {
+		"rightArm": {
+			"rotation": [
+				{
+					"time": 0.0,
+					"x": 1.04,
+					"y": -0.5,
+					"z": -0.122
+				},
+				{
+					"time": 0.25,
+					"x": 1.04,
+					"y": -0.1,
+					"z": -0.122,
+					"interpolation": {
+						"type": "linear",
+						"easing": "ease_in_out_sine"
+					}
+				},
+				{
+					"time": 0.5,
+					"x": 1.04,
+					"y": -0.5,
+					"z": -0.122,
+					"interpolation": {
+						"type": "linear",
+						"easing": "ease_in_out_sine"
+					}
+				}
+			]
+		},
+		"leftArm": {
+			"rotation": [
+				{
+					"time": 0.0,
+					"x": 1.04,
+					"y": 0.5,
+					"z": 0.122
+				},
+				{
+					"time": 0.25,
+					"x": 1.04,
+					"y": 0.1,
+					"z": 0.122,
+					"interpolation": {
+						"type": "linear",
+						"easing": "ease_in_out_sine"
+					}
+				},
+				{
+					"time": 0.5,
+					"x": 1.04,
+					"y": 0.5,
+					"z": 0.122,
+					"interpolation": {
+						"type": "linear",
+						"easing": "ease_in_out_sine"
+					}
+				}
+			]
+		}
+	}
+}

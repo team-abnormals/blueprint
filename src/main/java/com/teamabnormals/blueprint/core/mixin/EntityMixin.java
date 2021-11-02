@@ -2,11 +2,15 @@ package com.teamabnormals.blueprint.core.mixin;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.teamabnormals.blueprint.client.screen.shaking.EntityShakeSource;
+import com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler;
 import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import com.teamabnormals.blueprint.common.world.storage.tracking.SyncType;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.endimator.Endimatable;
+import com.teamabnormals.blueprint.core.endimator.effects.shaking.ShakeEndimationEffect;
 import com.teamabnormals.blueprint.core.events.EntityStepEvent;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.Entity;
@@ -29,12 +33,14 @@ import java.util.Map;
 import java.util.Set;
 
 @Mixin(Entity.class)
-public final class EntityMixin implements IDataManager {
+public final class EntityMixin implements IDataManager, Endimatable {
 	@Shadow
 	private Level level;
 
 	private Map<TrackedData<?>, DataEntry<?>> dataMap = Maps.newHashMap();
 	private boolean dirty = false;
+
+	private final EndimatedState endimatedState = new EndimatedState(this);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -98,6 +104,16 @@ public final class EntityMixin implements IDataManager {
 		return dirtyEntries;
 	}
 
+	@Override
+	public EndimatedState getEndimatedState() {
+		return this.endimatedState;
+	}
+
+	@Override
+	public void processShake(ShakeEndimationEffect.Config config) {
+		ScreenShakeHandler.INSTANCE.addShakeSource(new EntityShakeSource((Entity) (Object) this, config.duration(), config.intensityX(), config.intensityY(), config.intensityZ(), config.maxBuildupX(), config.maxBuildupY(), config.maxBuildupZ(), config.decayX(), config.decayY(), config.decayZ()));
+	}
+
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;addAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", shift = At.Shift.BEFORE), method = "saveWithoutId")
 	private void writeTrackedData(CompoundTag compound, CallbackInfoReturnable<CompoundTag> info) {
 		if (!this.dataMap.isEmpty()) {
@@ -130,6 +146,11 @@ public final class EntityMixin implements IDataManager {
 				}
 			});
 		}
+	}
+
+	@Inject(at = @At(value = "HEAD", shift = At.Shift.BY, by = 1), method = "baseTick")
+	private void baseTick(CallbackInfo info) {
+		this.endimateTick();
 	}
 
 	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;stepOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/Entity;)V"))

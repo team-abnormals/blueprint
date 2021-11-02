@@ -1,5 +1,6 @@
 package core;
 
+import client.TestEndimatedBlockEntityRenderer;
 import client.TestEndimatedEntityRenderer;
 import com.google.common.collect.Sets;
 import com.teamabnormals.blueprint.common.world.modification.BiomeFeatureModifier;
@@ -17,10 +18,7 @@ import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import com.mojang.datafixers.util.Pair;
 import common.world.TestGlobalStorage;
-import core.registry.TestBiomes;
-import core.registry.TestEntities;
-import core.registry.TestFeatures;
-import core.registry.TestItems;
+import core.registry.*;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.data.worldgen.Features;
 import net.minecraft.resources.ResourceLocation;
@@ -122,6 +120,7 @@ public final class BlueprintTest {
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(TestEntities.COW.get(), CowRenderer::new);
 		event.registerEntityRenderer(TestEntities.ENDIMATED_TEST.get(), TestEndimatedEntityRenderer::new);
+		event.registerBlockEntityRenderer(TestBlockEntities.TEST_ENDIMATED.get(), TestEndimatedBlockEntityRenderer::new);
 	}
 
 	private void registerLootInjectors() {

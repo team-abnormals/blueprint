@@ -8,8 +8,9 @@ import com.teamabnormals.blueprint.common.network.entity.MessageS2CUpdateEntityD
 import com.teamabnormals.blueprint.common.network.particle.MessageS2CSpawnParticle;
 import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
-import com.teamabnormals.blueprint.core.endimator.Endimation;
-import com.teamabnormals.blueprint.core.endimator.entity.IEndimatedEntity;
+import com.teamabnormals.blueprint.core.endimator.Endimatable;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimationManager;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Set;
 
@@ -81,9 +81,9 @@ public final class NetworkUtil {
 	 * @param entity           The Entity to send the packet for.
 	 * @param endimationToPlay The endimation to play.
 	 */
-	public static <E extends Entity & IEndimatedEntity> void setPlayingAnimationMessage(E entity, Endimation endimationToPlay) {
+	public static <E extends Entity & Endimatable> void setPlayingAnimation(E entity, PlayableEndimation endimationToPlay) {
 		if (!entity.level.isClientSide) {
-			Blueprint.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageS2CEndimation(entity.getId(), ArrayUtils.indexOf(entity.getEndimations(), endimationToPlay)));
+			Blueprint.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageS2CEndimation(entity.getId(), PlayableEndimationManager.INSTANCE.getID(endimationToPlay)));
 			entity.setPlayingEndimation(endimationToPlay);
 		}
 	}

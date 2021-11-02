@@ -2,11 +2,12 @@ package common.entity.ai;
 
 import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import common.entity.TestEndimatedEntity;
+import core.registry.TestEndimations;
 
 public class TestEndimatedGoal extends EndimatedGoal<TestEndimatedEntity> {
 
 	public TestEndimatedGoal(TestEndimatedEntity entity) {
-		super(entity, TestEndimatedEntity.GROW_ANIMATION);
+		super(entity, TestEndimations.ROTATE);
 	}
 
 	@Override

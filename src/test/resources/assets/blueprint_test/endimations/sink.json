@@ -1,0 +1,21 @@
+{
+	"parts": {
+		"cube": {
+			"position": [
+				{
+					"time": 0.5,
+					"y": 16.0,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				},
+				{
+					"time": 1.0,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				}
+			]
+		}
+	}
+}

@@ -25,6 +25,7 @@
     "client.CameraInvokerMixin",
     "client.ClientLevelMixin",
     "client.MinecraftMixin",
+    "client.ModelPartMixin",
     "client.PlayerRendererMixin",
     "client.SkinCustomizationScreenMixin"
   ],

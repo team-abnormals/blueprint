@@ -1,332 +1,404 @@
 package com.teamabnormals.blueprint.core.endimator;
 
-import com.google.common.collect.Maps;
-import com.teamabnormals.blueprint.client.ClientInfo;
-import com.teamabnormals.blueprint.core.Blueprint;
-import com.teamabnormals.blueprint.core.endimator.entity.EndimatorModelRenderer;
-import com.teamabnormals.blueprint.core.endimator.entity.IEndimatedEntity;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.util.Mth;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.model.geom.ModelPart;
 
+import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
- * This is the core class for processing an {@link Endimation} for an {@link IEndimatedEntity}.
- * TODO: Possibly add support for more values to be stored in {@link BoxValues} so complex/unique custom instructions can be added.
+ * The core class of Endimator used to apply {@link Endimation} instances to {@link EndimatablePart} instances. Endimator: Animator for {@link Endimation} instances.
+ * <p>This class works by storing <b>additive</b> animation values for {@link EndimatablePart} instances mapped to strings.</p>
+ * <p>Multiple instances of this class can be safely used on the same set of {@link EndimatablePart} instances in the same frame when {@link ResetMode} is properly used.</p>
  *
- * @param <E> The type of the entity this {@link Endimator} processes animations for.
  * @author SmellyModder (Luke Tonon)
+ * @see Endimation
+ * @see EndimatablePart
  */
-public final class Endimator<E extends Entity & IEndimatedEntity> {
-	private final Map<EndimatorModelRenderer, BoxValues> prevBoxValues = Maps.newHashMap();
-	private final Map<EndimatorModelRenderer, BoxValues> boxValues = Maps.newHashMap();
-	private E entity;
-	private int prevTickDuration;
-	private int tickDuration;
+public final class Endimator {
+	private static final Vector3f ADD_VECTOR = new Vector3f();
+	private final Map<String, PosedPart> poseMap;
 
-	/**
-	 * Updates this {@link Endimator} for an entity.
-	 * <p>This should be called before performing any animating functions.</p>
-	 *
-	 * @param entity The entity to update this for.
-	 */
-	public void tick(E entity) {
-		this.entity = entity;
-		this.tickDuration = this.prevTickDuration = 0;
-		this.prevBoxValues.clear();
-		this.boxValues.clear();
+	public Endimator(Map<String, PosedPart> poseMap) {
+		this.poseMap = poseMap;
 	}
 
 	/**
-	 * Sets an Endimation to be played.
+	 * Shortly compiles a new {@link Endimator} instance by recursively putting children from a given root part.
+	 * <p>Named 'short' as names of children are not mapped out in a path representation.</p>
+	 * <p>Full Path: body/head</p>
+	 * <p>Short: head</p>
 	 *
-	 * @param endimationToPlay The {@link Endimation} to start playing.
+	 * @param root A root {@link ModelPart} to use.
+	 * @return A new {@link Endimator} instance containing the recursive children of a given root part.
 	 */
-	public void setEndimationToPlay(Endimation endimationToPlay) {
-		this.updateBoxValueMap();
-		this.tickDuration = this.prevTickDuration = 0;
-		if (this.entity.getPlayingEndimation() != endimationToPlay) {
-			Blueprint.LOGGER.warn("Endimation to be played doesn't match the Endimation playing on the entity!");
+	public static Endimator shortCompile(ModelPart root) {
+		return new Endimator(compileMap(new HashMap<>(), root));
+	}
+
+	/**
+	 * Compiles a new {@link Endimator} instance by recursively putting children from a given root part.
+	 * <p>The children are mapped out in a path format. Use {@link #shortCompile(ModelPart)} if this behavior is not desired.</p>
+	 *
+	 * @param root A root {@link ModelPart} to use.
+	 * @return A new {@link Endimator} instance containing the recursive children of a given root part.
+	 */
+	public static Endimator compile(ModelPart root) {
+		return new Endimator(compileMap(new HashMap<>(), "", root));
+	}
+
+	private static Map<String, PosedPart> compileMap(Map<String, PosedPart> partMap, ModelPart root) {
+		root.children.forEach((childName, childPart) -> {
+			partMap.put(childName, PosedPart.part((EndimatablePart) childPart));
+			if (!childPart.children.isEmpty()) {
+				compileMap(partMap, childPart);
+			}
+		});
+		return partMap;
+	}
+
+	private static Map<String, PosedPart> compileMap(Map<String, PosedPart> partMap, String prefix, ModelPart root) {
+		root.children.forEach((childName, childPart) -> {
+			String path = prefix + childName;
+			partMap.put(path, PosedPart.part((EndimatablePart) childPart));
+			if (!childPart.children.isEmpty()) {
+				compileMap(partMap, path + "/", childPart);
+			}
+		});
+		return partMap;
+	}
+
+	private static void applyType(PosedPart posedPart, KeyframeType type, Endimation.PartKeyframes partKeyframes, float blendWeight, float time) {
+		ADD_VECTOR.set(0.0F, 0.0F, 0.0F);
+		EndimationKeyframe[] frames = type.getFrames(partKeyframes);
+		int length = frames.length;
+		for (int i = 0; i < length; i++) {
+			EndimationKeyframe keyframe = frames[i];
+			float keyframeTime = keyframe.time;
+			if (keyframeTime == 0.0F || (i != length - 1 && keyframeTime < time)) {
+				continue;
+			}
+			float progress;
+			if (i == 0) {
+				progress = time / keyframeTime;
+			} else {
+				float prevFrameTime = frames[i - 1].time;
+				progress = (time - prevFrameTime) / (keyframeTime - prevFrameTime);
+			}
+			if (progress > 1.0F) {
+				progress = 1.0F;
+			}
+			keyframe.apply(ADD_VECTOR::set, frames, i, length, progress);
+			break;
+		}
+		ADD_VECTOR.mul(blendWeight);
+		type.apply(posedPart, ADD_VECTOR);
+	}
+
+	/**
+	 * Puts a {@link EndimatablePart} onto the {@link #poseMap}.
+	 *
+	 * @param name A name to use.
+	 * @param part A {@link EndimatablePart} to put.
+	 */
+	public void put(String name, EndimatablePart part) {
+		this.poseMap.put(name, PosedPart.part(part));
+	}
+
+	/**
+	 * Puts a {@link ModelPart} and its children recursively onto the {@link #poseMap}.
+	 *
+	 * @param prefix  A name to use for the starting part.
+	 * @param notRoot Used internally by the recursion algorithm. Always use false.
+	 * @param part    A {@link ModelPart} to recursively put.
+	 */
+	public void putRecursive(String prefix, ModelPart part, boolean notRoot) {
+		Map<String, PosedPart> poseMap = this.poseMap;
+		poseMap.put(prefix, PosedPart.part((EndimatablePart) part));
+		if (notRoot) {
+			prefix = prefix + "/";
+		}
+		for (Map.Entry<String, ModelPart> entry : part.children.entrySet()) {
+			this.putRecursive(prefix + entry.getKey(), entry.getValue(), true);
 		}
 	}
 
 	/**
-	 * Tries to begin playing an {@link Endimation}.
+	 * Shortly puts a {@link ModelPart} and its children recursively onto the {@link #poseMap}.
+	 * <p>Named 'short' as names of children are not mapped out in a path representation.</p>
+	 * <p>Full Path: body/head</p>
+	 * <p>Short: head</p>
 	 *
-	 * @param endimationToPlay The {@link Endimation} to try to play.
-	 * @return True if the {@link Endimation} was able to be played.
+	 * @param name A name to use for the starting part.
+	 * @param part A {@link ModelPart} to recursively put.
 	 */
-	public boolean tryToPlayEndimation(Endimation endimationToPlay) {
-		if (this.entity.isEndimationPlaying(endimationToPlay)) {
-			this.setEndimationToPlay(endimationToPlay);
-			return true;
-		}
-		return false;
+	public void putShortRecursive(String name, ModelPart part) {
+		this.poseMap.put(name, PosedPart.part((EndimatablePart) part));
+		part.children.forEach(this::putShortRecursive);
 	}
 
 	/**
-	 * Starts a keyframe for a set amount of ticks.
+	 * Removes a {@link PosedPart} from the {@link #poseMap}.
 	 *
-	 * @param tickDuration The duration of the keyframe (measured in ticks).
+	 * @param name A name to remove its corresponding {@link PosedPart}.
+	 * @return The previous {@link PosedPart} associated with the name, or null if there was no mapping for name.
 	 */
-	public void startKeyframe(int tickDuration) {
-		this.prevTickDuration = this.tickDuration;
-		this.tickDuration += tickDuration;
+	@Nullable
+	public PosedPart remove(String name) {
+		return this.poseMap.remove(name);
 	}
 
 	/**
-	 * Starts a keyframe that holds the most recent box values for a set duration.
+	 * Shortly removes a {@link ModelPart} and its children recursively from the {@link #poseMap}.
+	 * <p>Named 'short' as names of children are not mapped out in a path representation.</p>
+	 * <p>Full Path: body/head</p>
+	 * <p>Short: head</p>
 	 *
-	 * @param tickDuration The duration of the keyframe (measured in ticks).
+	 * @param name A name to remove its corresponding {@link PosedPart}.
+	 * @param part A {@link ModelPart} to recursively remove.
 	 */
-	public void setStaticKeyframe(int tickDuration) {
-		this.startKeyframe(tickDuration);
-		if (this.shouldEndimateBoxes()) {
-			this.prevBoxValues.forEach((endimatorModelRenderer, values) -> values.addValuesToBox(endimatorModelRenderer));
+	public void removeShortRecursive(String name, ModelPart part) {
+		this.poseMap.remove(name);
+		for (Map.Entry<String, ModelPart> entry : part.children.entrySet()) {
+			this.removeShortRecursive(entry.getKey(), entry.getValue());
 		}
 	}
 
 	/**
-	 * Ends the current Keyframe
+	 * Removes a {@link PosedPart} and its children recursively from the {@link #poseMap}.
+	 *
+	 * @param prefix  A name to use for the starting part.
+	 * @param part    A {@link ModelPart} to recursively remove.
+	 * @param notRoot Used internally by the recursion algorithm. Always use false.
 	 */
-	public void endKeyframe() {
-		if (this.shouldEndimateBoxes()) {
-			float increment = Mth.sin((float) (((this.entity.getAnimationTick() - this.prevTickDuration + ClientInfo.getPartialTicks()) / (this.tickDuration - this.prevTickDuration)) * Math.PI / 2.0F));
-			this.prevBoxValues.forEach((endimatorModelRenderer, prevValues) -> prevValues.addValuesToBoxWithMultiplier(endimatorModelRenderer, 1.0F - increment));
-			this.boxValues.forEach((endimatorModelRenderer, values) -> values.addValuesToBoxWithMultiplier(endimatorModelRenderer, increment));
+	public void removeRecursive(String prefix, ModelPart part, boolean notRoot) {
+		Map<String, PosedPart> poseMap = this.poseMap;
+		poseMap.remove(prefix);
+		if (notRoot) {
+			prefix = prefix + "/";
 		}
-
-		this.updateBoxValueMap();
+		for (Map.Entry<String, ModelPart> entry : part.children.entrySet()) {
+			this.removeRecursive(prefix + entry.getKey(), entry.getValue(), true);
+		}
 	}
 
 	/**
-	 * Resets the current keyframe to its default values.
+	 * Gets the {@link PosedPart} for a given name.
 	 *
-	 * @param tickDuration The duration of the keyframe (measured in ticks).
+	 * @param name A name to lookup.
+	 * @return The {@link PosedPart} for a given name, or null if no {@link PosedPart} exists for the given name.
 	 */
-	public void resetKeyframe(int tickDuration) {
-		this.startKeyframe(tickDuration);
-		this.endKeyframe();
+	@Nullable
+	public PosedPart getPosedPart(String name) {
+		return this.poseMap.get(name);
 	}
 
 	/**
-	 * Moves an {@link EndimatorModelRenderer} in the current keyframe to a position.
+	 * Applies a {@link ResetMode} to every {@link PosedPart} in the {@link #poseMap}.
 	 *
-	 * @param model The {@link EndimatorModelRenderer} to move.
-	 * @param x     The x point.
-	 * @param y     The y point.
-	 * @param z     The z point.
+	 * @param resetMode A {@link ResetMode} to apply to the {@link #poseMap}.
 	 */
-	public void move(EndimatorModelRenderer model, float x, float y, float z) {
-		this.getBoxValues(model).setPosition(x, y, z);
+	public void reset(ResetMode resetMode) {
+		if (resetMode != ResetMode.NONE) {
+			this.poseMap.values().forEach(resetMode.consumer);
+		}
 	}
 
 	/**
-	 * Moves an {@link EndimatorModelRenderer} in the current keyframe to a position plus the current position.
-	 *
-	 * @param model The {@link EndimatorModelRenderer} to move.
-	 * @param x     The x point to add.
-	 * @param y     The y point to add.
-	 * @param z     The z point to add.
+	 * Clears this instance's {@link #poseMap}.
 	 */
-	public void moveAdditive(EndimatorModelRenderer model, float x, float y, float z) {
-		this.getBoxValues(model).addPosition(x, y, z);
+	public void clear() {
+		this.poseMap.clear();
 	}
 
 	/**
-	 * Offsets an {@link EndimatorModelRenderer} in the current keyframe by a set of values.
+	 * Applies an {@link Endimation} at a given time.
 	 *
-	 * @param model The {@link EndimatorModelRenderer} to offset.
-	 * @param x     The x point.
-	 * @param y     The y point.
-	 * @param z     The z point.
+	 * @param endimation An {@link Endimation} to apply.
+	 * @param time       The time passed since the start of the {@link Endimation}, measured in seconds.
+	 * @param resetMode  A {@link ResetMode} to use for preparing the {@link #poseMap} for application.
 	 */
-	public void offset(EndimatorModelRenderer model, float x, float y, float z) {
-		this.getBoxValues(model).setOffset(x, y, z);
+	public void apply(Endimation endimation, float time, ResetMode resetMode) {
+		this.reset(resetMode);
+		Map<String, Endimation.PartKeyframes> partKeyframesMap = endimation.getPartKeyframes();
+		if (!partKeyframesMap.isEmpty()) {
+			Map<String, PosedPart> poseMap = this.poseMap;
+			float blendWeight = endimation.getBlendWeight();
+			for (Map.Entry<String, Endimation.PartKeyframes> entry : partKeyframesMap.entrySet()) {
+				PosedPart posedPart = poseMap.get(entry.getKey());
+				if (posedPart != null) {
+					Endimation.PartKeyframes partKeyframes = entry.getValue();
+					for (KeyframeType type : KeyframeType.values()) {
+						applyType(posedPart, type, partKeyframes, blendWeight, time);
+					}
+					posedPart.apply();
+				}
+			}
+		}
 	}
 
 	/**
-	 * Offsets an {@link EndimatorModelRenderer} in the current keyframe by a set of values plus the current offset.
+	 * The type of procedures to use when preparing {@link Endimator#poseMap} for the applying of an {@link Endimation}.
+	 * <p>Named 'ResetMode' because the preparing is more like resetting the {@link Endimator#poseMap} to safely play an {@link Endimation}.</p>
+	 * <p>{@link #RESET} will reset the values of a {@link PosedPart} to zero. This is useful for safely playing an {@link Endimation} after other manual animations have already played in the same frame.</p>
+	 * <p>{@link #UNAPPLY} will revert the values added onto a {@link EndimatablePart} by the {@link PosedPart}. This is useful for safely playing an {@link Endimation} after other {@link Endimation}s have already played in the same frame.</p>
+	 * <p>{@link #ALL} will combine {@link #RESET} and {@link #UNAPPLY}.</p>
+	 * <p>{@link #NONE} will do nothing.</p>
 	 *
-	 * @param model The {@link EndimatorModelRenderer} to offset.
-	 * @param x     The x point to add.
-	 * @param y     The y point to add.
-	 * @param z     The z point to add.
+	 * @author SmellyModder (Luke Tonon)
 	 */
-	public void offsetAdditive(EndimatorModelRenderer model, float x, float y, float z) {
-		this.getBoxValues(model).addOffset(x, y, z);
+	public enum ResetMode {
+		NONE(posedPart -> {
+		}),
+		ALL(posedPart -> {
+			posedPart.unapply();
+			posedPart.reset();
+		}),
+		RESET(PosedPart::reset),
+		UNAPPLY(PosedPart::unapply);
+
+		private final Consumer<PosedPart> consumer;
+
+		ResetMode(Consumer<PosedPart> consumer) {
+			this.consumer = consumer;
+		}
+
+		public Consumer<PosedPart> getConsumer() {
+			return this.consumer;
+		}
 	}
 
 	/**
-	 * Rotates an {@link EndimatorModelRenderer} in the current keyframe to a set of rotations (measured in radians).
+	 * A class containing <b>additive</b> values for all {@link KeyframeType}s for an {@link EndimatablePart}.
+	 * <p>Used for storing animation values that can get reversed.</p>
 	 *
-	 * @param model The {@link EndimatorModelRenderer} to rotate.
-	 * @param x     The x rotation.
-	 * @param y     The y rotation.
-	 * @param z     The z rotation.
+	 * @author SmellyModder (Luke Tonon)
 	 */
-	public void rotate(EndimatorModelRenderer model, float x, float y, float z) {
-		this.getBoxValues(model).setRotation(x, y, z);
-	}
+	public static final class PosedPart {
+		public final EndimatablePart part;
+		public float x, y, z;
+		public float xRot, yRot, zRot;
+		public float xOffset, yOffset, zOffset;
+		public float xScale, yScale, zScale;
 
-	/**
-	 * Rotates an {@link EndimatorModelRenderer} in the current keyframe to a set of rotations (measured in radians) plus the current rotations.
-	 *
-	 * @param model The {@link EndimatorModelRenderer} to rotate.
-	 * @param x     The x rotation to add.
-	 * @param y     The y rotation to add.
-	 * @param z     The z rotation to add.
-	 */
-	public void rotateAdditive(EndimatorModelRenderer model, float x, float y, float z) {
-		this.getBoxValues(model).addRotation(x, y, z);
-	}
-
-	/**
-	 * Scales an {@link EndimatorModelRenderer} in the current keyframe to the scale specified.
-	 *
-	 * @param model {@link EndimatorModelRenderer} to scale.
-	 * @param x     The x scale.
-	 * @param y     The y scale.
-	 * @param z     The z scale.
-	 */
-	public void scale(EndimatorModelRenderer model, float x, float y, float z) {
-		this.getBoxValues(model).setScale(x, y, z);
-	}
-
-	/**
-	 * Scales an {@link EndimatorModelRenderer} in the current keyframe to the scale specified plus its current scale.
-	 *
-	 * @param model {@link EndimatorModelRenderer} to scale.
-	 * @param x     The x scale to add.
-	 * @param y     The y scale to add.
-	 * @param z     The z scale to add.
-	 */
-	public void scaleAdditive(EndimatorModelRenderer model, float x, float y, float z) {
-		this.getBoxValues(model).addScale(x, y, z);
-	}
-
-	private boolean shouldEndimateBoxes() {
-		int animationTick = this.entity.getAnimationTick();
-		return animationTick < this.tickDuration && animationTick >= this.prevTickDuration;
-	}
-
-	/**
-	 * Gets the current {@link BoxValues} for the specified {@link EndimatorModelRenderer}.
-	 *
-	 * @param model The {@link EndimatorModelRenderer} to get the values for.
-	 * @return The {@link BoxValues} for the specified {@link EndimatorModelRenderer}.
-	 */
-	public BoxValues getBoxValues(EndimatorModelRenderer model) {
-		return this.boxValues.computeIfAbsent(model, (modelRenderer) -> new BoxValues());
-	}
-
-	private void updateBoxValueMap() {
-		this.prevBoxValues.clear();
-		this.prevBoxValues.putAll(this.boxValues);
-		this.boxValues.clear();
-	}
-
-	public static class BoxValues {
-		private float posX, posY, posZ;
-		private float offsetX, offsetY, offsetZ;
-		private float angleX, angleY, angleZ;
-		private float scaleX, scaleY, scaleZ;
-
-		public BoxValues(float posX, float posY, float posZ, float offsetX, float offsetY, float offsetZ, float angleX, float angleY, float angleZ, float scaleX, float scaleY, float scaleZ) {
-			this.posX = posX;
-			this.posY = posY;
-			this.posZ = posZ;
-			this.offsetX = offsetX;
-			this.offsetY = offsetY;
-			this.offsetZ = offsetZ;
-			this.angleX = angleX;
-			this.angleY = angleY;
-			this.angleZ = angleZ;
-			this.scaleX = scaleX;
-			this.scaleY = scaleY;
-			this.scaleZ = scaleZ;
+		public PosedPart(EndimatablePart part) {
+			this.part = part;
 		}
 
-		public BoxValues() {
-			this(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+		/**
+		 * A new {@link PosedPart} with default values for a given {@link EndimatablePart}.
+		 *
+		 * @param part A {@link EndimatablePart} to contain.
+		 * @return A new {@link PosedPart} with default values for a given {@link EndimatablePart}.
+		 */
+		public static PosedPart part(EndimatablePart part) {
+			return new PosedPart(part);
 		}
 
-		public void setPosition(float posX, float posY, float posZ) {
-			this.posX = posX;
-			this.posY = posY;
-			this.posZ = posZ;
+		/**
+		 * Applies the animation values.
+		 */
+		public void apply() {
+			EndimatablePart part = this.part;
+			part.addPos(this.x, this.y, this.z);
+			part.addRotation(this.xRot, this.yRot, this.zRot);
+			part.addOffset(this.xOffset, this.yOffset, this.zOffset);
+			part.addScale(this.xScale, this.yScale, this.zScale);
 		}
 
-		public void addPosition(float posX, float posY, float posZ) {
-			this.posX += posX;
-			this.posY += posY;
-			this.posZ += posZ;
+		/**
+		 * Unapplies the animation values.
+		 */
+		public void unapply() {
+			EndimatablePart part = this.part;
+			part.addPos(-this.x, -this.y, -this.z);
+			part.addRotation(-this.xRot, -this.yRot, -this.zRot);
+			part.addOffset(-this.xOffset, -this.yOffset, -this.zOffset);
+			part.addScale(-this.xScale, -this.yScale, -this.zScale);
 		}
 
-		public void setOffset(float offsetX, float offsetY, float offsetZ) {
-			this.offsetX = offsetX;
-			this.offsetY = offsetY;
-			this.offsetZ = offsetZ;
+		/**
+		 * Resets the animation values.
+		 */
+		public void reset() {
+			this.x = 0.0F;
+			this.y = 0.0F;
+			this.z = 0.0F;
+			this.xRot = 0.0F;
+			this.yRot = 0.0F;
+			this.zRot = 0.0F;
+			this.xOffset = 0.0F;
+			this.yOffset = 0.0F;
+			this.zOffset = 0.0F;
+			this.xScale = 0.0F;
+			this.yScale = 0.0F;
+			this.zScale = 0.0f;
 		}
 
-		public void addOffset(float offsetX, float offsetY, float offsetZ) {
-			this.offsetX += offsetX;
-			this.offsetY += offsetY;
-			this.offsetZ += offsetZ;
+		/**
+		 * Adds positional values.
+		 *
+		 * @param x The x pos to add.
+		 * @param y The y pos to add.
+		 * @param z The z pos to add.
+		 */
+		public void addPos(float x, float y, float z) {
+			this.x += x;
+			this.y += y;
+			this.z += z;
 		}
 
-		public void setRotation(float angleX, float angleY, float angleZ) {
-			this.angleX = angleX;
-			this.angleY = angleY;
-			this.angleZ = angleZ;
+		/**
+		 * Adds rotational values.
+		 *
+		 * @param x The x rotation to add.
+		 * @param y The y rotation to add.
+		 * @param z The z rotation to add.
+		 */
+		public void addRotation(float x, float y, float z) {
+			this.xRot += x;
+			this.yRot += y;
+			this.zRot += z;
 		}
 
-		public void addRotation(float angleX, float angleY, float angleZ) {
-			this.angleX += angleX;
-			this.angleY += angleY;
-			this.angleZ += angleZ;
+		/**
+		 * Adds offset values.
+		 *
+		 * @param x The x offset to add.
+		 * @param y The y offset to add.
+		 * @param z The z offset to add.
+		 */
+		public void addOffset(float x, float y, float z) {
+			this.xOffset += x;
+			this.yOffset += y;
+			this.zOffset += z;
 		}
 
-		public void setScale(float scaleX, float scaleY, float scaleZ) {
-			this.scaleX = scaleX;
-			this.scaleY = scaleY;
-			this.scaleZ = scaleZ;
+		/**
+		 * Adds scale values.
+		 *
+		 * @param x The x scale to add.
+		 * @param y The y scale to add.
+		 * @param z The z scale to add.
+		 */
+		public void addScale(float x, float y, float z) {
+			this.xScale += x;
+			this.yScale += y;
+			this.zScale += z;
 		}
 
-		public void addScale(float scaleX, float scaleY, float scaleZ) {
-			this.scaleX += scaleX;
-			this.scaleY += scaleY;
-			this.scaleZ += scaleZ;
-		}
-
-		public void addValuesToBox(EndimatorModelRenderer modelRenderer) {
-			modelRenderer.x += this.posX;
-			modelRenderer.y += this.posY;
-			modelRenderer.z += this.posZ;
-			modelRenderer.offsetX += this.offsetX;
-			modelRenderer.offsetY += this.offsetY;
-			modelRenderer.offsetZ += this.offsetZ;
-			modelRenderer.xRot += this.angleX;
-			modelRenderer.yRot += this.angleY;
-			modelRenderer.zRot += this.angleZ;
-			modelRenderer.scaleX += this.scaleX;
-			modelRenderer.scaleY += this.scaleY;
-			modelRenderer.scaleZ += this.scaleZ;
-		}
-
-		public void addValuesToBoxWithMultiplier(EndimatorModelRenderer modelRenderer, float multiplier) {
-			modelRenderer.x += multiplier * this.posX;
-			modelRenderer.y += multiplier * this.posY;
-			modelRenderer.z += multiplier * this.posZ;
-			modelRenderer.offsetX += multiplier * this.offsetX;
-			modelRenderer.offsetY += multiplier * this.offsetY;
-			modelRenderer.offsetZ += multiplier * this.offsetZ;
-			modelRenderer.xRot += multiplier * this.angleX;
-			modelRenderer.yRot += multiplier * this.angleY;
-			modelRenderer.zRot += multiplier * this.angleZ;
-			modelRenderer.scaleX += multiplier * this.scaleX;
-			modelRenderer.scaleY += multiplier * this.scaleY;
-			modelRenderer.scaleZ += multiplier * this.scaleZ;
+		/**
+		 * Additively applies a consumer onto this {@link PosedPart}.
+		 * <p>This is here to provide a simple way to change a part's values outside of {@link Endimator#apply(Endimation, float, ResetMode)}.</p>
+		 *
+		 * @param consumer A {@link Consumer} to accept.
+		 */
+		public void applyAdd(Consumer<PosedPart> consumer) {
+			this.unapply();
+			consumer.accept(this);
+			this.apply();
 		}
 	}
 }

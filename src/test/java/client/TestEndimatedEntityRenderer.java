@@ -4,10 +4,10 @@ import com.teamabnormals.blueprint.client.EntitySkinHelper;
 import common.entity.TestEndimatedEntity;
 import core.BlueprintTest;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
-public final class TestEndimatedEntityRenderer extends LivingEntityRenderer<TestEndimatedEntity, TestEndimatedEntityModel<TestEndimatedEntity>> {
+public final class TestEndimatedEntityRenderer extends MobRenderer<TestEndimatedEntity, TestEndimatedEntityModel<TestEndimatedEntity>> {
 	private static final ResourceLocation TEXTURE = BlueprintTest.REGISTRY_HELPER.prefix("textures/entity/test.png");
 	private static final EntitySkinHelper<TestEndimatedEntity> SKIN_HELPER = EntitySkinHelper.create(BlueprintTest.MOD_ID, "textures/entity/skins", "them", (helper) -> {
 		helper.putSkins("dudes", "them", "dudes", "smelly", "test");

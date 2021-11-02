@@ -1,0 +1,87 @@
+{
+	"parts": {
+		"cube": {
+			"position": [
+				{
+					"time": 1.0,
+					"y": -16.0,
+					"interpolation": {
+						"type": "linear",
+						"easing": "ease_in_cubic"
+					}
+				}
+			],
+			"scale": [
+				{
+					"time": 0,
+					"x": -1.0,
+					"y": -1.0,
+					"z": -1.0
+				},
+				{
+					"time": 1,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				},
+				{
+					"time": 1.2,
+					"x": 0.2,
+					"y": 0.2,
+					"z": 0.2,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				},
+				{
+					"time": 1.4,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				},
+				{
+					"time": 1.6,
+					"x": 0.3,
+					"y": 0.3,
+					"z": 0.3,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				},
+				{
+					"time": 1.8,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				},
+				{
+					"time": 2.0,
+					"x": 0.5,
+					"y": 0.5,
+					"z": 0.5,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				}
+			]
+		}
+	},
+	"effects": [
+		{
+			"type": "shake",
+			"time": 1.0,
+			"config": {
+				"duration": 20,
+				"x_intensity": 0.2,
+				"y_intensity": 0.2,
+				"z_intensity": 0.2,
+				"x_max_buildup": 0.2,
+				"y_max_buildup": 0.2,
+				"z_max_buildup": 0.2,
+				"x_decay": 0.92,
+				"y_decay": 0.92,
+				"z_decay": 0.92
+			}
+		}
+	]
+}

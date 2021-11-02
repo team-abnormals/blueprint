@@ -1,53 +1,66 @@
 package common.entity;
 
-import com.teamabnormals.blueprint.core.endimator.Endimation;
-import com.teamabnormals.blueprint.core.endimator.entity.EndimatedEntity;
+import com.teamabnormals.blueprint.core.endimator.Endimatable;
+import com.teamabnormals.blueprint.core.endimator.TimedEndimation;
+import com.teamabnormals.blueprint.core.endimator.effects.EndimationEffectHandler;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
-import core.BlueprintTest;
+import common.entity.ai.TestEndimatedGoal;
+import core.registry.TestEndimations;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TestEndimatedEntity extends EndimatedEntity {
-	public static final Endimation SINK_ANIMATION = new Endimation(20);
-	public static final Endimation GROW_ANIMATION = new Endimation(20);
-	public static final Endimation DEATH_ANIMATION = new Endimation(BlueprintTest.REGISTRY_HELPER.prefix("death_test"), 30);
+public class TestEndimatedEntity extends PathfinderMob implements Endimatable {
+	@OnlyIn(Dist.CLIENT)
+	public EndimationEffectHandler idleEffectHandler;
+	public TimedEndimation hurt = new TimedEndimation(5, 0);
 
 	public TestEndimatedEntity(EntityType<? extends PathfinderMob> type, Level level) {
 		super(type, level);
+		if (level.isClientSide) {
+			this.idleEffectHandler = new EndimationEffectHandler(this);
+		}
+		this.hurt.setDecrementing(true);
+	}
+
+	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(0, new TestEndimatedGoal(this));
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.level.getGameTime() % 40 == 0 && this.isEffectiveAi()) {
-			if (this.random.nextFloat() < 0.5F) {
-				NetworkUtil.setPlayingAnimationMessage(this, SINK_ANIMATION);
-			} else {
-				NetworkUtil.setPlayingAnimationMessage(this, GROW_ANIMATION);
+		if (this.isNoEndimationPlaying()) {
+			NetworkUtil.setPlayingAnimation(this, this.random.nextBoolean() ? TestEndimations.HOVER : TestEndimations.SINK);
+		}
+		if (this.level.isClientSide) {
+			TimedEndimation hurt = this.hurt;
+			hurt.tick();
+			if (hurt.isMaxed()) {
+				hurt.setDecrementing(true);
 			}
 		}
-//		Funnies ;)
-//		if(this.world.getGameTime() % 40 == 0 && this.isServerWorld()) {
-//			BlockPos pos = this.getPosition();
-//			int x = pos.getX();
-//			int y = pos.getY();
-//			int z = pos.getZ();
-//			GenerationUtils.fillAreaWithBlockCube(this.world, this.getRNG(), x - 2, y - 1, z - 2, x + 2, y + 1, z + 2, GenerationUtils.IS_AIR, new WeightedStateEntry(Blocks.ANVIL.getDefaultState(), 1), new WeightedStateEntry(Blocks.BEDROCK.getDefaultState(), 4), new WeightedStateEntry(Blocks.BIRCH_WOOD.getDefaultState(), 8));
-//		}
 	}
 
 	@Override
-	public Endimation getDeathAnimation() {
-		return DEATH_ANIMATION;
+	public boolean hurt(DamageSource source, float amount) {
+		if (super.hurt(source, amount)) {
+			this.level.broadcastEntityEvent(this, (byte) 8);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public Endimation[] getEndimations() {
-		return new Endimation[]{
-				SINK_ANIMATION,
-				GROW_ANIMATION,
-				DEATH_ANIMATION
-		};
+	public void handleEntityEvent(byte id) {
+		if (id == 8) {
+			this.hurt.setDecrementing(false);
+		} else {
+			super.handleEntityEvent(id);
+		}
 	}
 }

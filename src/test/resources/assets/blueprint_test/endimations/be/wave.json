@@ -1,0 +1,29 @@
+{
+	"parts": {
+		"rightArm": {
+			"rotation": [
+				{
+					"time": 0.0,
+					"z": -2.27,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				},
+				{
+					"time": 0.375,
+					"z": -2.97,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				},
+				{
+					"time": 0.75,
+					"z": -2.27,
+					"interpolation": {
+						"type": "catmull_rom"
+					}
+				}
+			]
+		}
+	}
+}

@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-//TODO: Enable once Forge fixes the mixin bug with ModifyArgs
 @Mixin(MultiNoiseBiomeSource.Preset.class)
 public final class MultiNoiseBiomeSourcePresetMixin {
 

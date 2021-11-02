@@ -20,7 +20,7 @@ import com.teamabnormals.blueprint.core.api.conditions.ACAndRecipeCondition;
 import com.teamabnormals.blueprint.core.api.conditions.QuarkFlagRecipeCondition.Serializer;
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
 import com.teamabnormals.blueprint.core.api.model.FullbrightModel;
-import com.teamabnormals.blueprint.core.endimator.EndimationDataManager;
+import com.teamabnormals.blueprint.core.endimator.EndimationLoader;
 import com.teamabnormals.blueprint.core.events.CompatEvents;
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
@@ -78,7 +78,7 @@ public final class Blueprint {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MOD_ID = "blueprint";
 	public static final String NETWORK_PROTOCOL = "BP1";
-	public static final EndimationDataManager ENDIMATION_DATA_MANAGER = new EndimationDataManager();
+	public static final EndimationLoader ENDIMATION_LOADER = new EndimationLoader();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MOD_ID);
 	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(DataProcessors.BYTE, () -> (byte) 8).enablePersistence().build();
 
@@ -123,7 +123,7 @@ public final class Blueprint {
 			modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event -> {
 				ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
 				if (resourceManager instanceof ReloadableResourceManager) {
-					((ReloadableResourceManager) resourceManager).registerReloadListener(ENDIMATION_DATA_MANAGER);
+					((ReloadableResourceManager) resourceManager).registerReloadListener(ENDIMATION_LOADER);
 				}
 			});
 			modEventBus.addListener(EventPriority.NORMAL, false, ModConfigEvent.Reloading.class, event -> {

@@ -1,0 +1,46 @@
+{
+	"parts": {
+		"cube": {
+			"rotation": [
+				{
+					"time": 1.0,
+					"x": 6.28319,
+					"interpolation": {
+						"type": "linear",
+						"easing": "ease_in_cubic"
+					}
+				},
+				{
+					"time": 1.5,
+					"x": 6.28319,
+					"y": 1.571,
+					"interpolation": {
+						"type": "catmull_rom",
+						"config": {
+							"parameterization": "chordal"
+						}
+					}
+				},
+				{
+					"time": 1.75,
+					"x": 6.28319,
+					"interpolation": {
+						"type": "catmull_rom",
+						"config": {
+							"parameterization": "chordal"
+						}
+					}
+				},
+				{
+					"time": 2.0,
+					"interpolation": {
+						"type": "catmull_rom",
+						"config": {
+							"parameterization": "chordal"
+						}
+					}
+				}
+			]
+		}
+	}
+}
