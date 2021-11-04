@@ -13,6 +13,7 @@ public final class TestEndimations {
 	public static final PlayableEndimation ROTATE = register("rotate", 40, PlayableEndimation.LoopType.NONE);
 	public static final PlayableEndimation SINK = register("sink", 20, PlayableEndimation.LoopType.LOOP);
 	public static final PlayableEndimation HOVER = register("hover", 40, PlayableEndimation.LoopType.HOLD);
+	public static final PlayableEndimation COMPLEX = register("complex", 30, PlayableEndimation.LoopType.LOOP);
 
 	private static PlayableEndimation register(String name, int duration, PlayableEndimation.LoopType loopType) {
 		return PlayableEndimationManager.INSTANCE.registerPlayableEndimation(new PlayableEndimation(new ResourceLocation(BlueprintTest.MOD_ID, name), duration, loopType));

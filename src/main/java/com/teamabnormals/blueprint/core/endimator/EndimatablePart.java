@@ -13,6 +13,8 @@ package com.teamabnormals.blueprint.core.endimator;
 public interface EndimatablePart {
 	/**
 	 * Adds positional transformation values.
+	 * <p>This does not always mean actual addition operations. In some systems, subtracting may visually appear as an addition.</p>
+	 * <p>The values for the parameters are considered visual additions to the part.</p>
 	 *
 	 * @param x The x pos to add.
 	 * @param y The y pos to add.
@@ -34,6 +36,8 @@ public interface EndimatablePart {
 
 	/**
 	 * Adds offset transformation values.
+	 * <p>This does not always mean actual addition operations. In some systems, subtracting may visually appear as an addition.</p>
+	 * <p>The values for the parameters are considered visual additions to the part.</p>
 	 *
 	 * @param x The x offset to add.
 	 * @param y The y offset to add.

@@ -22,9 +22,9 @@ public final class ModelPartMixin implements EndimatablePart {
 
 	@Override
 	public void addPos(float x, float y, float z) {
-		this.x += x;
-		this.y += y;
-		this.z += z;
+		this.x -= x;
+		this.y -= y;
+		this.z -= z;
 	}
 
 	@Override

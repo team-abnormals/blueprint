@@ -35,7 +35,7 @@ public class TestEndimatedEntity extends PathfinderMob implements Endimatable {
 	public void tick() {
 		super.tick();
 		if (this.isNoEndimationPlaying()) {
-			NetworkUtil.setPlayingAnimation(this, this.random.nextBoolean() ? TestEndimations.HOVER : TestEndimations.SINK);
+			NetworkUtil.setPlayingAnimation(this, this.random.nextBoolean() ? TestEndimations.HOVER : this.random.nextBoolean() ? TestEndimations.SINK : TestEndimations.COMPLEX);
 		}
 		if (this.level.isClientSide) {
 			TimedEndimation hurt = this.hurt;

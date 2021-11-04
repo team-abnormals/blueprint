@@ -124,9 +124,9 @@ public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 
 	@Override
 	public void addOffset(float x, float y, float z) {
-		this.xOffset += x;
-		this.yOffset += y;
-		this.zOffset += z;
+		this.xOffset -= x;
+		this.yOffset -= y;
+		this.zOffset -= z;
 	}
 
 	@Override
