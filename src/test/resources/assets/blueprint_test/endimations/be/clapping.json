@@ -4,15 +4,11 @@
 			"rotation": [
 				{
 					"time": 0.0,
-					"x": 1.04,
-					"y": -0.5,
-					"z": -0.122
+					"transform": [60, -29, -7]
 				},
 				{
 					"time": 0.25,
-					"x": 1.04,
-					"y": -0.1,
-					"z": -0.122,
+					"transform": [60, -5.7, -7],
 					"interpolation": {
 						"type": "linear",
 						"easing": "ease_in_out_sine"
@@ -20,9 +16,7 @@
 				},
 				{
 					"time": 0.5,
-					"x": 1.04,
-					"y": -0.5,
-					"z": -0.122,
+					"transform": [60, -29, -7],
 					"interpolation": {
 						"type": "linear",
 						"easing": "ease_in_out_sine"
@@ -34,15 +28,11 @@
 			"rotation": [
 				{
 					"time": 0.0,
-					"x": 1.04,
-					"y": 0.5,
-					"z": 0.122
+					"transform": [60, 29, 7]
 				},
 				{
 					"time": 0.25,
-					"x": 1.04,
-					"y": 0.1,
-					"z": 0.122,
+					"transform": [60, 5.7, 7],
 					"interpolation": {
 						"type": "linear",
 						"easing": "ease_in_out_sine"
@@ -50,9 +40,7 @@
 				},
 				{
 					"time": 0.5,
-					"x": 1.04,
-					"y": 0.5,
-					"z": 0.122,
+					"transform": [60, 29, 7],
 					"interpolation": {
 						"type": "linear",
 						"easing": "ease_in_out_sine"

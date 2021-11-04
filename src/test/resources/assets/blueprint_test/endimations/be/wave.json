@@ -4,23 +4,26 @@
 			"rotation": [
 				{
 					"time": 0.0,
-					"z": -2.27,
+					"transform": [0.0, 0.0, -130],
 					"interpolation": {
-						"type": "catmull_rom"
+						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 0.375,
-					"z": -2.97,
+					"transform": {
+						"pre": [0.0, 0.0, -170],
+						"post": [0.0, 0.0, -170]
+					},
 					"interpolation": {
-						"type": "catmull_rom"
+						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 0.75,
-					"z": -2.27,
+					"transform": [0.0, 0.0, -130],
 					"interpolation": {
-						"type": "catmull_rom"
+						"type": "catmullrom"
 					}
 				}
 			]

@@ -4,7 +4,7 @@
 			"rotation": [
 				{
 					"time": 1.0,
-					"x": 6.28319,
+					"transform": [360, 0, 0],
 					"interpolation": {
 						"type": "linear",
 						"easing": "ease_in_cubic"
@@ -12,10 +12,9 @@
 				},
 				{
 					"time": 1.5,
-					"x": 6.28319,
-					"y": 1.571,
+					"transform": [360, 90, 0],
 					"interpolation": {
-						"type": "catmull_rom",
+						"type": "catmullrom",
 						"config": {
 							"parameterization": "chordal"
 						}
@@ -23,9 +22,9 @@
 				},
 				{
 					"time": 1.75,
-					"x": 6.28319,
+					"transform": [360, 0, 0],
 					"interpolation": {
-						"type": "catmull_rom",
+						"type": "catmullrom",
 						"config": {
 							"parameterization": "chordal"
 						}
@@ -34,7 +33,7 @@
 				{
 					"time": 2.0,
 					"interpolation": {
-						"type": "catmull_rom",
+						"type": "catmullrom",
 						"config": {
 							"parameterization": "chordal"
 						}

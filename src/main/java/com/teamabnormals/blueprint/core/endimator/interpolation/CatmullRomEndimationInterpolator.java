@@ -72,30 +72,30 @@ public final class CatmullRomEndimationInterpolator extends EndimationInterpolat
 		float prevPrevZ = 0.0F;
 		if (index >= 2) {
 			EndimationKeyframe prev = keyframes[index - 1];
-			prevX = prev.x;
-			prevY = prev.y;
-			prevZ = prev.z;
+			prevX = prev.postX.get();
+			prevY = prev.postY.get();
+			prevZ = prev.postZ.get();
 			EndimationKeyframe prevPrev = keyframes[index - 2];
-			prevPrevX = prevPrev.x;
-			prevPrevY = prevPrev.y;
-			prevPrevZ = prevPrev.z;
+			prevPrevX = prevPrev.postX.get();
+			prevPrevY = prevPrev.postY.get();
+			prevPrevZ = prevPrev.postZ.get();
 		} else if (index >= 1) {
 			EndimationKeyframe prev = keyframes[index - 1];
-			prevX = prevPrevX = prev.x;
-			prevY = prevPrevY = prev.y;
-			prevZ = prevPrevZ = prev.z;
+			prevX = prevPrevX = prev.postX.get();
+			prevY = prevPrevY = prev.postY.get();
+			prevZ = prevPrevZ = prev.postZ.get();
 		}
-		float x = keyframe.x;
-		float y = keyframe.y;
-		float z = keyframe.z;
+		float x = keyframe.preX.get();
+		float y = keyframe.preY.get();
+		float z = keyframe.preZ.get();
 		float nextX = x;
 		float nextY = y;
 		float nextZ = z;
 		if (index + 1 < keyframeCount) {
 			EndimationKeyframe next = keyframes[index + 1];
-			nextX = next.x;
-			nextY = next.y;
-			nextZ = next.z;
+			nextX = next.preX.get();
+			nextY = next.preY.get();
+			nextZ = next.preZ.get();
 		}
 		Function<Float, Float> knotPowFunction = config.parameterization.knotPowFunction;
 		float tension = config.tension;

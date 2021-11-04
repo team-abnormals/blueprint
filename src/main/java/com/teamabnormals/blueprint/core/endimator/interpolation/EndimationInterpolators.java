@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 public final class EndimationInterpolators {
 	public static final BasicRegistry<EndimationInterpolator<?>> REGISTRY = new BasicRegistry<>();
 	public static final LinearEndimationInterpolator LINEAR = register("linear", new LinearEndimationInterpolator());
-	public static final CatmullRomEndimationInterpolator CATMULL_ROM = register("catmull_rom", new CatmullRomEndimationInterpolator());
+	public static final CatmullRomEndimationInterpolator CATMULL_ROM = register("catmullrom", new CatmullRomEndimationInterpolator());
 
 	private EndimationInterpolators() {
 	}

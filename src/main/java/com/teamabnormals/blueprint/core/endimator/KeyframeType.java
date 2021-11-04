@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core.endimator;
 
 import com.mojang.math.Vector3f;
+import net.minecraft.util.Mth;
 
 import java.util.function.Function;
 
@@ -14,7 +15,9 @@ import java.util.function.Function;
  */
 public enum KeyframeType {
 	POSITION(Endimation.PartKeyframes::getPosFrames, Endimator.PosedPart::addPos),
-	ROTATION(Endimation.PartKeyframes::getRotationFrames, Endimator.PosedPart::addRotation),
+	ROTATION(Endimation.PartKeyframes::getRotationFrames, (pose, x, y, z) -> {
+		pose.addRotation(x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, z * Mth.DEG_TO_RAD);
+	}),
 	OFFSET(Endimation.PartKeyframes::getOffsetFrames, Endimator.PosedPart::addOffset),
 	SCALE(Endimation.PartKeyframes::getScaleFrames, Endimator.PosedPart::addScale);
 

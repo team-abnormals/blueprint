@@ -19,10 +19,10 @@ public final class LinearEndimationInterpolator extends EndimationInterpolator<U
 	@Override
 	public void apply(Unit config, VecConsumer consumer, EndimationKeyframe[] keyframes, EndimationKeyframe keyframe, int index, int keyframeCount, float progress) {
 		if (index == 0) {
-			consumer.accept(Mth.lerp(progress, 0.0F, keyframe.x), Mth.lerp(progress, 0.0F, keyframe.y), Mth.lerp(progress, 0.0F, keyframe.z));
+			consumer.accept(Mth.lerp(progress, 0.0F, keyframe.preX.get()), Mth.lerp(progress, 0.0F, keyframe.preY.get()), Mth.lerp(progress, 0.0F, keyframe.preZ.get()));
 		} else {
 			EndimationKeyframe prev = keyframes[index - 1];
-			consumer.accept(Mth.lerp(progress, prev.x, keyframe.x), Mth.lerp(progress, prev.y, keyframe.y), Mth.lerp(progress, prev.z, keyframe.z));
+			consumer.accept(Mth.lerp(progress, prev.postX.get(), keyframe.preX.get()), Mth.lerp(progress, prev.postY.get(), keyframe.preY.get()), Mth.lerp(progress, prev.postZ.get(), keyframe.preZ.get()));
 		}
 	}
 

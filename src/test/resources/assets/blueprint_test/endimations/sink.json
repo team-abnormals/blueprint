@@ -4,15 +4,15 @@
 			"position": [
 				{
 					"time": 0.5,
-					"y": 16.0,
+					"transform": [0, 16, 0],
 					"interpolation": {
-						"type": "catmull_rom"
+						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.0,
 					"interpolation": {
-						"type": "catmull_rom"
+						"type": "catmullrom"
 					}
 				}
 			]

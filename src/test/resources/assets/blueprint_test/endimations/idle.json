@@ -6,17 +6,15 @@
 			"scale": [
 				{
 					"time": 0.25,
-					"x": 0.1,
-					"y": 0.1,
-					"z": 0.1,
+					"transform": [0.1, 0.1, 0.1],
 					"interpolation": {
-						"type": "catmull_rom"
+						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 0.5,
 					"interpolation": {
-						"type": "catmull_rom"
+						"type": "catmullrom"
 					}
 				}
 			]

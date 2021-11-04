@@ -13,10 +13,10 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * A {@link ChestBlock} extension used for Blueprint's chests.
  */
-public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
+public class BlueprintChestBlock extends ChestBlock implements IChestBlock {
 	public final String type;
 
-	public AbnormalsChestBlock(String type, Properties props) {
+	public BlueprintChestBlock(String type, Properties props) {
 		super(props, BlueprintBlockEntityTypes.CHEST::get);
 		this.type = type;
 	}
