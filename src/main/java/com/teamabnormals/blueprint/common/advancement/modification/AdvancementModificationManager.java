@@ -69,12 +69,15 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 
 	@SubscribeEvent
 	public static void onBuildingAdvancement(AdvancementBuildingEvent event) {
-		List<ConfiguredModifier<Builder, ?, Void, DeserializationContext, ?>> modifiers = INSTANCE.getModifiers(event.getLocation());
-		if (modifiers != null) {
-			Advancement.Builder builder = event.getBuilder();
-			modifiers.forEach(modifier -> {
-				modifier.modify(builder);
-			});
+		//Should not happen, but it's possible that this event will get fired before the manager is initialized
+		if (INSTANCE != null) {
+			List<ConfiguredModifier<Builder, ?, Void, DeserializationContext, ?>> modifiers = INSTANCE.getModifiers(event.getLocation());
+			if (modifiers != null) {
+				Advancement.Builder builder = event.getBuilder();
+				modifiers.forEach(modifier -> {
+					modifier.modify(builder);
+				});
+			}
 		}
 	}
 

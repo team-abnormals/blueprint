@@ -62,9 +62,12 @@ public final class LootModificationManager extends ModificationManager<LootTable
 
 	@SubscribeEvent
 	public static void onLootTableLoad(LootTableLoadEvent event) {
-		List<ConfiguredModifier<LootTableLoadEvent, ?, Gson, Pair<Gson, PredicateManager>, ?>> configuredModifiers = INSTANCE.getModifiers(event.getName());
-		if (configuredModifiers != null) {
-			configuredModifiers.forEach(configuredModifier -> configuredModifier.modify(event));
+		//Should not happen, but it's possible that this event will get fired before the manager is initialized
+		if (INSTANCE != null) {
+			List<ConfiguredModifier<LootTableLoadEvent, ?, Gson, Pair<Gson, PredicateManager>, ?>> configuredModifiers = INSTANCE.getModifiers(event.getName());
+			if (configuredModifiers != null) {
+				configuredModifiers.forEach(configuredModifier -> configuredModifier.modify(event));
+			}
 		}
 	}
 
