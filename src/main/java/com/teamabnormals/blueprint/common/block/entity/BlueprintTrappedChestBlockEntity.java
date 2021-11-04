@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * An {@link BlueprintChestBlockEntity} extension used for Blueprint's trapped chests.
+ * A {@link BlueprintChestBlockEntity} extension used for Blueprint's trapped chests.
  */
 public class BlueprintTrappedChestBlockEntity extends BlueprintChestBlockEntity {
 
