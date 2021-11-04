@@ -5,14 +5,22 @@
 		"cube": {
 			"scale": [
 				{
+					"time": 0.0,
+					"transform": [0.8333, 0.8333, 0.8333],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				},
+				{
 					"time": 0.25,
-					"transform": [0.1, 0.1, 0.1],
+					"transform": [1.1, 1.1, 1.1],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 0.5,
+					"transform": [0.8333, 0.8333, 0.8333],
 					"interpolation": {
 						"type": "catmullrom"
 					}

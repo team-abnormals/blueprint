@@ -71,7 +71,6 @@ public final class Endimator {
 	}
 
 	private static void applyType(PosedPart posedPart, KeyframeType type, Endimation.PartKeyframes partKeyframes, float blendWeight, float time) {
-		ADD_VECTOR.set(0.0F, 0.0F, 0.0F);
 		EndimationKeyframe[] frames = type.getFrames(partKeyframes);
 		int length = frames.length;
 		for (int i = 0; i < length; i++) {
@@ -91,10 +90,10 @@ public final class Endimator {
 				progress = 1.0F;
 			}
 			keyframe.apply(ADD_VECTOR::set, frames, i, length, progress);
+			ADD_VECTOR.mul(blendWeight);
+			type.apply(posedPart, ADD_VECTOR);
 			break;
 		}
-		ADD_VECTOR.mul(blendWeight);
-		type.apply(posedPart, ADD_VECTOR);
 	}
 
 	/**

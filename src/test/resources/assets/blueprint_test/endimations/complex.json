@@ -1,0 +1,83 @@
+{
+	"length": 1.5,
+	"parts": {
+		"cube": {
+			"rotation": [
+				{
+					"time": 0,
+					"transform": [0, 0, 0],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				},
+				{
+					"time": 0.5,
+					"transform": [90, 0, 0],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				},
+				{
+					"time": 1,
+					"transform": [-90, 0, 0],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				},
+				{
+					"time": 1.5,
+					"transform": [0, 0, 0],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				}
+			],
+			"position": [
+				{
+					"time": 0,
+					"transform": [0, 0, 0],
+					"interpolation": {
+						"type": "linear"
+					}
+				},
+				{
+					"time": 0.5,
+					"transform": [0, 16, 0],
+					"interpolation": {
+						"type": "linear"
+					}
+				},
+				{
+					"time": 1.5,
+					"transform": [0, 0, 0],
+					"interpolation": {
+						"type": "linear"
+					}
+				}
+			],
+			"scale": [
+				{
+					"time": 0,
+					"transform": [1, 1, 1],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				},
+				{
+					"time": 0.5,
+					"transform": [1.5, 1.5, 1.5],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				},
+				{
+					"time": 1.5,
+					"transform": [1, 1, 1],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				}
+			]
+		}
+	}
+}
