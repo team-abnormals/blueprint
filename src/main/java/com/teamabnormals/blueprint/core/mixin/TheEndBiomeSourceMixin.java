@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.core.mixin;
 
-import com.teamabnormals.blueprint.common.world.gen.ACLayerUtil;
+import com.teamabnormals.blueprint.common.world.gen.BlueprintLayerUtil;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
@@ -42,7 +42,7 @@ public abstract class TheEndBiomeSourceMixin extends BiomeSource {
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void init(Registry<Biome> lookupRegistry, long seed, CallbackInfo info) {
-		this.noiseBiomeLayer = ACLayerUtil.createEndBiomeLayer(this.biomes, (seedModifier) -> new LazyAreaContext(25, seed, seedModifier));
+		this.noiseBiomeLayer = BlueprintLayerUtil.createEndBiomeLayer(this.biomes, (seedModifier) -> new LazyAreaContext(25, seed, seedModifier));
 	}
 
 	@Inject(at = @At("RETURN"), method = "getNoiseBiome(III)Lnet/minecraft/world/level/biome/Biome;", cancellable = true)

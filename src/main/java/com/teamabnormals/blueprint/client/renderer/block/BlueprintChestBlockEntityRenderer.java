@@ -31,7 +31,7 @@ import java.util.Calendar;
  *
  * @param <T> The type of {@link LidBlockEntity} the renderer is for.
  */
-public class AbnormalsChestBlockEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
+public class BlueprintChestBlockEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
 	public static Block itemBlock = null;
 
 	private final ModelPart lid;
@@ -45,7 +45,7 @@ public class AbnormalsChestBlockEntityRenderer<T extends BlockEntity & LidBlockE
 	private final ModelPart doubleRightLock;
 	public boolean isChristmas;
 
-	public AbnormalsChestBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+	public BlueprintChestBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
 		Calendar calendar = Calendar.getInstance();
 		if (calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DATE) >= 24 && calendar.get(Calendar.DATE) <= 26) {
 			this.isChristmas = true;

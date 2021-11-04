@@ -2,12 +2,12 @@ package com.teamabnormals.blueprint.core.util.registry;
 
 import com.teamabnormals.blueprint.client.ChestManager;
 import com.teamabnormals.blueprint.client.renderer.block.ChestBlockEntityWithoutLevelRenderer;
-import com.teamabnormals.blueprint.common.block.entity.AbnormalsChestBlockEntity;
-import com.teamabnormals.blueprint.common.block.entity.AbnormalsTrappedChestBlockEntity;
-import com.teamabnormals.blueprint.common.block.chest.AbnormalsChestBlock;
-import com.teamabnormals.blueprint.common.block.chest.AbnormalsTrappedChestBlock;
-import com.teamabnormals.blueprint.common.block.sign.AbnormalsStandingSignBlock;
-import com.teamabnormals.blueprint.common.block.sign.AbnormalsWallSignBlock;
+import com.teamabnormals.blueprint.common.block.entity.BlueprintChestBlockEntity;
+import com.teamabnormals.blueprint.common.block.entity.BlueprintTrappedChestBlockEntity;
+import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
+import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
+import com.teamabnormals.blueprint.common.block.sign.BlueprintStandingSignBlock;
+import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
 import com.teamabnormals.blueprint.common.item.BEWLRBlockItem;
 import com.teamabnormals.blueprint.common.item.BEWLRFuelBlockItem;
 import com.teamabnormals.blueprint.common.item.FuelBlockItem;
@@ -59,9 +59,9 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	@OnlyIn(Dist.CLIENT)
 	private static BEWLRBlockItem.LazyBEWLR chestBEWLR(boolean trapped) {
 		return trapped ? new BEWLRBlockItem.LazyBEWLR((dispatcher, entityModelSet) -> {
-			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new AbnormalsTrappedChestBlockEntity(BlockPos.ZERO, Blocks.TRAPPED_CHEST.defaultBlockState()));
+			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintTrappedChestBlockEntity(BlockPos.ZERO, Blocks.TRAPPED_CHEST.defaultBlockState()));
 		}) : new BEWLRBlockItem.LazyBEWLR((dispatcher, entityModelSet) -> {
-			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new AbnormalsChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()));
+			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()));
 		});
 	}
 
@@ -207,48 +207,48 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers {@link AbnormalsChestBlock} with a {@link BEWLRFuelBlockItem}.
+	 * Creates and registers {@link BlueprintChestBlock} with a {@link BEWLRFuelBlockItem}.
 	 *
-	 * @param name       The name for this {@link AbnormalsChestBlock}.
-	 * @param properties The properties for this {@link AbnormalsChestBlock}.
+	 * @param name       The name for this {@link BlueprintChestBlock}.
+	 * @param properties The properties for this {@link BlueprintChestBlock}.
 	 * @param group      The CreativeModeTab for the BlockItem.
-	 * @return A {@link RegistryObject} containing the created {@link AbnormalsChestBlock}.
+	 * @return A {@link RegistryObject} containing the created {@link BlueprintChestBlock}.
 	 */
-	public RegistryObject<AbnormalsChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable CreativeModeTab group) {
+	public RegistryObject<BlueprintChestBlock> createChestBlock(String name, Block.Properties properties, @Nullable CreativeModeTab group) {
 		String modId = this.parent.getModId();
-		RegistryObject<AbnormalsChestBlock> block = this.deferredRegister.register(name + "_chest", () -> new AbnormalsChestBlock(modId + ":" + name, properties));
+		RegistryObject<BlueprintChestBlock> block = this.deferredRegister.register(name + "_chest", () -> new BlueprintChestBlock(modId + ":" + name, properties));
 		ChestManager.putChestInfo(modId, name, false);
 		this.itemRegister.register(name + "_chest", () -> new BEWLRFuelBlockItem(block.get(), new Item.Properties().tab(group), () -> () -> chestBEWLR(false), 300));
 		return block;
 	}
 
 	/**
-	 * Creates and registers {@link AbnormalsTrappedChestBlock} with a {@link BEWLRFuelBlockItem}.
+	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRFuelBlockItem}.
 	 *
-	 * @param name       The name for this {@link AbnormalsTrappedChestBlock}.
-	 * @param properties The properties for this {@link AbnormalsTrappedChestBlock}.
+	 * @param name       The name for this {@link BlueprintTrappedChestBlock}.
+	 * @param properties The properties for this {@link BlueprintTrappedChestBlock}.
 	 * @param group      The CreativeModeTab for the BlockItem.
-	 * @return A {@link RegistryObject} containing the created {@link AbnormalsTrappedChestBlock}.
+	 * @return A {@link RegistryObject} containing the created {@link BlueprintTrappedChestBlock}.
 	 */
-	public RegistryObject<AbnormalsTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable CreativeModeTab group) {
+	public RegistryObject<BlueprintTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties, @Nullable CreativeModeTab group) {
 		String modId = this.parent.getModId();
-		RegistryObject<AbnormalsTrappedChestBlock> block = this.deferredRegister.register(name + "_trapped_chest", () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", properties));
+		RegistryObject<BlueprintTrappedChestBlock> block = this.deferredRegister.register(name + "_trapped_chest", () -> new BlueprintTrappedChestBlock(modId + ":" + name + "_trapped", properties));
 		ChestManager.putChestInfo(modId, name, true);
 		this.itemRegister.register(name + "_trapped_chest", () -> new BEWLRFuelBlockItem(block.get(), new Item.Properties().tab(group), () -> () -> chestBEWLR(true), 300));
 		return block;
 	}
 
 	/**
-	 * Creates and registers a {@link AbnormalsStandingSignBlock} and a {@link AbnormalsWallSignBlock} with a {@link SignItem}.
+	 * Creates and registers a {@link BlueprintStandingSignBlock} and a {@link BlueprintWallSignBlock} with a {@link SignItem}.
 	 *
 	 * @param name  The name for the sign blocks.
 	 * @param color The {@link MaterialColor} for the sign blocks.
-	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link AbnormalsStandingSignBlock} and the {@link AbnormalsWallSignBlock}.
+	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link BlueprintStandingSignBlock} and the {@link BlueprintWallSignBlock}.
 	 */
-	public Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> createSignBlock(String name, MaterialColor color) {
+	public Pair<RegistryObject<BlueprintStandingSignBlock>, RegistryObject<BlueprintWallSignBlock>> createSignBlock(String name, MaterialColor color) {
 		WoodType type = SignManager.registerWoodType(WoodType.create(this.parent.getModId() + ":" + name));
-		RegistryObject<AbnormalsStandingSignBlock> standing = this.deferredRegister.register(name + "_sign", () -> new AbnormalsStandingSignBlock(Block.Properties.of(Material.WOOD).noCollission().strength(1.0F).sound(SoundType.WOOD), type));
-		RegistryObject<AbnormalsWallSignBlock> wall = this.deferredRegister.register(name + "_wall_sign", () -> new AbnormalsWallSignBlock(Block.Properties.of(Material.WOOD, color).noCollission().strength(1.0F).sound(SoundType.WOOD).dropsLike(standing.get()), type));
+		RegistryObject<BlueprintStandingSignBlock> standing = this.deferredRegister.register(name + "_sign", () -> new BlueprintStandingSignBlock(Block.Properties.of(Material.WOOD).noCollission().strength(1.0F).sound(SoundType.WOOD), type));
+		RegistryObject<BlueprintWallSignBlock> wall = this.deferredRegister.register(name + "_wall_sign", () -> new BlueprintWallSignBlock(Block.Properties.of(Material.WOOD, color).noCollission().strength(1.0F).sound(SoundType.WOOD).dropsLike(standing.get()), type));
 		this.itemRegister.register(name + "_sign", () -> new SignItem(new Item.Properties().stacksTo(16).tab(CreativeModeTab.TAB_DECORATIONS), standing.get(), wall.get()));
 		return Pair.of(standing, wall);
 	}
@@ -316,22 +316,22 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers a {@link AbnormalsChestBlock} and a {@link AbnormalsTrappedChestBlock} with their {@link BEWLRFuelBlockItem}s.
+	 * Creates and registers a {@link BlueprintChestBlock} and a {@link BlueprintTrappedChestBlock} with their {@link BEWLRFuelBlockItem}s.
 	 *
 	 * @param name        The name for the chest blocks.
 	 * @param compatModId The mod id of the mod these chests are compatible for.
 	 * @param color       The {@link MaterialColor} for the chest blocks.
-	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link AbnormalsChestBlock} and the {@link AbnormalsTrappedChestBlock}.
+	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link BlueprintChestBlock} and the {@link BlueprintTrappedChestBlock}.
 	 */
-	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String compatModId, String name, MaterialColor color) {
+	public Pair<RegistryObject<BlueprintChestBlock>, RegistryObject<BlueprintTrappedChestBlock>> createCompatChestBlocks(String compatModId, String name, MaterialColor color) {
 		boolean isModLoaded = ModList.get().isLoaded(compatModId) || compatModId == "indev";
 		CreativeModeTab chestGroup = isModLoaded ? CreativeModeTab.TAB_DECORATIONS : null;
 		CreativeModeTab trappedChestGroup = isModLoaded ? CreativeModeTab.TAB_REDSTONE : null;
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
-		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId + ":" + name, Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
-		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<BlueprintChestBlock> chest = this.deferredRegister.register(chestName, () -> new BlueprintChestBlock(modId + ":" + name, Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<BlueprintTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new BlueprintTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
 		this.itemRegister.register(chestName, () -> new BEWLRFuelBlockItem(chest.get(), new Item.Properties().tab(chestGroup), () -> () -> chestBEWLR(false), 300));
 		this.itemRegister.register(trappedChestName, () -> new BEWLRFuelBlockItem(trappedChest.get(), new Item.Properties().tab(trappedChestGroup), () -> () -> chestBEWLR(true), 300));
 		ChestManager.putChestInfo(modId, name, false);
@@ -340,22 +340,22 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers a {@link AbnormalsChestBlock} and a {@link AbnormalsTrappedChestBlock} with their {@link BEWLRFuelBlockItem}s.
+	 * Creates and registers a {@link BlueprintChestBlock} and a {@link BlueprintTrappedChestBlock} with their {@link BEWLRFuelBlockItem}s.
 	 *
 	 * @param name   The name for the chest blocks.
 	 * @param color  The {@link MaterialColor} for the chest blocks.
 	 * @param modIds The mod ids of the mods this block is compatible for.
-	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link AbnormalsChestBlock} and the {@link AbnormalsTrappedChestBlock}.
+	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link BlueprintChestBlock} and the {@link BlueprintTrappedChestBlock}.
 	 */
-	public Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> createCompatChestBlocks(String name, MaterialColor color, String... modIds) {
+	public Pair<RegistryObject<BlueprintChestBlock>, RegistryObject<BlueprintTrappedChestBlock>> createCompatChestBlocks(String name, MaterialColor color, String... modIds) {
 		boolean isInGroup = areModsLoaded(modIds);
 		CreativeModeTab chestGroup = isInGroup ? CreativeModeTab.TAB_DECORATIONS : null;
 		CreativeModeTab trappedChestGroup = isInGroup ? CreativeModeTab.TAB_REDSTONE : null;
 		String modId = this.parent.getModId();
 		String chestName = name + "_chest";
 		String trappedChestName = name + "_trapped_chest";
-		RegistryObject<AbnormalsChestBlock> chest = this.deferredRegister.register(chestName, () -> new AbnormalsChestBlock(modId + ":" + name, Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
-		RegistryObject<AbnormalsTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new AbnormalsTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<BlueprintChestBlock> chest = this.deferredRegister.register(chestName, () -> new BlueprintChestBlock(modId + ":" + name, Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
+		RegistryObject<BlueprintTrappedChestBlock> trappedChest = this.deferredRegister.register(trappedChestName, () -> new BlueprintTrappedChestBlock(modId + ":" + name + "_trapped", Block.Properties.of(Material.WOOD, color).strength(2.5F).sound(SoundType.WOOD)));
 		this.itemRegister.register(chestName, () -> new BEWLRFuelBlockItem(chest.get(), new Item.Properties().tab(chestGroup), () -> () -> chestBEWLR(false), 300));
 		this.itemRegister.register(trappedChestName, () -> new BEWLRFuelBlockItem(trappedChest.get(), new Item.Properties().tab(trappedChestGroup), () -> () -> chestBEWLR(true), 300));
 		ChestManager.putChestInfo(modId, name, false);

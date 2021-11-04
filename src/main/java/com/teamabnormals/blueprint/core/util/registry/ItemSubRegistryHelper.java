@@ -2,8 +2,8 @@ package com.teamabnormals.blueprint.core.util.registry;
 
 import com.google.common.collect.Sets;
 import com.teamabnormals.blueprint.common.dispenser.SpawnEggDispenseItemBehavior;
-import com.teamabnormals.blueprint.common.item.AbnormalsBoatItem;
-import com.teamabnormals.blueprint.common.item.AbnormalsSpawnEggItem;
+import com.teamabnormals.blueprint.common.item.BlueprintBoatItem;
+import com.teamabnormals.blueprint.common.item.BlueprintSpawnEggItem;
 import com.teamabnormals.blueprint.common.item.FuelItem;
 import com.teamabnormals.blueprint.core.registry.BoatRegistry;
 import net.minecraft.world.entity.EntityType;
@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  */
 public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	private static final Field EGGS_FIELD = ObfuscationReflectionHelper.findField(SpawnEggItem.class, "f_43201_");
-	protected final Set<AbnormalsSpawnEggItem> spawnEggs = Sets.newHashSet();
+	protected final Set<BlueprintSpawnEggItem> spawnEggs = Sets.newHashSet();
 
 	public ItemSubRegistryHelper(RegistryHelper parent, DeferredRegister<Item> deferredRegister) {
 		super(parent, deferredRegister);
@@ -141,31 +141,31 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	}
 
 	/**
-	 * Creates and registers a {@link AbnormalsSpawnEggItem}.
+	 * Creates and registers a {@link BlueprintSpawnEggItem}.
 	 *
 	 * @param entityName     The name of the entity this spawn egg spawns.
 	 * @param supplier       The supplied {@link EntityType}.
 	 * @param primaryColor   The egg's primary color.
 	 * @param secondaryColor The egg's secondary color.
-	 * @return A {@link RegistryObject} containing the {@link AbnormalsSpawnEggItem}.
-	 * @see AbnormalsSpawnEggItem
+	 * @return A {@link RegistryObject} containing the {@link BlueprintSpawnEggItem}.
+	 * @see BlueprintSpawnEggItem
 	 */
-	public RegistryObject<AbnormalsSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<?>> supplier, int primaryColor, int secondaryColor) {
-		AbnormalsSpawnEggItem eggItem = new AbnormalsSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
-		RegistryObject<AbnormalsSpawnEggItem> spawnEgg = this.deferredRegister.register(entityName + "_spawn_egg", () -> eggItem);
+	public RegistryObject<BlueprintSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<?>> supplier, int primaryColor, int secondaryColor) {
+		BlueprintSpawnEggItem eggItem = new BlueprintSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+		RegistryObject<BlueprintSpawnEggItem> spawnEgg = this.deferredRegister.register(entityName + "_spawn_egg", () -> eggItem);
 		this.spawnEggs.add(eggItem);
 		return spawnEgg;
 	}
 
 	/**
-	 * Creates and registers a {@link AbnormalsBoatItem} and boat type.
+	 * Creates and registers a {@link BlueprintBoatItem} and boat type.
 	 *
 	 * @param wood  The name of the wood, e.g. "oak".
 	 * @param block The {@link Block} for the boat to drop.
 	 */
 	public RegistryObject<Item> createBoatItem(String wood, RegistryObject<Block> block) {
 		String type = this.parent.getModId() + ":" + wood;
-		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new AbnormalsBoatItem(type, createSimpleItemProperty(1, CreativeModeTab.TAB_TRANSPORTATION)));
+		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new BlueprintBoatItem(type, createSimpleItemProperty(1, CreativeModeTab.TAB_TRANSPORTATION)));
 		BoatRegistry.registerBoat(type, boat, block);
 		return boat;
 	}
@@ -192,7 +192,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	private void handleSpawnEggDispenserBehaviors(FMLCommonSetupEvent event) {
 		if (!this.spawnEggs.isEmpty()) {
 			event.enqueueWork(() -> {
-				for (AbnormalsSpawnEggItem spawnEggItem : this.spawnEggs) {
+				for (BlueprintSpawnEggItem spawnEggItem : this.spawnEggs) {
 					DispenserBlock.registerBehavior(spawnEggItem, new SpawnEggDispenseItemBehavior());
 				}
 			});

@@ -14,12 +14,12 @@ import java.util.function.Supplier;
 /**
  * A {@link FlowerBlock} extension that stores information about the flower's stew effect and fills its item after the latest vanilla flower item.
  */
-public class AbnormalsFlowerBlock extends FlowerBlock {
+public class BlueprintFlowerBlock extends FlowerBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WITHER_ROSE);
 	private final Supplier<MobEffect> stewEffect;
 	private final int stewEffectDuration;
 
-	public AbnormalsFlowerBlock(Supplier<MobEffect> stewEffect, int stewEffectDuration, Properties properties) {
+	public BlueprintFlowerBlock(Supplier<MobEffect> stewEffect, int stewEffectDuration, Properties properties) {
 		super(MobEffects.WEAKNESS, stewEffectDuration, properties);
 		this.stewEffect = stewEffect;
 		this.stewEffectDuration = stewEffectDuration;

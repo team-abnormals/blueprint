@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.client.renderer;
 
-import com.teamabnormals.blueprint.common.entity.AbnormalsBoat;
+import com.teamabnormals.blueprint.common.entity.BlueprintBoat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.BoatModel;
@@ -20,17 +20,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * The {@link EntityRenderer} responsible for the rendering of Blueprint's boat entities.
  */
 @OnlyIn(Dist.CLIENT)
-public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoat> {
+public class BlueprintBoatRenderer extends EntityRenderer<BlueprintBoat> {
 	private final BoatModel model;
 
-	public AbnormalsBoatRenderer(EntityRendererProvider.Context context) {
+	public BlueprintBoatRenderer(EntityRendererProvider.Context context) {
 		super(context);
 		this.model = new BoatModel(BoatModel.createBodyModel().bakeRoot());
 		this.shadowRadius = 0.8F;
 	}
 
 	@Override
-	public void render(AbnormalsBoat entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource source, int packedLightIn) {
+	public void render(BlueprintBoat entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource source, int packedLightIn) {
 		poseStack.pushPose();
 		poseStack.translate(0.0D, 0.375D, 0.0D);
 		poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
@@ -61,7 +61,7 @@ public class AbnormalsBoatRenderer extends EntityRenderer<AbnormalsBoat> {
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(AbnormalsBoat entity) {
+	public ResourceLocation getTextureLocation(BlueprintBoat entity) {
 		return entity.getBoat().getTexture();
 	}
 }

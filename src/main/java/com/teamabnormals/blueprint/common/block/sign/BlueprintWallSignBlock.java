@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 /**
  * A {@link WallSignBlock} extension used for Blueprint's wall signs.
  */
-public class AbnormalsWallSignBlock extends WallSignBlock implements IAbnormalsSign {
+public class BlueprintWallSignBlock extends WallSignBlock implements IBlueprintSign {
 
-	public AbnormalsWallSignBlock(Properties properties, WoodType woodType) {
+	public BlueprintWallSignBlock(Properties properties, WoodType woodType) {
 		super(properties, woodType);
 	}
 

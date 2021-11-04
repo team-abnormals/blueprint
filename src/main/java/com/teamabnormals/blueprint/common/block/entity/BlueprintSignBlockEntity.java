@@ -2,25 +2,22 @@ package com.teamabnormals.blueprint.common.block.entity;
 
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nonnull;
-
 /**
- * A {@link BeehiveBlockEntity} extension used for Blueprint's beehives.
+ * A {@link SignBlockEntity} extension used for Blueprint's signs.
  */
-public class AbnormalsBeehiveBlockEntity extends BeehiveBlockEntity {
+public class BlueprintSignBlockEntity extends SignBlockEntity {
 
-	public AbnormalsBeehiveBlockEntity(BlockPos pos, BlockState state) {
+	public BlueprintSignBlockEntity(BlockPos pos, BlockState state) {
 		super(pos, state);
 	}
 
-	@Nonnull
 	@Override
 	public BlockEntityType<?> getType() {
-		return BlueprintBlockEntityTypes.BEEHIVE.get();
+		return BlueprintBlockEntityTypes.SIGN.get();
 	}
 
 }

@@ -3,7 +3,7 @@ package com.teamabnormals.blueprint.core.api;
 import com.teamabnormals.blueprint.client.ChestManager;
 
 /**
- * Implemented on chest blocks that make use of AC's chest system.
+ * Implemented on chest blocks that make use of Blueprint's chest system.
  *
  * @author SmellyModder (Luke Tonon)
  * @author bageldotjpg

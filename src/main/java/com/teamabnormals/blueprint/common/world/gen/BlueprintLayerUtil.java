@@ -23,14 +23,14 @@ import java.util.function.LongFunction;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class ACLayerUtil {
+public final class BlueprintLayerUtil {
 	/**
-	 * Creates a {@link Layer} containing end biomes from the AC end biome registry.
+	 * Creates a {@link Layer} containing end biomes from the Blueprint end biome registry.
 	 *
 	 * @param lookupRegistry A {@link Registry} to lookup the biomes from.
 	 * @param contextFactory A {@link LongFunction} to use as a factory for the context.
 	 * @param <R>            The type of {@link BigContext} the factory creates.
-	 * @return A {@link Layer} containing randomized end biomes from the AC end biome registry.
+	 * @return A {@link Layer} containing randomized end biomes from the Blueprint end biome registry.
 	 */
 	public static <R extends BigContext<LazyArea>> Layer createEndBiomeLayer(Registry<Biome> lookupRegistry, LongFunction<R> contextFactory) {
 		AreaFactory<LazyArea> biomesFactory = new EndBiomesLayer(lookupRegistry).run(contextFactory.apply(1L));

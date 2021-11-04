@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.block.chest;
 
-import com.teamabnormals.blueprint.common.block.entity.AbnormalsChestBlockEntity;
+import com.teamabnormals.blueprint.common.block.entity.BlueprintChestBlockEntity;
 import com.teamabnormals.blueprint.core.api.IChestBlock;
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -28,7 +28,7 @@ public class AbnormalsChestBlock extends ChestBlock implements IChestBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new AbnormalsChestBlockEntity(pos, state);
+		return new BlueprintChestBlockEntity(pos, state);
 	}
 
 	@Override

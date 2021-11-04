@@ -10,10 +10,10 @@ import net.minecraft.world.level.block.LeavesBlock;
 /**
  * A {@link LeavesBlock} extension that fills its item after the latest vanilla leaves item.
  */
-public class AbnormalsLeavesBlock extends LeavesBlock {
+public class BlueprintLeavesBlock extends LeavesBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.AZALEA_LEAVES_FLOWERS);
 
-	public AbnormalsLeavesBlock(Properties properties) {
+	public BlueprintLeavesBlock(Properties properties) {
 		super(properties);
 	}
 

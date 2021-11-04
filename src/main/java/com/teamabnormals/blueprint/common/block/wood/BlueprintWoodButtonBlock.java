@@ -10,10 +10,10 @@ import net.minecraft.core.NonNullList;
 /**
  * A {@link WoodButtonBlock} extension that fills its item after the latest vanilla wood button item.
  */
-public class AbnormalsWoodButtonBlock extends WoodButtonBlock {
+public class BlueprintWoodButtonBlock extends WoodButtonBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_BUTTON);
 
-	public AbnormalsWoodButtonBlock(Properties properties) {
+	public BlueprintWoodButtonBlock(Properties properties) {
 		super(properties);
 	}
 

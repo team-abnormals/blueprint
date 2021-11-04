@@ -13,9 +13,9 @@ import net.minecraft.resources.ResourceLocation;
  * @author SmellyModder(Luke Tonon)
  */
 //TODO: Test the types
-public final class ACRenderTypes extends RenderStateShard {
+public final class BlueprintRenderTypes extends RenderStateShard {
 
-	public ACRenderTypes(String nameIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+	public BlueprintRenderTypes(String nameIn, Runnable setupTaskIn, Runnable clearTaskIn) {
 		super(nameIn, setupTaskIn, clearTaskIn);
 	}
 

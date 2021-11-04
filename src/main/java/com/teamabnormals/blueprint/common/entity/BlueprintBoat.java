@@ -27,15 +27,15 @@ import net.minecraftforge.fmllegacy.network.NetworkHooks;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public class AbnormalsBoat extends Boat {
-	private static final EntityDataAccessor<String> BOAT_TYPE = SynchedEntityData.defineId(AbnormalsBoat.class, EntityDataSerializers.STRING);
+public class BlueprintBoat extends Boat {
+	private static final EntityDataAccessor<String> BOAT_TYPE = SynchedEntityData.defineId(BlueprintBoat.class, EntityDataSerializers.STRING);
 
-	public AbnormalsBoat(EntityType<? extends Boat> type, Level level) {
+	public BlueprintBoat(EntityType<? extends Boat> type, Level level) {
 		super(type, level);
 		this.blocksBuilding = true;
 	}
 
-	public AbnormalsBoat(Level level, double x, double y, double z) {
+	public BlueprintBoat(Level level, double x, double y, double z) {
 		this(BlueprintEntityTypes.BOAT.get(), level);
 		this.setPos(x, y, z);
 		this.setDeltaMovement(Vec3.ZERO);
@@ -44,7 +44,7 @@ public class AbnormalsBoat extends Boat {
 		this.zo = z;
 	}
 
-	public AbnormalsBoat(FMLPlayMessages.SpawnEntity spawnEntity, Level level) {
+	public BlueprintBoat(FMLPlayMessages.SpawnEntity spawnEntity, Level level) {
 		this(BlueprintEntityTypes.BOAT.get(), level);
 	}
 
@@ -77,7 +77,7 @@ public class AbnormalsBoat extends Boat {
 		if (!this.isPassenger()) {
 			if (onGroundIn) {
 				if (this.fallDistance > 3.0F) {
-					if (this.status != AbnormalsBoat.Status.ON_LAND) {
+					if (this.status != BlueprintBoat.Status.ON_LAND) {
 						this.fallDistance = 0.0F;
 						return;
 					}

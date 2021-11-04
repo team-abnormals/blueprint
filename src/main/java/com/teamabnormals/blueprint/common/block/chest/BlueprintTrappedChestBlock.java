@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.block.chest;
 
-import com.teamabnormals.blueprint.common.block.entity.AbnormalsTrappedChestBlockEntity;
+import com.teamabnormals.blueprint.common.block.entity.BlueprintTrappedChestBlockEntity;
 import com.teamabnormals.blueprint.core.api.IChestBlock;
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -19,10 +19,10 @@ import net.minecraft.world.level.block.state.BlockState;
  * A {@link ChestBlock} extension used for Blueprint's trapped chests.
  */
 @SuppressWarnings("deprecation")
-public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBlock {
+public class BlueprintTrappedChestBlock extends ChestBlock implements IChestBlock {
 	public final String type;
 
-	public AbnormalsTrappedChestBlock(String type, Properties props) {
+	public BlueprintTrappedChestBlock(String type, Properties props) {
 		super(props, BlueprintBlockEntityTypes.TRAPPED_CHEST::get);
 		this.type = type;
 	}
@@ -34,7 +34,7 @@ public class AbnormalsTrappedChestBlock extends ChestBlock implements IChestBloc
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new AbnormalsTrappedChestBlockEntity(pos, state);
+		return new BlueprintTrappedChestBlockEntity(pos, state);
 	}
 
 	@Override

@@ -15,10 +15,10 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 /**
  * A {@link StandingSignBlock} extension used for Blueprint's standing signs.
  */
-public class AbnormalsStandingSignBlock extends StandingSignBlock implements IAbnormalsSign {
+public class BlueprintStandingSignBlock extends StandingSignBlock implements IBlueprintSign {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_SIGN);
 
-	public AbnormalsStandingSignBlock(Properties properties, WoodType woodType) {
+	public BlueprintStandingSignBlock(Properties properties, WoodType woodType) {
 		super(properties, woodType);
 	}
 

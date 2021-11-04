@@ -26,9 +26,9 @@ public class ChestBlockEntityWithoutLevelRenderer<C extends BlockEntity> extends
 	@Override
 	public void renderByItem(ItemStack itemStackIn, TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		BlockItem blockItem = (BlockItem) itemStackIn.getItem();
-		AbnormalsChestBlockEntityRenderer.itemBlock = blockItem.getBlock();
+		BlueprintChestBlockEntityRenderer.itemBlock = blockItem.getBlock();
 		super.renderByItem(itemStackIn, transformType, poseStack, buffer, combinedLight, combinedOverlay);
-		AbnormalsChestBlockEntityRenderer.itemBlock = null;
+		BlueprintChestBlockEntityRenderer.itemBlock = null;
 	}
 
 }

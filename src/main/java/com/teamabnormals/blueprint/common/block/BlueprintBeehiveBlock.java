@@ -19,10 +19,10 @@ import javax.annotation.Nullable;
  * A {@link BeehiveBlock} extension that fills its item after the vanilla beehive item.
  */
 @SuppressWarnings("deprecation")
-public class AbnormalsBeehiveBlock extends BeehiveBlock {
+public class BlueprintBeehiveBlock extends BeehiveBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.BEEHIVE);
 
-	public AbnormalsBeehiveBlock(Properties properties) {
+	public BlueprintBeehiveBlock(Properties properties) {
 		super(properties);
 	}
 

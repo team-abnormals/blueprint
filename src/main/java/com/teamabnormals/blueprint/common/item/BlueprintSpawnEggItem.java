@@ -12,12 +12,12 @@ import java.util.function.Supplier;
  *
  * @author SmellyModder(Luke Tonon)
  */
-public class AbnormalsSpawnEggItem extends SpawnEggItem {
+public class BlueprintSpawnEggItem extends SpawnEggItem {
 	private static final String ENTITY_TAG = "EntityTag";
 	private static final String ENTITY_ID_TAG = "id";
 	private final Supplier<EntityType<?>> entityType;
 
-	public AbnormalsSpawnEggItem(Supplier<EntityType<?>> entityType, int primaryColor, int secondaryColor, Properties properties) {
+	public BlueprintSpawnEggItem(Supplier<EntityType<?>> entityType, int primaryColor, int secondaryColor, Properties properties) {
 		super(null, primaryColor, secondaryColor, properties);
 		this.entityType = entityType;
 	}

@@ -10,10 +10,10 @@ import net.minecraft.world.level.block.LadderBlock;
 /**
  * A {@link LadderBlock} extension that fills its item after the vanilla ladder item.
  */
-public class AbnormalsLadderBlock extends LadderBlock {
+public class BlueprintLadderBlock extends LadderBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.LADDER);
 
-	public AbnormalsLadderBlock(Properties builder) {
+	public BlueprintLadderBlock(Properties builder) {
 		super(builder);
 	}
 

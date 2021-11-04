@@ -13,7 +13,7 @@ import java.util.Locale;
 public final class BannerManager {
 	/**
 	 * Adds a banner pattern, with one prefix for both the name and ID.
-	 * Example: BannerManager.createPattern("mca", "test", "tst");
+	 * Example: BannerManager.createPattern("bp", "test", "tst");
 	 *
 	 * @param prefix A prefix to use.
 	 * @param name   A name for the {@link BannerPattern}.
@@ -29,7 +29,7 @@ public final class BannerManager {
 
 	/**
 	 * Adds a banner pattern, with seperate name and ID prefixes, for shortening the ID and using full name for the name.
-	 * Example: BannerManager.createPattern("abnormalscore", "test", "ac", "tst");
+	 * Example: BannerManager.createPattern("blueprint", "test", "bp", "tst");
 	 *
 	 * @param namePrefix A prefix for the name.
 	 * @param name       A name for the {@link BannerPattern}.
@@ -46,7 +46,7 @@ public final class BannerManager {
 
 	/**
 	 * Adds a banner pattern, including the prefix in the name and ID.
-	 * Example: BannerManager.createPattern("abnormalscore_test", "ac_tst");
+	 * Example: BannerManager.createPattern("blueprint_test", "bp_tst");
 	 *
 	 * @param name A name for the {@link BannerPattern}.
 	 * @param id   An ID for the {@link BannerPattern}.

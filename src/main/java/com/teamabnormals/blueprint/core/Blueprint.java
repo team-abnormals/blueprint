@@ -2,9 +2,9 @@ package com.teamabnormals.blueprint.core;
 
 import com.google.common.collect.Sets;
 import com.teamabnormals.blueprint.client.RewardHandler;
-import com.teamabnormals.blueprint.client.renderer.AbnormalsBoatRenderer;
-import com.teamabnormals.blueprint.client.renderer.block.AbnormalsChestBlockEntityRenderer;
-import com.teamabnormals.blueprint.common.block.AbnormalsBeehiveBlock;
+import com.teamabnormals.blueprint.client.renderer.BlueprintBoatRenderer;
+import com.teamabnormals.blueprint.client.renderer.block.BlueprintChestBlockEntityRenderer;
+import com.teamabnormals.blueprint.common.block.BlueprintBeehiveBlock;
 import com.teamabnormals.blueprint.common.capability.chunkloading.ChunkLoaderCapability;
 import com.teamabnormals.blueprint.common.capability.chunkloading.ChunkLoaderEvents;
 import com.teamabnormals.blueprint.common.network.MessageC2SUpdateSlabfishHat;
@@ -155,10 +155,10 @@ public final class Blueprint {
 	}
 
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
-		event.registerEntityRenderer(BlueprintEntityTypes.BOAT.get(), AbnormalsBoatRenderer::new);
+		event.registerEntityRenderer(BlueprintEntityTypes.BOAT.get(), BlueprintBoatRenderer::new);
 
-		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.CHEST.get(), AbnormalsChestBlockEntityRenderer::new);
-		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.TRAPPED_CHEST.get(), AbnormalsChestBlockEntityRenderer::new);
+		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.CHEST.get(), BlueprintChestBlockEntityRenderer::new);
+		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.TRAPPED_CHEST.get(), BlueprintChestBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.SIGN.get(), SignRenderer::new);
 	}
 
@@ -190,7 +190,7 @@ public final class Blueprint {
 		PoiType.BEEHIVE.matchingStates = Sets.newHashSet(PoiType.BEEHIVE.matchingStates);
 		Map<BlockState, PoiType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PoiType.class, null, "f_27323_");
 		if (statePointOfInterestMap != null) {
-			for (Block block : BlockEntitySubRegistryHelper.collectBlocks(AbnormalsBeehiveBlock.class)) {
+			for (Block block : BlockEntitySubRegistryHelper.collectBlocks(BlueprintBeehiveBlock.class)) {
 				block.getStateDefinition().getPossibleStates().forEach(state -> {
 					statePointOfInterestMap.put(state, PoiType.BEEHIVE);
 					PoiType.BEEHIVE.matchingStates.add(state);

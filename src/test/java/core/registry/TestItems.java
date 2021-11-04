@@ -1,6 +1,6 @@
 package core.registry;
 
-import com.teamabnormals.blueprint.common.item.AbnormalsSpawnEggItem;
+import com.teamabnormals.blueprint.common.item.BlueprintSpawnEggItem;
 import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import core.BlueprintTest;
@@ -14,7 +14,7 @@ public final class TestItems {
 	private static final Helper HELPER = BlueprintTest.REGISTRY_HELPER.getItemSubHelper();
 
 	public static final RegistryObject<Item> ITEM = HELPER.createTest();
-	public static final RegistryObject<AbnormalsSpawnEggItem> COW_SPAWN_EGG = HELPER.createSpawnEggItem("test", TestEntities.COW::get, 100, 200);
+	public static final RegistryObject<BlueprintSpawnEggItem> COW_SPAWN_EGG = HELPER.createSpawnEggItem("test", TestEntities.COW::get, 100, 200);
 	public static final RegistryObject<Item> BOAT = HELPER.createBoatItem("test", TestBlocks.BLOCK);
 
 	public static class Helper extends ItemSubRegistryHelper {

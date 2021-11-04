@@ -4,6 +4,7 @@ import com.teamabnormals.blueprint.client.screen.shaking.EntityShakeSource;
 import com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.blueprint.core.util.TradeUtil;
+import com.teamabnormals.blueprint.core.util.TradeUtil.BlueprintTrade;
 import core.registry.TestItems;
 import core.registry.TestTriggers;
 import net.minecraft.core.particles.ParticleTypes;
@@ -56,19 +57,19 @@ public final class TestEvents {
 	@SubscribeEvent
 	public static void onTrades(VillagerTradesEvent event) {
 		TradeUtil.addVillagerTrades(event, 1,
-				new TradeUtil.AbnormalsTrade(TestItems.ITEM.get(), 5, 2, 6, 15),
-				new TradeUtil.AbnormalsTrade(TestItems.ITEM.get(), 5, 2, 6, 55),
-				new TradeUtil.AbnormalsTrade(TestItems.ITEM.get(), 5, 9, 6, 75)
+				new BlueprintTrade(TestItems.ITEM.get(), 5, 2, 6, 15),
+				new BlueprintTrade(TestItems.ITEM.get(), 5, 2, 6, 55),
+				new BlueprintTrade(TestItems.ITEM.get(), 5, 9, 6, 75)
 		);
-		TradeUtil.addVillagerTrades(event, VillagerProfession.CARTOGRAPHER, 2, new TradeUtil.AbnormalsTrade(TestItems.BOAT.get(), 5, 10, 6, 100));
+		TradeUtil.addVillagerTrades(event, VillagerProfession.CARTOGRAPHER, 2, new BlueprintTrade(TestItems.BOAT.get(), 5, 10, 6, 100));
 	}
 
 	@SubscribeEvent
 	public static void onWandererTrades(WandererTradesEvent event) {
-		TradeUtil.addWandererTrades(event, new TradeUtil.AbnormalsTrade(Items.EMERALD_ORE, 5, 2, 6, 15));
+		TradeUtil.addWandererTrades(event, new BlueprintTrade(Items.EMERALD_ORE, 5, 2, 6, 15));
 		TradeUtil.addRareWandererTrades(event,
-				new TradeUtil.AbnormalsTrade(TestItems.COW_SPAWN_EGG.get(), 5, 2, 6, 15),
-				new TradeUtil.AbnormalsTrade(TestItems.COW_SPAWN_EGG.get(), 5, 2, 6, 55)
+				new BlueprintTrade(TestItems.COW_SPAWN_EGG.get(), 5, 2, 6, 15),
+				new BlueprintTrade(TestItems.COW_SPAWN_EGG.get(), 5, 2, 6, 55)
 		);
 	}
 

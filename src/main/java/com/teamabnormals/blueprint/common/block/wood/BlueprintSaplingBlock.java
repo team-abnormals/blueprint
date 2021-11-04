@@ -11,10 +11,10 @@ import net.minecraft.core.NonNullList;
 /**
  * A {@link SaplingBlock} extension that fills its item after the latest vanilla sapling item.
  */
-public class AbnormalsSaplingBlock extends SaplingBlock {
+public class BlueprintSaplingBlock extends SaplingBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.DARK_OAK_SAPLING);
 
-	public AbnormalsSaplingBlock(AbstractTreeGrower tree, Properties properties) {
+	public BlueprintSaplingBlock(AbstractTreeGrower tree, Properties properties) {
 		super(tree, properties);
 	}
 

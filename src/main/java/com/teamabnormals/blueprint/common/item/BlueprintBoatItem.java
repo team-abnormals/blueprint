@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.item;
 
-import com.teamabnormals.blueprint.common.entity.AbnormalsBoat;
+import com.teamabnormals.blueprint.common.entity.BlueprintBoat;
 import com.teamabnormals.blueprint.core.util.item.filling.TargetedItemCategoryFiller;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
@@ -35,12 +35,12 @@ import java.util.function.Predicate;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public class AbnormalsBoatItem extends Item {
+public class BlueprintBoatItem extends Item {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.DARK_OAK_BOAT);
 	private static final Predicate<Entity> COLLISION_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
 	private final String type;
 
-	public AbnormalsBoatItem(String type, Item.Properties properties) {
+	public BlueprintBoatItem(String type, Item.Properties properties) {
 		super(properties);
 		this.type = type;
 		DispenserBlock.registerBehavior(this, new DispenserBoatBehavior(type));
@@ -72,7 +72,7 @@ public class AbnormalsBoatItem extends Item {
 			}
 
 			if (hitResult.getType() == HitResult.Type.BLOCK) {
-				AbnormalsBoat boat = new AbnormalsBoat(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z);
+				BlueprintBoat boat = new BlueprintBoat(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z);
 				boat.setBoat(this.type);
 				boat.setYRot(playerIn.getYRot());
 				if (!level.noCollision(boat, boat.getBoundingBox().inflate(-0.1D))) {
@@ -119,7 +119,7 @@ public class AbnormalsBoatItem extends Item {
 				}
 				adjustY = 0d;
 			}
-			AbnormalsBoat boat = new AbnormalsBoat(level, x, y + adjustY, z);
+			BlueprintBoat boat = new BlueprintBoat(level, x, y + adjustY, z);
 			boat.setBoat(this.type);
 			boat.setYRot(direction.toYRot());
 			level.addFreshEntity(boat);

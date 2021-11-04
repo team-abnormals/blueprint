@@ -10,13 +10,13 @@ import net.minecraft.world.phys.AABB;
 /**
  * A {@link ChestBlockEntity} extension used for Blueprint's chests.
  */
-public class AbnormalsChestBlockEntity extends ChestBlockEntity {
+public class BlueprintChestBlockEntity extends ChestBlockEntity {
 
-	protected AbnormalsChestBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
+	protected BlueprintChestBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
 		super(typeIn, pos, state);
 	}
 
-	public AbnormalsChestBlockEntity(BlockPos pos, BlockState state) {
+	public BlueprintChestBlockEntity(BlockPos pos, BlockState state) {
 		super(BlueprintBlockEntityTypes.CHEST.get(), pos, state);
 	}
 

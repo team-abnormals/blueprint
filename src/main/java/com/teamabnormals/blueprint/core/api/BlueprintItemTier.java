@@ -10,7 +10,7 @@ import java.util.function.Supplier;
  * A {@link Tier} implementation made for simple creation of {@link Tier} instances.
  */
 @SuppressWarnings("deprecation")
-public class AbnormalsItemTier implements Tier {
+public class BlueprintItemTier implements Tier {
 	private final int level;
 	private final int uses;
 	private final float speed;
@@ -18,7 +18,7 @@ public class AbnormalsItemTier implements Tier {
 	private final int enchantmentValue;
 	private final LazyLoadedValue<Ingredient> repairIngredient;
 
-	public AbnormalsItemTier(int levelIn, int usesIn, float speedIn, float damageIn, int enchantmentValueIn, Supplier<Ingredient> repairIngredientIn) {
+	public BlueprintItemTier(int levelIn, int usesIn, float speedIn, float damageIn, int enchantmentValueIn, Supplier<Ingredient> repairIngredientIn) {
 		this.level = levelIn;
 		this.uses = usesIn;
 		this.speed = speedIn;

@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[32,)"
 issueTrackerURL = "https://github.com/team-abnormals/blueprint/issues"
-license = "https://github.com/team-abnormals/blueprintcore/blob/main/LICENSE.txt"
+license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 
 [[mods]]
     modId = "blueprint"

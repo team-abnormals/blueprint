@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Manager class for texture information for Abnormals Chests.
+ * Manager class for texture information for Blueprint Chests.
  *
  * @author SmellyModder (Luke Tonon)
  */

@@ -11,10 +11,10 @@ import net.minecraft.core.NonNullList;
 /**
  * A {@link BannerPatternItem} extension that fills itself after the latest vanilla banner pattern item.
  */
-public class AbnormalsBannerPatternItem extends BannerPatternItem {
+public class BlueprintBannerPatternItem extends BannerPatternItem {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.PIGLIN_BANNER_PATTERN);
 
-	public AbnormalsBannerPatternItem(BannerPattern pattern, Properties builder) {
+	public BlueprintBannerPatternItem(BannerPattern pattern, Properties builder) {
 		super(pattern, builder);
 	}
 

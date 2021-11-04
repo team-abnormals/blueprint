@@ -117,32 +117,32 @@ public final class TradeUtil {
 	 *
 	 * @author bageldotjpg
 	 */
-	public static class AbnormalsTrade extends BasicTrade {
-		public AbnormalsTrade(ItemStack input, ItemStack input2, ItemStack output, int maxTrades, int xp, float priceMult) {
+	public static class BlueprintTrade extends BasicTrade {
+		public BlueprintTrade(ItemStack input, ItemStack input2, ItemStack output, int maxTrades, int xp, float priceMult) {
 			super(input, input2, output, maxTrades, xp, priceMult);
 		}
 
-		public AbnormalsTrade(Item input, int inputCount, Item output, int outputCount, int maxTrades, int xp, float priceMult) {
+		public BlueprintTrade(Item input, int inputCount, Item output, int outputCount, int maxTrades, int xp, float priceMult) {
 			this(new ItemStack(input, inputCount), ItemStack.EMPTY, new ItemStack(output, outputCount), maxTrades, xp, priceMult);
 		}
 
-		public AbnormalsTrade(Item input, int inputCount, Item output, int outputCount, int maxTrades, int xp) {
+		public BlueprintTrade(Item input, int inputCount, Item output, int outputCount, int maxTrades, int xp) {
 			this(input, inputCount, output, outputCount, maxTrades, xp, 0.15F);
 		}
 
-		public AbnormalsTrade(Item input, int inputCount, int emeraldCount, int maxTrades, int xp, float priceMult) {
+		public BlueprintTrade(Item input, int inputCount, int emeraldCount, int maxTrades, int xp, float priceMult) {
 			this(new ItemStack(input, inputCount), ItemStack.EMPTY, new ItemStack(Items.EMERALD, emeraldCount), maxTrades, xp, priceMult);
 		}
 
-		public AbnormalsTrade(Item input, int inputCount, int emeraldCount, int maxTrades, int xp) {
+		public BlueprintTrade(Item input, int inputCount, int emeraldCount, int maxTrades, int xp) {
 			this(input, inputCount, emeraldCount, maxTrades, xp, 0.15F);
 		}
 
-		public AbnormalsTrade(int emeraldCount, Item output, int outputCount, int maxTrades, int xp, float priceMult) {
+		public BlueprintTrade(int emeraldCount, Item output, int outputCount, int maxTrades, int xp, float priceMult) {
 			this(new ItemStack(Items.EMERALD, emeraldCount), ItemStack.EMPTY, new ItemStack(output, outputCount), maxTrades, xp, priceMult);
 		}
 
-		public AbnormalsTrade(int emeraldCount, Item output, int outputCount, int maxTrades, int xp) {
+		public BlueprintTrade(int emeraldCount, Item output, int outputCount, int maxTrades, int xp) {
 			this(emeraldCount, output, outputCount, maxTrades, xp, 0.15F);
 		}
 	}
