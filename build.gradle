@@ -37,7 +37,7 @@ minecraft {
                 blueprint {
                     source sourceSets.main
                 }
-                ac_test {
+                blueprint_test {
                     source sourceSets.test
                 }
             }
@@ -51,7 +51,7 @@ minecraft {
                 blueprint {
                     source sourceSets.main
                 }
-                ac_test {
+                blueprint_test {
                     source sourceSets.test
                 }
             }
@@ -67,7 +67,7 @@ minecraft {
                 blueprint {
                     source sourceSets.main
                 }
-                ac_test {
+                blueprint_test {
                     source sourceSets.test
                 }
             }
