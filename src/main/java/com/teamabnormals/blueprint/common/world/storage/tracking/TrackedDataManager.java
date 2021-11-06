@@ -2,12 +2,11 @@ package com.teamabnormals.blueprint.common.world.storage.tracking;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.teamabnormals.blueprint.core.events.EntityChangedEvent;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -149,22 +148,6 @@ public enum TrackedDataManager {
 			if (!entries.isEmpty()) {
 				NetworkUtil.updateTrackedData(target, entries);
 			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onEntityTracked(EntityChangedEvent event) {
-		Entity entity = event.getEntity();
-		IDataManager dataManager = (IDataManager) entity;
-		if (event.isUpdating() || dataManager.isDirty()) {
-			Set<IDataManager.DataEntry<?>> entries = dataManager.getDirtyEntries();
-			if (!entries.isEmpty()) {
-				if (entity instanceof ServerPlayer) {
-					NetworkUtil.updateTrackedData((ServerPlayer) entity, entity.getId(), entries);
-				}
-				NetworkUtil.updateTrackedData(entity, entries);
-			}
-			dataManager.clean();
 		}
 	}
 
