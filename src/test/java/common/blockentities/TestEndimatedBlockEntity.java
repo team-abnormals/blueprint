@@ -5,12 +5,14 @@ import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
 import com.teamabnormals.blueprint.core.endimator.PlayableEndimationManager;
 import core.registry.TestBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.Constants;
 
 public final class TestEndimatedBlockEntity extends BlockEntity implements Endimatable {
@@ -66,5 +68,15 @@ public final class TestEndimatedBlockEntity extends BlockEntity implements Endim
 	@Override
 	public EndimatedState getEndimatedState() {
 		return this.endimatedState;
+	}
+
+	@Override
+	public Position getPos() {
+		return Vec3.atCenterOf(this.worldPosition);
+	}
+
+	@Override
+	public boolean isActive() {
+		return !this.isRemoved();
 	}
 }

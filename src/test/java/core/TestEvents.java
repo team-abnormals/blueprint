@@ -1,6 +1,6 @@
 package core;
 
-import com.teamabnormals.blueprint.client.screen.shaking.EntityShakeSource;
+import com.teamabnormals.blueprint.client.screen.shaking.EmanatingShakeSource;
 import com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.blueprint.core.util.TradeUtil;
@@ -38,7 +38,7 @@ public final class TestEvents {
 				}
 				TrackedDataManager.INSTANCE.setValue(entity, BlueprintTest.TEST_TRACKED_DATA, true);
 			} else {
-				ScreenShakeHandler.INSTANCE.addShakeSource(new EntityShakeSource(entity, 100, 0.1F, 0.1F, 0.02F, 0.2F, 0.2F, 0.04F, 0.98F, 0.98F, 0.99F));
+				ScreenShakeHandler.INSTANCE.addShakeSource(new EmanatingShakeSource(entity, 100, 0.1F, 0.1F, 0.02F, 0.2F, 0.2F, 0.04F, 0.98F, 0.98F, 0.99F));
 			}
 		}
 	}

@@ -1,29 +1,32 @@
 package com.teamabnormals.blueprint.core.endimator.effects;
 
-import com.teamabnormals.blueprint.core.endimator.effects.shaking.ShakeEndimationEffect;
+import net.minecraft.core.Position;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * The interface for defining an object that can process {@link ConfiguredEndimationEffect} instances.
+ * <p>This gets mixin'd into {@link net.minecraft.world.entity.Entity}.</p>
  *
  * @author SmellyModder (Luke Tonon)
  */
-//TODO: Possibly restructure this?
 public interface EndimationEffectSource {
 	/**
-	 * Processes a screen shaking effect from a {@link ShakeEndimationEffect.Config} instance.
+	 * Gets the {@link Position} of this source.
+	 * <p>This gets used by effects that need to know where to process.</p>
 	 *
-	 * @param config A {@link ShakeEndimationEffect.Config} instance to use for determining the screen shaking effect's attributes.
+	 * @return The {@link Position} of this source.
 	 */
-	default void processShake(ShakeEndimationEffect.Config config) {
+	default Position getPos() {
+		return Vec3.ZERO;
 	}
 
 	/**
-	 * Process a custom {@link EndimationEffect} instance.
-	 * <p>'custom' being not built-in.</p>
+	 * If this source is active.
+	 * <p>This gets used by effects that should not continue if their sources are not active.</p>
 	 *
-	 * @param effect A custom {@link EndimationEffect} instance to process.
-	 * @param config A config object to use for determining the effect's attributes.
+	 * @return If this source is active.
 	 */
-	default <C> void processCustomEffect(EndimationEffect<C> effect, C config) {
+	default boolean isActive() {
+		return true;
 	}
 }

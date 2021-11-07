@@ -2,16 +2,14 @@ package com.teamabnormals.blueprint.core.mixin;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.teamabnormals.blueprint.client.screen.shaking.EntityShakeSource;
-import com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler;
 import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import com.teamabnormals.blueprint.common.world.storage.tracking.SyncType;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.endimator.Endimatable;
-import com.teamabnormals.blueprint.core.endimator.effects.shaking.ShakeEndimationEffect;
 import com.teamabnormals.blueprint.core.events.EntityStepEvent;
+import net.minecraft.core.Position;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.Constants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -36,6 +35,8 @@ import java.util.Set;
 public final class EntityMixin implements IDataManager, Endimatable {
 	@Shadow
 	private Level level;
+	@Shadow
+	private Vec3 position;
 
 	private Map<TrackedData<?>, DataEntry<?>> dataMap = Maps.newHashMap();
 	private boolean dirty = false;
@@ -110,8 +111,18 @@ public final class EntityMixin implements IDataManager, Endimatable {
 	}
 
 	@Override
-	public void processShake(ShakeEndimationEffect.Config config) {
-		ScreenShakeHandler.INSTANCE.addShakeSource(new EntityShakeSource((Entity) (Object) this, config.duration(), config.intensityX(), config.intensityY(), config.intensityZ(), config.maxBuildupX(), config.maxBuildupY(), config.maxBuildupZ(), config.decayX(), config.decayY(), config.decayZ()));
+	public Position getPos() {
+		return this.position;
+	}
+
+	@Override
+	public boolean isActive() {
+		return this.isAlive();
+	}
+
+	@Shadow
+	public boolean isAlive() {
+		return false;
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;addAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", shift = At.Shift.BEFORE), method = "saveWithoutId")

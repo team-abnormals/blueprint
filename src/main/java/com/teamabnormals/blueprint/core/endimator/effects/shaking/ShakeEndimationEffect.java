@@ -2,6 +2,8 @@ package com.teamabnormals.blueprint.core.endimator.effects.shaking;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.teamabnormals.blueprint.client.screen.shaking.EmanatingShakeSource;
+import com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler;
 import com.teamabnormals.blueprint.core.endimator.effects.EndimationEffect;
 import com.teamabnormals.blueprint.core.endimator.effects.EndimationEffectSource;
 
@@ -19,7 +21,7 @@ public final class ShakeEndimationEffect extends EndimationEffect<ShakeEndimatio
 
 	@Override
 	public void process(EndimationEffectSource source, float time, Config config) {
-		source.processShake(config);
+		ScreenShakeHandler.INSTANCE.addShakeSource(new EmanatingShakeSource(source::getPos, source::isActive, config.duration(), config.intensityX(), config.intensityY(), config.intensityZ(), config.maxBuildupX(), config.maxBuildupY(), config.maxBuildupZ(), config.decayX(), config.decayY(), config.decayZ()));
 	}
 
 	public static record Config(int duration, double intensityX, double intensityY, double intensityZ, double maxBuildupX, double maxBuildupY, double maxBuildupZ, double decayX, double decayY, double decayZ) {

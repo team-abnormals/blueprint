@@ -14,7 +14,6 @@ public final class ParticleEndimationEffect extends EndimationEffect<Unit> {
 
 	@Override
 	public void process(EndimationEffectSource source, float time, Unit config) {
-		source.processCustomEffect(this, config);
 	}
 
 }
