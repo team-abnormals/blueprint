@@ -34,8 +34,6 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.List;
 
 /**
- * Events for mod compatibility.
- *
  * @author abigailfails
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)

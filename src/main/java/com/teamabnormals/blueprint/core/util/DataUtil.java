@@ -261,16 +261,6 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Please use {@link DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)} instead.
-	 *
-	 * @see DataUtil#registerAlternativeDispenseBehavior(AlternativeDispenseBehavior)
-	 */
-	@Deprecated
-	public static void registerAlternativeDispenseBehavior(Item item, BiPredicate<BlockSource, ItemStack> condition, DispenseItemBehavior behavior) {
-		registerAlternativeDispenseBehavior(new AlternativeDispenseBehavior("", item, condition, behavior));
-	}
-
-	/**
 	 * Registers a {@link CustomNoteBlockInstrument} that will get used to play a custom note block sound if a
 	 * {@link BlockSource} predicate (representing the position under the note block) passes.
 	 * See {@link CustomNoteBlockInstrument} for details.

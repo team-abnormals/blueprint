@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 /**
  * An {@link ArmorMaterial} implementation made for simple creation of {@link ArmorMaterial} instances.
  */
-@SuppressWarnings("deprecation")
 public class BlueprintArmorMaterial implements ArmorMaterial {
 	private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
 	private final ResourceLocation name;
@@ -23,11 +22,6 @@ public class BlueprintArmorMaterial implements ArmorMaterial {
 	private final float toughness;
 	private final float knockbackResistance;
 	private final LazyLoadedValue<Ingredient> repairIngredient;
-
-	@Deprecated
-	public BlueprintArmorMaterial(ResourceLocation name, int durabilityMultiplier, int[] slotProtections, int enchantmentValue, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
-		this(name, durabilityMultiplier, slotProtections, enchantmentValue, () -> sound, toughness, knockbackResistance, repairIngredient);
-	}
 
 	public BlueprintArmorMaterial(ResourceLocation name, int durabilityMultiplier, int[] slotProtections, int enchantmentValue, Supplier<SoundEvent> sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
 		this.name = name;
