@@ -77,17 +77,9 @@ minecraft {
     }
 }
 
-repositories {
-    maven {
-        url "https://maven.jaackson.me"
-    }
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
 
-    // Push mixin to the game module
-    implementation fg.deobf("me.jaackson:mixin-hack:1.0.0")
     annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
 }
 
