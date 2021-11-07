@@ -13,51 +13,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public final class BlueprintConfig {
 
 	/**
-	 * Class that stores all the information about the Blueprint common config.
-	 */
-	public static class Common {
-		@ConfigKey("quark_poison_potato_compat_enabled")
-		public final ConfigValue<Boolean> poisonPotatoCompatEnabledValue;
-		public boolean poisonPotatoCompatEnabled;
-		@ConfigKey("potato_poison_effect")
-		public final ConfigValue<Boolean> poisonEffectValue;
-		public boolean poisonEffect;
-		@ConfigKey("potato_poison_chance")
-		public final ConfigValue<Double> poisonChanceValue;
-		public double poisonChance;
-		
-		Common(ForgeConfigSpec.Builder builder) {
-			builder.comment("Compatibility with Quark's poisonous potatoes feature")
-			.push("poisonousPotatoCompat");
-			this.poisonPotatoCompatEnabledValue = builder
-					.comment("If baby mobs can be fed a poisonous potato to stunt their growth when Quark is installed")
-					.translation(makeTranslation("poison_potato_compat_enabled"))
-					.define("poisonPotatoCompatEnabled", true);
-
-			this.poisonEffectValue = builder
-					.comment("If growth stunting should give baby mobs poison")
-					.translation(makeTranslation("poison_effect"))
-					.define("poisonEffect", true);
-
-			this.poisonChanceValue = builder
-					.comment("The chance to stunt baby mob growth when feeding a poisonous potato")
-					.translation(makeTranslation("poison_chance"))
-					.defineInRange("poisonChance", 0.1, 0, 1);
-
-			builder.pop();
-		}
-
-		/**
-		 * Caches the common config values.
-		 */
-		public void load() {
-			this.poisonPotatoCompatEnabled = this.poisonPotatoCompatEnabledValue.get();
-			this.poisonEffect = this.poisonEffectValue.get();
-			this.poisonChance = this.poisonChanceValue.get();
-		}
-	}
-
-	/**
 	 * Class that stores all the information about the Blueprint client config.
 	 */
 	public static final class Client {
@@ -108,7 +63,7 @@ public final class BlueprintConfig {
 
 		SlabfishSettings(ForgeConfigSpec.Builder builder) {
 			builder.comment("Slabfish patron hat settings.")
-			.push("slabfishSettings");
+					.push("slabfishSettings");
 
 			this.enabled = builder
 					.comment("If the slabfish hat should be enabled")
@@ -130,21 +85,15 @@ public final class BlueprintConfig {
 			builder.pop();
 		}
 	}
-	
+
 	private static String makeTranslation(String name) {
 		return "blueprint.config." + name;
 	}
-	
-	public static final ForgeConfigSpec COMMON_SPEC;
-	public static final Common COMMON;
+
 	public static final ForgeConfigSpec CLIENT_SPEC;
 	public static final Client CLIENT;
 
 	static {
-		final Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Common::new);
-		COMMON_SPEC = commonSpecPair.getRight();
-		COMMON = commonSpecPair.getLeft();
-
 		final Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Client::new);
 		CLIENT_SPEC = clientSpecPair.getRight();
 		CLIENT = clientSpecPair.getLeft();

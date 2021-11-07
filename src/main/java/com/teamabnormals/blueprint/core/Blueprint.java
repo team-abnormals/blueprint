@@ -102,7 +102,7 @@ public final class Blueprint {
 
 		CraftingHelper.register(new Serializer());
 		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
-		DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.COMMON, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
+		DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
 		DataUtil.registerConfigPredicate(new EqualsPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new GreaterThanOrEqualPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new GreaterThanPredicate.Serializer());
@@ -116,9 +116,7 @@ public final class Blueprint {
 
 		bus.addListener((ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
-			if (config.getSpec() == BlueprintConfig.COMMON_SPEC) {
-				BlueprintConfig.COMMON.load();
-			} else if (config.getSpec() == BlueprintConfig.CLIENT_SPEC) {
+			if (config.getSpec() == BlueprintConfig.CLIENT_SPEC) {
 				BlueprintConfig.CLIENT.load();
 			}
 		});
@@ -131,7 +129,8 @@ public final class Blueprint {
 				}
 			});
 			bus.addListener(EventPriority.NORMAL, false, ModConfigEvent.Reloading.class, event -> {
-				if (event.getConfig().getModId().equals(Blueprint.MOD_ID)) NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
+				if (event.getConfig().getModId().equals(Blueprint.MOD_ID))
+					NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
 			});
 			bus.addListener(this::clientSetup);
 			bus.addListener(this::modelSetup);
@@ -143,7 +142,6 @@ public final class Blueprint {
 		bus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
 		bus.addListener(this::dataSetup);
 		bus.addListener(this::registerCapabilities);
-		context.registerConfig(ModConfig.Type.COMMON, BlueprintConfig.COMMON_SPEC);
 		context.registerConfig(ModConfig.Type.CLIENT, BlueprintConfig.CLIENT_SPEC);
 	}
 
