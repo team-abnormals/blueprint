@@ -26,3 +26,4 @@ forge*changelog.txt
 /.apt_generated/
 *.log
 .factorypath
+.cache

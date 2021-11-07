@@ -1,10 +1,8 @@
 package com.teamabnormals.blueprint.common.block;
 
+import com.teamabnormals.blueprint.core.other.BlueprintBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -21,7 +19,6 @@ import net.minecraftforge.common.PlantType;
  * A {@link Block} extension for hedge compatibility with the Quark mod.
  */
 public class HedgeBlock extends FenceBlock {
-	public static final Tag<Block> HEDGES = BlockTags.createOptional(new ResourceLocation("quark", "hedges"));
 	private static final BooleanProperty EXTEND = BooleanProperty.create("extend");
 
 	public HedgeBlock(Properties properties) {
@@ -31,7 +28,7 @@ public class HedgeBlock extends FenceBlock {
 	
 	@Override
 	public boolean connectsTo(BlockState state, boolean isSideSolid, Direction direction) {
-		return state.is(HEDGES);
+		return state.is(BlueprintBlockTags.HEDGES);
 	}
 	
 	@Override
@@ -41,7 +38,7 @@ public class HedgeBlock extends FenceBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return super.getStateForPlacement(context).setValue(EXTEND, context.getLevel().getBlockState(context.getClickedPos().below()).is(HEDGES));
+		return super.getStateForPlacement(context).setValue(EXTEND, context.getLevel().getBlockState(context.getClickedPos().below()).is(BlueprintBlockTags.HEDGES));
 	}
 
 	@Override
@@ -49,7 +46,7 @@ public class HedgeBlock extends FenceBlock {
 		if (stateIn.getValue(WATERLOGGED)) {
 			level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
-		return facing == Direction.DOWN ? stateIn.setValue(EXTEND, facingState.is(HEDGES)) : super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
+		return facing == Direction.DOWN ? stateIn.setValue(EXTEND, facingState.is(BlueprintBlockTags.HEDGES)) : super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
 	}
 	
 	@Override

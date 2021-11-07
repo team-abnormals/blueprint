@@ -20,8 +20,9 @@ import com.teamabnormals.blueprint.core.api.conditions.ACAndRecipeCondition;
 import com.teamabnormals.blueprint.core.api.conditions.QuarkFlagRecipeCondition.Serializer;
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
 import com.teamabnormals.blueprint.core.api.model.FullbrightModel;
+import com.teamabnormals.blueprint.core.data.BlueprintBlockTagsProvider;
 import com.teamabnormals.blueprint.core.endimator.EndimationLoader;
-import com.teamabnormals.blueprint.core.events.CompatEvents;
+import com.teamabnormals.blueprint.core.other.BlueprintEvents;
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
 import com.teamabnormals.blueprint.core.registry.BlueprintLootConditions;
@@ -31,6 +32,7 @@ import com.teamabnormals.blueprint.core.util.registry.BlockEntitySubRegistryHelp
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -45,6 +47,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -59,6 +62,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -89,7 +93,7 @@ public final class Blueprint {
 			.simpleChannel();
 
 	public Blueprint() {
-		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		ModLoadingContext context = ModLoadingContext.get();
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ChunkLoaderEvents());
@@ -107,10 +111,10 @@ public final class Blueprint {
 		DataUtil.registerConfigPredicate(new ContainsPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new MatchesPredicate.Serializer());
 
-		REGISTRY_HELPER.getEntitySubHelper().register(modEventBus);
-		REGISTRY_HELPER.getBlockEntitySubHelper().register(modEventBus);
+		REGISTRY_HELPER.getEntitySubHelper().register(bus);
+		REGISTRY_HELPER.getBlockEntitySubHelper().register(bus);
 
-		modEventBus.addListener((ModConfigEvent event) -> {
+		bus.addListener((ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
 			if (config.getSpec() == BlueprintConfig.COMMON_SPEC) {
 				BlueprintConfig.COMMON.load();
@@ -120,24 +124,25 @@ public final class Blueprint {
 		});
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			modEventBus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event -> {
+			bus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event -> {
 				ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
 				if (resourceManager instanceof ReloadableResourceManager) {
 					((ReloadableResourceManager) resourceManager).registerReloadListener(ENDIMATION_LOADER);
 				}
 			});
-			modEventBus.addListener(EventPriority.NORMAL, false, ModConfigEvent.Reloading.class, event -> {
+			bus.addListener(EventPriority.NORMAL, false, ModConfigEvent.Reloading.class, event -> {
 				if (event.getConfig().getModId().equals(Blueprint.MOD_ID)) NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
 			});
-			modEventBus.addListener(this::clientSetup);
-			modEventBus.addListener(this::modelSetup);
-			modEventBus.addListener(this::rendererSetup);
-			modEventBus.addListener(RewardHandler::clientSetup);
+			bus.addListener(this::clientSetup);
+			bus.addListener(this::modelSetup);
+			bus.addListener(this::rendererSetup);
+			bus.addListener(RewardHandler::clientSetup);
 		});
 
-		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
-		modEventBus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
-		modEventBus.addListener(this::registerCapabilities);
+		bus.addListener(EventPriority.LOWEST, this::commonSetup);
+		bus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
+		bus.addListener(this::dataSetup);
+		bus.addListener(this::registerCapabilities);
 		context.registerConfig(ModConfig.Type.COMMON, BlueprintConfig.COMMON_SPEC);
 		context.registerConfig(ModConfig.Type.CLIENT, BlueprintConfig.CLIENT_SPEC);
 	}
@@ -154,6 +159,16 @@ public final class Blueprint {
 		event.enqueueWork(SignManager::setupAtlas);
 	}
 
+	private void dataSetup(GatherDataEvent event) {
+		DataGenerator dataGenerator = event.getGenerator();
+		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+
+		if (event.includeServer()) {
+			BlueprintBlockTagsProvider blockTagGen = new BlueprintBlockTagsProvider(dataGenerator, existingFileHelper);
+			dataGenerator.addProvider(blockTagGen);
+		}
+	}
+
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(BlueprintEntityTypes.BOAT.get(), BlueprintBoatRenderer::new);
 
@@ -165,7 +180,7 @@ public final class Blueprint {
 	private void postLoadingSetup(FMLLoadCompleteEvent event) {
 		event.enqueueWork(() -> {
 			DataUtil.getSortedAlternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register);
-			CompatEvents.SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS = DataUtil.getSortedCustomNoteBlockInstruments();
+			BlueprintEvents.SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS = DataUtil.getSortedCustomNoteBlockInstruments();
 		});
 	}
 

@@ -1,23 +1,28 @@
-package com.teamabnormals.blueprint.core.events;
+package com.teamabnormals.blueprint.core.other;
 
 import com.teamabnormals.blueprint.core.Blueprint;
-import com.teamabnormals.blueprint.core.api.IAgeableEntity;
 import com.teamabnormals.blueprint.core.BlueprintConfig;
-import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import com.teamabnormals.blueprint.core.api.IAgeableEntity;
 import com.teamabnormals.blueprint.core.util.DataUtil.CustomNoteBlockInstrument;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.BlockSourceImpl;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
@@ -28,19 +33,13 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 
-import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionResult;
-
 /**
  * Events for mod compatibility.
  *
  * @author abigailfails
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
-public final class CompatEvents {
+public final class BlueprintEvents {
 	public static final String POISON_TAG = Blueprint.MOD_ID + ":poisoned_by_potato";
 	public static final String NOTE_KEY = "minecraft:note";
 	public static List<CustomNoteBlockInstrument> SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS = null;
@@ -79,7 +78,7 @@ public final class CompatEvents {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onNoteBlockPlay(NoteBlockEvent.Play event) {
-		if (SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS  != null) {
+		if (SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS != null) {
 			Level level = (Level) event.getWorld();
 			if (!level.isClientSide()) {
 				BlockPos pos = event.getPos();
