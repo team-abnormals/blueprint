@@ -1,5 +1,6 @@
 package core;
 
+import client.TestClientEvents;
 import client.TestEndimatedBlockEntityRenderer;
 import client.TestEndimatedEntityRenderer;
 import com.google.common.collect.Sets;
@@ -72,6 +73,7 @@ public final class BlueprintTest {
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(this::rendererSetup);
+			modEventBus.register(TestClientEvents.HUMANOID_ENDIMATORS);
 		});
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "tracked_data"), TEST_TRACKED_DATA);
 	}

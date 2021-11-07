@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 public final class TestEndimations {
 	public static final PlayableEndimation BLOCK_ENTITY_WAVE = register("be/wave", 15, PlayableEndimation.LoopType.LOOP);
 	public static final PlayableEndimation BLOCK_ENTITY_CLAPPING = register("be/clapping", 10, PlayableEndimation.LoopType.LOOP);
+	public static final PlayableEndimation HUMANOID_NOD = register("humanoid/nod", 15, PlayableEndimation.LoopType.NONE);
 	public static final PlayableEndimation ROTATE = register("rotate", 40, PlayableEndimation.LoopType.NONE);
 	public static final PlayableEndimation SINK = register("sink", 20, PlayableEndimation.LoopType.LOOP);
 	public static final PlayableEndimation HOVER = register("hover", 40, PlayableEndimation.LoopType.HOLD);

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "core.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "minVersion": "0.8",
+  "refmap": "blueprint_test.refmap.json",
+  "mixins": [],
+  "client": [
+    "client.PlayerModelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

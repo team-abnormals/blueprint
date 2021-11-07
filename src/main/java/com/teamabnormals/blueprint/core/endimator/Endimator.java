@@ -25,6 +25,10 @@ public final class Endimator {
 		this.poseMap = poseMap;
 	}
 
+	public Endimator() {
+		this.poseMap = new HashMap<>();
+	}
+
 	/**
 	 * Shortly compiles a new {@link Endimator} instance by recursively putting children from a given root part.
 	 * <p>Named 'short' as names of children are not mapped out in a path representation.</p>
