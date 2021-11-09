@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.endimator.effects.ConfiguredEndimationEffect;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -64,10 +65,10 @@ public final class Endimation {
 	});
 	private final float length;
 	private final float blendWeight;
-	private final Map<String, PartKeyframes> partKeyframes;
+	private final Object2ObjectArrayMap<String, PartKeyframes> partKeyframes;
 	private final ConfiguredEndimationEffect<?, ?>[] effects;
 
-	public Endimation(float length, float blendWeight, Map<String, PartKeyframes> partKeyframes, ConfiguredEndimationEffect<?, ?>[] effects) {
+	public Endimation(float length, float blendWeight, Object2ObjectArrayMap<String, PartKeyframes> partKeyframes, ConfiguredEndimationEffect<?, ?>[] effects) {
 		this.length = length;
 		this.blendWeight = blendWeight;
 		this.partKeyframes = partKeyframes;
@@ -107,7 +108,7 @@ public final class Endimation {
 	 *
 	 * @return The {@link #partKeyframes}.
 	 */
-	public Map<String, PartKeyframes> getPartKeyframes() {
+	public Object2ObjectArrayMap<String, PartKeyframes> getPartKeyframes() {
 		return this.partKeyframes;
 	}
 
@@ -125,11 +126,11 @@ public final class Endimation {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public enum KeyframesCodec implements Codec<Map<String, PartKeyframes>> {
+	public enum KeyframesCodec implements Codec<Object2ObjectArrayMap<String, PartKeyframes>> {
 		INSTANCE;
 
 		@Override
-		public <T> DataResult<Pair<Map<String, PartKeyframes>, T>> decode(DynamicOps<T> ops, T input) {
+		public <T> DataResult<Pair<Object2ObjectArrayMap<String, PartKeyframes>, T>> decode(DynamicOps<T> ops, T input) {
 			var mapLikeDataResult = ops.getMap(input);
 			var mapLikeDataResultError = mapLikeDataResult.error();
 			if (mapLikeDataResultError.isPresent()) {
@@ -137,7 +138,7 @@ public final class Endimation {
 			} else {
 				MapLike<T> mapLike = mapLikeDataResult.result().get();
 				Iterator<Pair<T, T>> iterator = mapLike.entries().iterator();
-				Map<String, PartKeyframes> map = new HashMap<>();
+				Object2ObjectArrayMap<String, PartKeyframes> map = new Object2ObjectArrayMap<>();
 				while (iterator.hasNext()) {
 					Pair<T, T> pair = iterator.next();
 					var partResult = ops.getStringValue(pair.getFirst());
@@ -160,7 +161,7 @@ public final class Endimation {
 		}
 
 		@Override
-		public <T> DataResult<T> encode(Map<String, PartKeyframes> input, DynamicOps<T> ops, T prefix) {
+		public <T> DataResult<T> encode(Object2ObjectArrayMap<String, PartKeyframes> input, DynamicOps<T> ops, T prefix) {
 			RecordBuilder<T> keyframes = ops.mapBuilder();
 			input.forEach((partName, partKeyframes) -> keyframes.add(partName, PartKeyframes.CODEC.encode(partKeyframes, ops, ops.empty())));
 			return keyframes.build(prefix);
@@ -243,7 +244,7 @@ public final class Endimation {
 	public static class Builder {
 		private Optional<Float> length = Optional.empty();
 		private float blendWeight = 1.0F;
-		private Map<String, PartKeyframes> keyframes = new HashMap<>();
+		private Object2ObjectArrayMap<String, PartKeyframes> keyframes = new Object2ObjectArrayMap<>();
 		private ConfiguredEndimationEffect<?, ?>[] effects = new ConfiguredEndimationEffect[0];
 
 		/**
@@ -274,7 +275,7 @@ public final class Endimation {
 		 * @param keyframes The keyframes for the {@link Endimation}.
 		 * @return This builder.
 		 */
-		public Builder keyframes(Map<String, PartKeyframes> keyframes) {
+		public Builder keyframes(Object2ObjectArrayMap<String, PartKeyframes> keyframes) {
 			this.keyframes = keyframes;
 			return this;
 		}
@@ -355,7 +356,7 @@ public final class Endimation {
 		 * @author SmellyModder (Luke Tonon)
 		 */
 		public static final class Keyframes {
-			private final Map<String, PartKeyframes> keyframes = new HashMap<>();
+			private final Object2ObjectArrayMap<String, PartKeyframes> keyframes = new Object2ObjectArrayMap<>();
 
 			private Keyframes() {
 			}
@@ -398,7 +399,7 @@ public final class Endimation {
 			 *
 			 * @return The {@link #keyframes} map.
 			 */
-			public Map<String, PartKeyframes> build() {
+			public Object2ObjectArrayMap<String, PartKeyframes> build() {
 				return this.keyframes;
 			}
 		}

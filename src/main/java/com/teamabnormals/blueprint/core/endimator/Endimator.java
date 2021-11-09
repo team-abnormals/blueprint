@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core.endimator;
 
 import com.mojang.math.Vector3f;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.client.model.geom.ModelPart;
 
 import javax.annotation.Nullable;
@@ -74,13 +75,12 @@ public final class Endimator {
 		return partMap;
 	}
 
-	private static void applyType(PosedPart posedPart, KeyframeType type, Endimation.PartKeyframes partKeyframes, float blendWeight, float time) {
-		EndimationKeyframe[] frames = type.getFrames(partKeyframes);
+	private static void applyType(PosedPart posedPart, KeyframeType type, EndimationKeyframe[] frames, float blendWeight, float time) {
 		int length = frames.length;
 		for (int i = 0; i < length; i++) {
 			EndimationKeyframe keyframe = frames[i];
 			float keyframeTime = keyframe.time;
-			if (keyframeTime == 0.0F || (i != length - 1 && keyframeTime < time)) {
+			if ((keyframeTime < time && i != length - 1) || keyframeTime == 0.0F) {
 				continue;
 			}
 			float progress;
@@ -225,19 +225,19 @@ public final class Endimator {
 	 */
 	public void apply(Endimation endimation, float time, ResetMode resetMode) {
 		this.reset(resetMode);
-		Map<String, Endimation.PartKeyframes> partKeyframesMap = endimation.getPartKeyframes();
-		if (!partKeyframesMap.isEmpty()) {
-			Map<String, PosedPart> poseMap = this.poseMap;
-			float blendWeight = endimation.getBlendWeight();
-			for (Map.Entry<String, Endimation.PartKeyframes> entry : partKeyframesMap.entrySet()) {
-				PosedPart posedPart = poseMap.get(entry.getKey());
-				if (posedPart != null) {
-					Endimation.PartKeyframes partKeyframes = entry.getValue();
-					for (KeyframeType type : KeyframeType.values()) {
-						applyType(posedPart, type, partKeyframes, blendWeight, time);
-					}
-					posedPart.apply();
-				}
+		var partKeyframesIterator = Object2ObjectMaps.fastIterator(endimation.getPartKeyframes());
+		var poseMap = this.poseMap;
+		float blendWeight = endimation.getBlendWeight();
+		while (partKeyframesIterator.hasNext()) {
+			var entry = partKeyframesIterator.next();
+			PosedPart posedPart = poseMap.get(entry.getKey());
+			if (posedPart != null) {
+				Endimation.PartKeyframes partKeyframes = entry.getValue();
+				applyType(posedPart, KeyframeType.POSITION, partKeyframes.getPosFrames(), blendWeight, time);
+				applyType(posedPart, KeyframeType.ROTATION, partKeyframes.getRotationFrames(), blendWeight, time);
+				applyType(posedPart, KeyframeType.OFFSET, partKeyframes.getOffsetFrames(), blendWeight, time);
+				applyType(posedPart, KeyframeType.SCALE, partKeyframes.getScaleFrames(), blendWeight, time);
+				posedPart.apply();
 			}
 		}
 	}
