@@ -49,7 +49,7 @@ public final class TestEndimatedEntityModel<E extends TestEndimatedEntity> exten
 
 	@Override
 	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		this.cube.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.cube.render(matrixStack, buffer, 240, packedOverlay, red, green, blue, alpha);
 	}
 
 	public void setRotateAngle(EndimatorModelPart EndimatorModelPart, float x, float y, float z) {

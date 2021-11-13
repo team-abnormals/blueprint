@@ -1,8 +1,10 @@
 package client;
 
+import com.teamabnormals.blueprint.client.BlueprintRenderTypes;
 import com.teamabnormals.blueprint.client.EntitySkinHelper;
 import common.entity.TestEndimatedEntity;
 import core.BlueprintTest;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -20,5 +22,10 @@ public final class TestEndimatedEntityRenderer extends MobRenderer<TestEndimated
 	@Override
 	public ResourceLocation getTextureLocation(TestEndimatedEntity entity) {
 		return SKIN_HELPER.getSkinForEntityOrElse(entity, TEXTURE);
+	}
+
+	@Override
+	protected RenderType getRenderType(TestEndimatedEntity entity, boolean p_115323_, boolean p_115324_, boolean p_115325_) {
+		return entity.getId() % 2 == 0 ? BlueprintRenderTypes.getUnshadedCutoutEntity(this.getTextureLocation(entity), true) : BlueprintRenderTypes.getUnshadedTranslucentEntity(this.getTextureLocation(entity), true);
 	}
 }

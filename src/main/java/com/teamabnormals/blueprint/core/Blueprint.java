@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core;
 
 import com.google.common.collect.Sets;
+import com.teamabnormals.blueprint.client.BlueprintShaders;
 import com.teamabnormals.blueprint.client.RewardHandler;
 import com.teamabnormals.blueprint.client.renderer.BlueprintBoatRenderer;
 import com.teamabnormals.blueprint.client.renderer.block.BlueprintChestBlockEntityRenderer;
@@ -137,6 +138,7 @@ public final class Blueprint {
 			bus.addListener(this::rendererSetup);
 			bus.addListener(RewardHandler::clientSetup);
 			bus.addListener(RewardHandler::addLayers);
+			bus.addListener(BlueprintShaders::registerShaders);
 		});
 
 		bus.addListener(EventPriority.LOWEST, this::commonSetup);
