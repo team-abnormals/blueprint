@@ -21,10 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -147,8 +144,8 @@ public class OnlineImageCache {
 			return CompletableFuture.completedFuture(MissingTextureAtlasSprite.getLocation());
 		}
 
-		ResourceLocation location = this.locationCache.computeIfAbsent(hash, key -> new ResourceLocation("sonar", key));
-		if (Minecraft.getInstance().getTextureManager().getTexture(location) != null) {
+		ResourceLocation location = this.locationCache.computeIfAbsent(hash, key -> new ResourceLocation("blueprint", key));
+		if (Minecraft.getInstance().getTextureManager().getTexture(location, null) != null) {
 			this.textureCache.put(hash, System.currentTimeMillis() + 30000);
 			return CompletableFuture.completedFuture(location);
 		}
@@ -191,7 +188,7 @@ public class OnlineImageCache {
 
 	@SubscribeEvent
 	public void onEvent(TickEvent.ClientTickEvent event) {
-		this.locationCache.entrySet().removeIf(entry -> Minecraft.getInstance().getTextureManager().getTexture(entry.getValue()) == null);
+		this.locationCache.entrySet().removeIf(entry -> Minecraft.getInstance().getTextureManager().getTexture(entry.getValue(), null) == null);
 		this.locationCache.forEach((hash, location) ->
 		{
 			if (this.hasTextureExpired(hash)) {

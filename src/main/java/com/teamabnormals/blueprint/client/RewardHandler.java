@@ -73,17 +73,16 @@ public final class RewardHandler {
 		}, Minecraft.getInstance());
 	}
 
-	@Nullable
-	public static RewardProperties getRewardProperties() {
-		return rewardProperties;
-	}
-
-	@SubscribeEvent
-	public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+	public static void addLayers(EntityRenderersEvent.AddLayers event) {
 		event.getSkins().forEach(skin -> {
 			PlayerRenderer renderer = event.getSkin(skin);
 			renderer.addLayer(new SlabfishHatRenderLayer(renderer));
 		});
+	}
+
+	@Nullable
+	public static RewardProperties getRewardProperties() {
+		return rewardProperties;
 	}
 
 	@SubscribeEvent

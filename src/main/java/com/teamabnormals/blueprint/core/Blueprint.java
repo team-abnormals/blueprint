@@ -136,6 +136,7 @@ public final class Blueprint {
 			bus.addListener(this::modelSetup);
 			bus.addListener(this::rendererSetup);
 			bus.addListener(RewardHandler::clientSetup);
+			bus.addListener(RewardHandler::addLayers);
 		});
 
 		bus.addListener(EventPriority.LOWEST, this::commonSetup);
