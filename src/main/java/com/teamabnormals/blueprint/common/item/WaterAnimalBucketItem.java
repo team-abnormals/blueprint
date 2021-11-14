@@ -22,11 +22,11 @@ import java.util.function.Supplier;
 /**
  * A {@link BucketItem} extension that can empty out entities typed of {@link BucketableWaterAnimal}.
  */
-public class MobBucketItem extends BucketItem {
+public class WaterAnimalBucketItem extends BucketItem {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.TROPICAL_FISH_BUCKET);
 	private final Supplier<EntityType<? extends BucketableWaterAnimal>> entityType;
 
-	public MobBucketItem(Supplier<EntityType<? extends BucketableWaterAnimal>> entityType, Supplier<? extends Fluid> supplier, Item.Properties builder) {
+	public WaterAnimalBucketItem(Supplier<EntityType<? extends BucketableWaterAnimal>> entityType, Supplier<? extends Fluid> supplier, Item.Properties builder) {
 		super(supplier, builder);
 		this.entityType = entityType;
 	}
