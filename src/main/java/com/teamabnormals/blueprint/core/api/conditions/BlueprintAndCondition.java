@@ -20,11 +20,11 @@ import java.util.List;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class ACAndRecipeCondition implements ICondition {
+public final class BlueprintAndCondition implements ICondition {
 	private final ResourceLocation location;
 	private final List<ICondition> children;
 
-	public ACAndRecipeCondition(ResourceLocation location, List<ICondition> children) {
+	public BlueprintAndCondition(ResourceLocation location, List<ICondition> children) {
 		this.location = location;
 		this.children = children;
 	}
@@ -39,7 +39,7 @@ public final class ACAndRecipeCondition implements ICondition {
 		return !this.children.isEmpty();
 	}
 
-	public static class Serializer implements IConditionSerializer<ACAndRecipeCondition> {
+	public static class Serializer implements IConditionSerializer<BlueprintAndCondition> {
 		private final ResourceLocation location;
 
 		public Serializer() {
@@ -47,7 +47,7 @@ public final class ACAndRecipeCondition implements ICondition {
 		}
 
 		@Override
-		public void write(JsonObject json, ACAndRecipeCondition value) {
+		public void write(JsonObject json, BlueprintAndCondition value) {
 			JsonArray values = new JsonArray();
 			for (ICondition child : value.children) {
 				values.add(CraftingHelper.serialize(child));
@@ -56,7 +56,7 @@ public final class ACAndRecipeCondition implements ICondition {
 		}
 
 		@Override
-		public ACAndRecipeCondition read(JsonObject json) {
+		public BlueprintAndCondition read(JsonObject json) {
 			List<ICondition> children = new ArrayList<>();
 			for (JsonElement elements : GsonHelper.getAsJsonArray(json, "values")) {
 				if (!elements.isJsonObject()) {
@@ -70,7 +70,7 @@ public final class ACAndRecipeCondition implements ICondition {
 					children.add(condition);
 				}
 			}
-			return new ACAndRecipeCondition(this.location, children);
+			return new BlueprintAndCondition(this.location, children);
 		}
 
 		@Override

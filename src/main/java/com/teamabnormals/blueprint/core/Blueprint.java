@@ -17,7 +17,7 @@ import com.teamabnormals.blueprint.common.world.storage.tracking.DataProcessors;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.blueprint.core.api.SignManager;
-import com.teamabnormals.blueprint.core.api.conditions.ACAndRecipeCondition;
+import com.teamabnormals.blueprint.core.api.conditions.BlueprintAndCondition;
 import com.teamabnormals.blueprint.core.api.conditions.QuarkFlagRecipeCondition.Serializer;
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
 import com.teamabnormals.blueprint.core.api.model.FullbrightModel;
@@ -102,7 +102,7 @@ public final class Blueprint {
 		this.registerMessages();
 
 		CraftingHelper.register(new Serializer());
-		CraftingHelper.register(new ACAndRecipeCondition.Serializer());
+		CraftingHelper.register(new BlueprintAndCondition.Serializer());
 		DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
 		DataUtil.registerConfigPredicate(new EqualsPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new GreaterThanOrEqualPredicate.Serializer());
