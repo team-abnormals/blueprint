@@ -13,7 +13,6 @@ import com.teamabnormals.blueprint.common.world.storage.tracking.DataProcessors;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
-import com.teamabnormals.blueprint.core.registry.LootInjectionRegistry;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
@@ -39,7 +38,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.DecoratorConfig
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -110,7 +108,6 @@ public final class BlueprintTest {
 		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.ICE_SPIKES), GenerationStep.Decoration.UNDERGROUND_DECORATION, () -> TestFeatures.TEST_SPLINE.get().configured(FeatureConfiguration.NONE).decorated(Features.Decorators.HEIGHTMAP_SQUARE).rarity(3)));
 
 		BiomeUtil.addEndBiome(Biomes.ICE_SPIKES, 7);
-		this.registerLootInjectors();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -123,10 +120,5 @@ public final class BlueprintTest {
 		event.registerEntityRenderer(TestEntities.COW.get(), CowRenderer::new);
 		event.registerEntityRenderer(TestEntities.ENDIMATED_TEST.get(), TestEndimatedEntityRenderer::new);
 		event.registerBlockEntityRenderer(TestBlockEntities.TEST_ENDIMATED.get(), TestEndimatedBlockEntityRenderer::new);
-	}
-
-	private void registerLootInjectors() {
-		LootInjectionRegistry.LootInjector injector = new LootInjectionRegistry.LootInjector(MOD_ID);
-		injector.addLootInjection(injector.buildLootPool("test", 1, 0), BuiltInLootTables.NETHER_BRIDGE, BuiltInLootTables.JUNGLE_TEMPLE);
 	}
 }
