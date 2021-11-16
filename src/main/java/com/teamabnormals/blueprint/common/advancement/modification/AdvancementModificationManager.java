@@ -25,6 +25,7 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Data manager class for {@link IAdvancementModifier}s.
@@ -35,11 +36,10 @@ import java.util.Map;
 public final class AdvancementModificationManager extends ModificationManager<Builder, Void, DeserializationContext> {
 	private static final Gson GSON = (new GsonBuilder()).create();
 	private static AdvancementModificationManager INSTANCE;
-
 	private final PredicateManager lootPredicateManager;
 
 	private AdvancementModificationManager(PredicateManager lootPredicateManager) {
-		super(GSON, "modifiers/advancements");
+		super(GSON, "modifiers/advancements", "advancements");
 		this.lootPredicateManager = lootPredicateManager;
 	}
 
@@ -84,17 +84,18 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler) {
 		this.reset();
+		Set<Map.Entry<ResourceLocation, JsonElement>> unmodifiedAdvancements = this.getUnmodifiedEntries();
 		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
 			ResourceLocation resourcelocation = entry.getKey();
 			if (resourcelocation.getPath().startsWith("_")) continue;
 
 			try {
 				TargetedModifier<Builder, Void, DeserializationContext> targetedAdvancementModifier = TargetedModifier.deserialize(entry.getValue().getAsJsonObject(), "advancement", new DeserializationContext(resourcelocation, this.lootPredicateManager), AdvancementModifiers.REGISTRY, true);
-				this.addModifiers(targetedAdvancementModifier.getTarget(), targetedAdvancementModifier.getConfiguredModifiers());
+				this.addModifiers(targetedAdvancementModifier.getTargetSelector().getTargetNames(unmodifiedAdvancements), targetedAdvancementModifier.getConfiguredModifiers());
 			} catch (IllegalArgumentException | JsonParseException jsonparseexception) {
 				Blueprint.LOGGER.error("Parsing error loading Advancement Modifier: {}", resourcelocation, jsonparseexception);
 			}
 		}
-		Blueprint.LOGGER.info("Advancement Modification Manager has loaded {} sets of modifiers", this.size());
+		Blueprint.LOGGER.info("Advancement Modification Manager has assigned {} sets of modifiers", this.size());
 	}
 }

@@ -18,6 +18,7 @@
     "ServerEntityMixin",
     "ServerLevelMixin",
     "ShoreLayerMixin",
+    "SimpleJsonResourceReloadListenerMixin",
     "SpawnEggItemMixin",
     "TheEndBiomeSourceMixin"
   ],

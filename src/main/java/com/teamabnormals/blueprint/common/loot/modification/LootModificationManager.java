@@ -33,6 +33,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Data manager class for {@link ILootModifier}s.
@@ -46,7 +47,7 @@ public final class LootModificationManager extends ModificationManager<LootTable
 	private final PredicateManager lootPredicateManager;
 
 	private LootModificationManager(PredicateManager lootPredicateManager) {
-		super(GSON, "modifiers/loot_tables");
+		super(GSON, "modifiers/loot_tables", "loot_tables");
 		this.lootPredicateManager = lootPredicateManager;
 	}
 
@@ -86,17 +87,18 @@ public final class LootModificationManager extends ModificationManager<LootTable
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler) {
 		this.reset();
+		Set<Map.Entry<ResourceLocation, JsonElement>> unmodifiedTables = this.getUnmodifiedEntries();
 		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
 			ResourceLocation resourcelocation = entry.getKey();
 			if (resourcelocation.getPath().startsWith("_")) continue;
 			try {
 				TargetedModifier<LootTableLoadEvent, Gson, Pair<Gson, PredicateManager>> targetedModifier = TargetedModifier.deserialize(entry.getValue().getAsJsonObject(), Pair.of(GSON, this.lootPredicateManager), LootModifiers.REGISTRY);
-				this.addModifiers(targetedModifier.getTarget(), targetedModifier.getConfiguredModifiers());
+				this.addModifiers(targetedModifier.getTargetSelector().getTargetNames(unmodifiedTables), targetedModifier.getConfiguredModifiers());
 			} catch (IllegalArgumentException | JsonParseException jsonparseexception) {
 				Blueprint.LOGGER.error("Parsing error loading Loot Modifier: {}", resourcelocation, jsonparseexception);
 			}
 		}
-		Blueprint.LOGGER.info("Loot Modification Manager has loaded {} sets of modifiers", this.size());
+		Blueprint.LOGGER.info("Loot Modification Manager has assigned {} sets of modifiers", this.size());
 	}
 
 	//Thanks forge...

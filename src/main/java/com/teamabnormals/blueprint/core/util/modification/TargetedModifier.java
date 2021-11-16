@@ -1,35 +1,37 @@
 package com.teamabnormals.blueprint.core.util.modification;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 import com.teamabnormals.blueprint.core.Blueprint;
-import net.minecraft.util.GsonHelper;
+import com.teamabnormals.blueprint.core.util.modification.targeting.ConditionedModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.ConfiguredModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.ModifierTargetSelectorRegistry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * A class that holds a list of {@link ConfiguredModifier}s targeted on an object matched with a stored {@link ResourceLocation}.
+ * A class that holds a list of {@link ConfiguredModifier} instances targeted according to a {@link ConditionedModifierTargetSelector} instance.
  *
  * @param <T> The type of the object to modify.
  * @param <S> The type of the additional serialization object.
  * @param <D> The type of the additional deserialization object.
  * @author SmellyModder (Luke Tonon)
+ * @see ConditionedModifierTargetSelector
  * @see ConfiguredModifier
  * @see IModifier
  * @see ModifierRegistry
  */
 public final class TargetedModifier<T, S, D> {
-	private final ResourceLocation target;
+	private final ConditionedModifierTargetSelector<?, ?> targetSelector;
 	private final List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers;
 
-	public TargetedModifier(ResourceLocation target, List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers) {
-		this.target = target;
+	public TargetedModifier(ConditionedModifierTargetSelector<?, ?> targetSelector, List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers) {
+		this.targetSelector = targetSelector;
 		this.configuredModifiers = configuredModifiers;
 	}
 
@@ -66,7 +68,21 @@ public final class TargetedModifier<T, S, D> {
 	 * @throws JsonParseException If an error occurs when parsing the {@link JsonObject}.
 	 */
 	public static <T, S, D> TargetedModifier<T, S, D> deserialize(JsonObject object, String targetKey, D additional, ModifierRegistry<T, S, D> registry, boolean logSkipping) throws JsonParseException {
-		ResourceLocation target = new ResourceLocation(GsonHelper.getAsString(object, targetKey));
+		ConditionedModifierTargetSelector<?, ?> selector;
+		JsonElement target = object.get(targetKey);
+		if (target instanceof JsonPrimitive) {
+			selector = new ConditionedModifierTargetSelector<>(ModifierTargetSelectorRegistry.NAMES.withConfiguration(Collections.singletonList(new ResourceLocation(target.getAsString()))));
+		} else if (target instanceof JsonObject) {
+			selector = new ConditionedModifierTargetSelector<>(ConfiguredModifierTargetSelector.deserialize(target.getAsJsonObject()));
+			if (selector.getTargetSelector() == ConfiguredModifierTargetSelector.EMPTY) {
+				if (logSkipping) {
+					Blueprint.LOGGER.info("Skipped modifiers for target \"" + target + "\" as its conditions were not met");
+				}
+				return new TargetedModifier<>(selector, new ArrayList<>());
+			}
+		} else {
+			throw new JsonParseException("'" + targetKey + "'" + " must be a string or object!");
+		}
 		List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers = new ArrayList<>();
 		JsonArray modifiers = GsonHelper.getAsJsonArray(object, "modifiers");
 		modifiers.forEach(element -> {
@@ -83,10 +99,10 @@ public final class TargetedModifier<T, S, D> {
 				}
 				configuredModifiers.add(configuredModifier.deserializeConfigured(config, additional));
 			} else if (logSkipping) {
-				Blueprint.LOGGER.info("Skipped modifier \"" + type + "\" for target \"" + target + "\" as its conditions were not met");
+				Blueprint.LOGGER.info("Skipped modifier \"" + type + "\" for target " + target + " as its conditions were not met");
 			}
 		});
-		return new TargetedModifier<>(target, configuredModifiers);
+		return new TargetedModifier<>(selector, configuredModifiers);
 	}
 
 	/**
@@ -101,7 +117,7 @@ public final class TargetedModifier<T, S, D> {
 	 */
 	public JsonObject serialize(S additional, String targetKey, ModifierRegistry<T, S, D> modifierRegistry, ICondition[][] conditions) throws JsonParseException {
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty(targetKey, this.target.toString());
+		jsonObject.add(targetKey, this.targetSelector.serialize());
 		JsonArray modifiers = new JsonArray();
 		List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers = this.configuredModifiers;
 		int conditionsLength = conditions.length;
@@ -124,12 +140,12 @@ public final class TargetedModifier<T, S, D> {
 	}
 
 	/**
-	 * Gets the {@link ResourceLocation} for the target object to modify.
+	 * Gets the {@link ConditionedModifierTargetSelector} to use for targeting objects to modify.
 	 *
-	 * @return The {@link ResourceLocation} for the target object to modify.
+	 * @return The {@link ConditionedModifierTargetSelector} to use for targeting objects to modify.
 	 */
-	public ResourceLocation getTarget() {
-		return this.target;
+	public ConditionedModifierTargetSelector<?, ?> getTargetSelector() {
+		return this.targetSelector;
 	}
 
 	/**

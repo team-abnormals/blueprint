@@ -130,12 +130,8 @@ public final class ModifierDataProvider<T, S, D> implements DataProvider {
 			this.name = name;
 		}
 
-		public ProviderEntry(TargetedModifier<T, S, D> targetedModifier, ICondition[][] conditions) {
-			this(targetedModifier, conditions, targetedModifier.getTarget());
-		}
-
-		public ProviderEntry(TargetedModifier<T, S, D> targetedModifier) {
-			this(targetedModifier, NO_CONDITIONS, targetedModifier.getTarget());
+		public ProviderEntry(TargetedModifier<T, S, D> targetedModifier, ResourceLocation name) {
+			this(targetedModifier, NO_CONDITIONS, name);
 		}
 	}
 }
