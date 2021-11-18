@@ -18,7 +18,7 @@ public enum KeyframeType {
 	ROTATION(Endimation.PartKeyframes::getRotationFrames, (pose, x, y, z) -> {
 		pose.addRotation(x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, z * Mth.DEG_TO_RAD);
 	}),
-	OFFSET(Endimation.PartKeyframes::getOffsetFrames, Endimator.PosedPart::addPos),
+	OFFSET(Endimation.PartKeyframes::getOffsetFrames, Endimator.PosedPart::addOffset),
 	SCALE(Endimation.PartKeyframes::getScaleFrames, (pose, x, y, z) -> {
 		pose.addScale(x - 1.0F, y - 1.0F, z - 1.0F);
 	});
