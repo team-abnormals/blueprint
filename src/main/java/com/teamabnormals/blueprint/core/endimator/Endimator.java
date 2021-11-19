@@ -224,10 +224,22 @@ public final class Endimator {
 	 * @param resetMode  A {@link ResetMode} to use for preparing the {@link #poseMap} for application.
 	 */
 	public void apply(Endimation endimation, float time, ResetMode resetMode) {
+		this.apply(endimation, time, 1.0F, resetMode);
+	}
+
+	/**
+	 * Applies an {@link Endimation} with a weight multiplier at a given time.
+	 *
+	 * @param endimation An {@link Endimation} to apply.
+	 * @param time       The time passed since the start of the {@link Endimation}, measured in seconds.
+	 * @param weight     The weight multiplier to use.
+	 * @param resetMode  A {@link ResetMode} to use for preparing the {@link #poseMap} for application.
+	 */
+	public void apply(Endimation endimation, float time, float weight, ResetMode resetMode) {
 		this.reset(resetMode);
 		var partKeyframesIterator = Object2ObjectMaps.fastIterator(endimation.getPartKeyframes());
 		var poseMap = this.poseMap;
-		float blendWeight = endimation.getBlendWeight();
+		float blendWeight = endimation.getBlendWeight() * weight;
 		while (partKeyframesIterator.hasNext()) {
 			var entry = partKeyframesIterator.next();
 			PosedPart posedPart = poseMap.get(entry.getKey());

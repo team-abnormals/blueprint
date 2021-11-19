@@ -1,6 +1,7 @@
 package core.registry;
 
 import com.teamabnormals.blueprint.core.util.registry.EntitySubRegistryHelper;
+import common.entity.EndimatedWalkingEntity;
 import common.entity.TestEndimatedEntity;
 import core.BlueprintTest;
 import net.minecraft.world.entity.EntityType;
@@ -18,10 +19,12 @@ public final class TestEntities {
 
 	public static final RegistryObject<EntityType<Cow>> COW = HELPER.createLivingEntity("example", Cow::new, MobCategory.CREATURE, 1.0F, 1.0F);
 	public static final RegistryObject<EntityType<TestEndimatedEntity>> ENDIMATED_TEST = HELPER.createLivingEntity("endimated_test", TestEndimatedEntity::new, MobCategory.CREATURE, 1.0F, 1.0F);
+	public static final RegistryObject<EntityType<EndimatedWalkingEntity>> ENDIMATED_WALKING = HELPER.createLivingEntity("endimated_walking", EndimatedWalkingEntity::new, MobCategory.CREATURE, 1.0F, 1.0F);
 
 	@SubscribeEvent
 	public static void registerAttributes(EntityAttributeCreationEvent event) {
-		event.put(TestEntities.ENDIMATED_TEST.get(), PathfinderMob.createMobAttributes().build());
 		event.put(TestEntities.COW.get(), Cow.createAttributes().build());
+		event.put(TestEntities.ENDIMATED_TEST.get(), PathfinderMob.createMobAttributes().build());
+		event.put(TestEntities.ENDIMATED_WALKING.get(), PathfinderMob.createMobAttributes().build());
 	}
 }

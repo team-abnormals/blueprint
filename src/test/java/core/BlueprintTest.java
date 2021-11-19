@@ -1,5 +1,6 @@
 package core;
 
+import client.EndimatedWalkingEntityRenderer;
 import client.TestClientEvents;
 import client.TestEndimatedBlockEntityRenderer;
 import client.TestEndimatedEntityRenderer;
@@ -119,6 +120,7 @@ public final class BlueprintTest {
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(TestEntities.COW.get(), CowRenderer::new);
 		event.registerEntityRenderer(TestEntities.ENDIMATED_TEST.get(), TestEndimatedEntityRenderer::new);
+		event.registerEntityRenderer(TestEntities.ENDIMATED_WALKING.get(), EndimatedWalkingEntityRenderer::new);
 		event.registerBlockEntityRenderer(TestBlockEntities.TEST_ENDIMATED.get(), TestEndimatedBlockEntityRenderer::new);
 	}
 }
