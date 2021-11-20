@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.block;
 
-import com.teamabnormals.blueprint.core.other.BlueprintBlockTags;
+import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
