@@ -21,7 +21,7 @@ import com.teamabnormals.blueprint.core.api.conditions.BlueprintAndCondition;
 import com.teamabnormals.blueprint.core.api.conditions.QuarkFlagRecipeCondition.Serializer;
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
 import com.teamabnormals.blueprint.core.api.model.FullbrightModel;
-import com.teamabnormals.blueprint.core.data.BlueprintBlockTagsProvider;
+import com.teamabnormals.blueprint.core.data.server.tags.BlueprintBlockTagsProvider;
 import com.teamabnormals.blueprint.core.endimator.EndimationLoader;
 import com.teamabnormals.blueprint.core.other.BlueprintEvents;
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
@@ -165,7 +165,7 @@ public final class Blueprint {
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
 		if (event.includeServer()) {
-			BlueprintBlockTagsProvider blockTagGen = new BlueprintBlockTagsProvider(dataGenerator, existingFileHelper);
+			BlueprintBlockTagsProvider blockTagGen = new BlueprintBlockTagsProvider(MOD_ID, dataGenerator, existingFileHelper);
 			dataGenerator.addProvider(blockTagGen);
 		}
 	}
