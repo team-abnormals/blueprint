@@ -5,7 +5,7 @@
 			"type": "entries",
 			"config": {
 				"replace": false,
-				"index": 0,
+				"index": 1,
 				"entries": [
 					{
 						"type": "minecraft:item",

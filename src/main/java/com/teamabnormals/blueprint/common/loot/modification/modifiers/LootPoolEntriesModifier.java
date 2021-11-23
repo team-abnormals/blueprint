@@ -2,10 +2,12 @@ package com.teamabnormals.blueprint.common.loot.modification.modifiers;
 
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.PredicateManager;
+import com.teamabnormals.blueprint.core.util.DataUtil;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.PredicateManager;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
@@ -25,11 +27,15 @@ public final class LootPoolEntriesModifier implements ILootModifier<LootPoolEntr
 	@Override
 	public void modify(LootTableLoadEvent object, Config config) {
 		try {
-			List<LootPoolEntryContainer> lootEntries = (List<LootPoolEntryContainer>) ENTRIES.get(((List<LootPool>) LootPoolsModifier.POOLS.get(object.getTable())).get(config.index));
+			int index = config.index;
+			LootTable table = object.getTable();
+			LootPoolEntryContainer[] lootEntries = (LootPoolEntryContainer[]) ENTRIES.get(((List<LootPool>) LootPoolsModifier.POOLS.get(table)).get(index));
 			if (config.replace) {
-				lootEntries.clear();
+				lootEntries = config.entries.toArray(LootPoolEntryContainer[]::new);
+			} else {
+				lootEntries = DataUtil.concatArrays(lootEntries, config.entries.toArray(LootPoolEntryContainer[]::new));
 			}
-			lootEntries.addAll(config.entries);
+			ENTRIES.set(((List<LootPool>) LootPoolsModifier.POOLS.get(table)).get(index), lootEntries);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}

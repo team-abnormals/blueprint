@@ -37,7 +37,7 @@ public final class ConfiguredModifierTargetSelector<C, S extends ModifierTargetS
 	 * @throws JsonParseException If a deserialization error occurs.
 	 */
 	public static ConfiguredModifierTargetSelector<?, ?> deserialize(JsonObject jsonObject) throws JsonParseException {
-		if (!GsonHelper.isValidNode(jsonObject, "conditions") || CraftingHelper.processConditions(GsonHelper.convertToJsonArray(jsonObject, "conditions"))) {
+		if (!GsonHelper.isValidNode(jsonObject, "conditions") || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"))) {
 			String type = GsonHelper.getAsString(jsonObject, "type");
 			ModifierTargetSelector<?> targetSelector = ModifierTargetSelectorRegistry.INSTANCE.getTargetSelector(type);
 			if (targetSelector != null) {
