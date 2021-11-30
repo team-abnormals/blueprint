@@ -1,12 +1,12 @@
 package com.teamabnormals.blueprint.common.network.particle;
 
 import com.teamabnormals.blueprint.client.ClientInfo;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;

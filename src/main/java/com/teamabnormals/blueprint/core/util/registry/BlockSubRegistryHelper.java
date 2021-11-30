@@ -1,11 +1,12 @@
 package com.teamabnormals.blueprint.core.util.registry;
 
+import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.client.ChestManager;
 import com.teamabnormals.blueprint.client.renderer.block.ChestBlockEntityWithoutLevelRenderer;
-import com.teamabnormals.blueprint.common.block.entity.BlueprintChestBlockEntity;
-import com.teamabnormals.blueprint.common.block.entity.BlueprintTrappedChestBlockEntity;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
+import com.teamabnormals.blueprint.common.block.entity.BlueprintChestBlockEntity;
+import com.teamabnormals.blueprint.common.block.entity.BlueprintTrappedChestBlockEntity;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintStandingSignBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
 import com.teamabnormals.blueprint.common.item.BEWLRBlockItem;
@@ -13,7 +14,6 @@ import com.teamabnormals.blueprint.common.item.BEWLRFuelBlockItem;
 import com.teamabnormals.blueprint.common.item.FuelBlockItem;
 import com.teamabnormals.blueprint.common.item.InjectedBlockItem;
 import com.teamabnormals.blueprint.core.api.SignManager;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.*;
@@ -26,9 +26,9 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;

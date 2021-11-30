@@ -1,18 +1,18 @@
 package com.teamabnormals.blueprint.core.registry;
 
+import com.teamabnormals.blueprint.common.block.BlueprintBeehiveBlock;
+import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
+import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
 import com.teamabnormals.blueprint.common.block.entity.BlueprintBeehiveBlockEntity;
 import com.teamabnormals.blueprint.common.block.entity.BlueprintChestBlockEntity;
 import com.teamabnormals.blueprint.common.block.entity.BlueprintSignBlockEntity;
 import com.teamabnormals.blueprint.common.block.entity.BlueprintTrappedChestBlockEntity;
-import com.teamabnormals.blueprint.common.block.BlueprintBeehiveBlock;
-import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
-import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
 import com.teamabnormals.blueprint.common.block.sign.IBlueprintSign;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.registry.BlockEntitySubRegistryHelper;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 /**
  * Registry class for the built-in {@link BlockEntityType}s.

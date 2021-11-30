@@ -3,10 +3,10 @@ package com.teamabnormals.blueprint.common.world.storage;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.common.util.Constants;
 
 /**
  * Handles the reading and writing of registered {@link GlobalStorage}s.
@@ -26,7 +26,7 @@ public final class GlobalStorageManager extends SavedData {
 	public static GlobalStorageManager getOrCreate(ServerLevel world) {
 		return world.getDataStorage().computeIfAbsent(compound -> {
 			loaded = true;
-			ListTag storageTags = compound.getList("storages", Constants.NBT.TAG_COMPOUND);
+			ListTag storageTags = compound.getList("storages", Tag.TAG_COMPOUND);
 
 			for (int i = 0; i < storageTags.size(); i++) {
 				CompoundTag storageTag = storageTags.getCompound(i);

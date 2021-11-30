@@ -4,6 +4,7 @@ import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
 import com.teamabnormals.blueprint.core.registry.BoatRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,9 +19,8 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
 
 /**
  * A {@link Boat} extension responsible for Blueprint's boats.
@@ -44,7 +44,7 @@ public class BlueprintBoat extends Boat {
 		this.zo = z;
 	}
 
-	public BlueprintBoat(FMLPlayMessages.SpawnEntity spawnEntity, Level level) {
+	public BlueprintBoat(PlayMessages.SpawnEntity spawnEntity, Level level) {
 		this(BlueprintEntityTypes.BOAT.get(), level);
 	}
 
@@ -61,7 +61,7 @@ public class BlueprintBoat extends Boat {
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
-		if (compound.contains("Type", Constants.NBT.TAG_STRING)) {
+		if (compound.contains("Type", Tag.TAG_STRING)) {
 			String type = compound.getString("Type");
 			BoatRegistry.BoatData data = BoatRegistry.getDataForBoat(type);
 			if (data != null) this.setBoat(BoatRegistry.getNameForData(data));

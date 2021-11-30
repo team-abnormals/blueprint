@@ -4,10 +4,10 @@ import com.teamabnormals.blueprint.common.world.modification.BiomeModificationMa
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;

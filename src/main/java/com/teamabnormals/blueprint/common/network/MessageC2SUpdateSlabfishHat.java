@@ -2,10 +2,10 @@ package com.teamabnormals.blueprint.common.network;
 
 import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

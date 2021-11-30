@@ -5,7 +5,7 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.BasicTrade;
+import net.minecraftforge.common.BasicItemListing;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.fml.ModList;
@@ -113,11 +113,11 @@ public final class TradeUtil {
 	}
 
 	/**
-	 * A {@link BasicTrade} extension offering more constructors.
+	 * A {@link BasicItemListing} extension offering more constructors.
 	 *
 	 * @author bageldotjpg
 	 */
-	public static class BlueprintTrade extends BasicTrade {
+	public static class BlueprintTrade extends BasicItemListing {
 		public BlueprintTrade(ItemStack input, ItemStack input2, ItemStack output, int maxTrades, int xp, float priceMult) {
 			super(input, input2, output, maxTrades, xp, priceMult);
 		}

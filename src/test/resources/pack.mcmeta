@@ -1,6 +1,6 @@
 {
-    "pack": {
-        "description": "Blueprint Test resources",
-        "pack_format": 6
-    }
+  "pack": {
+    "description": "Blueprint Test resources",
+    "pack_format": 8
+  }
 }

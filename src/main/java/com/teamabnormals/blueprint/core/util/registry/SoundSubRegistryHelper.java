@@ -1,9 +1,9 @@
 package com.teamabnormals.blueprint.core.util.registry;
 
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 /**
  * A basic {@link AbstractSubRegistryHelper} for sounds. This contains some useful registering methods for sounds.

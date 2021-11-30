@@ -1,10 +1,10 @@
 package com.teamabnormals.blueprint.common.network.entity;
 
 import com.teamabnormals.blueprint.client.ClientInfo;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

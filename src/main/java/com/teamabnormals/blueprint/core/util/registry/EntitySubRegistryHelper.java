@@ -6,10 +6,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fmllegacy.RegistryObject;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
+import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.BiFunction;
 
@@ -55,7 +55,7 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	 * @param height               The height of the entity's bounding box.
 	 * @return A {@link RegistryObject} containing the created {@link EntityType}.
 	 */
-	public <E extends Entity> RegistryObject<EntityType<E>> createEntity(String name, EntityType.EntityFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, Level, E> clientFactory, MobCategory entityClassification, float width, float height) {
+	public <E extends Entity> RegistryObject<EntityType<E>> createEntity(String name, EntityType.EntityFactory<E> factory, BiFunction<PlayMessages.SpawnEntity, Level, E> clientFactory, MobCategory entityClassification, float width, float height) {
 		return this.deferredRegister.register(name, () -> createEntity(factory, clientFactory, entityClassification, name, width, height));
 	}
 
@@ -90,7 +90,7 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	 * @param height               The height of the entity's bounding box.
 	 * @return The created {@link EntityType}.
 	 */
-	public <E extends Entity> EntityType<E> createEntity(EntityType.EntityFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, Level, E> clientFactory, MobCategory entityClassification, String name, float width, float height) {
+	public <E extends Entity> EntityType<E> createEntity(EntityType.EntityFactory<E> factory, BiFunction<PlayMessages.SpawnEntity, Level, E> clientFactory, MobCategory entityClassification, String name, float width, float height) {
 		ResourceLocation location = this.parent.prefix(name);
 		return EntityType.Builder.of(factory, entityClassification)
 				.sized(width, height)

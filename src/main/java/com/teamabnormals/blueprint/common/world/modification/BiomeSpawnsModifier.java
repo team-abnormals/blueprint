@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraftforge.common.world.MobSpawnInfoBuilder;
+import net.minecraftforge.common.world.MobSpawnSettingsBuilder;
 
 import java.util.List;
 import java.util.Set;
@@ -64,7 +64,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	 */
 	public static BiomeSpawnsModifier createMultiSpawnAdder(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, MobCategory classification, Set<SpawnInfo> spawnInfoSet) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
-			MobSpawnInfoBuilder builder = context.event.getSpawns();
+			MobSpawnSettingsBuilder builder = context.event.getSpawns();
 			for (SpawnInfo spawnInfo : spawnInfoSet) {
 				builder.addSpawn(classification, new MobSpawnSettings.SpawnerData(spawnInfo.type.get(), spawnInfo.weight, spawnInfo.minCount, spawnInfo.maxCount));
 			}
@@ -81,7 +81,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	 */
 	public static BiomeSpawnsModifier createMultiSpawnAdder(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<MobCategory> classifications, Set<SpawnInfo> spawnInfoSet) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
-			MobSpawnInfoBuilder builder = context.event.getSpawns();
+			MobSpawnSettingsBuilder builder = context.event.getSpawns();
 			for (MobCategory classification : classifications) {
 				for (SpawnInfo spawnInfo : spawnInfoSet) {
 					builder.addSpawn(classification, new MobSpawnSettings.SpawnerData(spawnInfo.type.get(), spawnInfo.weight, spawnInfo.minCount, spawnInfo.maxCount));
@@ -147,7 +147,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	 */
 	public static BiomeSpawnsModifier createSpawnReplacer(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, MobCategory classification, Supplier<EntityType<?>> replace, Supplier<EntityType<?>> replacer) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
-			MobSpawnInfoBuilder builder = context.event.getSpawns();
+			MobSpawnSettingsBuilder builder = context.event.getSpawns();
 			EntityType<?> replaceType = replace.get();
 			Set<MobSpawnSettings.SpawnerData> toRemove = Sets.newHashSet();
 			List<MobSpawnSettings.SpawnerData> spawners = builder.spawners.get(classification);
@@ -175,7 +175,7 @@ public final class BiomeSpawnsModifier extends BiomeModifier {
 	 */
 	public static BiomeSpawnsModifier createMultiSpawnReplacer(BiPredicate<ResourceKey<Biome>, Biome> shouldModify, Set<MobCategory> classifications, Supplier<EntityType<?>> replace, Supplier<EntityType<?>> replacer) {
 		return new BiomeSpawnsModifier(shouldModify, context -> {
-			MobSpawnInfoBuilder builder = context.event.getSpawns();
+			MobSpawnSettingsBuilder builder = context.event.getSpawns();
 			EntityType<?> replaceType = replace.get();
 			EntityType<?> replacerType = replacer.get();
 			for (MobCategory classification : classifications) {

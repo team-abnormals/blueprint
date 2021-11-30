@@ -1,11 +1,11 @@
 package com.teamabnormals.blueprint.core.util;
 
+import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.annotations.ConfigKey;
 import com.teamabnormals.blueprint.core.api.conditions.ConfigValueCondition;
 import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicate;
 import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicateSerializer;
 import com.teamabnormals.blueprint.core.api.conditions.loot.ConfigLootCondition;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
@@ -32,8 +32,8 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

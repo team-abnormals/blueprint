@@ -7,7 +7,7 @@ import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataMana
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Set;
 import java.util.function.Supplier;

@@ -9,17 +9,17 @@ import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataMana
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.endimator.Endimatable;
 import com.teamabnormals.blueprint.core.events.EntityStepEvent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.Constants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -142,8 +142,8 @@ public final class EntityMixin implements IDataManager, Endimatable {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", shift = At.Shift.BEFORE), method = "load")
 	public void read(CompoundTag compound, CallbackInfo info) {
-		if (compound.contains("ACTrackedData", Constants.NBT.TAG_LIST)) {
-			ListTag dataListTag = compound.getList("ACTrackedData", Constants.NBT.TAG_COMPOUND);
+		if (compound.contains("ACTrackedData", Tag.TAG_LIST)) {
+			ListTag dataListTag = compound.getList("ACTrackedData", Tag.TAG_COMPOUND);
 			dataListTag.forEach(nbt -> {
 				CompoundTag dataTag = (CompoundTag) nbt;
 				ResourceLocation id = new ResourceLocation(dataTag.getString("Id"));
