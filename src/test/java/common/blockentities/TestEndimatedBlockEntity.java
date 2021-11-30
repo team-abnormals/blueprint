@@ -7,6 +7,7 @@ import core.registry.TestBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +45,7 @@ public final class TestEndimatedBlockEntity extends BlockEntity implements Endim
 	@Override
 	public void load(CompoundTag tag) {
 		super.load(tag);
-		if (tag.contains("Endimation", Constants.NBT.TAG_STRING)) {
+		if (tag.contains("Endimation", Tag.TAG_STRING)) {
 			PlayableEndimation endimation = PlayableEndimationManager.INSTANCE.getEndimation(new ResourceLocation(tag.getString("Endimation")));
 			if (endimation == PlayableEndimation.BLANK || endimation == null) {
 				this.resetEndimation();

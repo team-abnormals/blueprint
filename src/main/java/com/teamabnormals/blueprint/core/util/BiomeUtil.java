@@ -33,7 +33,7 @@ public final class BiomeUtil {
 	private static final Set<ResourceKey<Biome>> SHALLOW_OCEAN_SET = new HashSet<>();
 	private static final Map<ResourceKey<Biome>, PrioritizedNoiseList<EdgeBiomeProvider>> EDGE_BIOME_PROVIDER_MAP = new HashMap<>();
 	private static final WeightedNoiseList<ResourceKey<Biome>> END_BIOMES = new WeightedNoiseList<>();
-	private static final List<Pair<Biome.ClimateSettings, ResourceKey<Biome>>> NETHER_BIOMES = new ArrayList<>();
+	private static final List<Pair<Biome.ClimateParameters, ResourceKey<Biome>>> NETHER_BIOMES = new ArrayList<>();
 	private static final Set<ResourceLocation> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
 
 	static {
@@ -114,13 +114,13 @@ public final class BiomeUtil {
 	}
 
 	/**
-	 * Adds a biome to generate in the Nether with specific {@link Biome.ClimateSettings}.
+	 * Adds a biome to generate in the Nether with specific {@link Biome.ClimateParameters}.
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
-	 * @param attributes The {@link Biome.ClimateSettings} to use when generating the biome.
+	 * @param attributes The {@link Biome.ClimateParameters} to use when generating the biome.
 	 * @param biome      The {@link ResourceKey} of the {@link Biome} to use.
 	 */
-	public static synchronized void addNetherBiome(Biome.ClimateSettings attributes, ResourceKey<Biome> biome) {
+	public static synchronized void addNetherBiome(Biome.ClimateParameters attributes, ResourceKey<Biome> biome) {
 		NETHER_BIOMES.add(Pair.of(attributes, biome));
 	}
 
@@ -230,12 +230,12 @@ public final class BiomeUtil {
 	 * @param registry   A {@link Biome} {@link Registry} to lookup the {@link Biome}s.
 	 * @return An {@link ImmutableList} containing base (vanilla) nether biome data and modded nether biome data.
 	 */
-	public static List<Pair<Biome.ClimateSettings, Supplier<Biome>>> getModifiedNetherBiomes(List<Pair<Biome.ClimateSettings, Supplier<Biome>>> baseBiomes, Registry<Biome> registry) {
-		ImmutableList.Builder<Pair<Biome.ClimateSettings, Supplier<Biome>>> builder = new ImmutableList.Builder<>();
+	public static List<Pair<Biome.ClimateParameters, Supplier<Biome>>> getModifiedNetherBiomes(List<Pair<Biome.ClimateParameters, Supplier<Biome>>> baseBiomes, Registry<Biome> registry) {
+		ImmutableList.Builder<Pair<Biome.ClimateParameters, Supplier<Biome>>> builder = new ImmutableList.Builder<>();
 		builder.addAll(baseBiomes);
-		NETHER_BIOMES.forEach(resourceKeyClimateSettingsPair -> {
-			ResourceKey<Biome> biomeResourceKey = resourceKeyClimateSettingsPair.getSecond();
-			builder.add(Pair.of(resourceKeyClimateSettingsPair.getFirst(), () -> registry.getOrThrow(biomeResourceKey)));
+		NETHER_BIOMES.forEach(resourceKeyClimateParametersPair -> {
+			ResourceKey<Biome> biomeResourceKey = resourceKeyClimateParametersPair.getSecond();
+			builder.add(Pair.of(resourceKeyClimateParametersPair.getFirst(), () -> registry.getOrThrow(biomeResourceKey)));
 		});
 		return builder.build();
 	}
