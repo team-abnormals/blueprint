@@ -3,7 +3,6 @@ package com.teamabnormals.blueprint.core.util;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
-import com.teamabnormals.blueprint.common.world.gen.EdgeBiomeProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -29,7 +28,6 @@ import java.util.function.Supplier;
 public final class BiomeUtil {
 	private static final Map<ResourceKey<Biome>, WeightedNoiseList<ResourceKey<Biome>>> HILL_BIOME_MAP = new HashMap<>();
 	private static final List<Pair<Climate.Parameter, Pair<ResourceKey<Biome>, ResourceKey<Biome>>>> OCEAN_BIOMES = new ArrayList<>();
-	private static final Map<ResourceKey<Biome>, PrioritizedNoiseList<EdgeBiomeProvider>> EDGE_BIOME_PROVIDER_MAP = new HashMap<>();
 	private static final WeightedNoiseList<ResourceKey<Biome>> END_BIOMES = new WeightedNoiseList<>();
 	private static final List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> NETHER_BIOMES = new ArrayList<>();
 	private static final Set<ResourceLocation> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
@@ -89,17 +87,6 @@ public final class BiomeUtil {
 	}
 
 	/**
-	 * Adds an {@link EdgeBiomeProvider} for a given {@link Biome} {@link ResourceKey}
-	 * <p>This method is safe to call during parallel mod loading.</p>
-	 *
-	 * @param key      A {@link Biome} {@link ResourceKey} to add an {@link EdgeBiomeProvider} for.
-	 * @param provider An {@link EdgeBiomeProvider} to use to determine the biome to border a certain biome.
-	 */
-	public static synchronized void addEdgeBiome(ResourceKey<Biome> key, EdgeBiomeProvider provider, Priority priority) {
-		EDGE_BIOME_PROVIDER_MAP.computeIfAbsent(key, (k) -> new PrioritizedNoiseList<>()).add(provider, priority);
-	}
-
-	/**
 	 * Adds a biome to generate in the Nether with specific a {@link Climate.ParameterPoint}.
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
@@ -151,29 +138,6 @@ public final class BiomeUtil {
 	 */
 	public static boolean shouldPlayCustomEndMusic(ResourceLocation biomeName) {
 		return CUSTOM_END_MUSIC_BIOMES.contains(biomeName);
-	}
-
-	/**
-	 * Get the {@link Biome} {@link ResourceKey} from the registered {@link EdgeBiomeProvider}s.
-	 *
-	 * @param biome      A {@link Biome} {@link ResourceKey} to retrieve the corresponding edge biome of.
-	 * @param random     The {@link Context} to get the value randomly with.
-	 * @param northBiome The {@link Biome} {@link ResourceKey} to the north.
-	 * @param westBiome  The {@link Biome} {@link ResourceKey} to the west.
-	 * @param southBiome The {@link Biome} {@link ResourceKey} to the south.
-	 * @param eastBiome  The {@link Biome} {@link ResourceKey} to the east.
-	 * @return The {@link Biome} {@link ResourceKey}, or null if no {@link EdgeBiomeProvider} returns a {@link Biome} {@link ResourceKey}.
-	 */
-	@Nullable
-	public static ResourceKey<Biome> getEdgeBiome(ResourceKey<Biome> biome, Context random, ResourceKey<Biome> northBiome, ResourceKey<Biome> westBiome, ResourceKey<Biome> southBiome, ResourceKey<Biome> eastBiome) {
-		PrioritizedNoiseList<EdgeBiomeProvider> edgeBiomeProviderList = EDGE_BIOME_PROVIDER_MAP.get(biome);
-		if (edgeBiomeProviderList != null) {
-			Pair<EdgeBiomeProvider, ResourceKey<Biome>> pair = edgeBiomeProviderList.getWithCallback(random, edgeBiomeProvider -> edgeBiomeProvider.getEdgeBiome(random, northBiome, westBiome, southBiome, eastBiome));
-			if (pair != null) {
-				return pair.getSecond();
-			}
-		}
-		return null;
 	}
 
 	/**
