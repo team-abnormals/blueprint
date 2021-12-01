@@ -3,7 +3,7 @@ package client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamabnormals.blueprint.core.endimator.Endimation;
 import com.teamabnormals.blueprint.core.endimator.Endimator;
-import common.blockentities.TestEndimatedBlockEntity;
+import common.block.entity.TestEndimatedBlockEntity;
 import core.BlueprintTest;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;

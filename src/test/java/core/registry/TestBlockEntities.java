@@ -1,7 +1,7 @@
 package core.registry;
 
 import com.teamabnormals.blueprint.core.util.registry.BlockEntitySubRegistryHelper;
-import common.blockentities.TestEndimatedBlockEntity;
+import common.block.entity.TestEndimatedBlockEntity;
 import core.BlueprintTest;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;

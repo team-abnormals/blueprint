@@ -1,6 +1,6 @@
 package common.block;
 
-import common.blockentities.TestEndimatedBlockEntity;
+import common.block.entity.TestEndimatedBlockEntity;
 import core.registry.TestBlockEntities;
 import core.registry.TestEndimations;
 import net.minecraft.core.BlockPos;

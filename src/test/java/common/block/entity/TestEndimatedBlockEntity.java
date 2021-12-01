@@ -1,4 +1,4 @@
-package common.blockentities;
+package common.block.entity;
 
 import com.teamabnormals.blueprint.core.endimator.Endimatable;
 import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
