@@ -2,14 +2,15 @@ package com.teamabnormals.blueprint.core.util;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.teamabnormals.blueprint.common.world.gen.EdgeBiomeProvider;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import com.teamabnormals.blueprint.common.world.gen.EdgeBiomeProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 
 import javax.annotation.Nonnull;
@@ -27,22 +28,14 @@ import java.util.function.Supplier;
  */
 public final class BiomeUtil {
 	private static final Map<ResourceKey<Biome>, WeightedNoiseList<ResourceKey<Biome>>> HILL_BIOME_MAP = new HashMap<>();
-	private static final Map<OceanType, WeightedNoiseList<ResourceKey<Biome>>> OCEAN_BIOME_MAP = new HashMap<>();
-	private static final Map<ResourceKey<Biome>, ResourceKey<Biome>> DEEP_OCEAN_BIOME_MAP = new HashMap<>();
-	private static final Set<ResourceKey<Biome>> OCEAN_SET = new HashSet<>();
-	private static final Set<ResourceKey<Biome>> SHALLOW_OCEAN_SET = new HashSet<>();
+	private static final List<Pair<Climate.Parameter, Pair<ResourceKey<Biome>, ResourceKey<Biome>>>> OCEAN_BIOMES = new ArrayList<>();
 	private static final Map<ResourceKey<Biome>, PrioritizedNoiseList<EdgeBiomeProvider>> EDGE_BIOME_PROVIDER_MAP = new HashMap<>();
 	private static final WeightedNoiseList<ResourceKey<Biome>> END_BIOMES = new WeightedNoiseList<>();
-	private static final List<Pair<Biome.ClimateParameters, ResourceKey<Biome>>> NETHER_BIOMES = new ArrayList<>();
+	private static final List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> NETHER_BIOMES = new ArrayList<>();
 	private static final Set<ResourceLocation> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
 
 	static {
 		addEndBiome(Biomes.END_MIDLANDS, 15);
-		addOceanBiome(OceanType.FROZEN, Biomes.FROZEN_OCEAN, Biomes.DEEP_FROZEN_OCEAN, 15);
-		addOceanBiome(OceanType.COLD, Biomes.COLD_OCEAN, Biomes.DEEP_COLD_OCEAN, 15);
-		addOceanBiome(OceanType.NORMAL, Biomes.OCEAN, Biomes.DEEP_OCEAN, 15);
-		addOceanBiome(OceanType.LUKEWARM, Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, 15);
-		addOceanBiome(OceanType.WARM, Biomes.WARM_OCEAN, null, 15);
 	}
 
 	/**
@@ -84,22 +77,15 @@ public final class BiomeUtil {
 	}
 
 	/**
-	 * Adds an ocean biome with its deep variant to generate with a given weight.
+	 * Adds an ocean biome with its deep variant to generate with a given {@link Climate.Parameter} temperature.
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
-	 * @param type   The {@link OceanType} to register the {@link Biome} to.
-	 * @param biome  The {@link Biome} {@link ResourceKey} to add.
-	 * @param deep   The {@link Biome} {@link ResourceKey} to add as the deep variant.
-	 * @param weight The weight for the {@link Biome}.
+	 * @param temperature The {@link Climate.Parameter} temperature to have the biome generate in.
+	 * @param biome       The {@link Biome} {@link ResourceKey} to add.
+	 * @param deep        The {@link Biome} {@link ResourceKey} to add as the deep variant.
 	 */
-	public static synchronized void addOceanBiome(OceanType type, ResourceKey<Biome> biome, @Nullable ResourceKey<Biome> deep, int weight) {
-		OCEAN_BIOME_MAP.computeIfAbsent(type, (key) -> new WeightedNoiseList<>()).add(biome, weight);
-		OCEAN_SET.add(biome);
-		SHALLOW_OCEAN_SET.add(biome);
-		if (deep != null) {
-			DEEP_OCEAN_BIOME_MAP.put(biome, deep);
-			OCEAN_SET.add(biome);
-		}
+	public static synchronized void addOceanBiome(Climate.Parameter temperature, ResourceKey<Biome> biome, @Nullable ResourceKey<Biome> deep) {
+		OCEAN_BIOMES.add(Pair.of(temperature, Pair.of(biome, deep)));
 	}
 
 	/**
@@ -114,14 +100,14 @@ public final class BiomeUtil {
 	}
 
 	/**
-	 * Adds a biome to generate in the Nether with specific {@link Biome.ClimateParameters}.
+	 * Adds a biome to generate in the Nether with specific a {@link Climate.ParameterPoint}.
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
-	 * @param attributes The {@link Biome.ClimateParameters} to use when generating the biome.
-	 * @param biome      The {@link ResourceKey} of the {@link Biome} to use.
+	 * @param point The {@link Climate.ParameterPoint} instance to use for biome's generation attributes.
+	 * @param biome The {@link ResourceKey} of the {@link Biome} to use.
 	 */
-	public static synchronized void addNetherBiome(Biome.ClimateParameters attributes, ResourceKey<Biome> biome) {
-		NETHER_BIOMES.add(Pair.of(attributes, biome));
+	public static synchronized void addNetherBiome(Climate.ParameterPoint point, ResourceKey<Biome> biome) {
+		NETHER_BIOMES.add(Pair.of(point, biome));
 	}
 
 	/**
@@ -135,6 +121,16 @@ public final class BiomeUtil {
 	public static ResourceKey<Biome> getHillBiome(ResourceKey<Biome> biome, Context random) {
 		WeightedNoiseList<ResourceKey<Biome>> list = HILL_BIOME_MAP.get(biome);
 		return list != null ? list.get(random) : null;
+	}
+
+	/**
+	 * Gets the list of registered modded ocean biomes.
+	 * <p>This method is only used internally.</p>
+	 *
+	 * @return The list of registered modded ocean biomes.
+	 */
+	public static List<Pair<Climate.Parameter, Pair<ResourceKey<Biome>, ResourceKey<Biome>>>> getOceanBiomes() {
+		return OCEAN_BIOMES;
 	}
 
 	/**
@@ -155,48 +151,6 @@ public final class BiomeUtil {
 	 */
 	public static boolean shouldPlayCustomEndMusic(ResourceLocation biomeName) {
 		return CUSTOM_END_MUSIC_BIOMES.contains(biomeName);
-	}
-
-	/**
-	 * Gets a random ocean biome for a given {@link OceanType} and {@link Context}.
-	 *
-	 * @param type   An {@link OceanType} to categorize the ocean temperature.
-	 * @param random An {@link Context} to randomly pick the ocean variant.
-	 * @return A random ocean biome for a given {@link OceanType} and {@link Context}.
-	 */
-	public static ResourceKey<Biome> getOceanBiome(OceanType type, Context random) {
-		return OCEAN_BIOME_MAP.getOrDefault(type, new WeightedNoiseList<>()).get(random);
-	}
-
-	/**
-	 * Get the corresponding deep ocean variant of a {@link Biome} {@link ResourceKey}.
-	 *
-	 * @param oceanBiome The {@link Biome} {@link ResourceKey} to use to get the deep ocean variant.
-	 * @return Null if no deep variant has been registered, otherwise the deep variant.
-	 */
-	@Nullable
-	public static ResourceKey<Biome> getDeepOceanBiome(ResourceKey<Biome> oceanBiome) {
-		return DEEP_OCEAN_BIOME_MAP.get(oceanBiome);
-	}
-
-	/**
-	 * Check if a {@link Biome} {@link ResourceKey} is an ocean {@link Biome}.
-	 *
-	 * @param biome The {@link Biome} {@link ResourceKey} to check.
-	 * @return If a {@link Biome} {@link ResourceKey} is registered as an ocean {@link Biome}.
-	 */
-	public static boolean isOceanBiome(ResourceKey<Biome> biome) {
-		return OCEAN_SET.contains(biome);
-	}
-
-	/**
-	 * Check if a {@link Biome} {@link ResourceKey} is an ocean {@link Biome}, but also not registered as a deep variant.
-	 *
-	 * @param biome The {@link Biome} {@link ResourceKey} to check.
-	 * @return If a {@link Biome} {@link ResourceKey} is registered as an ocean {@link Biome}, but not as a deep variant.
-	 */
-	public static boolean isShallowOceanBiome(ResourceKey<Biome> biome) {
-		return SHALLOW_OCEAN_SET.contains(biome);
 	}
 
 	/**
@@ -230,8 +184,8 @@ public final class BiomeUtil {
 	 * @param registry   A {@link Biome} {@link Registry} to lookup the {@link Biome}s.
 	 * @return An {@link ImmutableList} containing base (vanilla) nether biome data and modded nether biome data.
 	 */
-	public static List<Pair<Biome.ClimateParameters, Supplier<Biome>>> getModifiedNetherBiomes(List<Pair<Biome.ClimateParameters, Supplier<Biome>>> baseBiomes, Registry<Biome> registry) {
-		ImmutableList.Builder<Pair<Biome.ClimateParameters, Supplier<Biome>>> builder = new ImmutableList.Builder<>();
+	public static List<Pair<Climate.ParameterPoint, Supplier<Biome>>> getModifiedNetherBiomes(List<Pair<Climate.ParameterPoint, Supplier<Biome>>> baseBiomes, Registry<Biome> registry) {
+		ImmutableList.Builder<Pair<Climate.ParameterPoint, Supplier<Biome>>> builder = new ImmutableList.Builder<>();
 		builder.addAll(baseBiomes);
 		NETHER_BIOMES.forEach(resourceKeyClimateParametersPair -> {
 			ResourceKey<Biome> biomeResourceKey = resourceKeyClimateParametersPair.getSecond();
@@ -249,6 +203,13 @@ public final class BiomeUtil {
 	@SuppressWarnings("deprecation")
 	public static int getId(@Nonnull ResourceKey<Biome> biome) {
 		return BuiltinRegistries.BIOME.getId(BuiltinRegistries.BIOME.get(biome));
+	}
+
+	/**
+	 * An enum representing 5 different levels of priority.
+	 */
+	public enum Priority {
+		HIGHEST, HIGH, NORMAL, LOW, LOWEST
 	}
 
 	/**
@@ -375,19 +336,5 @@ public final class BiomeUtil {
 		public EnumMap<Priority, List<T>> getPriorityListMap() {
 			return this.priorityListMap;
 		}
-	}
-
-	/**
-	 * The 5 different ocean types that generate in the world.
-	 */
-	public enum OceanType {
-		WARM, LUKEWARM, FROZEN, COLD, NORMAL
-	}
-
-	/**
-	 * An enum representing 5 different levels of priority.
-	 */
-	public enum Priority {
-		HIGHEST, HIGH, NORMAL, LOW, LOWEST
 	}
 }
