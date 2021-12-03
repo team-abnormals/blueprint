@@ -104,11 +104,11 @@ public final class BiomeUtil {
 	 * @param random An {@link Context} to randomly pick the hill variant.
 	 * @return A random hill variant for a given {@link Biome} {@link ResourceKey}, or null if there are no hill variants for the given {@link Biome} {@link ResourceKey}.
 	 */
-	@Nullable
-	public static ResourceKey<Biome> getHillBiome(ResourceKey<Biome> biome, Context random) {
-		WeightedNoiseList<ResourceKey<Biome>> list = HILL_BIOME_MAP.get(biome);
-		return list != null ? list.get(random) : null;
-	}
+//	@Nullable
+//	public static ResourceKey<Biome> getHillBiome(ResourceKey<Biome> biome, Context random) {
+//		WeightedNoiseList<ResourceKey<Biome>> list = HILL_BIOME_MAP.get(biome);
+//		return list != null ? list.get(random) : null;
+//	}
 
 	/**
 	 * Gets the list of registered modded ocean biomes.
@@ -126,9 +126,9 @@ public final class BiomeUtil {
 	 * @param random An {@link Context} to use for randomly picking an end biome.
 	 * @return A random end biome for a given {@link Context}.
 	 */
-	public static ResourceKey<Biome> getEndBiome(Context random) {
-		return END_BIOMES.get(random);
-	}
+//	public static ResourceKey<Biome> getEndBiome(Context random) {
+//		return END_BIOMES.get(random);
+//	}
 
 	/**
 	 * Checks if a {@link ResourceLocation} belonging to a {@link Biome} should have the {@link Biome} plays its custom music in the end.
@@ -203,19 +203,19 @@ public final class BiomeUtil {
 		 * @param random A {@link Context} to get the value randomly with.
 		 * @return A random value based on a given {@link Context}.
 		 */
-		@Nonnull
-		public T get(Context random) {
-			Iterator<Pair<T, Integer>> iterator = this.entries.iterator();
-			T value;
-			int randomTotal = random.nextRandom(this.totalWeight);
-			do {
-				Pair<T, Integer> entry = iterator.next();
-				value = entry.getFirst();
-				randomTotal -= entry.getSecond();
-			}
-			while (randomTotal >= 0);
-			return value;
-		}
+//		@Nonnull
+//		public T get(Context random) {
+//			Iterator<Pair<T, Integer>> iterator = this.entries.iterator();
+//			T value;
+//			int randomTotal = random.nextRandom(this.totalWeight);
+//			do {
+//				Pair<T, Integer> entry = iterator.next();
+//				value = entry.getFirst();
+//				randomTotal -= entry.getSecond();
+//			}
+//			while (randomTotal >= 0);
+//			return value;
+//		}
 
 		/**
 		 * Gets this weighted list's {@link #entries}.
@@ -256,11 +256,11 @@ public final class BiomeUtil {
 		 * @param random A {@link Context} to select a random entry.
 		 * @return A random entry from the given {@link Context}.
 		 */
-		@Nullable
-		public T get(Context random) {
-			Pair<T, Object> pair = this.getWithCallback(random, o -> DUMMY_CALLBACK);
-			return pair != null ? pair.getFirst() : null;
-		}
+//		@Nullable
+//		public T get(Context random) {
+//			Pair<T, Object> pair = this.getWithCallback(random, o -> DUMMY_CALLBACK);
+//			return pair != null ? pair.getFirst() : null;
+//		}
 
 		/**
 		 * Gets a random entry using a given {@link Context} validated through a callback function.
@@ -269,27 +269,27 @@ public final class BiomeUtil {
 		 * @param callbackProcessor A callback function to validate a selected entry and return an additional value associated with it.
 		 * @return A {@link Pair} containing a random entry from the given {@link Context} and a value associated with the entry.
 		 */
-		@Nullable
-		public <C> Pair<T, C> getWithCallback(Context random, Function<T, C> callbackProcessor) {
-			for (List<T> list : this.priorityListMap.values()) {
-				int size = list.size();
-				if (size > 0) {
-					List<T> copy = new ArrayList<>(list);
-					while (size > 0) {
-						int index = random.nextRandom(size);
-						T picked = copy.get(index);
-						C callback = callbackProcessor.apply(picked);
-						if (callback != null) {
-							return Pair.of(picked, callback);
-						} else {
-							copy.remove(index);
-							size--;
-						}
-					}
-				}
-			}
-			return null;
-		}
+//		@Nullable
+//		public <C> Pair<T, C> getWithCallback(Context random, Function<T, C> callbackProcessor) {
+//			for (List<T> list : this.priorityListMap.values()) {
+//				int size = list.size();
+//				if (size > 0) {
+//					List<T> copy = new ArrayList<>(list);
+//					while (size > 0) {
+//						int index = random.nextRandom(size);
+//						T picked = copy.get(index);
+//						C callback = callbackProcessor.apply(picked);
+//						if (callback != null) {
+//							return Pair.of(picked, callback);
+//						} else {
+//							copy.remove(index);
+//							size--;
+//						}
+//					}
+//				}
+//			}
+//			return null;
+//		}
 
 		/**
 		 * Gets the internal {@link EnumMap} used to prioritize the entries in lists.

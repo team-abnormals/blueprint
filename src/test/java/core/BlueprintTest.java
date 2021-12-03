@@ -4,7 +4,7 @@ import client.EndimatedWalkingEntityRenderer;
 import client.TestClientEvents;
 import client.TestEndimatedBlockEntityRenderer;
 import client.TestEndimatedEntityRenderer;
-import com.google.common.collect.Sets;
+import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.world.modification.BiomeFeatureModifier;
 import com.teamabnormals.blueprint.common.world.modification.BiomeModificationManager;
 import com.teamabnormals.blueprint.common.world.modification.BiomeModificationPredicates;
@@ -17,11 +17,9 @@ import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
-import com.mojang.datafixers.util.Pair;
 import common.world.TestGlobalStorage;
 import core.registry.*;
 import net.minecraft.client.renderer.entity.CowRenderer;
-import net.minecraft.data.worldgen.placement.EndPlacements;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.TreePlacements;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +34,6 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.RarityFilter;
@@ -81,18 +78,6 @@ public final class BlueprintTest {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
-			BiomeUtil.addEdgeBiome(Biomes.PLAINS, (noise, north, west, south, east) -> {
-				if ((!Biomes.PLAINS.equals(north) && !BiomeUtil.isOceanBiome(north)) || (!Biomes.PLAINS.equals(west) && !BiomeUtil.isOceanBiome(west)) || (!Biomes.PLAINS.equals(south) && !BiomeUtil.isOceanBiome(south)) || (!Biomes.PLAINS.equals(east) && !BiomeUtil.isOceanBiome(east))) {
-					return Biomes.SOUL_SAND_VALLEY;
-				}
-				return null;
-			}, BiomeUtil.Priority.NORMAL);
-			BiomeUtil.addEdgeBiome(Biomes.PLAINS, (noise, north, west, south, east) -> {
-				if (!Biomes.PLAINS.equals(north) || !Biomes.PLAINS.equals(west) || !Biomes.PLAINS.equals(south) || !Biomes.PLAINS.equals(east)) {
-					return Biomes.ICE_SPIKES;
-				}
-				return null;
-			}, BiomeUtil.Priority.LOW);
 			BiomeUtil.addOceanBiome(Climate.Parameter.span(-0.725F, -0.35F), TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_COLD_OCEAN);
 			BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
 			BiomeUtil.addNetherBiome(Climate.parameters(-0.5F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.25F), TestBiomes.TEST_NETHER.getKey());
@@ -106,8 +91,8 @@ public final class BlueprintTest {
 		BiomeModificationManager instance = BiomeModificationManager.INSTANCE;
 		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.PLAINS), GenerationStep.Decoration.VEGETAL_DECORATION, () -> TreePlacements.BIRCH_CHECKED));
 		instance.addModifier(BiomeSpawnsModifier.createSpawnAdder(BiomeModificationPredicates.forBiomeKey(Biomes.SAVANNA), MobCategory.CREATURE, TestEntities.COW::get, 12, 10, 20));
-		instance.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), Sets.newHashSet(GenerationStep.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EndPlacements.END_ISLAND_DECORATED));
-		instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStep.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
+		//instance.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), Sets.newHashSet(GenerationStep.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EndPlacements.END_ISLAND_DECORATED));
+		//instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStep.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
 		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.ICE_SPIKES), GenerationStep.Decoration.UNDERGROUND_DECORATION, () -> TestFeatures.TEST_SPLINE.get().configured(FeatureConfiguration.NONE).placed(RarityFilter.onAverageOnceEvery(3), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP)));
 
 		BiomeUtil.addEndBiome(Biomes.ICE_SPIKES, 7);
