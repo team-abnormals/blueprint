@@ -77,10 +77,14 @@ minecraft {
     }
 }
 
+sourceSets.main.resources {
+    srcDir "src/generated/resources"
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
 
-    annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 }
 
 jar {
