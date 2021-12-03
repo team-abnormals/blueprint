@@ -78,9 +78,9 @@ public final class BlueprintTest {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
-			BiomeUtil.addOceanBiome(Climate.Parameter.span(-0.725F, -0.35F), TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_COLD_OCEAN);
+			BiomeUtil.addOceanBiome(Climate.Parameter.span(-0.5F, -0.45F), TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_COLD_OCEAN);
 			BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
-			BiomeUtil.addNetherBiome(Climate.parameters(-0.5F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.25F), TestBiomes.TEST_NETHER.getKey());
+			BiomeUtil.addNetherBiome(Climate.parameters(-0.5F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.15F), TestBiomes.TEST_NETHER.getKey());
 			SpawnPlacements.register(TestEntities.COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, Cow::checkAnimalSpawnRules);
 			DataUtil.concatArrays(ObfuscationReflectionHelper.findField(CreativeModeTab.class, "f_40769_"), CreativeModeTab.TAB_TOOLS, EnchantmentCategory.BOW);
 		});
