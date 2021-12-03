@@ -14,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.Constants;
 
 public final class TestEndimatedBlockEntity extends BlockEntity implements Endimatable {
 	private final EndimatedState endimatedState = new EndimatedState(this);
@@ -58,7 +57,7 @@ public final class TestEndimatedBlockEntity extends BlockEntity implements Endim
 
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		return new ClientboundBlockEntityDataPacket(this.worldPosition, 100, this.getUpdateTag());
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override

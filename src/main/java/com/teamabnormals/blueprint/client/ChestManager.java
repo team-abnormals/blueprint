@@ -50,7 +50,7 @@ public final class ChestManager {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onStitch(TextureStitchEvent.Pre event) {
-		if (event.getMap().location().equals(Sheets.CHEST_SHEET)) {
+		if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
 			for (ChestInfo chestInfo : CHEST_INFO_MAP.values()) {
 				chestInfo.setup(event);
 			}

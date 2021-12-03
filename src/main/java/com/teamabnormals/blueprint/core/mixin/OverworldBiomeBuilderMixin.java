@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Consumer;
 
@@ -27,7 +28,7 @@ public final class OverworldBiomeBuilderMixin {
 	private Climate.Parameter oceanContinentalness;
 
 	@Inject(at = @At("RETURN"), method = "addOffCoastBiomes")
-	private void addModdedOffCoastBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> list) {
+	private void addModdedOffCoastBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> list, CallbackInfo ci) {
 		Climate.Parameter deepOceanContinentalness = this.deepOceanContinentalness;
 		Climate.Parameter oceanContinentalness = this.oceanContinentalness;
 		Climate.Parameter fullRange = this.FULL_RANGE;

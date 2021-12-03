@@ -44,7 +44,7 @@ public class HedgeBlock extends FenceBlock {
 	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
 		if (stateIn.getValue(WATERLOGGED)) {
-			level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+			level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
 		return facing == Direction.DOWN ? stateIn.setValue(EXTEND, facingState.is(BlueprintBlockTags.HEDGES)) : super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
 	}

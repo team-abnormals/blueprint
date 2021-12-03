@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "com.teamabnormals.blueprint.core.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "refmap": "blueprint.refmap.json",
   "mixins": [
