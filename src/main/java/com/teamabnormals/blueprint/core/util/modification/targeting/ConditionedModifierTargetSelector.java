@@ -1,15 +1,12 @@
 package com.teamabnormals.blueprint.core.util.modification.targeting;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The class that represents a {@link ConfiguredModifierTargetSelector} with conditions.
@@ -50,11 +47,11 @@ public final class ConditionedModifierTargetSelector<C, S extends ModifierTarget
 	/**
 	 * Gets a list of {@link ResourceLocation} names to target from a set of resources.
 	 *
-	 * @param resources A set of resources to use for getting the target names.
+	 * @param space A {@link SelectionSpace} instance to use for getting the target names.
 	 * @return A list of {@link ResourceLocation} names to target from a set of resources.
 	 */
-	public List<ResourceLocation> getTargetNames(Set<Map.Entry<ResourceLocation, JsonElement>> resources) {
-		return this.targetSelector.getTargetNames(resources);
+	public List<ResourceLocation> getTargetNames(SelectionSpace space) {
+		return this.targetSelector.getTargetNames(space);
 	}
 
 	/**

@@ -3,12 +3,11 @@ package com.teamabnormals.blueprint.core.util.modification.targeting.selectors;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.teamabnormals.blueprint.core.util.modification.targeting.ModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A {@link ModifierTargetSelector} implementation that returns a configurable list of target names.
@@ -18,7 +17,7 @@ import java.util.Set;
 public final class NamesModifierTargetSelector implements ModifierTargetSelector<List<ResourceLocation>> {
 
 	@Override
-	public List<ResourceLocation> getTargetNames(Set<Map.Entry<ResourceLocation, JsonElement>> resources, List<ResourceLocation> config) {
+	public List<ResourceLocation> getTargetNames(SelectionSpace space, List<ResourceLocation> config) {
 		return config;
 	}
 

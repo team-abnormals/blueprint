@@ -5,11 +5,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Unit;
 import com.teamabnormals.blueprint.core.util.modification.targeting.ModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A {@link ModifierTargetSelector} implementation that always returns an empty list of target names.
@@ -20,7 +19,7 @@ public final class EmptyModifierTargetSelector implements ModifierTargetSelector
 	private static final ImmutableList<ResourceLocation> EMPTY = ImmutableList.of();
 
 	@Override
-	public List<ResourceLocation> getTargetNames(Set<Map.Entry<ResourceLocation, JsonElement>> resources, Unit config) {
+	public List<ResourceLocation> getTargetNames(SelectionSpace space, Unit config) {
 		return EMPTY;
 	}
 

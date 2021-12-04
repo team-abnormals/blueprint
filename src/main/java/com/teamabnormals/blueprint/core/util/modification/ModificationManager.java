@@ -1,14 +1,17 @@
 package com.teamabnormals.blueprint.core.util.modification;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.teamabnormals.blueprint.core.events.SimpleJsonResourceListenerPreparedEvent;
+import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A class containing a map of the {@link ResourceLocation} targets and a list of {@link ConfiguredModifier} instances for said target.
@@ -23,7 +26,7 @@ import java.util.*;
  */
 public abstract class ModificationManager<T, S, D> extends SimpleJsonResourceReloadListener {
 	private final Map<ResourceLocation, List<ConfiguredModifier<T, ?, S, D, ?>>> modifiers = new HashMap<>();
-	private Set<Map.Entry<ResourceLocation, JsonElement>> unmodifiedEntries = new HashSet<>();
+	private SelectionSpace unmodifiedEntries = consumer -> {};
 
 	/**
 	 * Constructor for a {@link ModificationManager} that will NOT refresh its {@link #unmodifiedEntries}.
@@ -36,7 +39,7 @@ public abstract class ModificationManager<T, S, D> extends SimpleJsonResourceRel
 	}
 
 	/**
-	 * Constructor for a {@link ModificationManager} that will refresh its {@link #unmodifiedEntries}.
+	 * Constructor for a {@link ModificationManager} that will auto-refresh its {@link #unmodifiedEntries}.
 	 *
 	 * @param gson            A {@link Gson} instance to use for deserialization.
 	 * @param directory       The directory to read from.
@@ -46,7 +49,8 @@ public abstract class ModificationManager<T, S, D> extends SimpleJsonResourceRel
 		super(gson, directory);
 		MinecraftForge.EVENT_BUS.addListener((SimpleJsonResourceListenerPreparedEvent event) -> {
 			if (event.getDirectory().equals(targetDirectory)) {
-				this.unmodifiedEntries = event.getEntries().entrySet();
+				var entries = event.getEntries();
+				this.unmodifiedEntries = entries::forEach;
 			}
 		});
 	}
@@ -112,11 +116,20 @@ public abstract class ModificationManager<T, S, D> extends SimpleJsonResourceRel
 	}
 
 	/**
+	 * Sets the {@link #unmodifiedEntries} to a new {@link SelectionSpace} instance.
+	 *
+	 * @param unmodifiedEntries A new {@link SelectionSpace} instance to use.
+	 */
+	public void setUnmodifiedEntries(SelectionSpace unmodifiedEntries) {
+		this.unmodifiedEntries = unmodifiedEntries;
+	}
+
+	/**
 	 * Gets the {@link #unmodifiedEntries} used for the resources searching space for target selectors.
 	 *
 	 * @return The {@link #unmodifiedEntries} used for the resources searching space for target selectors.
 	 */
-	public Set<Map.Entry<ResourceLocation, JsonElement>> getUnmodifiedEntries() {
+	public SelectionSpace getUnmodifiedEntries() {
 		return this.unmodifiedEntries;
 	}
 

@@ -6,6 +6,7 @@ import com.google.gson.JsonSyntaxException;
 import com.teamabnormals.blueprint.core.util.modification.targeting.ConditionedModifierTargetSelector;
 import com.teamabnormals.blueprint.core.util.modification.targeting.ConfiguredModifierTargetSelector;
 import com.teamabnormals.blueprint.core.util.modification.targeting.ModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -13,8 +14,6 @@ import net.minecraftforge.common.crafting.conditions.FalseCondition;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A {@link ModifierTargetSelector} implementation that picks a {@link ConditionedModifierTargetSelector} if a condition is met or picks another {@link ConditionedModifierTargetSelector} if the condition is not met.
@@ -24,8 +23,8 @@ import java.util.Set;
 public final class ChoiceModifierTargetSelector implements ModifierTargetSelector<ChoiceModifierTargetSelector.Config> {
 
 	@Override
-	public List<ResourceLocation> getTargetNames(Set<Map.Entry<ResourceLocation, JsonElement>> resources, Config config) {
-		return config.condition.test() ? config.first.getTargetNames(resources) : config.second.getTargetNames(resources);
+	public List<ResourceLocation> getTargetNames(SelectionSpace space, Config config) {
+		return config.condition.test() ? config.first.getTargetNames(space) : config.second.getTargetNames(space);
 	}
 
 	@Override

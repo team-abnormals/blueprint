@@ -7,6 +7,7 @@ import com.teamabnormals.blueprint.core.util.modification.ConfiguredModifier;
 import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
 import com.teamabnormals.blueprint.common.advancement.modification.modifiers.IAdvancementModifier;
+import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.advancements.critereon.DeserializationContext;
@@ -25,7 +26,6 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Data manager class for {@link IAdvancementModifier}s.
@@ -84,7 +84,7 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler) {
 		this.reset();
-		Set<Map.Entry<ResourceLocation, JsonElement>> unmodifiedAdvancements = this.getUnmodifiedEntries();
+		SelectionSpace unmodifiedAdvancements = this.getUnmodifiedEntries();
 		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
 			ResourceLocation resourcelocation = entry.getKey();
 			if (resourcelocation.getPath().startsWith("_")) continue;

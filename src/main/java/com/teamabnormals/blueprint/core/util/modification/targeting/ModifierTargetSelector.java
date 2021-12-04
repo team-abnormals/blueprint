@@ -5,8 +5,6 @@ import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The interface that represents a serializable selector for modifier targets.
@@ -39,11 +37,11 @@ public interface ModifierTargetSelector<C> {
 	/**
 	 * Gets a list of names to use for targeting objects.
 	 *
-	 * @param resources A set containing paths and their respective JSON elements.
-	 * @param config    A config object of type {@code <C>} to use when calculating the list of names.
+	 * @param space  A {@link SelectionSpace} instance containing paths and their respective JSON elements.
+	 * @param config A config object of type {@code <C>} to use when calculating the list of names.
 	 * @return A list of names to use for targeting objects.
 	 */
-	List<ResourceLocation> getTargetNames(Set<Map.Entry<ResourceLocation, JsonElement>> resources, C config);
+	List<ResourceLocation> getTargetNames(SelectionSpace space, C config);
 
 	/**
 	 * Serializes a given config object of type {@code <C>}.

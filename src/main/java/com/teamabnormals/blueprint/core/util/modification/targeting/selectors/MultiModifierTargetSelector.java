@@ -5,12 +5,11 @@ import com.google.gson.JsonElement;
 import com.teamabnormals.blueprint.core.util.modification.targeting.ConditionedModifierTargetSelector;
 import com.teamabnormals.blueprint.core.util.modification.targeting.ConfiguredModifierTargetSelector;
 import com.teamabnormals.blueprint.core.util.modification.targeting.ModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A {@link ModifierTargetSelector} implementation that acts as multiple {@link ConditionedModifierTargetSelector} instances.
@@ -20,9 +19,9 @@ import java.util.Set;
 public final class MultiModifierTargetSelector implements ModifierTargetSelector<List<ConditionedModifierTargetSelector<?, ?>>> {
 
 	@Override
-	public List<ResourceLocation> getTargetNames(Set<Map.Entry<ResourceLocation, JsonElement>> resources, List<ConditionedModifierTargetSelector<?, ?>> config) {
+	public List<ResourceLocation> getTargetNames(SelectionSpace space, List<ConditionedModifierTargetSelector<?, ?>> config) {
 		List<ResourceLocation> targetNames = new ArrayList<>();
-		config.forEach(configuredModifierTargetSelector -> targetNames.addAll(configuredModifierTargetSelector.getTargetNames(resources)));
+		config.forEach(configuredModifierTargetSelector -> targetNames.addAll(configuredModifierTargetSelector.getTargetNames(space)));
 		return targetNames;
 	}
 

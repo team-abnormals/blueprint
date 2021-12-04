@@ -7,6 +7,7 @@ import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.loot.modification.modifiers.ILootModifier;
+import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -33,7 +34,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Data manager class for {@link ILootModifier}s.
@@ -87,7 +87,7 @@ public final class LootModificationManager extends ModificationManager<LootTable
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler) {
 		this.reset();
-		Set<Map.Entry<ResourceLocation, JsonElement>> unmodifiedTables = this.getUnmodifiedEntries();
+		SelectionSpace unmodifiedTables = this.getUnmodifiedEntries();
 		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
 			ResourceLocation resourcelocation = entry.getKey();
 			if (resourcelocation.getPath().startsWith("_")) continue;

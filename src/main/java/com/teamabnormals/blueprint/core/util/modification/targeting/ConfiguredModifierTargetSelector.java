@@ -1,6 +1,5 @@
 package com.teamabnormals.blueprint.core.util.modification.targeting;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Unit;
@@ -9,8 +8,6 @@ import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The class that represents a configured {@link ModifierTargetSelector}.
@@ -64,11 +61,11 @@ public final class ConfiguredModifierTargetSelector<C, S extends ModifierTargetS
 	/**
 	 * Gets a list of {@link ResourceLocation} names to target from a set of resources.
 	 *
-	 * @param resources A set of resources to use for getting the target names.
+	 * @param space A {@link SelectionSpace} instance to use for getting the target names.
 	 * @return A list of {@link ResourceLocation} names to target from a set of resources.
 	 */
-	public List<ResourceLocation> getTargetNames(Set<Map.Entry<ResourceLocation, JsonElement>> resources) {
-		return this.selector.getTargetNames(resources, this.config);
+	public List<ResourceLocation> getTargetNames(SelectionSpace space) {
+		return this.selector.getTargetNames(space, this.config);
 	}
 
 	/**
