@@ -79,7 +79,7 @@ public final class BlueprintTest {
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
 			BiomeUtil.addOceanBiome(Climate.Parameter.span(-0.5F, -0.45F), TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_COLD_OCEAN);
-			BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
+			//BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
 			BiomeUtil.addNetherBiome(Climate.parameters(-0.5F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.15F), TestBiomes.TEST_NETHER.getKey());
 			SpawnPlacements.register(TestEntities.COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, Cow::checkAnimalSpawnRules);
 			DataUtil.concatArrays(ObfuscationReflectionHelper.findField(CreativeModeTab.class, "f_40769_"), CreativeModeTab.TAB_TOOLS, EnchantmentCategory.BOW);
@@ -95,7 +95,7 @@ public final class BlueprintTest {
 		//instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStep.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
 		instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.ICE_SPIKES), GenerationStep.Decoration.UNDERGROUND_DECORATION, () -> TestFeatures.TEST_SPLINE.get().configured(FeatureConfiguration.NONE).placed(RarityFilter.onAverageOnceEvery(3), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP)));
 
-		BiomeUtil.addEndBiome(Biomes.ICE_SPIKES, 7);
+		BiomeUtil.addEndBiome(Climate.parameters(0.1F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), Biomes.ICE_SPIKES);
 	}
 
 	@OnlyIn(Dist.CLIENT)
