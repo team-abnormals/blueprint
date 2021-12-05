@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.core.util.registry;
 
-import com.teamabnormals.blueprint.common.world.modification.BiomeModificationManager;
+import com.teamabnormals.blueprint.common.world.biome.modification.BiomeModificationManager;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.level.biome.Biome;
@@ -52,7 +52,7 @@ public class BiomeSubRegistryHelper extends AbstractSubRegistryHelper<Biome> {
 	 */
 	public KeyedBiome createBiomeWithModifiers(String name, Supplier<Biome> biome, BiConsumer<RegistryObject<Biome>, BiomeModificationManager> consumer) {
 		RegistryObject<Biome> biomeRegistryObject = this.deferredRegister.register(name, biome);
-		consumer.accept(biomeRegistryObject, BiomeModificationManager.INSTANCE);
+		consumer.accept(biomeRegistryObject, BiomeModificationManager.getInstance());
 		return new KeyedBiome(biomeRegistryObject);
 	}
 

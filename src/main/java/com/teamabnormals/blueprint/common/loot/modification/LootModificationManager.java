@@ -2,7 +2,6 @@ package com.teamabnormals.blueprint.common.loot.modification;
 
 import com.google.gson.*;
 import com.teamabnormals.blueprint.core.Blueprint;
-import com.teamabnormals.blueprint.core.util.modification.ConfiguredModifier;
 import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
 import com.mojang.datafixers.util.Pair;
@@ -23,8 +22,10 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -51,6 +52,20 @@ public final class LootModificationManager extends ModificationManager<LootTable
 		this.lootPredicateManager = lootPredicateManager;
 	}
 
+	static {
+		for (EventPriority priority : EventPriority.values()) {
+			MinecraftForge.EVENT_BUS.addListener(priority, (LootTableLoadEvent event) -> {
+				//Should not happen, but it's possible that this event will get fired before the manager is initialized
+				if (INSTANCE != null) {
+					var modifiers = INSTANCE.getModifiers(event.getName(), priority);
+					if (modifiers != null) {
+						modifiers.forEach(configured -> configured.modify(event));
+					}
+				}
+			});
+		}
+	}
+
 	/**
 	 * Gets the instance of the {@link LootModificationManager}.
 	 * <p>This is initialized once it has been added as a reload listener.</p>
@@ -59,17 +74,6 @@ public final class LootModificationManager extends ModificationManager<LootTable
 	 */
 	public static LootModificationManager getInstance() {
 		return INSTANCE;
-	}
-
-	@SubscribeEvent
-	public static void onLootTableLoad(LootTableLoadEvent event) {
-		//Should not happen, but it's possible that this event will get fired before the manager is initialized
-		if (INSTANCE != null) {
-			List<ConfiguredModifier<LootTableLoadEvent, ?, Gson, Pair<Gson, PredicateManager>, ?>> configuredModifiers = INSTANCE.getModifiers(event.getName());
-			if (configuredModifiers != null) {
-				configuredModifiers.forEach(configuredModifier -> configuredModifier.modify(event));
-			}
-		}
 	}
 
 	@SubscribeEvent
@@ -93,7 +97,7 @@ public final class LootModificationManager extends ModificationManager<LootTable
 			if (resourcelocation.getPath().startsWith("_")) continue;
 			try {
 				TargetedModifier<LootTableLoadEvent, Gson, Pair<Gson, PredicateManager>> targetedModifier = TargetedModifier.deserialize(entry.getValue().getAsJsonObject(), Pair.of(GSON, this.lootPredicateManager), LootModifiers.REGISTRY);
-				this.addModifiers(targetedModifier.getTargetSelector().getTargetNames(unmodifiedTables), targetedModifier.getConfiguredModifiers());
+				this.addModifiers(targetedModifier.getTargetSelector().getTargetNames(unmodifiedTables), targetedModifier.getPriority(), targetedModifier.getConfiguredModifiers());
 			} catch (IllegalArgumentException | JsonParseException jsonparseexception) {
 				Blueprint.LOGGER.error("Parsing error loading Loot Modifier: {}", resourcelocation, jsonparseexception);
 			}

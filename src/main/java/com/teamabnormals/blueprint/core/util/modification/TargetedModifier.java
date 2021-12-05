@@ -9,13 +9,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * A class that holds a list of {@link ConfiguredModifier} instances targeted according to a {@link ConditionedModifierTargetSelector} instance.
+ * A class that holds a list of prioritized {@link ConfiguredModifier} instances targeted according to a {@link ConditionedModifierTargetSelector} instance.
  *
  * @param <T> The type of the object to modify.
  * @param <S> The type of the additional serialization object.
@@ -28,11 +29,17 @@ import java.util.List;
  */
 public final class TargetedModifier<T, S, D> {
 	private final ConditionedModifierTargetSelector<?, ?> targetSelector;
+	private final EventPriority priority;
 	private final List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers;
 
-	public TargetedModifier(ConditionedModifierTargetSelector<?, ?> targetSelector, List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers) {
+	public TargetedModifier(ConditionedModifierTargetSelector<?, ?> targetSelector, EventPriority priority, List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers) {
 		this.targetSelector = targetSelector;
+		this.priority = priority;
 		this.configuredModifiers = configuredModifiers;
+	}
+
+	public TargetedModifier(ConditionedModifierTargetSelector<?, ?> targetSelector, List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers) {
+		this(targetSelector, EventPriority.NORMAL, configuredModifiers);
 	}
 
 	/**
@@ -70,6 +77,21 @@ public final class TargetedModifier<T, S, D> {
 	public static <T, S, D> TargetedModifier<T, S, D> deserialize(JsonObject object, String targetKey, D additional, ModifierRegistry<T, S, D> registry, boolean logSkipping) throws JsonParseException {
 		ConditionedModifierTargetSelector<?, ?> selector;
 		JsonElement target = object.get(targetKey);
+		EventPriority priority = null;
+		if (object.has("priority")) {
+			String priorityName = GsonHelper.getAsString(object, "priority").toUpperCase();
+			for (EventPriority test : EventPriority.values()) {
+				if (test.name().equals(priorityName)) {
+					priority = test;
+					break;
+				}
+			}
+			if (priority == null) {
+				throw new JsonParseException("Unknown priority type: " + priorityName);
+			}
+		} else {
+			priority = EventPriority.NORMAL;
+		}
 		if (target instanceof JsonPrimitive) {
 			selector = new ConditionedModifierTargetSelector<>(ModifierTargetSelectorRegistry.NAMES.withConfiguration(Collections.singletonList(new ResourceLocation(target.getAsString()))));
 		} else if (target instanceof JsonObject) {
@@ -78,7 +100,7 @@ public final class TargetedModifier<T, S, D> {
 				if (logSkipping) {
 					Blueprint.LOGGER.info("Skipped modifiers for target \"" + target + "\" as its conditions were not met");
 				}
-				return new TargetedModifier<>(selector, new ArrayList<>());
+				return new TargetedModifier<>(selector, priority, new ArrayList<>());
 			}
 		} else {
 			throw new JsonParseException("'" + targetKey + "'" + " must be a string or object!");
@@ -102,7 +124,7 @@ public final class TargetedModifier<T, S, D> {
 				Blueprint.LOGGER.info("Skipped modifier \"" + type + "\" for target " + target + " as its conditions were not met");
 			}
 		});
-		return new TargetedModifier<>(selector, configuredModifiers);
+		return new TargetedModifier<>(selector, priority, configuredModifiers);
 	}
 
 	/**
@@ -118,6 +140,7 @@ public final class TargetedModifier<T, S, D> {
 	public JsonObject serialize(S additional, String targetKey, ModifierRegistry<T, S, D> modifierRegistry, ICondition[][] conditions) throws JsonParseException {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.add(targetKey, this.targetSelector.serialize());
+		jsonObject.addProperty("priority", this.priority.toString().toLowerCase());
 		JsonArray modifiers = new JsonArray();
 		List<ConfiguredModifier<T, ?, S, D, ?>> configuredModifiers = this.configuredModifiers;
 		int conditionsLength = conditions.length;
@@ -146,6 +169,15 @@ public final class TargetedModifier<T, S, D> {
 	 */
 	public ConditionedModifierTargetSelector<?, ?> getTargetSelector() {
 		return this.targetSelector;
+	}
+
+	/**
+	 * Gets the {@link EventPriority} to use for prioritizing this modifier.
+	 *
+	 * @return The {@link EventPriority} to use for prioritizing this modifier.
+	 */
+	public EventPriority getPriority() {
+		return this.priority;
 	}
 
 	/**

@@ -3,7 +3,6 @@ package com.teamabnormals.blueprint.common.advancement.modification;
 import com.google.gson.*;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.events.AdvancementBuildingEvent;
-import com.teamabnormals.blueprint.core.util.modification.ConfiguredModifier;
 import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
 import com.teamabnormals.blueprint.common.advancement.modification.modifiers.IAdvancementModifier;
@@ -18,7 +17,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.PredicateManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -41,6 +42,21 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 	private AdvancementModificationManager(PredicateManager lootPredicateManager) {
 		super(GSON, "modifiers/advancements", "advancements");
 		this.lootPredicateManager = lootPredicateManager;
+	}
+
+	static {
+		for (EventPriority priority : EventPriority.values()) {
+			MinecraftForge.EVENT_BUS.addListener(priority, (AdvancementBuildingEvent event) -> {
+				//Should not happen, but it's possible that this event will get fired before the manager is initialized
+				if (INSTANCE != null) {
+					var modifiers = INSTANCE.getModifiers(event.getLocation(), priority);
+					if (modifiers != null) {
+						Advancement.Builder builder = event.getBuilder();
+						modifiers.forEach(configured -> configured.modify(builder));
+					}
+				}
+			});
+		}
 	}
 
 	/**
@@ -67,20 +83,6 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 		}
 	}
 
-	@SubscribeEvent
-	public static void onBuildingAdvancement(AdvancementBuildingEvent event) {
-		//Should not happen, but it's possible that this event will get fired before the manager is initialized
-		if (INSTANCE != null) {
-			List<ConfiguredModifier<Builder, ?, Void, DeserializationContext, ?>> modifiers = INSTANCE.getModifiers(event.getLocation());
-			if (modifiers != null) {
-				Advancement.Builder builder = event.getBuilder();
-				modifiers.forEach(modifier -> {
-					modifier.modify(builder);
-				});
-			}
-		}
-	}
-
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler) {
 		this.reset();
@@ -91,7 +93,7 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 
 			try {
 				TargetedModifier<Builder, Void, DeserializationContext> targetedAdvancementModifier = TargetedModifier.deserialize(entry.getValue().getAsJsonObject(), "advancement", new DeserializationContext(resourcelocation, this.lootPredicateManager), AdvancementModifiers.REGISTRY, true);
-				this.addModifiers(targetedAdvancementModifier.getTargetSelector().getTargetNames(unmodifiedAdvancements), targetedAdvancementModifier.getConfiguredModifiers());
+				this.addModifiers(targetedAdvancementModifier.getTargetSelector().getTargetNames(unmodifiedAdvancements), targetedAdvancementModifier.getPriority(), targetedAdvancementModifier.getConfiguredModifiers());
 			} catch (IllegalArgumentException | JsonParseException jsonparseexception) {
 				Blueprint.LOGGER.error("Parsing error loading Advancement Modifier: {}", resourcelocation, jsonparseexception);
 			}

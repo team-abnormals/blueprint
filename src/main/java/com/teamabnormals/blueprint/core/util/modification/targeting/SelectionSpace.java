@@ -14,6 +14,7 @@ import java.util.function.BiConsumer;
 public interface SelectionSpace {
 	/**
 	 * Iterates over the space, using a {@link BiConsumer} instance for each entry.
+	 * <p>It is possible for an entry to have a {@link com.google.gson.JsonNull#INSTANCE} as its {@link JsonElement}.</p>
 	 *
 	 * @param consumer A {@link BiConsumer} instance to use for processing each entry.
 	 */
