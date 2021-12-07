@@ -1,0 +1,113 @@
+{
+	"target": {
+		"type": "names",
+		"config": [
+			"minecraft:forest",
+			"minecraft:flower_forest",
+			"minecraft:dark_forest"
+		]
+	},
+	"modifiers": [
+		{
+			"type": "features",
+			"config": {
+				"replace": {
+					"vegetal_decoration": []
+				},
+				"substitute": [
+					[],
+					[],
+					[],
+					[],
+					[],
+					[],
+					[
+						{
+							"targets": [
+								{
+									"config": {
+										"targets": [
+											{
+												"target": {
+													"tag": "minecraft:stone_ore_replaceables",
+													"predicate_type": "minecraft:tag_match"
+												},
+												"state": {
+													"Name": "minecraft:coal_ore"
+												}
+											},
+											{
+												"target": {
+													"tag": "minecraft:deepslate_ore_replaceables",
+													"predicate_type": "minecraft:tag_match"
+												},
+												"state": {
+													"Name": "minecraft:deepslate_coal_ore"
+												}
+											}
+										],
+										"size": 17,
+										"discard_chance_on_air_exposure": 0.0
+									},
+									"type": "minecraft:ore"
+								}
+							],
+							"replacer": {
+								"placements": []
+							}
+						},
+						{
+							"targets": [
+								{
+									"config": {
+										"targets": [
+											{
+												"target": {
+													"tag": "minecraft:stone_ore_replaceables",
+													"predicate_type": "minecraft:tag_match"
+												},
+												"state": {
+													"Name": "minecraft:coal_ore"
+												}
+											},
+											{
+												"target": {
+													"tag": "minecraft:deepslate_ore_replaceables",
+													"predicate_type": "minecraft:tag_match"
+												},
+												"state": {
+													"Name": "minecraft:deepslate_coal_ore"
+												}
+											}
+										],
+										"size": 17,
+										"discard_chance_on_air_exposure": 0.5
+									},
+									"type": "minecraft:ore"
+								}
+							],
+							"replacer": {
+								"placements": []
+							}
+						}
+					]
+				],
+				"add": [
+					[],
+					[],
+					[],
+					[],
+					[],
+					[],
+					[],
+					[],
+					[],
+					[
+						"minecraft:trees_taiga",
+						"minecraft:trees_sparse_jungle"
+					]
+				]
+			}
+		}
+	]
+}

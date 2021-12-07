@@ -3,9 +3,10 @@ package com.teamabnormals.blueprint.common.world.biome.modification.modifiers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.RegistryReadOps;
+import net.minecraft.resources.RegistryWriteOps;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -55,8 +56,8 @@ public final class BiomeSpawnCostsModifier implements IBiomeModifier<BiomeSpawnC
 	}
 
 	@Override
-	public JsonElement serialize(Config config, Void additional) throws JsonParseException {
-		var result = CODEC.encodeStart(JsonOps.INSTANCE, config);
+	public JsonElement serialize(Config config, RegistryWriteOps<JsonElement> additional) throws JsonParseException {
+		var result = CODEC.encodeStart(additional, config);
 		var error = result.error();
 		if (error.isPresent()) {
 			throw new JsonParseException(error.get().message());
@@ -65,8 +66,8 @@ public final class BiomeSpawnCostsModifier implements IBiomeModifier<BiomeSpawnC
 	}
 
 	@Override
-	public Config deserialize(JsonElement element, Void additional) throws JsonParseException {
-		var result = CODEC.decode(JsonOps.INSTANCE, element);
+	public Config deserialize(JsonElement element, RegistryReadOps<JsonElement> additional) throws JsonParseException {
+		var result = CODEC.decode(additional, element);
 		var error = result.error();
 		if (error.isPresent()) {
 			throw new JsonParseException(error.get().message());

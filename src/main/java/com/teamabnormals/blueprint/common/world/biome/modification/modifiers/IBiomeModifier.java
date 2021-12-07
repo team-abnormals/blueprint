@@ -1,6 +1,9 @@
 package com.teamabnormals.blueprint.common.world.biome.modification.modifiers;
 
+import com.google.gson.JsonElement;
 import com.teamabnormals.blueprint.core.util.modification.IModifier;
+import net.minecraft.resources.RegistryReadOps;
+import net.minecraft.resources.RegistryWriteOps;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 /**
@@ -10,5 +13,5 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
  * @author SmellyModder (Luke Tonon)
  * @see IModifier
  */
-public interface IBiomeModifier<C> extends IModifier<BiomeLoadingEvent, C, Void, Void> {
+public interface IBiomeModifier<C> extends IModifier<BiomeLoadingEvent, C, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>> {
 }
