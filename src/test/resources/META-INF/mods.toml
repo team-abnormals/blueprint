@@ -15,14 +15,14 @@ license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 [[dependencies.blueprint_test]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.18,)"
+    versionRange = "[1.18.1,)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.blueprint_test]]
     modId = "forge"
     mandatory = true
-    versionRange = "[38.0.0,)"
+    versionRange = "[39.0.0,)"
     ordering = "NONE"
     side = "BOTH"
 
