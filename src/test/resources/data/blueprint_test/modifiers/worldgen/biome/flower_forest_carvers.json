@@ -1,0 +1,86 @@
+{
+	"target": {
+		"type": "names",
+		"config": [
+			"minecraft:flower_forest"
+		]
+	},
+	"modifiers": [
+		{
+			"type": "carvers",
+			"config": {
+				"air": {
+					"replace": [],
+					"add": [
+						{
+							"type": "cave",
+							"config": {
+								"yScale": {
+									"type": "minecraft:uniform",
+									"value": {
+										"min_inclusive": 0.1,
+										"max_exclusive": 0.9
+									}
+								},
+								"lava_level": {
+									"above_bottom": 8
+								},
+								"debug_settings": {
+									"water_state": {
+										"Properties": {
+											"powered": "false",
+											"facing": "north",
+											"face": "wall"
+										},
+										"Name": "minecraft:warped_button"
+									},
+									"lava_state": {
+										"Name": "minecraft:orange_stained_glass"
+									},
+									"barrier_state": {
+										"Name": "minecraft:glass"
+									},
+									"air_state": {
+										"Name": "minecraft:blue_stained_glass"
+									},
+									"debug_mode": true
+								},
+								"probability": 0.2,
+								"y": {
+									"min_inclusive": {
+										"above_bottom": 8
+									},
+									"max_inclusive": {
+										"absolute": 180
+									},
+									"type": "minecraft:uniform"
+								},
+								"horizontal_radius_multiplier": {
+									"type": "minecraft:uniform",
+									"value": {
+										"min_inclusive": 0.5,
+										"max_exclusive": 2
+									}
+								},
+								"vertical_radius_multiplier": {
+									"type": "minecraft:uniform",
+									"value": {
+										"min_inclusive": 0.8,
+										"max_exclusive": 20
+									}
+								},
+								"floor_level": {
+									"type": "minecraft:uniform",
+									"value": {
+										"min_inclusive": -1,
+										"max_exclusive": -0.4
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		}
+	]
+}

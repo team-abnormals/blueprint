@@ -18,4 +18,5 @@ public final class BiomeModifiers {
 	public static final BiomeSpawnCostsModifier SPAWN_COSTS = REGISTRY.register("spawn_costs", new BiomeSpawnCostsModifier());
 	public static final BiomeSpawnersModifier SPAWNERS = REGISTRY.register("spawners", new BiomeSpawnersModifier());
 	public static final BiomeFeaturesModifier FEATURES = REGISTRY.register("features", new BiomeFeaturesModifier());
+	public static final BiomeCarversModifier CARVERS = REGISTRY.register("carvers", new BiomeCarversModifier());
 }

@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.util.modification.IModifier;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryReadOps;
@@ -52,9 +53,13 @@ public final class BiomeFeaturesModifier implements IBiomeModifier<BiomeFeatures
 		return matchesTypes;
 	}
 
-	//TODO: Rework this to allow for more freedom and less verbose definitions
 	private static boolean testConfiguredFeatures(List<JsonElement> configuredFeatures, List<JsonElement> targets) {
-		return configuredFeatures.equals(targets);
+		int size = configuredFeatures.size();
+		if (size != targets.size()) return false;
+		for (int i = 0; i < size; i++) {
+			if (!IModifier.weakElementEquals(configuredFeatures.get(i), targets.get(i))) return false;
+		}
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -81,8 +86,6 @@ public final class BiomeFeaturesModifier implements IBiomeModifier<BiomeFeatures
 				for (int i = 0; i < featuresSize && i < listsSize; i++) {
 					var substitutes = lists.get(i);
 					if (substitutes.isEmpty()) continue;
-					//Copy so the modifier can be reused
-					substitutes = new ArrayList<>(substitutes);
 					var mutableStepFeatures = new ArrayList<>(features.get(i));
 					Iterator<Supplier<PlacedFeature>> iterator = mutableStepFeatures.iterator();
 					List<Supplier<PlacedFeature>> toAdd = new ArrayList<>();
@@ -92,13 +95,10 @@ public final class BiomeFeaturesModifier implements IBiomeModifier<BiomeFeatures
 						var configuredFeatures = placedFeature.getFeatures().map(configuredFeature -> {
 							return ConfiguredFeature.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, configuredFeature).result().orElse(JsonNull.INSTANCE);
 						}).collect(Collectors.toList());
-						var substitutesIterator = substitutes.iterator();
-						while (substitutesIterator.hasNext()) {
-							var nextPair = substitutesIterator.next();
-							SubstituteValue value = nextPair.getSecond();
+						for (var pair : substitutes) {
+							SubstituteValue value = pair.getSecond();
 							if (testPlacements(value.placements, placements)) {
-								if (testConfiguredFeatures(configuredFeatures, nextPair.getFirst())) {
-									substitutesIterator.remove();
+								if (testConfiguredFeatures(configuredFeatures, pair.getFirst())) {
 									iterator.remove();
 									value.feature.ifPresent(toAdd::add);
 									break;

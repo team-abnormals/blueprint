@@ -1,0 +1,94 @@
+{
+	"target": {
+		"type": "names",
+		"config": [
+			"minecraft:plains"
+		]
+	},
+	"modifiers": [
+		{
+			"type": "carvers",
+			"config": {
+				"air": {
+					"substitute": [
+						{
+							"target": {
+								"carver": "minecraft:cave",
+								"config": {
+									"yScale": {
+										"type": "minecraft:uniform",
+										"value": {
+											"min_inclusive": 0.1,
+											"max_exclusive": 0.9
+										}
+									}
+								}
+							},
+							"replacer": {
+								"type": "cave",
+								"config": {
+									"yScale": {
+										"type": "minecraft:uniform",
+										"value": {
+											"min_inclusive": 0.1,
+											"max_exclusive": 0.5
+										}
+									},
+									"lava_level": {
+										"above_bottom": 20
+									},
+									"debug_settings": {
+										"water_state": {
+											"Name": "minecraft:blue_stained_glass"
+										},
+										"lava_state": {
+											"Name": "minecraft:red_stained_glass"
+										},
+										"barrier_state": {
+											"Name": "minecraft:glass"
+										},
+										"air_state": {
+											"Name": "minecraft:glass"
+										},
+										"debug_mode": true
+									},
+									"probability": 0.25,
+									"y": {
+										"min_inclusive": {
+											"above_bottom": 2
+										},
+										"max_inclusive": {
+											"absolute": 40
+										},
+										"type": "minecraft:uniform"
+									},
+									"horizontal_radius_multiplier": {
+										"type": "minecraft:uniform",
+										"value": {
+											"min_inclusive": 0.5,
+											"max_exclusive": 1
+										}
+									},
+									"vertical_radius_multiplier": {
+										"type": "minecraft:uniform",
+										"value": {
+											"min_inclusive": 0.8,
+											"max_exclusive": 20
+										}
+									},
+									"floor_level": {
+										"type": "minecraft:uniform",
+										"value": {
+											"min_inclusive": -1,
+											"max_exclusive": -0.4
+										}
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		}
+	]
+}
