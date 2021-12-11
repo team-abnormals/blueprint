@@ -1,0 +1,58 @@
+{
+	"target": {
+		"type": "names",
+		"config": [
+			"minecraft:forest"
+		]
+	},
+	"modifiers": [
+		{
+			"type": "category",
+			"config": "nether"
+		},
+		{
+			"type": "climate_settings",
+			"config": {
+				"precipitation": "snow",
+				"temperature": 0.1,
+				"temperature_modifier": "frozen",
+				"downfall": 1.5
+			}
+		},
+		{
+			"type": "special_effects",
+			"config": {
+				"fog_color": 0,
+				"water_color": 0,
+				"water_fog_color": 0,
+				"sky_color": 0,
+				"foliage_color": {},
+				"grass_color": 65,
+				"grass_color_modifier": "swamp",
+				"particle": {
+					"options": {
+						"type": "mycelium"
+					},
+					"probability": 0.2
+				},
+				"ambient_sound": {},
+				"mood_sound": {
+					"sound": "ambient.basalt_deltas.mood",
+					"tick_delay": 100,
+					"block_search_extent": 8,
+					"offset": 2.0
+				},
+				"additions_sound": {
+					"sound": "ambient.basalt_deltas.additions",
+					"tick_chance": 0.05
+				},
+				"music": {
+					"sound": "music.under_water",
+					"min_delay": 200,
+					"max_delay": 24000,
+					"replace_current_music": false
+				}
+			}
+		}
+	]
+}

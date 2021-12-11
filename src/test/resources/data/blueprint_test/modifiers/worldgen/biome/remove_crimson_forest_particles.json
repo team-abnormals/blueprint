@@ -1,0 +1,16 @@
+{
+	"target": {
+		"type": "names",
+		"config": [
+			"minecraft:crimson_forest"
+		]
+	},
+	"modifiers": [
+		{
+			"type": "special_effects",
+			"config": {
+				"particle": {}
+			}
+		}
+	]
+}
