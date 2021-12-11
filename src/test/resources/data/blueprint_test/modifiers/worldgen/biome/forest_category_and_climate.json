@@ -1,0 +1,23 @@
+{
+	"target": {
+		"type": "names",
+		"config": [
+			"minecraft:forest"
+		]
+	},
+	"modifiers": [
+		{
+			"type": "category",
+			"config": "nether"
+		},
+		{
+			"type": "climate_settings",
+			"config": {
+				"precipitation": "snow",
+				"temperature": 0.1,
+				"temperature_modifier": "frozen",
+				"downfall": 1.5
+			}
+		}
+	]
+}
