@@ -1,0 +1,14 @@
+{
+	"target": {
+		"type": "names",
+		"config": [
+			"minecraft:forest"
+		]
+	},
+	"modifiers": [
+		{
+			"type": "category",
+			"config": "nether"
+		}
+	]
+}

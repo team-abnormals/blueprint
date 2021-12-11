@@ -21,6 +21,11 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Supplier;
 
+/**
+ * An {@link IBiomeModifier} implementation that modifies the carvers of a {@link BiomeLoadingEvent} instance.
+ *
+ * @author SmellyModder (Luke Tonon)
+ */
 public final class BiomeCarversModifier implements IBiomeModifier<Map<GenerationStep.Carving, BiomeCarversModifier.CarvingValue>> {
 	private static final Field CARVERS = ObfuscationReflectionHelper.findField(BiomeGenerationSettings.Builder.class, "f_47827_");
 
