@@ -19,7 +19,6 @@ public final class BiomeModifiers {
 	public static final BiomeCategoryModifier CATEGORY = REGISTRY.register("category", new BiomeCategoryModifier());
 	public static final BiomeClimateSettingsModifier CLIMATE_SETTINGS = REGISTRY.register("climate_settings", new BiomeClimateSettingsModifier());
 	public static final BiomeFeaturesModifier FEATURES = REGISTRY.register("features", new BiomeFeaturesModifier());
-	public static final BiomeSpawnCostsModifier SPAWN_COSTS = REGISTRY.register("spawn_costs", new BiomeSpawnCostsModifier());
-	public static final BiomeSpawnersModifier SPAWNERS = REGISTRY.register("spawners", new BiomeSpawnersModifier());
+	public static final BiomeSpawnsModifier SPAWNS = REGISTRY.register("spawns", new BiomeSpawnsModifier());
 	public static final BiomeSpecialEffectsModifier SPECIAL_EFFECTS = REGISTRY.register("special_effects", new BiomeSpecialEffectsModifier());
 }

@@ -10,43 +10,42 @@
 	"priority": "high",
 	"modifiers": [
 		{
-			"type": "spawners",
+			"type": "spawns",
 			"config": {
-				"remove": {
-					"creature": [
-						"minecraft:sheep",
-						"minecraft:cow"
-					]
-				},
-				"replace": {
-					"creature": {
-						"minecraft:pig": {
-							"type": "minecraft:parrot",
-							"weight": 8,
-							"minCount": 1,
-							"maxCount": 1
+				"spawners": {
+					"remove": {
+						"creature": [
+							"minecraft:sheep",
+							"minecraft:cow"
+						]
+					},
+					"replace": {
+						"creature": {
+							"minecraft:pig": {
+								"type": "minecraft:parrot",
+								"weight": 8,
+								"minCount": 1,
+								"maxCount": 1
+							}
 						}
+					},
+					"add": {
+						"creature": [
+							{
+								"type": "minecraft:ocelot",
+								"weight": 6,
+								"minCount": 1,
+								"maxCount": 3
+							}
+						]
 					}
 				},
-				"add": {
-					"creature": [
-						{
-							"type": "minecraft:ocelot",
-							"weight": 6,
-							"minCount": 1,
-							"maxCount": 3
+				"spawn_costs": {
+					"replace": {
+						"minecraft:skeleton": {
+							"energy_budget": 0.2,
+							"charge": 0.7
 						}
-					]
-				}
-			}
-		},
-		{
-			"type": "spawn_costs",
-			"config": {
-				"replace": {
-					"minecraft:skeleton": {
-						"energy_budget": 0.2,
-						"charge": 0.7
 					}
 				}
 			}
