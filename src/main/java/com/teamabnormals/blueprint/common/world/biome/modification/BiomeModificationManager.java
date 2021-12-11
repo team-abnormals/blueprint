@@ -87,7 +87,6 @@ public final class BiomeModificationManager extends ModificationManager<BiomeLoa
 		READ_OPS_MAP.put(registryAccess, readOps);
 	}
 
-	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) {
 		try {
 			RegistryAccess registryAccess = (RegistryAccess) REGISTRY_ACCESS.get(TAG_MANAGER.get(event.getDataPackRegistries()));
