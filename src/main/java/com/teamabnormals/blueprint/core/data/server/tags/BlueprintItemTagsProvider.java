@@ -15,6 +15,7 @@ public class BlueprintItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	protected void addTags() {
+		this.tag(BlueprintItemTags.BUCKETS_EMPTY).add(Items.BUCKET);
 		this.tag(BlueprintItemTags.BUCKETS_WATER).add(Items.WATER_BUCKET);
 		this.tag(BlueprintItemTags.BUCKETS_LAVA).add(Items.LAVA_BUCKET);
 		this.tag(BlueprintItemTags.BUCKETS_MILK).add(Items.MILK_BUCKET);

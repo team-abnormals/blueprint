@@ -5,6 +5,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 
 public class BlueprintItemTags {
+	public static final Tag.Named<Item> BUCKETS_EMPTY = TagUtil.forgeItemTag("buckets/empty");
 	public static final Tag.Named<Item> BUCKETS_WATER = TagUtil.forgeItemTag("buckets/water");
 	public static final Tag.Named<Item> BUCKETS_LAVA = TagUtil.forgeItemTag("buckets/lava");
 	public static final Tag.Named<Item> BUCKETS_MILK = TagUtil.forgeItemTag("buckets/milk");
