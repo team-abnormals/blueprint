@@ -13,6 +13,6 @@ public class BlueprintEntityTypeTagsProvider extends EntityTypeTagsProvider {
 
 	@Override
 	protected void addTags() {
-		this.tag(BlueprintEntityTypeTags.MILKABLE).add(EntityType.COW, EntityType.GOAT);
+		this.tag(BlueprintEntityTypeTags.MILKABLE).add(EntityType.COW, EntityType.MOOSHROOM, EntityType.GOAT);
 	}
 }
