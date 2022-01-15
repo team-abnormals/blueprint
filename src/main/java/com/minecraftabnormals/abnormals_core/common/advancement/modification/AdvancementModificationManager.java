@@ -77,6 +77,8 @@ public final class AdvancementModificationManager extends JsonReloadListener {
 
 	@SubscribeEvent
 	public static void onBuildingAdvancement(AdvancementBuildingEvent event) {
+		//Should not happen, but it's possible that this event will get fired before the manager is initialized
+		if (INSTANCE == null) return;
 		List<ConfiguredAdvancementModifier<?, ?>> modifiers = MODIFIERS.get(event.getLocation());
 		if (modifiers != null) {
 			Advancement.Builder builder = event.getBuilder();
