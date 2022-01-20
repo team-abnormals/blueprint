@@ -3,13 +3,12 @@ package com.teamabnormals.blueprint.core.data.server.tags;
 import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class BlueprintBlockTagsProvider extends BlockTagsProvider {
-	public BlueprintBlockTagsProvider(String modid, DataGenerator generator, ExistingFileHelper existingFileHelper) {
-		super(generator, modid, existingFileHelper);
+
+	public BlueprintBlockTagsProvider(String modid, DataGenerator generator, ExistingFileHelper fileHelper) {
+		super(generator, modid, fileHelper);
 	}
 
 	@Override

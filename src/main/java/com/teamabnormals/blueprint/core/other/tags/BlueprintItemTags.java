@@ -5,6 +5,18 @@ import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 
 public class BlueprintItemTags {
+	public static final Tag.Named<Item> EGGS = TagUtil.forgeItemTag("eggs");
+	public static final Tag.Named<Item> MILK = TagUtil.forgeItemTag("milk");
+	public static final Tag.Named<Item> PUMPKINS = TagUtil.forgeItemTag("pumpkins");
+
+	public static final Tag.Named<Item> TOOLS = TagUtil.forgeItemTag("tools");
+	public static final Tag.Named<Item> TOOLS_AXES = TagUtil.forgeItemTag("tools/axes");
+	public static final Tag.Named<Item> TOOLS_HOES = TagUtil.forgeItemTag("tools/hoes");
+	public static final Tag.Named<Item> TOOLS_PICKAXES = TagUtil.forgeItemTag("tools/pickaxes");
+	public static final Tag.Named<Item> TOOLS_SHOVELS = TagUtil.forgeItemTag("tools/shovels");
+	public static final Tag.Named<Item> TOOLS_SWORDS = TagUtil.forgeItemTag("tools/swords");
+
+	public static final Tag.Named<Item> BUCKETS = TagUtil.forgeItemTag("buckets");
 	public static final Tag.Named<Item> BUCKETS_EMPTY = TagUtil.forgeItemTag("buckets/empty");
 	public static final Tag.Named<Item> BUCKETS_WATER = TagUtil.forgeItemTag("buckets/water");
 	public static final Tag.Named<Item> BUCKETS_LAVA = TagUtil.forgeItemTag("buckets/lava");

@@ -7,8 +7,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class BlueprintEntityTypeTagsProvider extends EntityTypeTagsProvider {
-	public BlueprintEntityTypeTagsProvider(String modid, DataGenerator generator, ExistingFileHelper existingFileHelper) {
-		super(generator, modid, existingFileHelper);
+
+	public BlueprintEntityTypeTagsProvider(String modid, DataGenerator generator, ExistingFileHelper fileHelper) {
+		super(generator, modid, fileHelper);
 	}
 
 	@Override

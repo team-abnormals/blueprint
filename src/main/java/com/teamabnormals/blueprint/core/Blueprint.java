@@ -163,14 +163,14 @@ public final class Blueprint {
 	}
 
 	private void dataSetup(GatherDataEvent event) {
-		DataGenerator dataGenerator = event.getGenerator();
-		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+		DataGenerator generator = event.getGenerator();
+		ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
 		if (event.includeServer()) {
-			BlueprintBlockTagsProvider blockTagGen = new BlueprintBlockTagsProvider(MOD_ID, dataGenerator, existingFileHelper);
-			dataGenerator.addProvider(blockTagGen);
-			dataGenerator.addProvider(new BlueprintItemTagsProvider(MOD_ID, dataGenerator, blockTagGen, existingFileHelper));
-			dataGenerator.addProvider(new BlueprintEntityTypeTagsProvider(MOD_ID, dataGenerator, existingFileHelper));
+			BlueprintBlockTagsProvider blockTags = new BlueprintBlockTagsProvider(MOD_ID, generator, fileHelper);
+			generator.addProvider(blockTags);
+			generator.addProvider(new BlueprintItemTagsProvider(MOD_ID, generator, blockTags, fileHelper));
+			generator.addProvider(new BlueprintEntityTypeTagsProvider(MOD_ID, generator, fileHelper));
 		}
 	}
 
