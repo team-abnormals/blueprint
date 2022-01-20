@@ -82,7 +82,11 @@ public final class BlueprintTest {
 		//instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStep.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
 		//instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.ICE_SPIKES), GenerationStep.Decoration.UNDERGROUND_DECORATION, () -> TestFeatures.TEST_SPLINE.get().configured(FeatureConfiguration.NONE).placed(RarityFilter.onAverageOnceEvery(3), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP)));
 
-		BiomeUtil.addEndBiome(Climate.parameters(0.1F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), Biomes.ICE_SPIKES);
+		var zeroPoint = Climate.Parameter.point(0.0F);
+		//Very low temperatures only
+		BiomeUtil.addEndBiome(Climate.parameters(Climate.Parameter.span(-1.0F, -0.75F), zeroPoint, zeroPoint, zeroPoint, zeroPoint, zeroPoint, 0.0F), Biomes.ICE_SPIKES);
+		//Very high temperatures only
+		BiomeUtil.addEndBiome(Climate.parameters(Climate.Parameter.span(0.75F, 1.0F), zeroPoint, zeroPoint, zeroPoint, zeroPoint, zeroPoint, 0.0F), Biomes.BASALT_DELTAS);
 	}
 
 	@OnlyIn(Dist.CLIENT)
