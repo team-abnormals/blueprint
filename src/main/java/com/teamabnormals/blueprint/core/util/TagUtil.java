@@ -5,6 +5,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
@@ -82,7 +83,7 @@ public final class TagUtil {
 	}
 
 	/**
-	 * Creates a tag for an {@link Potion}
+	 * Creates a tag for a {@link Potion}
 	 *
 	 * @param modid The namespace of the tag
 	 * @param name  The name of the tag
@@ -97,7 +98,7 @@ public final class TagUtil {
 	}
 
 	/**
-	 * Creates a tag for an {@link BlockEntityType}
+	 * Creates a tag for a {@link BlockEntityType}
 	 *
 	 * @param modid The namespace of the tag
 	 * @param name  The name of the tag
@@ -109,5 +110,20 @@ public final class TagUtil {
 
 	public static Tag.Named<BlockEntityType<?>> forgeBlockEntityTypeTag(String name) {
 		return blockEntityTypeTag("forge", name);
+	}
+
+	/**
+	 * Creates a tag for an {@link MobEffect}
+	 *
+	 * @param modid The namespace of the tag
+	 * @param name  The name of the tag
+	 * @return The created {@link Tag.Named<MobEffect>}
+	 */
+	public static Tag.Named<MobEffect> mobEffectTag(String modid, String name) {
+		return ForgeTagHandler.makeWrapperTag(ForgeRegistries.MOB_EFFECTS, new ResourceLocation(modid, name));
+	}
+
+	public static Tag.Named<MobEffect> forgeMobEffectTag(String name) {
+		return mobEffectTag("forge", name);
 	}
 }
