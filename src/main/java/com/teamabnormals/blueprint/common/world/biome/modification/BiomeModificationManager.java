@@ -19,7 +19,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -36,8 +35,8 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class BiomeModificationManager extends ModificationManager<BiomeLoadingEvent, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>> {
 	private static final Gson GSON = new Gson();
-	private static final Field TAG_MANAGER = ObfuscationReflectionHelper.findField(ServerResources.class, "f_136148_");
-	private static final Field REGISTRY_ACCESS = ObfuscationReflectionHelper.findField(TagManager.class, "f_144569_");
+	public static final Field TAG_MANAGER = ObfuscationReflectionHelper.findField(ServerResources.class, "f_136148_");
+	public static final Field REGISTRY_ACCESS = ObfuscationReflectionHelper.findField(TagManager.class, "f_144569_");
 	private static final IdentityHashMap<RegistryAccess, RegistryReadOps<JsonElement>> READ_OPS_MAP = new IdentityHashMap<>();
 	private static BiomeModificationManager INSTANCE = null;
 
@@ -85,6 +84,10 @@ public final class BiomeModificationManager extends ModificationManager<BiomeLoa
 	 */
 	public static void trackReadOps(RegistryAccess registryAccess, RegistryReadOps<JsonElement> readOps) {
 		READ_OPS_MAP.put(registryAccess, readOps);
+	}
+
+	public static RegistryReadOps<JsonElement> getReadOps(RegistryAccess registryAccess) {
+		return READ_OPS_MAP.get(registryAccess);
 	}
 
 	public static void onReloadListener(AddReloadListenerEvent event) {

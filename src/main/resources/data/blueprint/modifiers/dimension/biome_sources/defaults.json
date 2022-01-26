@@ -1,0 +1,10 @@
+{
+	"targets": [
+		"minecraft:overworld",
+		"minecraft:the_nether"
+	],
+	"provider": {
+		"type": "blueprint:default",
+		"weight": 10
+	}
+}
