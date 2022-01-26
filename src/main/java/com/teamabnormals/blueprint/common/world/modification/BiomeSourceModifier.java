@@ -16,7 +16,6 @@ import java.util.List;
  *
  * @author SmellyModder (Luke Tonon)
  */
-//TODO: Add built-in data generators
 public record BiomeSourceModifier(List<ResourceKey<LevelStem>> targets, BiomeUtil.ModdedBiomeProvider provider) {
 	public static final Codec<BiomeSourceModifier> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(

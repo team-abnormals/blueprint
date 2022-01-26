@@ -3,7 +3,6 @@
 		"minecraft:overworld"
 	],
 	"provider": {
-		"type": "blueprint:multi_noise",
 		"biomes": [
 			{
 				"parameters": {
@@ -18,6 +17,7 @@
 				"biome": "minecraft:crimson_forest"
 			}
 		],
-		"weight": 4
+		"weight": 4,
+		"type": "blueprint:multi_noise"
 	}
 }
