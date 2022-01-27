@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.common.world.modification;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryLookupCodec;
@@ -32,27 +33,31 @@ public final class ModdedBiomeSource extends BiomeSource {
 	public static final ResourceKey<NormalNoise.NoiseParameters> MODDEDNESS_LARGE = ResourceKey.create(Registry.NOISE_REGISTRY, new ResourceLocation(Blueprint.MOD_ID, "moddedness_large"));
 	public static final Codec<ModdedBiomeSource> CODEC = RecordCodecBuilder.create((instance) -> {
 		return instance.group(
+				RegistryLookupCodec.create(Registry.BIOME_REGISTRY).forGetter((modded) -> modded.biomes),
 				RegistryLookupCodec.create(Registry.NOISE_REGISTRY).forGetter((modded) -> modded.noises),
-				BiomeSource.CODEC.fieldOf("biome_source").forGetter(modded -> modded.biomeSource),
+				BiomeSource.CODEC.fieldOf("original_biome_source").forGetter(modded -> modded.originalSource),
 				Codec.LONG.fieldOf("seed").forGetter(modded -> modded.seed),
 				Codec.BOOL.fieldOf("legacy_random_source").forGetter(modded -> modded.legacy),
 				Codec.BOOL.fieldOf("large_biomes").forGetter(modded -> modded.largeBiomes),
 				WeightedBiomeSlices.CODEC.fieldOf("weighted_slices").forGetter(modded -> modded.weightedBiomeSlices)
 		).apply(instance, ModdedBiomeSource::new);
 	});
+	private final Registry<Biome> biomes;
 	private final Registry<NormalNoise.NoiseParameters> noises;
-	private final BiomeSource biomeSource;
+	private final BiomeSource originalSource;
 	private final long seed;
 	private final boolean legacy;
 	private final boolean largeBiomes;
 	private final NormalNoise moddednessNoise;
 	private final NormalNoise offsetNoise;
 	private final WeightedBiomeSlices weightedBiomeSlices;
+	private final Biome originalSourceMarker;
 
-	public ModdedBiomeSource(Registry<NormalNoise.NoiseParameters> noises, BiomeSource source, long seed, boolean legacy, boolean largeBiomes, WeightedBiomeSlices weightedBiomeSlices) {
-		super(new ArrayList<>(weightedBiomeSlices.combinePossibleBiomes(source.possibleBiomes())));
+	public ModdedBiomeSource(Registry<Biome> biomes, Registry<NormalNoise.NoiseParameters> noises, BiomeSource originalSource, long seed, boolean legacy, boolean largeBiomes, WeightedBiomeSlices weightedBiomeSlices) {
+		super(new ArrayList<>(weightedBiomeSlices.combinePossibleBiomes(originalSource.possibleBiomes())));
+		this.biomes = biomes;
 		this.noises = noises;
-		this.biomeSource = source;
+		this.originalSource = originalSource;
 		this.seed = seed;
 		this.legacy = legacy;
 		this.largeBiomes = largeBiomes;
@@ -66,6 +71,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 			this.offsetNoise = Noises.instantiate(noises, positionalRandomFactory, Noises.SHIFT);
 		}
 		this.weightedBiomeSlices = weightedBiomeSlices;
+		this.originalSourceMarker = biomes.getOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER.getKey());
 	}
 
 	@Override
@@ -75,7 +81,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 
 	@Override
 	public BiomeSource withSeed(long seed) {
-		return new ModdedBiomeSource(this.noises, this.biomeSource, seed, this.legacy, this.largeBiomes, this.weightedBiomeSlices);
+		return new ModdedBiomeSource(this.biomes, this.noises, this.originalSource, seed, this.legacy, this.largeBiomes, this.weightedBiomeSlices);
 	}
 
 	@Override
@@ -83,7 +89,8 @@ public final class ModdedBiomeSource extends BiomeSource {
 		NormalNoise offsetNoise = this.offsetNoise;
 		double shiftedX = x + offsetNoise.getValue(x, 0.0D, z) * 4.0D;
 		double shiftedZ = z + offsetNoise.getValue(z, x, 0.0D) * 4.0D;
-		return this.weightedBiomeSlices.getNoiseBiome(x, y, z, (float) this.moddednessNoise.getValue(shiftedX, 0.0D, shiftedZ), sampler, this.biomeSource);
+		Biome biome = this.weightedBiomeSlices.getNoiseBiome(x, y, z, (float) this.moddednessNoise.getValue(shiftedX, 0.0D, shiftedZ), sampler, this.originalSource);
+		return biome == this.originalSourceMarker ? this.originalSource.getNoiseBiome(x, y, z, sampler) : biome;
 	}
 
 	/**

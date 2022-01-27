@@ -96,7 +96,8 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 							}
 						} catch (IllegalAccessException ignored) {}
 					}
-					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(server.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), source, worldGenSettings.seed(), legacy, largeBiomes, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
+					RegistryAccess registryAccess = server.registryAccess();
+					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(registryAccess.registryOrThrow(Registry.BIOME_REGISTRY), registryAccess.registryOrThrow(Registry.NOISE_REGISTRY), source, worldGenSettings.seed(), legacy, largeBiomes, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
 					chunkGenerator.biomeSource = moddedBiomeSource;
 					chunkGenerator.runtimeBiomeSource = moddedBiomeSource;
 				}

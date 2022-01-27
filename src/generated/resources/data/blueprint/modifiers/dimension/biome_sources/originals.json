@@ -5,6 +5,6 @@
   ],
   "provider": {
     "weight": 10,
-    "type": "blueprint:default"
+    "type": "blueprint:original"
   }
 }

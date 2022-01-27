@@ -19,7 +19,7 @@ public final class BlueprintBiomeSourceModifierProvider extends BiomeSourceModif
 
 	@Override
 	protected void registerModifiers() {
-		this.registerModifier("defaults", new BiomeUtil.DefaultModdedBiomeProvider(10), LevelStem.OVERWORLD, LevelStem.NETHER);
+		this.registerModifier("originals", new BiomeUtil.OriginalModdedBiomeProvider(10), LevelStem.OVERWORLD, LevelStem.NETHER);
 	}
 
 }

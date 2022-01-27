@@ -121,6 +121,7 @@ public final class Blueprint {
 
 		REGISTRY_HELPER.getEntitySubHelper().register(bus);
 		REGISTRY_HELPER.getBlockEntitySubHelper().register(bus);
+		REGISTRY_HELPER.getBiomeSubHelper().register(bus);
 
 		bus.addListener((ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();

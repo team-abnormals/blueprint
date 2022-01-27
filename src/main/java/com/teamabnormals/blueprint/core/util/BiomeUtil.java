@@ -42,7 +42,7 @@ public final class BiomeUtil {
 	}
 
 	static {
-		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "default"), DefaultModdedBiomeProvider.CODEC);
+		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "original"), OriginalModdedBiomeProvider.CODEC);
 		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "multi_noise"), MultiNoiseModdedBiomeProvider.CODEC);
 	}
 
@@ -213,11 +213,11 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record DefaultModdedBiomeProvider(int weight) implements ModdedBiomeProvider {
-		public static final Codec<DefaultModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
+	public static record OriginalModdedBiomeProvider(int weight) implements ModdedBiomeProvider {
+		public static final Codec<OriginalModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
 			return instance.group(
 					Codec.INT.fieldOf("weight").forGetter(provider -> provider.weight)
-			).apply(instance, DefaultModdedBiomeProvider::new);
+			).apply(instance, OriginalModdedBiomeProvider::new);
 		});
 
 		@Override
@@ -249,8 +249,8 @@ public final class BiomeUtil {
 	public static record MultiNoiseModdedBiomeProvider(Climate.ParameterList<Supplier<Biome>> biomes, int weight) implements ModdedBiomeProvider {
 		public static final Codec<MultiNoiseModdedBiomeProvider> CODEC = RecordCodecBuilder.create((instance) -> {
 			return instance.group(
-					ExtraCodecs.nonEmptyList(RecordCodecBuilder.<Pair<Climate.ParameterPoint, Supplier<Biome>>>create((p_187078_) -> {
-						return p_187078_.group(Climate.ParameterPoint.CODEC.fieldOf("parameters").forGetter(Pair::getFirst), Biome.CODEC.fieldOf("biome").forGetter(Pair::getSecond)).apply(p_187078_, Pair::of);
+					ExtraCodecs.nonEmptyList(RecordCodecBuilder.<Pair<Climate.ParameterPoint, Supplier<Biome>>>create((pairInstance) -> {
+						return pairInstance.group(Climate.ParameterPoint.CODEC.fieldOf("parameters").forGetter(Pair::getFirst), Biome.CODEC.fieldOf("biome").forGetter(Pair::getSecond)).apply(pairInstance, Pair::of);
 					}).listOf()).xmap(Climate.ParameterList::new, Climate.ParameterList::values).fieldOf("biomes").forGetter(sampler -> sampler.biomes),
 					Codec.INT.fieldOf("weight").forGetter(MultiNoiseModdedBiomeProvider::getWeight)
 			).apply(instance, MultiNoiseModdedBiomeProvider::new);
