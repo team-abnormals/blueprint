@@ -4,6 +4,7 @@ import com.teamabnormals.blueprint.common.world.modification.BiomeSourceModifier
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.dimension.LevelStem;
 
 /**
@@ -19,7 +20,7 @@ public final class BlueprintBiomeSourceModifierProvider extends BiomeSourceModif
 
 	@Override
 	protected void registerModifiers() {
-		this.registerModifier("originals", new BiomeUtil.OriginalModdedBiomeProvider(10), LevelStem.OVERWORLD, LevelStem.NETHER);
+		this.registerModifier("originals", new BiomeUtil.OriginalModdedBiomeProvider(new ResourceLocation(Blueprint.MOD_ID, "originals"), 10), LevelStem.OVERWORLD, LevelStem.NETHER);
 	}
 
 }

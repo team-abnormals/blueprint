@@ -4,6 +4,7 @@
     "minecraft:the_nether"
   ],
   "provider": {
+    "name": "blueprint:originals",
     "weight": 10,
     "type": "blueprint:original"
   }

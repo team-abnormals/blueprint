@@ -3,6 +3,7 @@
 		"minecraft:the_nether"
 	],
 	"provider": {
+		"name": "blueprint_test:nether_test",
 		"biomes": [
 			{
 				"parameters": {

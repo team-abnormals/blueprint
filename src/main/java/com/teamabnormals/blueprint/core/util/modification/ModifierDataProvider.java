@@ -3,8 +3,8 @@ package com.teamabnormals.blueprint.core.util.modification;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +30,7 @@ import java.util.function.Function;
  * @see ModifierRegistry
  * @see ProviderEntry
  */
-public final class ModifierDataProvider<T, S, D> implements DataProvider {
+public class ModifierDataProvider<T, S, D> implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final DataGenerator dataGenerator;
 	private final String name;
@@ -90,7 +90,9 @@ public final class ModifierDataProvider<T, S, D> implements DataProvider {
 		Gson gson = this.gson;
 		Function<TargetedModifier<T, S, D>, S> additionalSerializationGetter = this.additionalSerializationGetter;
 		ModifierRegistry<T, S, D> modifierRegistry = this.modifierRegistry;
-		this.entries.forEach(entry -> {
+		var entries = this.entries;
+		this.addEntries(entries);
+		entries.forEach(entry -> {
 			if (!entryNames.add(entry.name)) {
 				throw new IllegalStateException("Duplicate modifier: " + entry.name);
 			} else {
@@ -103,7 +105,16 @@ public final class ModifierDataProvider<T, S, D> implements DataProvider {
 				}
 			}
 		});
+		entries.clear();
 	}
+
+	/**
+	 * Adds entries to be generated.
+	 * <p>Use this if you wish to organize your data entries more like vanilla does.</p>
+	 *
+	 * @param entries The list of entries to add to.
+	 */
+	protected void addEntries(List<ProviderEntry<T, S, D>> entries) {}
 
 	@Override
 	public String getName() {

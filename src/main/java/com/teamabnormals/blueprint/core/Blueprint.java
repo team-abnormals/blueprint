@@ -31,6 +31,7 @@ import com.teamabnormals.blueprint.core.other.BlueprintEvents;
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
 import com.teamabnormals.blueprint.core.registry.BlueprintLootConditions;
+import com.teamabnormals.blueprint.core.registry.BlueprintSurfaceRules;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import com.teamabnormals.blueprint.core.util.registry.BlockEntitySubRegistryHelper;
@@ -163,6 +164,7 @@ public final class Blueprint {
 			BuiltinRegistries.register(Registry.BIOME_SOURCE, new ResourceLocation(MOD_ID, "modded"), ModdedBiomeSource.CODEC);
 			BuiltinRegistries.register(BuiltinRegistries.NOISE, new ResourceLocation(MOD_ID, "moddedness"), new NormalNoise.NoiseParameters(-9, 1.0D, 0.0D, 1.0D, 0.0D, 1.0D, 0.0D));
 			BuiltinRegistries.register(BuiltinRegistries.NOISE, new ResourceLocation(MOD_ID, "moddedness_large"), new NormalNoise.NoiseParameters(-11, 1.0D, 0.0D, 1.0D, 0.0D, 1.0D, 0.0D));
+			BlueprintSurfaceRules.register();
 		});
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "slabfish_head"), SLABFISH_SETTINGS);
 	}

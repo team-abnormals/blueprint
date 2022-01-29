@@ -13,9 +13,11 @@ import java.util.List;
 /**
  * The simple record class for representing a configured modifier that adds a {@link BiomeUtil.ModdedBiomeProvider} instance for a specific list of level targets.
  * <p>Use {@link #CODEC} for serializing and deserializing instances of this class.</p>
+ * <p>Even though these are 'chunk generator modifiers', we keep them as a separate system for performance and structural reasons.</p>
  *
  * @author SmellyModder (Luke Tonon)
  */
+//TODO: Use Modifier Target Selectors instead of a list of level stem keys
 public record BiomeSourceModifier(List<ResourceKey<LevelStem>> targets, BiomeUtil.ModdedBiomeProvider provider) {
 	public static final Codec<BiomeSourceModifier> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(

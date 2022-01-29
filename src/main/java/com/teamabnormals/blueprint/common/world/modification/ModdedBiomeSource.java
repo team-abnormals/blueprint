@@ -5,6 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryLookupCodec;
 import net.minecraft.resources.ResourceKey;
@@ -75,6 +77,14 @@ public final class ModdedBiomeSource extends BiomeSource {
 	}
 
 	@Override
+	public void addMultinoiseDebugInfo(List<String> strings, BlockPos pos, Climate.Sampler sampler) {
+		BiomeSource original = this.originalSource;
+		original.addMultinoiseDebugInfo(strings, pos, sampler);
+		if (!(original instanceof ModdedBiomeSource))
+			strings.add("Moddedness Slice: " + this.getSliceName(QuartPos.fromBlock(pos.getX()), QuartPos.fromBlock(pos.getZ())));
+	}
+
+	@Override
 	protected Codec<? extends BiomeSource> codec() {
 		return CODEC;
 	}
@@ -86,11 +96,26 @@ public final class ModdedBiomeSource extends BiomeSource {
 
 	@Override
 	public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
+		Biome biome = this.weightedBiomeSlices.getNoiseBiome(x, y, z, this.getModdedness(x, z), sampler, this.originalSource);
+		return biome == this.originalSourceMarker ? this.originalSource.getNoiseBiome(x, y, z, sampler) : biome;
+	}
+
+	/**
+	 * Gets the name of a modded provider at a horizontal position.
+	 *
+	 * @param x The x pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
+	 * @param z The z pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
+	 * @return The name of a modded provider at a horizontal position.
+	 */
+	public ResourceLocation getSliceName(int x, int z) {
+		return this.weightedBiomeSlices.getSliceName(this.getModdedness(x, z));
+	}
+
+	private float getModdedness(int x, int z) {
 		NormalNoise offsetNoise = this.offsetNoise;
 		double shiftedX = x + offsetNoise.getValue(x, 0.0D, z) * 4.0D;
 		double shiftedZ = z + offsetNoise.getValue(z, x, 0.0D) * 4.0D;
-		Biome biome = this.weightedBiomeSlices.getNoiseBiome(x, y, z, (float) this.moddednessNoise.getValue(shiftedX, 0.0D, shiftedZ), sampler, this.originalSource);
-		return biome == this.originalSourceMarker ? this.originalSource.getNoiseBiome(x, y, z, sampler) : biome;
+		return (float) this.moddednessNoise.getValue(shiftedX, 0.0D, shiftedZ);
 	}
 
 	/**
@@ -141,20 +166,34 @@ public final class ModdedBiomeSource extends BiomeSource {
 		 * @param x          The x pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param y          The y pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param z          The z pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
-		 * @param moddedness A moddedness noise value between 0 and 1 inclusive to get a {@link ModdedBiomeSource} instance within its range.
+		 * @param moddedness A moddedness noise value between 0 and 1 inclusive to get a {@link BiomeUtil.ModdedBiomeProvider} instance within its range.
 		 * @param sampler    A {@link Climate.Sampler} instance to sample {@link Climate.TargetPoint} instances.
 		 * @param original   The original {@link BiomeSource} instance being modded.
 		 * @return A noise {@link Biome} at a position.
 		 */
 		public Biome getNoiseBiome(int x, int y, int z, float moddedness, Climate.Sampler sampler, BiomeSource original) {
+			return this.getProvider(moddedness).getNoiseBiome(x, y, z, sampler, original);
+		}
+
+		/**
+		 * Gets the name of a provider at a horizontal position.
+		 *
+		 * @param moddedness A moddedness noise value between 0 and 1 inclusive to get a {@link BiomeUtil.ModdedBiomeProvider} instance within its range.
+		 * @return The name of a provider at a horizontal position.
+		 */
+		public ResourceLocation getSliceName(float moddedness) {
+			return this.getProvider(moddedness).getName();
+		}
+
+		private BiomeUtil.ModdedBiomeProvider getProvider(float moddedness) {
 			float[] providerThresholds = this.providerThresholds;
 			int length = providerThresholds.length;
 			for (int i = 0; i < length; i++) {
 				if (providerThresholds[i] >= moddedness) {
-					return this.providers[i].getNoiseBiome(x, y, z, sampler, original);
+					return this.providers[i];
 				}
 			}
-			return this.providers[length - 1].getNoiseBiome(x, y, z, sampler, original);
+			return this.providers[length - 1];
 		}
 	}
 }

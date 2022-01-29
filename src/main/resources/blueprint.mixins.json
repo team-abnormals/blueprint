@@ -20,6 +20,8 @@
     "ServerLevelMixin",
     "SimpleJsonResourceReloadListenerMixin",
     "SpawnEggItemMixin",
+    "SurfaceRulesContextMixin",
+    "SurfaceSystemMixin",
     "TheEndBiomeSourceMixin"
   ],
   "client": [

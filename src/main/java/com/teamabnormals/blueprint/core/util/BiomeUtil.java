@@ -201,6 +201,14 @@ public final class BiomeUtil {
 		int getWeight();
 
 		/**
+		 * Gets the name of this provider.
+		 * <p>This is used for debugging and checking if the provider's name equals another name.</p>
+		 *
+		 * @return The name of this provider.
+		 */
+		ResourceLocation getName();
+
+		/**
 		 * Gets a {@link Codec} instance for serializing and deserializing this provider.
 		 *
 		 * @return A {@link Codec} instance for serializing and deserializing this provider.
@@ -213,10 +221,11 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record OriginalModdedBiomeProvider(int weight) implements ModdedBiomeProvider {
+	public static record OriginalModdedBiomeProvider(ResourceLocation name, int weight) implements ModdedBiomeProvider {
 		public static final Codec<OriginalModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
 			return instance.group(
-					Codec.INT.fieldOf("weight").forGetter(provider -> provider.weight)
+					ResourceLocation.CODEC.fieldOf("name").forGetter(provider -> provider.name),
+					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weight").forGetter(provider -> provider.weight)
 			).apply(instance, OriginalModdedBiomeProvider::new);
 		});
 
@@ -228,6 +237,11 @@ public final class BiomeUtil {
 		@Override
 		public int getWeight() {
 			return this.weight;
+		}
+
+		@Override
+		public ResourceLocation getName() {
+			return this.name;
 		}
 
 		@Override
@@ -246,13 +260,14 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record MultiNoiseModdedBiomeProvider(Climate.ParameterList<Supplier<Biome>> biomes, int weight) implements ModdedBiomeProvider {
+	public static record MultiNoiseModdedBiomeProvider(ResourceLocation name, Climate.ParameterList<Supplier<Biome>> biomes, int weight) implements ModdedBiomeProvider {
 		public static final Codec<MultiNoiseModdedBiomeProvider> CODEC = RecordCodecBuilder.create((instance) -> {
 			return instance.group(
+					ResourceLocation.CODEC.fieldOf("name").forGetter(provider -> provider.name),
 					ExtraCodecs.nonEmptyList(RecordCodecBuilder.<Pair<Climate.ParameterPoint, Supplier<Biome>>>create((pairInstance) -> {
 						return pairInstance.group(Climate.ParameterPoint.CODEC.fieldOf("parameters").forGetter(Pair::getFirst), Biome.CODEC.fieldOf("biome").forGetter(Pair::getSecond)).apply(pairInstance, Pair::of);
 					}).listOf()).xmap(Climate.ParameterList::new, Climate.ParameterList::values).fieldOf("biomes").forGetter(sampler -> sampler.biomes),
-					Codec.INT.fieldOf("weight").forGetter(MultiNoiseModdedBiomeProvider::getWeight)
+					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weight").forGetter(MultiNoiseModdedBiomeProvider::getWeight)
 			).apply(instance, MultiNoiseModdedBiomeProvider::new);
 		});
 
@@ -265,6 +280,11 @@ public final class BiomeUtil {
 		@Override
 		public int getWeight() {
 			return this.weight;
+		}
+
+		@Override
+		public ResourceLocation getName() {
+			return this.name;
 		}
 
 		@Override

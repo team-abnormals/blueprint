@@ -128,12 +128,14 @@ public abstract class BiomeSourceModifierProvider implements DataProvider {
 	 */
 	@SafeVarargs
 	protected final void registerMultiNoiseProvider(String name, List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> biomes, int weight, ResourceKey<LevelStem>... targets) {
-		this.biomeSourceModifiers.add(Pair.of(new ResourceLocation(this.modid, name), (ops) -> {
+		ResourceLocation location = new ResourceLocation(this.modid, name);
+		this.biomeSourceModifiers.add(Pair.of(location, (ops) -> {
 			JsonObject object = new JsonObject();
 			JsonArray targetsArray = new JsonArray();
 			for (var key : targets) targetsArray.add(key.location().toString());
 			object.add("targets", targetsArray);
 			JsonObject provider = new JsonObject();
+			provider.addProperty("name", location.toString());
 			JsonArray biomesArray = new JsonArray();
 			for (var pair : biomes) {
 				JsonObject entry = new JsonObject();

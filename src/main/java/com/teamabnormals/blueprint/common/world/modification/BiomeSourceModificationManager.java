@@ -87,7 +87,8 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 				if (!(source instanceof FixedBiomeSource) && !(source instanceof CheckerboardColumnBiomeSource)) {
 					boolean legacy = false;
 					boolean largeBiomes = false;
-					if (chunkGenerator instanceof NoiseBasedChunkGenerator) {
+					boolean noiseBased = chunkGenerator instanceof NoiseBasedChunkGenerator;
+					if (noiseBased) {
 						try {
 							NoiseGeneratorSettings settings = ((Supplier<NoiseGeneratorSettings>) NOISE_GENERATOR_SETTINGS.get(chunkGenerator)).get();
 							if (settings != null) {
@@ -100,6 +101,7 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(registryAccess.registryOrThrow(Registry.BIOME_REGISTRY), registryAccess.registryOrThrow(Registry.NOISE_REGISTRY), source, worldGenSettings.seed(), legacy, largeBiomes, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
 					chunkGenerator.biomeSource = moddedBiomeSource;
 					chunkGenerator.runtimeBiomeSource = moddedBiomeSource;
+					if (noiseBased) ((ModdedSurfaceSystem) ((NoiseBasedChunkGenerator) chunkGenerator).surfaceSystem).setModdedBiomeSource(moddedBiomeSource);
 				}
 			}
 		}
