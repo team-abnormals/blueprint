@@ -57,6 +57,10 @@ public final class EmptyTrigger implements CriterionTrigger<EmptyTrigger.Instanc
 		return new Instance(this.id);
 	}
 
+	public Instance createInstance() {
+		return new Instance(this.id);
+	}
+
 	public void trigger(ServerPlayer player) {
 		Listeners listeners = this.listeners.get(player.getAdvancements());
 		if (listeners != null) {
@@ -67,7 +71,7 @@ public final class EmptyTrigger implements CriterionTrigger<EmptyTrigger.Instanc
 	public static class Instance implements CriterionTriggerInstance {
 		private final ResourceLocation id;
 
-		Instance(ResourceLocation id) {
+		public Instance(ResourceLocation id) {
 			super();
 			this.id = id;
 		}
