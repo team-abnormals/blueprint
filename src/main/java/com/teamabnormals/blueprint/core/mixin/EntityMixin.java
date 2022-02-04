@@ -136,14 +136,14 @@ public final class EntityMixin implements IDataManager, Endimatable {
 					dataListTag.add(dataTag);
 				}
 			});
-			compound.put("ACTrackedData", dataListTag);
+			compound.put("BlueprintTrackedData", dataListTag);
 		}
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", shift = At.Shift.BEFORE), method = "load")
 	public void read(CompoundTag compound, CallbackInfo info) {
 		if (compound.contains("BlueprintTrackedData", Tag.TAG_LIST)) {
-			ListTag dataListTag = compound.getList("ACTrackedData", Tag.TAG_COMPOUND);
+			ListTag dataListTag = compound.getList("BlueprintTrackedData", Tag.TAG_COMPOUND);
 			dataListTag.forEach(nbt -> {
 				CompoundTag dataTag = (CompoundTag) nbt;
 				ResourceLocation id = new ResourceLocation(dataTag.getString("Id"));
