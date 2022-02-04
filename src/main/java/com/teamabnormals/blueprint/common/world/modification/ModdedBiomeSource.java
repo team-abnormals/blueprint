@@ -56,7 +56,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 	private final Biome originalSourceMarker;
 
 	public ModdedBiomeSource(Registry<Biome> biomes, Registry<NormalNoise.NoiseParameters> noises, BiomeSource originalSource, long seed, boolean legacy, boolean largeBiomes, WeightedBiomeSlices weightedBiomeSlices) {
-		super(new ArrayList<>(weightedBiomeSlices.combinePossibleBiomes(originalSource.possibleBiomes())));
+		super(new ArrayList<>(weightedBiomeSlices.combinePossibleBiomes(originalSource.possibleBiomes(), biomes)));
 		this.biomes = biomes;
 		this.noises = noises;
 		this.originalSource = originalSource;
@@ -96,7 +96,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 
 	@Override
 	public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
-		Biome biome = this.weightedBiomeSlices.getNoiseBiome(x, y, z, this.getModdedness(x, z), sampler, this.originalSource);
+		Biome biome = this.weightedBiomeSlices.getNoiseBiome(x, y, z, this.getModdedness(x, z), sampler, this.originalSource, this.biomes);
 		return biome == this.originalSourceMarker ? this.originalSource.getNoiseBiome(x, y, z, sampler) : biome;
 	}
 
@@ -150,12 +150,13 @@ public final class ModdedBiomeSource extends BiomeSource {
 		 * Merges the additional possible biomes of the {@link #providers} with another set of possible biomes.
 		 *
 		 * @param possibleBiomes The possible biomes to merge with the additional possible biomes.
+		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return The additional possible biomes of the {@link #providers} merged with another set of possible biomes.
 		 */
-		public Set<Biome> combinePossibleBiomes(Set<Biome> possibleBiomes) {
+		public Set<Biome> combinePossibleBiomes(Set<Biome> possibleBiomes, Registry<Biome> registry) {
 			HashSet<Biome> biomes = new HashSet<>(possibleBiomes);
 			for (BiomeUtil.ModdedBiomeProvider provider : this.providers) {
-				biomes.addAll(provider.getAdditionalPossibleBiomes());
+				biomes.addAll(provider.getAdditionalPossibleBiomes(registry));
 			}
 			return biomes;
 		}
@@ -169,10 +170,11 @@ public final class ModdedBiomeSource extends BiomeSource {
 		 * @param moddedness A moddedness noise value between 0 and 1 inclusive to get a {@link BiomeUtil.ModdedBiomeProvider} instance within its range.
 		 * @param sampler    A {@link Climate.Sampler} instance to sample {@link Climate.TargetPoint} instances.
 		 * @param original   The original {@link BiomeSource} instance being modded.
+		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return A noise {@link Biome} at a position.
 		 */
-		public Biome getNoiseBiome(int x, int y, int z, float moddedness, Climate.Sampler sampler, BiomeSource original) {
-			return this.getProvider(moddedness).getNoiseBiome(x, y, z, sampler, original);
+		public Biome getNoiseBiome(int x, int y, int z, float moddedness, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
+			return this.getProvider(moddedness).getNoiseBiome(x, y, z, sampler, original, registry);
 		}
 
 		/**

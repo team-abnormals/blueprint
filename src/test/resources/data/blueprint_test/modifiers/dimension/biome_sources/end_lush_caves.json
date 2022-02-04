@@ -1,0 +1,49 @@
+{
+	"targets": [
+		"minecraft:the_end"
+	],
+	"provider": {
+		"name": "blueprint_test:end_test",
+		"overlays": [
+			{
+				"biome_source": {
+					"biomes": [
+						{
+							"parameters": {
+								"erosion": 0.0,
+								"depth": [
+									0.4,
+									0.7
+								],
+								"weirdness": 0.0,
+								"offset": 0.0,
+								"temperature": 0.0,
+								"humidity": 0.0,
+								"continentalness": 0.0
+							},
+							"biome": "minecraft:lush_caves"
+						},
+						{
+							"parameters": {
+								"erosion": 0.0,
+								"depth": 0.0,
+								"weirdness": 0.0,
+								"offset": 0.0,
+								"temperature": 0.0,
+								"humidity": 0.0,
+								"continentalness": 0.0
+							},
+							"biome": "blueprint:original_source_marker"
+						}
+					],
+					"type": "minecraft:multi_noise"
+				},
+				"target_biomes": [
+					"minecraft:end_highlands"
+				]
+			}
+		],
+		"weight": 5,
+		"type": "blueprint:overlay"
+	}
+}

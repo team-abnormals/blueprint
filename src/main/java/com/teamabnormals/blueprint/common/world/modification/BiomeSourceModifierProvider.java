@@ -12,8 +12,6 @@ import net.minecraft.data.HashCache;
 import net.minecraft.resources.RegistryWriteOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +21,6 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * A {@link DataProvider} implementation for {@link BiomeSourceModifier} instances.
@@ -34,7 +30,7 @@ import java.util.function.Function;
 public abstract class BiomeSourceModifierProvider implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
-	private final List<Pair<ResourceLocation, Function<DynamicOps<JsonElement>, Optional<JsonElement>>>> biomeSourceModifiers = new LinkedList<>();
+	private final List<Pair<ResourceLocation, BiomeSourceModifier>> biomeSourceModifiers = new LinkedList<>();
 	private final DataGenerator dataGenerator;
 	private final String modid;
 	private final DynamicOps<JsonElement> ops;
@@ -79,7 +75,7 @@ public abstract class BiomeSourceModifierProvider implements DataProvider {
 			} else {
 				Path path = outputFolder.resolve(basePath + name.getPath() + ".json");
 				try {
-					var result = pair.getSecond().apply(ops);
+					var result = BiomeSourceModifier.CODEC.encodeStart(ops, pair.getSecond()).result();
 					if (result.isPresent()) {
 						DataProvider.save(GSON, hashCache, result.get(), path);
 					} else LOGGER.error("Couldn't serialize biome source modifier {}", path);
@@ -102,7 +98,7 @@ public abstract class BiomeSourceModifierProvider implements DataProvider {
 	 * @param modifier A {@link BiomeSourceModifier} instance to be generated.
 	 */
 	protected void registerModifier(String name, BiomeSourceModifier modifier) {
-		this.biomeSourceModifiers.add(Pair.of(new ResourceLocation(this.modid, name), (ops) -> BiomeSourceModifier.CODEC.encodeStart(ops, modifier).result()));
+		this.biomeSourceModifiers.add(Pair.of(new ResourceLocation(this.modid, name), modifier));
 	}
 
 	/**
@@ -115,42 +111,6 @@ public abstract class BiomeSourceModifierProvider implements DataProvider {
 	@SafeVarargs
 	protected final void registerModifier(String name, BiomeUtil.ModdedBiomeProvider provider, ResourceKey<LevelStem>... targets) {
 		this.registerModifier(name, new BiomeSourceModifier(List.of(targets), provider));
-	}
-
-	/**
-	 * Registers a {@link BiomeUtil.MultiNoiseModdedBiomeProvider} instance to be generated.
-	 * <p>This method is unique because it eases generation of multi noise providers by using biome resource keys instead of biome suppliers.</p>
-	 *
-	 * @param name    The name of the provider.
-	 * @param biomes  A list of pairs containing a {@link Climate.ParameterPoint} instance and a biome {@link ResourceKey}.
-	 * @param weight  The weight of the provider.
-	 * @param targets An array of {@link LevelStem} target keys.
-	 */
-	@SafeVarargs
-	protected final void registerMultiNoiseProvider(String name, List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> biomes, int weight, ResourceKey<LevelStem>... targets) {
-		ResourceLocation location = new ResourceLocation(this.modid, name);
-		this.biomeSourceModifiers.add(Pair.of(location, (ops) -> {
-			JsonObject object = new JsonObject();
-			JsonArray targetsArray = new JsonArray();
-			for (var key : targets) targetsArray.add(key.location().toString());
-			object.add("targets", targetsArray);
-			JsonObject provider = new JsonObject();
-			provider.addProperty("name", location.toString());
-			JsonArray biomesArray = new JsonArray();
-			for (var pair : biomes) {
-				JsonObject entry = new JsonObject();
-				Optional<JsonElement> parameters = Climate.ParameterPoint.CODEC.encodeStart(ops, pair.getFirst()).result();
-				if (parameters.isEmpty()) return Optional.empty();
-				entry.add("parameters", parameters.get());
-				entry.addProperty("biome", pair.getSecond().location().toString());
-				biomesArray.add(entry);
-			}
-			provider.add("biomes", biomesArray);
-			provider.addProperty("weight", weight);
-			provider.addProperty("type", "blueprint:multi_noise");
-			object.add("provider", provider);
-			return Optional.of(object);
-		}));
 	}
 
 	@Override

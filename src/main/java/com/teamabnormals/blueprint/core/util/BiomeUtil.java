@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core.util;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,10 +16,7 @@ import net.minecraft.world.level.biome.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -39,11 +37,9 @@ public final class BiomeUtil {
 
 	static {
 		addEndBiome(Climate.parameters(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), Biomes.THE_VOID);
-	}
-
-	static {
-		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "original"), OriginalModdedBiomeProvider.CODEC);
-		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "multi_noise"), MultiNoiseModdedBiomeProvider.CODEC);
+		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "original"), BiomeUtil.OriginalModdedBiomeProvider.CODEC);
+		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "multi_noise"), BiomeUtil.MultiNoiseModdedBiomeProvider.CODEC);
+		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "overlay"), BiomeUtil.OverlayModdedBiomeProvider.CODEC);
 	}
 
 	/**
@@ -62,6 +58,7 @@ public final class BiomeUtil {
 	 * @param point A {@link Climate.ParameterPoint} instance to use for the biome.
 	 * @param key   The {@link ResourceKey} of the biome.
 	 */
+	@Deprecated(forRemoval = true)
 	public static synchronized void addEndBiome(Climate.ParameterPoint point, ResourceKey<Biome> key) {
 		END_BIOMES.add(Pair.of(point, key));
 	}
@@ -85,7 +82,7 @@ public final class BiomeUtil {
 	 * @param biome       The {@link Biome} {@link ResourceKey} to add.
 	 * @param deep        The {@link Biome} {@link ResourceKey} to add as the deep variant.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static synchronized void addOceanBiome(Climate.Parameter temperature, ResourceKey<Biome> biome, @Nullable ResourceKey<Biome> deep) {
 		OCEAN_BIOMES.add(Pair.of(temperature, Pair.of(biome, deep)));
 	}
@@ -97,7 +94,7 @@ public final class BiomeUtil {
 	 * @param point The {@link Climate.ParameterPoint} instance to use for biome's generation attributes.
 	 * @param biome The {@link ResourceKey} of the {@link Biome} to use.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static synchronized void addNetherBiome(Climate.ParameterPoint point, ResourceKey<Biome> biome) {
 		NETHER_BIOMES.add(Pair.of(point, biome));
 	}
@@ -117,7 +114,7 @@ public final class BiomeUtil {
 	 *
 	 * @return A new {@link Climate.ParameterList} instance containing the {@link #END_BIOMES} list.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static Climate.ParameterList<ResourceKey<Biome>> getEndBiomes() {
 		return new Climate.ParameterList<>(END_BIOMES);
 	}
@@ -140,7 +137,7 @@ public final class BiomeUtil {
 	 * @param registry   A {@link Biome} {@link Registry} to lookup the {@link Biome}s.
 	 * @return An {@link ImmutableList} containing base (vanilla) nether biome data and modded nether biome data.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static List<Pair<Climate.ParameterPoint, Supplier<Biome>>> getModifiedNetherBiomes(List<Pair<Climate.ParameterPoint, Supplier<Biome>>> baseBiomes, Registry<Biome> registry) {
 		ImmutableList.Builder<Pair<Climate.ParameterPoint, Supplier<Biome>>> builder = new ImmutableList.Builder<>();
 		builder.addAll(baseBiomes);
@@ -180,17 +177,19 @@ public final class BiomeUtil {
 		 * @param z        The z pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param sampler  A {@link Climate.Sampler} instance to sample {@link net.minecraft.world.level.biome.Climate.TargetPoint} instances.
 		 * @param original The original {@link BiomeSource} instance that this provider is modding.
+		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return A noise {@link Biome} at a position in a modded slice.
 		 */
-		Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original);
+		Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry);
 
 		/**
 		 * Gets a set of the additional possible biomes that this provider may have.
 		 *
+		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return A set of the additional possible biomes that this provider may have.
-		 * @see com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource.WeightedBiomeSlices#combinePossibleBiomes(Set).
+		 * @see com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource.WeightedBiomeSlices#combinePossibleBiomes(Set, Registry).
 		 */
-		Set<Biome> getAdditionalPossibleBiomes();
+		Set<Biome> getAdditionalPossibleBiomes(Registry<Biome> registry);
 
 		/**
 		 * Gets the weight of this provider.
@@ -230,7 +229,7 @@ public final class BiomeUtil {
 		});
 
 		@Override
-		public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original) {
+		public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
 			return original.getNoiseBiome(x, y, z, sampler);
 		}
 
@@ -250,7 +249,7 @@ public final class BiomeUtil {
 		}
 
 		@Override
-		public Set<Biome> getAdditionalPossibleBiomes() {
+		public Set<Biome> getAdditionalPossibleBiomes(Registry<Biome> registry) {
 			return new HashSet<>(0);
 		}
 	}
@@ -260,21 +259,20 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record MultiNoiseModdedBiomeProvider(ResourceLocation name, Climate.ParameterList<Supplier<Biome>> biomes, int weight) implements ModdedBiomeProvider {
+	public static record MultiNoiseModdedBiomeProvider(ResourceLocation name, Climate.ParameterList<ResourceKey<Biome>> biomes, int weight) implements ModdedBiomeProvider {
 		public static final Codec<MultiNoiseModdedBiomeProvider> CODEC = RecordCodecBuilder.create((instance) -> {
 			return instance.group(
 					ResourceLocation.CODEC.fieldOf("name").forGetter(provider -> provider.name),
-					ExtraCodecs.nonEmptyList(RecordCodecBuilder.<Pair<Climate.ParameterPoint, Supplier<Biome>>>create((pairInstance) -> {
-						return pairInstance.group(Climate.ParameterPoint.CODEC.fieldOf("parameters").forGetter(Pair::getFirst), Biome.CODEC.fieldOf("biome").forGetter(Pair::getSecond)).apply(pairInstance, Pair::of);
+					ExtraCodecs.nonEmptyList(RecordCodecBuilder.<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>create((pairInstance) -> {
+						return pairInstance.group(Climate.ParameterPoint.CODEC.fieldOf("parameters").forGetter(Pair::getFirst), ResourceKey.codec(Registry.BIOME_REGISTRY).fieldOf("biome").forGetter(Pair::getSecond)).apply(pairInstance, Pair::of);
 					}).listOf()).xmap(Climate.ParameterList::new, Climate.ParameterList::values).fieldOf("biomes").forGetter(sampler -> sampler.biomes),
 					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weight").forGetter(MultiNoiseModdedBiomeProvider::getWeight)
 			).apply(instance, MultiNoiseModdedBiomeProvider::new);
 		});
 
-		@SuppressWarnings("deprecation")
 		@Override
-		public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original) {
-			return this.biomes.findValue(sampler.sample(x, y, z), () -> net.minecraft.data.worldgen.biome.Biomes.THE_VOID).get();
+		public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
+			return registry.get(this.biomes.findValue(sampler.sample(x, y, z), Biomes.THE_VOID));
 		}
 
 		@Override
@@ -293,8 +291,68 @@ public final class BiomeUtil {
 		}
 
 		@Override
-		public Set<Biome> getAdditionalPossibleBiomes() {
-			return this.biomes.values().stream().map(pair -> pair.getSecond().get()).collect(Collectors.toSet());
+		public Set<Biome> getAdditionalPossibleBiomes(Registry<Biome> registry) {
+			return this.biomes.values().stream().map(pair -> registry.get(pair.getSecond())).collect(Collectors.toSet());
+		}
+	}
+
+	/**
+	 * A {@link ModdedBiomeProvider} implementation that maps out {@link BiomeSource} instances for overlaying specific biomes.
+	 * <p>This is especially useful for sub-biomes.</p>
+	 *
+	 * @author SmellyModder (Luke Tonon)
+	 */
+	public static record OverlayModdedBiomeProvider(ResourceLocation name, Map<ResourceLocation, BiomeSource> map, int weight) implements ModdedBiomeProvider {
+		public static final Codec<OverlayModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
+			return instance.group(
+					ResourceLocation.CODEC.fieldOf("name").forGetter(provider -> provider.name),
+					//Using a list of pairs significantly saves file size
+					Codec.mapPair(ResourceLocation.CODEC.listOf().fieldOf("target_biomes"), BiomeSource.CODEC.fieldOf("biome_source")).codec().listOf().xmap(list -> {
+						ImmutableMap.Builder<ResourceLocation, BiomeSource> map = ImmutableMap.builder();
+						for (var pair : list) {
+							BiomeSource source = pair.getSecond();
+							pair.getFirst().forEach(location -> map.put(location, source));
+						}
+						return (Map<ResourceLocation, BiomeSource>) map.build();
+					}, map -> {
+						ImmutableList.Builder<Pair<List<ResourceLocation>, BiomeSource>> list = new ImmutableList.Builder<>();
+						Map<BiomeSource, List<ResourceLocation>> collected = new IdentityHashMap<>();
+						map.forEach((location, source) -> collected.computeIfAbsent(source, __ -> new LinkedList<>()).add(location));
+						collected.forEach((source, locations) -> list.add(Pair.of(locations, source)));
+						return list.build();
+					}).fieldOf("overlays").forGetter(provider -> provider.map),
+					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weight").forGetter(OverlayModdedBiomeProvider::getWeight)
+			).apply(instance, OverlayModdedBiomeProvider::new);
+		});
+
+		@Override
+		public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
+			Biome originalBiome = original.getNoiseBiome(x, y, z, sampler);
+			BiomeSource source = this.map.get(registry.getKey(originalBiome));
+			if (source == null) return originalBiome;
+			return source.getNoiseBiome(x, y, z, sampler);
+		}
+
+		@Override
+		public Set<Biome> getAdditionalPossibleBiomes(Registry<Biome> registry) {
+			HashSet<Biome> biomes = new HashSet<>();
+			this.map.values().forEach(source -> biomes.addAll(source.possibleBiomes()));
+			return biomes;
+		}
+
+		@Override
+		public int getWeight() {
+			return this.weight;
+		}
+
+		@Override
+		public ResourceLocation getName() {
+			return this.name;
+		}
+
+		@Override
+		public Codec<? extends ModdedBiomeProvider> codec() {
+			return CODEC;
 		}
 	}
 }
