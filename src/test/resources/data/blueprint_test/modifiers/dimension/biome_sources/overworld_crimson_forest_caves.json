@@ -1,7 +1,5 @@
 {
-	"targets": [
-		"minecraft:overworld"
-	],
+	"target": "minecraft:overworld",
 	"provider": {
 		"name": "blueprint_test:overworld_test",
 		"biomes": [

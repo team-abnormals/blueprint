@@ -2,9 +2,11 @@ package com.teamabnormals.blueprint.common.world.modification;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.teamabnormals.blueprint.common.world.biome.modification.BiomeModificationManager;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
+import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryReadOps;
@@ -14,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.CheckerboardColumnBiomeSource;
 import net.minecraft.world.level.biome.FixedBiomeSource;
@@ -22,6 +25,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,10 +33,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -76,8 +77,23 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 		if (modifiers.isEmpty()) return;
 		MinecraftServer server = event.getServer();
 		WorldGenSettings worldGenSettings = server.getWorldData().worldGenSettings();
-		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : worldGenSettings.dimensions().entrySet()) {
-			List<BiomeUtil.ModdedBiomeProvider> providersForKey = getProvidersForKey(entry.getKey(), modifiers);
+		var dimensions = worldGenSettings.dimensions();
+		var keySet = dimensions.keySet();
+		SelectionSpace selectionSpace = (consumer) -> keySet.forEach(location -> consumer.accept(location, null));
+		HashMap<ResourceLocation, ArrayList<BiomeUtil.ModdedBiomeProvider>> map = new HashMap<>();
+		for (BiomeSourceModifier modifier : modifiers) {
+			BiomeUtil.ModdedBiomeProvider provider = modifier.provider();
+			if (provider.getWeight() <= 0) return;
+			modifier.targetSelector().getTargetNames(selectionSpace).forEach(location -> {
+				map.computeIfAbsent(location, __ -> new ArrayList<>()).add(provider);
+			});
+		}
+		long seed = worldGenSettings.seed();
+		RegistryAccess registryAccess = server.registryAccess();
+		Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registry.BIOME_REGISTRY);
+		Registry<NormalNoise.NoiseParameters> noiseParametersRegistry = registryAccess.registryOrThrow(Registry.NOISE_REGISTRY);
+		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : dimensions.entrySet()) {
+			ArrayList<BiomeUtil.ModdedBiomeProvider> providersForKey = map.get(entry.getKey().location());
 			if (!providersForKey.isEmpty()) {
 				ChunkGenerator chunkGenerator = entry.getValue().generator();
 				BiomeSource source = chunkGenerator.getBiomeSource();
@@ -95,39 +111,31 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 								legacy = settings.useLegacyRandomSource();
 								largeBiomes = settings.noiseSettings().largeBiomes();
 							}
-						} catch (IllegalAccessException ignored) {}
+						} catch (IllegalAccessException ignored) {
+						}
 					}
-					RegistryAccess registryAccess = server.registryAccess();
-					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(registryAccess.registryOrThrow(Registry.BIOME_REGISTRY), registryAccess.registryOrThrow(Registry.NOISE_REGISTRY), source, worldGenSettings.seed(), legacy, largeBiomes, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
+					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, noiseParametersRegistry, source, seed, legacy, largeBiomes, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
 					chunkGenerator.biomeSource = moddedBiomeSource;
 					chunkGenerator.runtimeBiomeSource = moddedBiomeSource;
-					if (noiseBased) ((ModdedSurfaceSystem) ((NoiseBasedChunkGenerator) chunkGenerator).surfaceSystem).setModdedBiomeSource(moddedBiomeSource);
+					if (noiseBased)
+						((ModdedSurfaceSystem) ((NoiseBasedChunkGenerator) chunkGenerator).surfaceSystem).setModdedBiomeSource(moddedBiomeSource);
 				}
 			}
 		}
-	}
-
-	private static List<BiomeUtil.ModdedBiomeProvider> getProvidersForKey(ResourceKey<LevelStem> resourceKey, List<BiomeSourceModifier> modifiers) {
-		List<BiomeUtil.ModdedBiomeProvider> providers = new ArrayList<>();
-		for (BiomeSourceModifier sourceModifier : modifiers) {
-			if (sourceModifier.targets().contains(resourceKey)) {
-				BiomeUtil.ModdedBiomeProvider provider = sourceModifier.provider();
-				if (provider.getWeight() > 0) providers.add(provider);
-			}
-		}
-		return providers;
 	}
 
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
 		List<BiomeSourceModifier> modifiers = this.modifiers;
 		modifiers.clear();
+		RegistryReadOps<JsonElement> readOps = this.readOps;
 		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
-			var dataResult = BiomeSourceModifier.CODEC.decode(this.readOps, entry.getValue());
-			var result = dataResult.result();
-			if (result.isPresent()) modifiers.add(result.get().getFirst());
-			else
-				Blueprint.LOGGER.error("Error loading Biome Source Modifier named '{}': {}", entry.getKey(), dataResult.error().get().message());
+			ResourceLocation name = entry.getKey();
+			try {
+				modifiers.add(BiomeSourceModifier.deserialize(name, entry.getValue(), readOps));
+			} catch (JsonParseException exception) {
+				Blueprint.LOGGER.error("Parsing error loading Biome Source Modifier: {}", name, exception);
+			}
 		}
 		Blueprint.LOGGER.info("Biome Source Modification Manager has loaded {} modifiers", modifiers.size());
 	}

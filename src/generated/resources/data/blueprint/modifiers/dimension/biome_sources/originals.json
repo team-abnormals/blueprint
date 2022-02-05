@@ -1,9 +1,13 @@
 {
-  "targets": [
-    "minecraft:overworld",
-    "minecraft:the_nether",
-    "minecraft:the_end"
-  ],
+  "target": {
+    "type": "names",
+    "config": [
+      "minecraft:overworld",
+      "minecraft:the_nether",
+      "minecraft:the_end"
+    ],
+    "conditions": []
+  },
   "provider": {
     "name": "blueprint:originals",
     "weight": 10,

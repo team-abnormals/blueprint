@@ -100,6 +100,6 @@ public final class ChunkGeneratorModificationManager extends SimpleJsonResourceR
 				Blueprint.LOGGER.error("Parsing error loading Chunk Generator Modifier: {}", entry.getKey(), exception);
 			}
 		}
-		Blueprint.LOGGER.info("Chunk Generator Modification Manager has loaded {} targeted modifiers", loadedModifiers);
+		Blueprint.LOGGER.info("Chunk Generator Modification Manager has loaded {} modifiers", loadedModifiers);
 	}
 }

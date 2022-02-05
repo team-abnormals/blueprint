@@ -1,18 +1,22 @@
 package com.teamabnormals.blueprint.common.world.modification;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
+import com.teamabnormals.blueprint.core.util.modification.targeting.ConditionedModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.ConfiguredModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.ModifierTargetSelectorRegistry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.resources.RegistryWriteOps;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -75,11 +79,8 @@ public abstract class BiomeSourceModifierProvider implements DataProvider {
 			} else {
 				Path path = outputFolder.resolve(basePath + name.getPath() + ".json");
 				try {
-					var result = BiomeSourceModifier.CODEC.encodeStart(ops, pair.getSecond()).result();
-					if (result.isPresent()) {
-						DataProvider.save(GSON, hashCache, result.get(), path);
-					} else LOGGER.error("Couldn't serialize biome source modifier {}", path);
-				} catch (IOException exception) {
+					DataProvider.save(GSON, hashCache, pair.getSecond().serialize(ops), path);
+				} catch (JsonParseException | IOException exception) {
 					LOGGER.error("Couldn't save biome source modifier {}", path, exception);
 				}
 			}
@@ -102,15 +103,14 @@ public abstract class BiomeSourceModifierProvider implements DataProvider {
 	}
 
 	/**
-	 * Registers a {@link BiomeUtil.ModdedBiomeProvider} instance to be generated.
+	 * Registers a {@link BiomeUtil.ModdedBiomeProvider} instance with no conditions to be generated.
 	 *
 	 * @param name     The name of the provider.
 	 * @param provider A {@link BiomeUtil.ModdedBiomeProvider} instance to be generated.
-	 * @param targets  An array of {@link LevelStem} target keys.
+	 * @param targets  An array of target keys.
 	 */
-	@SafeVarargs
-	protected final void registerModifier(String name, BiomeUtil.ModdedBiomeProvider provider, ResourceKey<LevelStem>... targets) {
-		this.registerModifier(name, new BiomeSourceModifier(List.of(targets), provider));
+	protected final void registerModifier(String name, BiomeUtil.ModdedBiomeProvider provider, ResourceLocation... targets) {
+		this.registerModifier(name, new BiomeSourceModifier(new ConditionedModifierTargetSelector<>(new ConfiguredModifierTargetSelector<>(ModifierTargetSelectorRegistry.NAMES, List.of(targets))), provider));
 	}
 
 	@Override

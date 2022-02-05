@@ -1,7 +1,5 @@
 {
-	"targets": [
-		"minecraft:the_nether"
-	],
+	"target": "minecraft:the_nether",
 	"provider": {
 		"name": "blueprint_test:nether_test",
 		"biomes": [

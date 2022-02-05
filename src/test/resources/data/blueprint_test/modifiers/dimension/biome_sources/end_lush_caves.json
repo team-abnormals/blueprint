@@ -1,7 +1,16 @@
 {
-	"targets": [
-		"minecraft:the_end"
-	],
+	"target": {
+		"type": "names",
+		"config": [
+			"minecraft:the_end"
+		],
+		"conditions": [
+			{
+				"type": "forge:mod_loaded",
+				"modid": "blueprint"
+			}
+		]
+	},
 	"provider": {
 		"name": "blueprint_test:end_test",
 		"overlays": [
