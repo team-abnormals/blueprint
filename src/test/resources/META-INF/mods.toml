@@ -29,6 +29,6 @@ license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 [[dependencies.blueprint_test]]
     modId = "blueprint"
     mandatory = true
-    versionRange = "[5.0.0,)"
+    versionRange = "[5.1.0,)"
     ordering = "AFTER"
     side = "BOTH"
