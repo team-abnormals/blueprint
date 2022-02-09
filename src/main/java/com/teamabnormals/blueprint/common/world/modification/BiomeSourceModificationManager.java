@@ -44,7 +44,7 @@ import java.util.function.Supplier;
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class BiomeSourceModificationManager extends SimpleJsonResourceReloadListener {
-	private static final Field NOISE_GENERATOR_SETTINGS = ObfuscationReflectionHelper.findField(NoiseBasedChunkGenerator.class, "settings");
+	private static final Field NOISE_GENERATOR_SETTINGS = ObfuscationReflectionHelper.findField(NoiseBasedChunkGenerator.class, "f_64318_");
 	private static BiomeSourceModificationManager INSTANCE;
 	private final List<BiomeSourceModifier> modifiers = new LinkedList<>();
 	private final RegistryReadOps<JsonElement> readOps;
