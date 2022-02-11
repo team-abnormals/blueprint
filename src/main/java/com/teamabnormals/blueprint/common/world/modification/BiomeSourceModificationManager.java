@@ -94,7 +94,7 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 		Registry<NormalNoise.NoiseParameters> noiseParametersRegistry = registryAccess.registryOrThrow(Registry.NOISE_REGISTRY);
 		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : dimensions.entrySet()) {
 			ArrayList<BiomeUtil.ModdedBiomeProvider> providersForKey = map.get(entry.getKey().location());
-			if (!providersForKey.isEmpty()) {
+			if (providersForKey != null && !providersForKey.isEmpty()) {
 				ChunkGenerator chunkGenerator = entry.getValue().generator();
 				BiomeSource source = chunkGenerator.getBiomeSource();
 				//Checking specifically for an instance of MultiNoiseBiomeSource isn't reliable because mods may alter the biome source before we do
