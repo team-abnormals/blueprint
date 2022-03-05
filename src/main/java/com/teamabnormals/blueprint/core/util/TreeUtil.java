@@ -3,12 +3,16 @@ package com.teamabnormals.blueprint.core.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelSimulatedRW;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.LevelWriter;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 
@@ -53,7 +57,7 @@ public final class TreeUtil {
 	 * @param tag   A tag to check.
 	 * @return If a {@link BlockPos} has a state at its position in a given tag.
 	 */
-	public static boolean isInTag(LevelSimulatedReader level, BlockPos pos, Named<Block> tag) {
+	public static boolean isInTag(LevelSimulatedReader level, BlockPos pos, TagKey<Block> tag) {
 		return level.isStateAtPosition(pos, (block) -> block.is(tag));
 	}
 
