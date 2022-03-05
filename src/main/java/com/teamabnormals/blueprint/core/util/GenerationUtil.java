@@ -1,7 +1,7 @@
 package com.teamabnormals.blueprint.core.util;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.SetTag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.random.Weight;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandomList;
@@ -30,7 +30,7 @@ public final class GenerationUtil {
 	 * @param allowedFluids A tag to use for the valid fluids.
 	 * @return A predicate to check if a {@link BlockState} is an allowed fluid.
 	 */
-	public static Predicate<BlockState> isFluid(int minLevel, SetTag<Fluid> allowedFluids) {
+	public static Predicate<BlockState> isFluid(int minLevel, TagKey<Fluid> allowedFluids) {
 		return (state) -> {
 			FluidState fluid = state.getFluidState();
 			return !fluid.isEmpty() && fluid.getOwnHeight() >= minLevel && fluid.is(allowedFluids);

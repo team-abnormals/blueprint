@@ -1,17 +1,21 @@
 package com.teamabnormals.blueprint.common.loot.modification;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.blueprint.common.loot.modification.modifiers.ILootModifier;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
-import com.mojang.datafixers.util.Pair;
-import com.teamabnormals.blueprint.common.loot.modification.modifiers.ILootModifier;
 import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.ServerResources;
+import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.Deserializers;
@@ -29,6 +33,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -78,11 +83,11 @@ public final class LootModificationManager extends ModificationManager<LootTable
 
 	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) {
-		ServerResources dataPackRegistries = event.getDataPackRegistries();
+		ReloadableServerResources dataPackRegistries = ServerLifecycleHooks.getCurrentServer().getServerResources().managers();
 		INSTANCE = new LootModificationManager(dataPackRegistries.getPredicateManager());
 		//Loot modifiers must load before loot tables
-		SimpleReloadableResourceManager simpleReloadableResourceManager = (SimpleReloadableResourceManager) dataPackRegistries.getResourceManager();
-		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, simpleReloadableResourceManager, "f_10871_");
+		ReloadableResourceManager simpleReloadableResourceManager = (ReloadableResourceManager) dataPackRegistries.getResourceManager();
+		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(ReloadableResourceManager.class, simpleReloadableResourceManager, "f_10871_");
 		if (reloadListeners != null) {
 			reloadListeners.add(2, INSTANCE);
 		}

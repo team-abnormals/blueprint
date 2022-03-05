@@ -1,20 +1,23 @@
 package com.teamabnormals.blueprint.common.advancement.modification;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.teamabnormals.blueprint.common.advancement.modification.modifiers.IAdvancementModifier;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.events.AdvancementBuildingEvent;
 import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
-import com.teamabnormals.blueprint.common.advancement.modification.modifiers.IAdvancementModifier;
 import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.ServerResources;
+import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,6 +26,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -71,13 +75,13 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 
 	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) throws NoSuchFieldException, IllegalAccessException {
-		INSTANCE = new AdvancementModificationManager(event.getDataPackRegistries().getPredicateManager());
+		INSTANCE = new AdvancementModificationManager(ServerLifecycleHooks.getCurrentServer().getPredicateManager());
 		//Advancement modifiers must load before advancements
 		Field field = AddReloadListenerEvent.class.getDeclaredField("dataPackRegistries");
 		field.setAccessible(true);
-		SimpleReloadableResourceManager reloadableResourceManager = (SimpleReloadableResourceManager) ((ServerResources) field.get(event)).getResourceManager();
+		ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) ((ReloadableServerResources) field.get(event)).getResourceManager();
 
-		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, reloadableResourceManager, "f_10871_");
+		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(ReloadableResourceManager.class, reloadableResourceManager, "f_203816_");
 		if (reloadListeners != null) {
 			reloadListeners.add(4, INSTANCE);
 		}
