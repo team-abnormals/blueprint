@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  * A {@link RecordItem} extension that fills itself after the latest vanilla music disc item.
  */
 public class BlueprintRecordItem extends RecordItem {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MUSIC_DISC_PIGSTEP);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MUSIC_DISC_OTHERSIDE);
 
 	public BlueprintRecordItem(int comparatorValueIn, Supplier<SoundEvent> soundIn, Item.Properties builder) {
 		super(comparatorValueIn, soundIn, builder);
