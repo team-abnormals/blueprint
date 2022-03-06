@@ -75,9 +75,9 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 
 	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) throws NoSuchFieldException, IllegalAccessException {
-		INSTANCE = new AdvancementModificationManager(ServerLifecycleHooks.getCurrentServer().getPredicateManager());
+		INSTANCE = new AdvancementModificationManager(event.getServerResources().getPredicateManager());
 		//Advancement modifiers must load before advancements
-		Field field = AddReloadListenerEvent.class.getDeclaredField("dataPackRegistries");
+		Field field = AddReloadListenerEvent.class.getDeclaredField("serverResources");
 		field.setAccessible(true);
 		ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) ((ReloadableServerResources) field.get(event)).getResourceManager();
 

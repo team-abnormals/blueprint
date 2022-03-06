@@ -57,7 +57,7 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) {
 		try {
-			RegistryAccess registryAccess = (RegistryAccess) BiomeModificationManager.REGISTRY_ACCESS.get(BiomeModificationManager.TAG_MANAGER.get(event.getDataPackRegistries()));
+			RegistryAccess registryAccess = (RegistryAccess) BiomeModificationManager.REGISTRY_ACCESS.get(BiomeModificationManager.TAG_MANAGER.get(event.getServerResources()));
 			RegistryReadOps<JsonElement> readOps = BiomeModificationManager.getReadOps(registryAccess);
 			if (readOps != null) {
 				event.addListener(INSTANCE = new BiomeSourceModificationManager(readOps));

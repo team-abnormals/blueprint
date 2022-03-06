@@ -11,7 +11,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryReadOps;
 import net.minecraft.resources.RegistryWriteOps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.ServerResources;
+import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -35,7 +35,7 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class BiomeModificationManager extends ModificationManager<BiomeLoadingEvent, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>> {
 	private static final Gson GSON = new Gson();
-	public static final Field TAG_MANAGER = ObfuscationReflectionHelper.findField(ServerResources.class, "f_136148_");
+	public static final Field TAG_MANAGER = ObfuscationReflectionHelper.findField(ReloadableServerResources.class, "f_206849_");
 	public static final Field REGISTRY_ACCESS = ObfuscationReflectionHelper.findField(TagManager.class, "f_144569_");
 	private static final IdentityHashMap<RegistryAccess, RegistryReadOps<JsonElement>> READ_OPS_MAP = new IdentityHashMap<>();
 	private static BiomeModificationManager INSTANCE = null;
@@ -92,7 +92,7 @@ public final class BiomeModificationManager extends ModificationManager<BiomeLoa
 
 	public static void onReloadListener(AddReloadListenerEvent event) {
 		try {
-			RegistryAccess registryAccess = (RegistryAccess) REGISTRY_ACCESS.get(TAG_MANAGER.get(event.getDataPackRegistries()));
+			RegistryAccess registryAccess = (RegistryAccess) REGISTRY_ACCESS.get(TAG_MANAGER.get(event.getServerResources()));
 			RegistryReadOps<JsonElement> readOps = READ_OPS_MAP.get(registryAccess);
 			if (readOps != null) {
 				event.addListener(INSTANCE = new BiomeModificationManager(readOps));

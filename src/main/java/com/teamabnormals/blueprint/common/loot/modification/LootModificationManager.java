@@ -83,7 +83,7 @@ public final class LootModificationManager extends ModificationManager<LootTable
 
 	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) {
-		ReloadableServerResources dataPackRegistries = ServerLifecycleHooks.getCurrentServer().getServerResources().managers();
+		ReloadableServerResources dataPackRegistries = event.getServerResources();
 		INSTANCE = new LootModificationManager(dataPackRegistries.getPredicateManager());
 		//Loot modifiers must load before loot tables
 		ReloadableResourceManager simpleReloadableResourceManager = (ReloadableResourceManager) dataPackRegistries.getResourceManager();
