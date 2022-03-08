@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:the_end",
+    "#forge:is_outer_end"
+  ]
+}

@@ -23,6 +23,7 @@ import com.teamabnormals.blueprint.core.api.conditions.QuarkFlagRecipeCondition.
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
 import com.teamabnormals.blueprint.core.api.model.FullbrightModel;
 import com.teamabnormals.blueprint.core.data.server.modifiers.BlueprintBiomeSourceModifierProvider;
+import com.teamabnormals.blueprint.core.data.server.tags.BlueprintBiomeTagsProvider;
 import com.teamabnormals.blueprint.core.data.server.tags.BlueprintBlockTagsProvider;
 import com.teamabnormals.blueprint.core.data.server.tags.BlueprintEntityTypeTagsProvider;
 import com.teamabnormals.blueprint.core.data.server.tags.BlueprintItemTagsProvider;
@@ -182,6 +183,7 @@ public final class Blueprint {
 			generator.addProvider(blockTags);
 			generator.addProvider(new BlueprintItemTagsProvider(MOD_ID, generator, blockTags, fileHelper));
 			generator.addProvider(new BlueprintEntityTypeTagsProvider(MOD_ID, generator, fileHelper));
+			generator.addProvider(new BlueprintBiomeTagsProvider(MOD_ID, generator, fileHelper));
 			generator.addProvider(new BlueprintBiomeSourceModifierProvider(generator));
 		}
 	}
