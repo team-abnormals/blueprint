@@ -3,13 +3,13 @@ package com.teamabnormals.blueprint.common.world.modification;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.teamabnormals.blueprint.common.world.biome.modification.BiomeModificationManager;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
+import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.RegistryReadOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -47,23 +47,17 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 	private static final Field NOISE_GENERATOR_SETTINGS = ObfuscationReflectionHelper.findField(NoiseBasedChunkGenerator.class, "f_64318_");
 	private static BiomeSourceModificationManager INSTANCE;
 	private final List<BiomeSourceModifier> modifiers = new LinkedList<>();
-	private final RegistryReadOps<JsonElement> readOps;
+	private final RegistryOps<JsonElement> registryOps;
 
-	public BiomeSourceModificationManager(RegistryReadOps<JsonElement> readOps) {
+	public BiomeSourceModificationManager(RegistryOps<JsonElement> registryOps) {
 		super(new Gson(), "modifiers/dimension/biome_sources");
-		this.readOps = readOps;
+		this.registryOps = registryOps;
 	}
 
 	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) {
 		try {
-			RegistryAccess registryAccess = (RegistryAccess) BiomeModificationManager.REGISTRY_ACCESS.get(BiomeModificationManager.TAG_MANAGER.get(event.getServerResources()));
-			RegistryReadOps<JsonElement> readOps = BiomeModificationManager.getReadOps(registryAccess);
-			if (readOps != null) {
-				event.addListener(INSTANCE = new BiomeSourceModificationManager(readOps));
-			} else {
-				Blueprint.LOGGER.error("Failed to get RegistryReadOps for the BiomeSourceModificationManager for an unknown RegistryAccess: " + registryAccess);
-			}
+			event.addListener(INSTANCE = new BiomeSourceModificationManager(DataUtil.createRegistryOps(event.getServerResources())));
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
@@ -102,19 +96,17 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 				//TODO: Mostly experimental! Works with Terralith, Biomes O' Plenty, and more, but still needs more testing!
 				if (!(source instanceof FixedBiomeSource) && !(source instanceof CheckerboardColumnBiomeSource)) {
 					boolean legacy = false;
-					boolean largeBiomes = false;
 					boolean noiseBased = chunkGenerator instanceof NoiseBasedChunkGenerator;
 					if (noiseBased) {
 						try {
 							NoiseGeneratorSettings settings = ((Supplier<NoiseGeneratorSettings>) NOISE_GENERATOR_SETTINGS.get(chunkGenerator)).get();
 							if (settings != null) {
 								legacy = settings.useLegacyRandomSource();
-								largeBiomes = settings.noiseSettings().largeBiomes();
 							}
 						} catch (IllegalAccessException ignored) {
 						}
 					}
-					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, noiseParametersRegistry, source, seed, legacy, largeBiomes, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
+					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, noiseParametersRegistry, source, seed, legacy, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
 					chunkGenerator.biomeSource = moddedBiomeSource;
 					chunkGenerator.runtimeBiomeSource = moddedBiomeSource;
 					if (noiseBased)
@@ -128,11 +120,11 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
 		List<BiomeSourceModifier> modifiers = this.modifiers;
 		modifiers.clear();
-		RegistryReadOps<JsonElement> readOps = this.readOps;
+		RegistryOps<JsonElement> registryOps = this.registryOps;
 		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
 			ResourceLocation name = entry.getKey();
 			try {
-				modifiers.add(BiomeSourceModifier.deserialize(name, entry.getValue(), readOps));
+				modifiers.add(BiomeSourceModifier.deserialize(name, entry.getValue(), registryOps));
 			} catch (JsonParseException exception) {
 				Blueprint.LOGGER.error("Parsing error loading Biome Source Modifier: {}", name, exception);
 			}

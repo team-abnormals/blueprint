@@ -2,8 +2,7 @@ package com.teamabnormals.blueprint.common.world.modification.chunk.modifiers;
 
 import com.google.gson.JsonElement;
 import com.teamabnormals.blueprint.core.util.modification.IModifier;
-import net.minecraft.resources.RegistryReadOps;
-import net.minecraft.resources.RegistryWriteOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /**
@@ -13,5 +12,5 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
  * @author SmellyModder (Luke Tonon)
  * @see IModifier
  */
-public interface IChunkGeneratorModifier<C> extends IModifier<ChunkGenerator, C, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>> {
+public interface IChunkGeneratorModifier<C> extends IModifier<ChunkGenerator, C, RegistryOps<JsonElement>, RegistryOps<JsonElement>> {
 }

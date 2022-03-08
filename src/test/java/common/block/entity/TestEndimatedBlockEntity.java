@@ -30,15 +30,13 @@ public final class TestEndimatedBlockEntity extends BlockEntity implements Endim
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
-		super.save(tag);
+	protected void saveAdditional(CompoundTag tag) {
 		tag.putInt("AnimationTick", this.getAnimationTick());
 		PlayableEndimation playableEndimation = this.getPlayingEndimation();
 		if (playableEndimation != PlayableEndimation.BLANK) {
 			ResourceLocation endimation = PlayableEndimationManager.INSTANCE.getKey(this.getPlayingEndimation());
 			tag.putString("Endimation", endimation != null ? endimation.toString() : PlayableEndimation.BLANK.location().toString());
 		}
-		return tag;
 	}
 
 	@Override
@@ -62,7 +60,7 @@ public final class TestEndimatedBlockEntity extends BlockEntity implements Endim
 
 	@Override
 	public CompoundTag getUpdateTag() {
-		return this.save(new CompoundTag());
+		return this.saveWithoutMetadata();
 	}
 
 	@Override

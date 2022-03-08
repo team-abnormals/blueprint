@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  */
 public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	private static final Field EGGS_FIELD = ObfuscationReflectionHelper.findField(SpawnEggItem.class, "f_43201_");
-	protected final Set<BlueprintSpawnEggItem> spawnEggs = Sets.newHashSet();
+	protected final Set<Supplier<BlueprintSpawnEggItem>> spawnEggs = Sets.newHashSet();
 
 	public ItemSubRegistryHelper(RegistryHelper parent, DeferredRegister<Item> deferredRegister) {
 		super(parent, deferredRegister);
@@ -151,8 +151,8 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @see BlueprintSpawnEggItem
 	 */
 	public RegistryObject<BlueprintSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<?>> supplier, int primaryColor, int secondaryColor) {
-		BlueprintSpawnEggItem eggItem = new BlueprintSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
-		RegistryObject<BlueprintSpawnEggItem> spawnEgg = this.deferredRegister.register(entityName + "_spawn_egg", () -> eggItem);
+		Supplier<BlueprintSpawnEggItem> eggItem = () -> new BlueprintSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+		RegistryObject<BlueprintSpawnEggItem> spawnEgg = this.deferredRegister.register(entityName + "_spawn_egg", eggItem);
 		this.spawnEggs.add(eggItem);
 		return spawnEgg;
 	}
@@ -182,7 +182,10 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 		if (!this.spawnEggs.isEmpty()) {
 			try {
 				Map<EntityType<?>, SpawnEggItem> map = (Map<EntityType<?>, SpawnEggItem>) EGGS_FIELD.get(null);
-				this.spawnEggs.forEach(egg -> map.put(egg.getType(null), egg));
+				this.spawnEggs.forEach(supplier -> {
+					var egg = supplier.get();
+					map.put(egg.getType(null), egg);
+				});
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
@@ -192,8 +195,8 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	private void handleSpawnEggDispenserBehaviors(FMLCommonSetupEvent event) {
 		if (!this.spawnEggs.isEmpty()) {
 			event.enqueueWork(() -> {
-				for (BlueprintSpawnEggItem spawnEggItem : this.spawnEggs) {
-					DispenserBlock.registerBehavior(spawnEggItem, new SpawnEggDispenseItemBehavior());
+				for (var spawnEggItem : this.spawnEggs) {
+					DispenserBlock.registerBehavior(spawnEggItem.get(), new SpawnEggDispenseItemBehavior());
 				}
 			});
 		}

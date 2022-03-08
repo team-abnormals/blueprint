@@ -5,8 +5,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.Blueprint;
-import net.minecraft.resources.RegistryReadOps;
-import net.minecraft.resources.RegistryWriteOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
@@ -31,7 +30,7 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 	});
 	private static final Field NOISE_GENERATOR_SETTINGS = ObfuscationReflectionHelper.findField(NoiseBasedChunkGenerator.class, "f_64318_");
 
-	@SuppressWarnings({"unchecked", "deprecation"})
+	@SuppressWarnings({"unchecked"})
 	@Override
 	public void modify(ChunkGenerator chunkGenerator, Config config) {
 		if (chunkGenerator instanceof NoiseBasedChunkGenerator) {
@@ -50,14 +49,14 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 					newRuleSource = SurfaceRules.sequence(newSequence.toArray(new SurfaceRules.RuleSource[0]));
 				} else newRuleSource = SurfaceRules.sequence(config.surfaceRule, ruleSource);
 			}
-			NoiseGeneratorSettings newSettings = new NoiseGeneratorSettings(settings.structureSettings(), settings.noiseSettings(), settings.getDefaultBlock(), settings.getDefaultFluid(), newRuleSource, settings.seaLevel(), settings.disableMobGeneration(), settings.isAquifersEnabled(), settings.isNoiseCavesEnabled(), settings.isOreVeinsEnabled(), settings.isNoodleCavesEnabled(), settings.useLegacyRandomSource());
+			NoiseGeneratorSettings newSettings = new NoiseGeneratorSettings(settings.noiseSettings(), settings.defaultBlock(), settings.defaultFluid(), settings.noiseRouter(), newRuleSource, settings.seaLevel(), settings.disableMobGeneration(), settings.isAquifersEnabled(), settings.oreVeinsEnabled(), settings.useLegacyRandomSource());
 			UNSAFE.putObject(chunkGenerator, fieldOffset, (Supplier<NoiseGeneratorSettings>) () -> newSettings);
 		} else
 			Blueprint.LOGGER.warn("Could not apply surface rule modifier because " + chunkGenerator + " was not an instance of NoiseBasedChunkGenerator");
 	}
 
 	@Override
-	public JsonElement serialize(Config config, RegistryWriteOps<JsonElement> additional) throws JsonParseException {
+	public JsonElement serialize(Config config, RegistryOps<JsonElement> additional) throws JsonParseException {
 		var dataResult = CODEC.encodeStart(additional, config);
 		var result = dataResult.result();
 		if (result.isPresent()) return result.get();
@@ -65,7 +64,7 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 	}
 
 	@Override
-	public Config deserialize(JsonElement element, RegistryReadOps<JsonElement> additional) throws JsonParseException {
+	public Config deserialize(JsonElement element, RegistryOps<JsonElement> additional) throws JsonParseException {
 		var dataResult = CODEC.decode(additional, element);
 		var result = dataResult.result();
 		if (result.isPresent()) return result.get().getFirst();

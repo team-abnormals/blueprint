@@ -3,14 +3,12 @@ package com.teamabnormals.blueprint.common.world.modification.chunk;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.teamabnormals.blueprint.common.world.biome.modification.BiomeModificationManager;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.modification.ConfiguredModifier;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
 import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.RegistryReadOps;
-import net.minecraft.resources.RegistryWriteOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -36,12 +34,12 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class ChunkGeneratorModificationManager extends SimpleJsonResourceReloadListener {
 	private static ChunkGeneratorModificationManager INSTANCE;
-	private final RegistryReadOps<JsonElement> readOps;
-	private final EnumMap<EventPriority, LinkedList<TargetedModifier<ChunkGenerator, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>>>> modifiers = new EnumMap<>(EventPriority.class);
+	private final RegistryOps<JsonElement> registryOps;
+	private final EnumMap<EventPriority, LinkedList<TargetedModifier<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>>>> modifiers = new EnumMap<>(EventPriority.class);
 
-	public ChunkGeneratorModificationManager(RegistryReadOps<JsonElement> readOps) {
+	public ChunkGeneratorModificationManager(RegistryOps<JsonElement> registryOps) {
 		super(new Gson(), "modifiers/dimension/chunk_generator");
-		this.readOps = readOps;
+		this.registryOps = registryOps;
 	}
 
 	static {
@@ -55,7 +53,7 @@ public final class ChunkGeneratorModificationManager extends SimpleJsonResourceR
 				//Because dimensions don't exist till the server is ready to start, we must gather target names right before the server starts
 				var dimensions = event.getServer().getWorldData().worldGenSettings().dimensions();
 				var keySet = dimensions.keySet();
-				HashMap<ResourceLocation, LinkedList<ConfiguredModifier<ChunkGenerator, ?, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>, ?>>> map = new HashMap<>();
+				HashMap<ResourceLocation, LinkedList<ConfiguredModifier<ChunkGenerator, ?, RegistryOps<JsonElement>, RegistryOps<JsonElement>, ?>>> map = new HashMap<>();
 				SelectionSpace selectionSpace = (consumer) -> keySet.forEach(location -> consumer.accept(location, null));
 				for (var targetedModifier : targetedModifiers) {
 					targetedModifier.getTargetSelector().getTargetNames(selectionSpace).forEach(location -> {
@@ -75,13 +73,7 @@ public final class ChunkGeneratorModificationManager extends SimpleJsonResourceR
 	@SubscribeEvent
 	public static void onReloadListener(AddReloadListenerEvent event) {
 		try {
-			RegistryAccess registryAccess = (RegistryAccess) BiomeModificationManager.REGISTRY_ACCESS.get(BiomeModificationManager.TAG_MANAGER.get(event.getServerResources()));
-			RegistryReadOps<JsonElement> readOps = BiomeModificationManager.getReadOps(registryAccess);
-			if (readOps != null) {
-				event.addListener(INSTANCE = new ChunkGeneratorModificationManager(readOps));
-			} else {
-				Blueprint.LOGGER.error("Failed to get RegistryReadOps for the ChunkGeneratorModificationManager for an unknown RegistryAccess: " + registryAccess);
-			}
+			event.addListener(INSTANCE = new ChunkGeneratorModificationManager(DataUtil.createRegistryOps(event.getServerResources())));
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
@@ -89,11 +81,11 @@ public final class ChunkGeneratorModificationManager extends SimpleJsonResourceR
 
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-		RegistryReadOps<JsonElement> readOps = this.readOps;
+		RegistryOps<JsonElement> registryOps = this.registryOps;
 		int loadedModifiers = 0;
 		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
 			try {
-				TargetedModifier<ChunkGenerator, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>> targetedModifier = TargetedModifier.deserialize(entry.getValue().getAsJsonObject(), readOps, ChunkGeneratorModifiers.REGISTRY);
+				TargetedModifier<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>> targetedModifier = TargetedModifier.deserialize(entry.getValue().getAsJsonObject(), registryOps, ChunkGeneratorModifiers.REGISTRY);
 				this.modifiers.computeIfAbsent(targetedModifier.getPriority(), __ -> new LinkedList<>()).add(targetedModifier);
 				loadedModifiers++;
 			} catch (IllegalArgumentException | JsonParseException exception) {

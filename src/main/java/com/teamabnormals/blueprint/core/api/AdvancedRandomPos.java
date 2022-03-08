@@ -34,7 +34,7 @@ public final class AdvancedRandomPos {
 	private static Vec3 generateRandomPos(PathfinderMob pathfinder, int xz, int y, @Nullable Vec3 p_191379_3_, boolean p_191379_4_, double p_191379_5_, boolean goDeep, ToDoubleFunction<BlockPos> p_191379_7_) {
 		PathNavigation pathnavigator = pathfinder.getNavigation();
 		Random random = pathfinder.getRandom();
-		boolean flag = pathfinder.hasRestriction() && pathfinder.getRestrictCenter().closerThan(pathfinder.position(), (double) (pathfinder.getRestrictRadius() + (float) xz) + 1.0D);
+		boolean flag = pathfinder.hasRestriction() && pathfinder.getRestrictCenter().closerThan(pathfinder.blockPosition(), (double) (pathfinder.getRestrictRadius() + (float) xz) + 1.0D);
 		boolean flag1 = false;
 		double d0 = Double.NEGATIVE_INFINITY;
 		BlockPos blockpos = new BlockPos(pathfinder.position());

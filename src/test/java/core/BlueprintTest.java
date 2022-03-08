@@ -22,7 +22,6 @@ import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Material;
@@ -66,32 +65,16 @@ public final class BlueprintTest {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
-			BiomeUtil.addOceanBiome(Climate.Parameter.span(-0.5F, -0.45F), TestBiomes.TEST_OCEAN.getKey(), Biomes.DEEP_COLD_OCEAN);
-			//BiomeUtil.addHillBiome(Biomes.PLAINS, Pair.of(Biomes.WARPED_FOREST, 1), Pair.of(Biomes.CRIMSON_FOREST, 3));
-			BiomeUtil.addNetherBiome(Climate.parameters(-0.5F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.15F), TestBiomes.TEST_NETHER.getKey());
 			SpawnPlacements.register(TestEntities.COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, Cow::checkAnimalSpawnRules);
 			DataUtil.concatArrays(ObfuscationReflectionHelper.findField(CreativeModeTab.class, "f_40769_"), CreativeModeTab.TAB_TOOLS, EnchantmentCategory.BOW);
 		});
-
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(Blueprint.MOD_ID, source -> source.getBlockState().getMaterial() == Material.HEAVY_METAL, SoundEvents.BELL_BLOCK));
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.getBlockState().is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, (id1, id2) -> id2.equals("blueprint") ? -1 : 0));
-
-		//BiomeModificationManager instance = BiomeModificationManager.INSTANCE;
-		//instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.PLAINS), GenerationStep.Decoration.VEGETAL_DECORATION, () -> TreePlacements.BIRCH_CHECKED));
-		//instance.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), Sets.newHashSet(GenerationStep.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EndPlacements.END_ISLAND_DECORATED));
-		//instance.addModifier(BiomeFeatureModifier.createFeatureRemover(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), Sets.newHashSet(GenerationStep.Decoration.RAW_GENERATION), () -> Feature.END_ISLAND));
-		//instance.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.ICE_SPIKES), GenerationStep.Decoration.UNDERGROUND_DECORATION, () -> TestFeatures.TEST_SPLINE.get().configured(FeatureConfiguration.NONE).placed(RarityFilter.onAverageOnceEvery(3), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP)));
-
-		var zeroPoint = Climate.Parameter.point(0.0F);
-		//Very low temperatures only
-		BiomeUtil.addEndBiome(Climate.parameters(Climate.Parameter.span(-1.0F, -0.75F), zeroPoint, zeroPoint, zeroPoint, zeroPoint, zeroPoint, 0.0F), Biomes.ICE_SPIKES);
-		//Very high temperatures only
-		BiomeUtil.addEndBiome(Climate.parameters(Climate.Parameter.span(0.75F, 1.0F), zeroPoint, zeroPoint, zeroPoint, zeroPoint, zeroPoint, 0.0F), Biomes.BASALT_DELTAS);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(FMLClientSetupEvent event) {
-		BiomeUtil.markEndBiomeCustomMusic(new ResourceLocation("ice_spikes"));
+		BiomeUtil.markEndBiomeCustomMusic(Biomes.ICE_SPIKES);
 	}
 
 	@OnlyIn(Dist.CLIENT)

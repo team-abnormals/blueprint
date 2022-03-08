@@ -7,8 +7,7 @@ import com.teamabnormals.blueprint.common.world.modification.chunk.modifiers.Sur
 import com.teamabnormals.blueprint.core.util.modification.ModifierDataProvider;
 import com.teamabnormals.blueprint.core.util.modification.ModifierRegistry;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.RegistryReadOps;
-import net.minecraft.resources.RegistryWriteOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /**
@@ -18,10 +17,9 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
  */
 //TODO: Add a structure settings modifier
 public final class ChunkGeneratorModifiers {
-	public static final ModifierRegistry<ChunkGenerator, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>> REGISTRY = new ModifierRegistry<>();
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
+	public static final ModifierRegistry<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>> REGISTRY = new ModifierRegistry<>();
 	public static final SurfaceRuleModifier SURFACE_RULE = REGISTRY.register("surface_rule", new SurfaceRuleModifier());
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	/**
 	 * Creates a new {@link ModifierDataProvider} instance for chunk generator modifiers.
@@ -29,12 +27,12 @@ public final class ChunkGeneratorModifiers {
 	 * @param dataGenerator A {@link DataGenerator} to use when generating the configured {@link com.teamabnormals.blueprint.common.world.modification.chunk.modifiers.IChunkGeneratorModifier} instances.
 	 * @param name          A name for the provider.
 	 * @param modId         The ID of the mod using this provider.
-	 * @param writeOps A {@link RegistryWriteOps} instance for additional serialization usage.
+	 * @param registryOps   A {@link RegistryOps} instance for additional serialization usage.
 	 * @param toGenerate    An array of {@link ModifierDataProvider.ProviderEntry} instances to generate.
 	 * @return A new {@link ModifierDataProvider} instance for chunk generator modifiers.
 	 */
 	@SafeVarargs
-	public static ModifierDataProvider<ChunkGenerator, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>> createDataProvider(DataGenerator dataGenerator, String name, String modId, RegistryWriteOps<JsonElement> writeOps, ModifierDataProvider.ProviderEntry<ChunkGenerator, RegistryWriteOps<JsonElement>, RegistryReadOps<JsonElement>>... toGenerate) {
-		return new ModifierDataProvider<>(dataGenerator, name, GSON, modId, "modifiers/dimension/chunk_generator", REGISTRY, writeOps, toGenerate);
+	public static ModifierDataProvider<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>> createDataProvider(DataGenerator dataGenerator, String name, String modId, RegistryOps<JsonElement> registryOps, ModifierDataProvider.ProviderEntry<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>>... toGenerate) {
+		return new ModifierDataProvider<>(dataGenerator, name, GSON, modId, "modifiers/dimension/chunk_generator", REGISTRY, registryOps, toGenerate);
 	}
 }

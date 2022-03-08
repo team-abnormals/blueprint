@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -15,10 +16,8 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -29,14 +28,10 @@ import java.util.stream.Collectors;
  * @author ExpensiveKoala
  */
 public final class BiomeUtil {
-	private static final List<Pair<Climate.Parameter, Pair<ResourceKey<Biome>, ResourceKey<Biome>>>> OCEAN_BIOMES = new ArrayList<>();
-	private static final List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> END_BIOMES = new ArrayList<>();
-	private static final List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> NETHER_BIOMES = new ArrayList<>();
-	private static final Set<ResourceLocation> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
+	private static final Set<ResourceKey<Biome>> CUSTOM_END_MUSIC_BIOMES = new HashSet<>();
 	private static final BasicRegistry<Codec<? extends ModdedBiomeProvider>> MODDED_PROVIDERS = new BasicRegistry<>();
 
 	static {
-		addEndBiome(Climate.parameters(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), Biomes.THE_VOID);
 		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "original"), BiomeUtil.OriginalModdedBiomeProvider.CODEC);
 		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "multi_noise"), BiomeUtil.MultiNoiseModdedBiomeProvider.CODEC);
 		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "overlay"), BiomeUtil.OverlayModdedBiomeProvider.CODEC);
@@ -53,99 +48,24 @@ public final class BiomeUtil {
 	}
 
 	/**
-	 * Adds an end biome with a given {@link Climate.ParameterPoint} instance for the biome's climate properties.
-	 *
-	 * @param point A {@link Climate.ParameterPoint} instance to use for the biome.
-	 * @param key   The {@link ResourceKey} of the biome.
-	 */
-	@Deprecated(forRemoval = true)
-	public static synchronized void addEndBiome(Climate.ParameterPoint point, ResourceKey<Biome> key) {
-		END_BIOMES.add(Pair.of(point, key));
-	}
-
-	/**
-	 * Marks the {@link ResourceLocation} belonging to a {@link Biome} to have it play its music in the end.
+	 * Marks the {@link ResourceKey} belonging to a {@link Biome} to have it play its music in the end.
 	 * <p>The music for biomes in the end is hardcoded, and this gets around that.</p>
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
-	 * @param biomeName The {@link ResourceLocation} belonging to a {@link Biome} to have it play its music in the end.
+	 * @param biomeName The {@link ResourceKey} belonging to a {@link Biome} to have it play its music in the end.
 	 */
-	public static synchronized void markEndBiomeCustomMusic(ResourceLocation biomeName) {
+	public static synchronized void markEndBiomeCustomMusic(ResourceKey<Biome> biomeName) {
 		CUSTOM_END_MUSIC_BIOMES.add(biomeName);
 	}
 
 	/**
-	 * Adds an ocean biome with its deep variant to generate with a given {@link Climate.Parameter} temperature.
-	 * <p>This method is safe to call during parallel mod loading.</p>
+	 * Checks if a {@link ResourceKey} belonging to a {@link Biome} should have the {@link Biome} plays its custom music in the end.
 	 *
-	 * @param temperature The {@link Climate.Parameter} temperature to have the biome generate in.
-	 * @param biome       The {@link Biome} {@link ResourceKey} to add.
-	 * @param deep        The {@link Biome} {@link ResourceKey} to add as the deep variant.
+	 * @param biomeName The {@link ResourceKey} belonging to a {@link Biome} to check.
+	 * @return If a {@link ResourceKey} belonging to a {@link Biome} should have the {@link Biome} plays its custom music in the end.
 	 */
-	@Deprecated(forRemoval = true)
-	public static synchronized void addOceanBiome(Climate.Parameter temperature, ResourceKey<Biome> biome, @Nullable ResourceKey<Biome> deep) {
-		OCEAN_BIOMES.add(Pair.of(temperature, Pair.of(biome, deep)));
-	}
-
-	/**
-	 * Adds a biome to generate in the Nether with specific a {@link Climate.ParameterPoint}.
-	 * <p>This method is safe to call during parallel mod loading.</p>
-	 *
-	 * @param point The {@link Climate.ParameterPoint} instance to use for biome's generation attributes.
-	 * @param biome The {@link ResourceKey} of the {@link Biome} to use.
-	 */
-	@Deprecated(forRemoval = true)
-	public static synchronized void addNetherBiome(Climate.ParameterPoint point, ResourceKey<Biome> biome) {
-		NETHER_BIOMES.add(Pair.of(point, biome));
-	}
-
-	/**
-	 * Gets the list of registered modded ocean biomes.
-	 * <p>This method is only used internally.</p>
-	 *
-	 * @return The list of registered modded ocean biomes.
-	 */
-	public static List<Pair<Climate.Parameter, Pair<ResourceKey<Biome>, ResourceKey<Biome>>>> getOceanBiomes() {
-		return OCEAN_BIOMES;
-	}
-
-	/**
-	 * Gets a new {@link Climate.ParameterList} instance containing the {@link #END_BIOMES} list.
-	 *
-	 * @return A new {@link Climate.ParameterList} instance containing the {@link #END_BIOMES} list.
-	 */
-	@Deprecated(forRemoval = true)
-	public static Climate.ParameterList<ResourceKey<Biome>> getEndBiomes() {
-		return new Climate.ParameterList<>(END_BIOMES);
-	}
-
-	/**
-	 * Checks if a {@link ResourceLocation} belonging to a {@link Biome} should have the {@link Biome} plays its custom music in the end.
-	 *
-	 * @param biomeName The {@link ResourceLocation} belonging to a {@link Biome} to check.
-	 * @return If a {@link ResourceLocation} belonging to a {@link Biome} should have the {@link Biome} plays its custom music in the end.
-	 */
-	public static boolean shouldPlayCustomEndMusic(ResourceLocation biomeName) {
+	public static boolean shouldPlayCustomEndMusic(ResourceKey<Biome> biomeName) {
 		return CUSTOM_END_MUSIC_BIOMES.contains(biomeName);
-	}
-
-	/**
-	 * Gets an {@link ImmutableList} containing base (vanilla) nether biome data and modded nether biome data.
-	 * <p>This method is only ever called once when the {@link MultiNoiseBiomeSource.Preset#NETHER} field is loaded.</p>
-	 *
-	 * @param baseBiomes The base list containing nether biome data to merge into one {@link ImmutableList} with modded nether biome data.
-	 * @param registry   A {@link Biome} {@link Registry} to lookup the {@link Biome}s.
-	 * @return An {@link ImmutableList} containing base (vanilla) nether biome data and modded nether biome data.
-	 */
-	@Deprecated(forRemoval = true)
-	public static List<Pair<Climate.ParameterPoint, Supplier<Biome>>> getModifiedNetherBiomes(List<Pair<Climate.ParameterPoint, Supplier<Biome>>> baseBiomes, Registry<Biome> registry) {
-		ImmutableList.Builder<Pair<Climate.ParameterPoint, Supplier<Biome>>> builder = new ImmutableList.Builder<>();
-		builder.addAll(baseBiomes);
-		NETHER_BIOMES.forEach(resourceKeyClimateParametersPair -> {
-			ResourceKey<Biome> biomeResourceKey = resourceKeyClimateParametersPair.getSecond();
-			builder.add(Pair.of(resourceKeyClimateParametersPair.getFirst(), () -> registry.getOrThrow(biomeResourceKey)));
-		});
-		return builder.build();
 	}
 
 	/**
@@ -170,7 +90,7 @@ public final class BiomeUtil {
 		Codec<ModdedBiomeProvider> CODEC = BiomeUtil.MODDED_PROVIDERS.dispatchStable(ModdedBiomeProvider::codec, Function.identity());
 
 		/**
-		 * Gets a noise {@link Biome} at a position in a modded slice.
+		 * Gets a holder of a noise {@link Biome} at a position in a modded slice.
 		 *
 		 * @param x        The x pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param y        The y pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
@@ -180,7 +100,7 @@ public final class BiomeUtil {
 		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return A noise {@link Biome} at a position in a modded slice.
 		 */
-		Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry);
+		Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry);
 
 		/**
 		 * Gets a set of the additional possible biomes that this provider may have.
@@ -189,7 +109,7 @@ public final class BiomeUtil {
 		 * @return A set of the additional possible biomes that this provider may have.
 		 * @see com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource.WeightedBiomeSlices#combinePossibleBiomes(Set, Registry).
 		 */
-		Set<Biome> getAdditionalPossibleBiomes(Registry<Biome> registry);
+		Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry);
 
 		/**
 		 * Gets the weight of this provider.
@@ -229,7 +149,7 @@ public final class BiomeUtil {
 		});
 
 		@Override
-		public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
+		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
 			return original.getNoiseBiome(x, y, z, sampler);
 		}
 
@@ -249,7 +169,7 @@ public final class BiomeUtil {
 		}
 
 		@Override
-		public Set<Biome> getAdditionalPossibleBiomes(Registry<Biome> registry) {
+		public Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry) {
 			return new HashSet<>(0);
 		}
 	}
@@ -271,8 +191,8 @@ public final class BiomeUtil {
 		});
 
 		@Override
-		public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
-			return registry.get(this.biomes.findValue(sampler.sample(x, y, z), Biomes.THE_VOID));
+		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
+			return registry.getHolderOrThrow(this.biomes.findValue(sampler.sample(x, y, z)));
 		}
 
 		@Override
@@ -291,8 +211,8 @@ public final class BiomeUtil {
 		}
 
 		@Override
-		public Set<Biome> getAdditionalPossibleBiomes(Registry<Biome> registry) {
-			return this.biomes.values().stream().map(pair -> registry.get(pair.getSecond())).collect(Collectors.toSet());
+		public Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry) {
+			return this.biomes.values().stream().map(pair -> registry.getHolderOrThrow(pair.getSecond())).collect(Collectors.toSet());
 		}
 	}
 
@@ -326,16 +246,16 @@ public final class BiomeUtil {
 		});
 
 		@Override
-		public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
-			Biome originalBiome = original.getNoiseBiome(x, y, z, sampler);
-			BiomeSource source = this.map.get(registry.getKey(originalBiome));
+		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
+			Holder<Biome> originalBiome = original.getNoiseBiome(x, y, z, sampler);
+			BiomeSource source = this.map.get(originalBiome.unwrapKey().orElseThrow().location());
 			if (source == null) return originalBiome;
 			return source.getNoiseBiome(x, y, z, sampler);
 		}
 
 		@Override
-		public Set<Biome> getAdditionalPossibleBiomes(Registry<Biome> registry) {
-			HashSet<Biome> biomes = new HashSet<>();
+		public Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry) {
+			HashSet<Holder<Biome>> biomes = new HashSet<>();
 			this.map.values().forEach(source -> biomes.addAll(source.possibleBiomes()));
 			return biomes;
 		}
