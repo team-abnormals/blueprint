@@ -7,6 +7,7 @@ import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
@@ -33,8 +34,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The data manager class for {@link BiomeSourceModifier} instances.
@@ -99,7 +103,7 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 					boolean noiseBased = chunkGenerator instanceof NoiseBasedChunkGenerator;
 					if (noiseBased) {
 						try {
-							NoiseGeneratorSettings settings = ((Supplier<NoiseGeneratorSettings>) NOISE_GENERATOR_SETTINGS.get(chunkGenerator)).get();
+							NoiseGeneratorSettings settings = ((Holder<NoiseGeneratorSettings>) NOISE_GENERATOR_SETTINGS.get(chunkGenerator)).value();
 							if (settings != null) {
 								legacy = settings.useLegacyRandomSource();
 							}
