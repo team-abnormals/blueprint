@@ -8,7 +8,6 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.Track
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.abnormals_core.core.AbnormalsCore;
 import com.minecraftabnormals.abnormals_core.core.events.EntityWalkEvent;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -28,9 +27,12 @@ import java.util.Map;
 import java.util.Set;
 
 @Mixin(Entity.class)
-public final class EntityMixin implements IDataManager {
+public abstract class EntityMixin implements IDataManager {
 	@Shadow
-	private World level;
+	public World level;
+
+	@Shadow
+	protected abstract BlockPos getOnPos();
 
 	private Map<TrackedData<?>, DataEntry<?>> dataMap = Maps.newHashMap();
 	private boolean dirty = false;
@@ -131,10 +133,8 @@ public final class EntityMixin implements IDataManager {
 		}
 	}
 
-	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;stepOn(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V"))
-	private void onEntityWalk(Block block, World world, BlockPos pos, Entity entity) {
-		if (!EntityWalkEvent.onEntityWalk(world, pos, entity)) {
-			block.stepOn(world, pos, entity);
-		}
+	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isSteppingCarefully()Z"))
+	private boolean onIsSteppingCarefully(Entity instance) {
+		return instance.isSteppingCarefully() && !EntityWalkEvent.onEntityWalk(this.level, this.getOnPos(), instance);
 	}
 }
