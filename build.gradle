@@ -33,13 +33,9 @@ minecraft {
             property "forge.logging.markers", "REGISTRIES"
             property "forge.logging.console.level", "debug"
             arg "-mixin.config=" + project.modId + ".mixins.json"
-            arg "-mixin.config=" + "blueprint_test.mixins.json"
             mods {
                 blueprint {
                     source sourceSets.main
-                }
-                blueprint_test {
-                    source sourceSets.test
                 }
             }
         }
