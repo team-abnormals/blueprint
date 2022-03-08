@@ -8,21 +8,17 @@
     "AdvancementBuilderMixin",
     "BiomeSpecialEffectsInvokerMixin",
     "ConfiguredWorldCarverAccessorMixin",
-    "DelegatingOpsAccessorMixin",
     "EntityMixin",
     "FluidInvokerMixin",
     "ItemInvokerMixin",
     "LanternBlockMixin",
-    "MultiNoiseBiomeSourcePresetMixin",
-    "OverworldBiomeBuilderMixin",
-    "RegistryAccessMixin",
+    "ReloadableServerResourcesMixin",
     "ServerEntityMixin",
     "ServerLevelMixin",
     "SimpleJsonResourceReloadListenerMixin",
     "SpawnEggItemMixin",
     "SurfaceRulesContextMixin",
-    "SurfaceSystemMixin",
-    "TheEndBiomeSourceMixin"
+    "SurfaceSystemMixin"
   ],
   "client": [
     "client.CameraInvokerMixin",

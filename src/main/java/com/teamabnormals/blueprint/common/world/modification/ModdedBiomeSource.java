@@ -6,9 +6,10 @@ import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.RegistryLookupCodec;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
@@ -32,15 +33,13 @@ import java.util.stream.Stream;
  */
 public final class ModdedBiomeSource extends BiomeSource {
 	public static final ResourceKey<NormalNoise.NoiseParameters> MODDEDNESS = ResourceKey.create(Registry.NOISE_REGISTRY, new ResourceLocation(Blueprint.MOD_ID, "moddedness"));
-	public static final ResourceKey<NormalNoise.NoiseParameters> MODDEDNESS_LARGE = ResourceKey.create(Registry.NOISE_REGISTRY, new ResourceLocation(Blueprint.MOD_ID, "moddedness_large"));
 	public static final Codec<ModdedBiomeSource> CODEC = RecordCodecBuilder.create((instance) -> {
 		return instance.group(
-				RegistryLookupCodec.create(Registry.BIOME_REGISTRY).forGetter((modded) -> modded.biomes),
-				RegistryLookupCodec.create(Registry.NOISE_REGISTRY).forGetter((modded) -> modded.noises),
+				RegistryOps.retrieveRegistry(Registry.BIOME_REGISTRY).forGetter((modded) -> modded.biomes),
+				RegistryOps.retrieveRegistry(Registry.NOISE_REGISTRY).forGetter((modded) -> modded.noises),
 				BiomeSource.CODEC.fieldOf("original_biome_source").forGetter(modded -> modded.originalSource),
 				Codec.LONG.fieldOf("seed").forGetter(modded -> modded.seed),
 				Codec.BOOL.fieldOf("legacy_random_source").forGetter(modded -> modded.legacy),
-				Codec.BOOL.fieldOf("large_biomes").forGetter(modded -> modded.largeBiomes),
 				WeightedBiomeSlices.CODEC.fieldOf("weighted_slices").forGetter(modded -> modded.weightedBiomeSlices)
 		).apply(instance, ModdedBiomeSource::new);
 	});
@@ -49,27 +48,25 @@ public final class ModdedBiomeSource extends BiomeSource {
 	private final BiomeSource originalSource;
 	private final long seed;
 	private final boolean legacy;
-	private final boolean largeBiomes;
 	private final NormalNoise moddednessNoise;
 	private final NormalNoise offsetNoise;
 	private final WeightedBiomeSlices weightedBiomeSlices;
 	private final Biome originalSourceMarker;
 
-	public ModdedBiomeSource(Registry<Biome> biomes, Registry<NormalNoise.NoiseParameters> noises, BiomeSource originalSource, long seed, boolean legacy, boolean largeBiomes, WeightedBiomeSlices weightedBiomeSlices) {
+	public ModdedBiomeSource(Registry<Biome> biomes, Registry<NormalNoise.NoiseParameters> noises, BiomeSource originalSource, long seed, boolean legacy, WeightedBiomeSlices weightedBiomeSlices) {
 		super(new ArrayList<>(weightedBiomeSlices.combinePossibleBiomes(originalSource.possibleBiomes(), biomes)));
 		this.biomes = biomes;
 		this.noises = noises;
 		this.originalSource = originalSource;
 		this.seed = seed;
 		this.legacy = legacy;
-		this.largeBiomes = largeBiomes;
 		if (legacy) {
 			PositionalRandomFactory positionalRandomFactory = WorldgenRandom.Algorithm.LEGACY.newInstance(seed).forkPositional();
-			this.moddednessNoise = Noises.instantiate(noises, positionalRandomFactory, largeBiomes ? MODDEDNESS_LARGE : MODDEDNESS);
+			this.moddednessNoise = Noises.instantiate(noises, positionalRandomFactory, MODDEDNESS);
 			this.offsetNoise = NormalNoise.create(positionalRandomFactory.fromHashOf(Noises.SHIFT.location()), new NormalNoise.NoiseParameters(0, 0.0D));
 		} else {
 			PositionalRandomFactory positionalRandomFactory = WorldgenRandom.Algorithm.XOROSHIRO.newInstance(seed).forkPositional();
-			this.moddednessNoise = Noises.instantiate(noises, positionalRandomFactory, largeBiomes ? MODDEDNESS_LARGE : MODDEDNESS);
+			this.moddednessNoise = Noises.instantiate(noises, positionalRandomFactory, MODDEDNESS);
 			this.offsetNoise = Noises.instantiate(noises, positionalRandomFactory, Noises.SHIFT);
 		}
 		this.weightedBiomeSlices = weightedBiomeSlices;
@@ -77,9 +74,9 @@ public final class ModdedBiomeSource extends BiomeSource {
 	}
 
 	@Override
-	public void addMultinoiseDebugInfo(List<String> strings, BlockPos pos, Climate.Sampler sampler) {
+	public void addDebugInfo(List<String> strings, BlockPos pos, Climate.Sampler sampler) {
 		BiomeSource original = this.originalSource;
-		original.addMultinoiseDebugInfo(strings, pos, sampler);
+		original.addDebugInfo(strings, pos, sampler);
 		if (!(original instanceof ModdedBiomeSource))
 			strings.add("Moddedness Slice: " + this.getSliceName(QuartPos.fromBlock(pos.getX()), QuartPos.fromBlock(pos.getZ())));
 	}
@@ -91,13 +88,13 @@ public final class ModdedBiomeSource extends BiomeSource {
 
 	@Override
 	public BiomeSource withSeed(long seed) {
-		return new ModdedBiomeSource(this.biomes, this.noises, this.originalSource, seed, this.legacy, this.largeBiomes, this.weightedBiomeSlices);
+		return new ModdedBiomeSource(this.biomes, this.noises, this.originalSource, seed, this.legacy, this.weightedBiomeSlices);
 	}
 
 	@Override
-	public Biome getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
-		Biome biome = this.weightedBiomeSlices.getNoiseBiome(x, y, z, this.getModdedness(x, z), sampler, this.originalSource, this.biomes);
-		return biome == this.originalSourceMarker ? this.originalSource.getNoiseBiome(x, y, z, sampler) : biome;
+	public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
+		Holder<Biome> biome = this.weightedBiomeSlices.getNoiseBiome(x, y, z, this.getModdedness(x, z), sampler, this.originalSource, this.biomes);
+		return biome.value() == this.originalSourceMarker ? this.originalSource.getNoiseBiome(x, y, z, sampler) : biome;
 	}
 
 	/**
@@ -153,8 +150,8 @@ public final class ModdedBiomeSource extends BiomeSource {
 		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return The additional possible biomes of the {@link #providers} merged with another set of possible biomes.
 		 */
-		public Set<Biome> combinePossibleBiomes(Set<Biome> possibleBiomes, Registry<Biome> registry) {
-			HashSet<Biome> biomes = new HashSet<>(possibleBiomes);
+		public Set<Holder<Biome>> combinePossibleBiomes(Set<Holder<Biome>> possibleBiomes, Registry<Biome> registry) {
+			Set<Holder<Biome>> biomes = new HashSet<>(possibleBiomes);
 			for (BiomeUtil.ModdedBiomeProvider provider : this.providers) {
 				biomes.addAll(provider.getAdditionalPossibleBiomes(registry));
 			}
@@ -162,7 +159,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 		}
 
 		/**
-		 * Gets a noise {@link Biome} at a position.
+		 * Gets a holder of a noise {@link Biome} at a position.
 		 *
 		 * @param x          The x pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param y          The y pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
@@ -173,7 +170,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return A noise {@link Biome} at a position.
 		 */
-		public Biome getNoiseBiome(int x, int y, int z, float moddedness, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
+		public Holder<Biome> getNoiseBiome(int x, int y, int z, float moddedness, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
 			return this.getProvider(moddedness).getNoiseBiome(x, y, z, sampler, original, registry);
 		}
 

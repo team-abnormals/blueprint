@@ -15,7 +15,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
-import net.minecraft.resources.RegistryWriteOps;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,14 +53,14 @@ public abstract class BiomeSourceModifierProvider implements DataProvider {
 	}
 
 	/**
-	 * Constructs a new {@link BiomeSourceModifierProvider} instance where the {@link #ops} is {@link RegistryAccess#builtin()}.
+	 * Constructs a new {@link BiomeSourceModifierProvider} instance where the {@link #ops} is {@link RegistryAccess#BUILTIN}.
 	 *
 	 * @param dataGenerator A {@link DataGenerator} instance to use.
 	 * @param modid         The ID of the mod to provide data for.
 	 * @see #BiomeSourceModifierProvider(DataGenerator, String, DynamicOps)
 	 */
 	protected BiomeSourceModifierProvider(DataGenerator dataGenerator, String modid) {
-		this(dataGenerator, modid, RegistryWriteOps.create(JsonOps.INSTANCE, RegistryAccess.builtin()));
+		this(dataGenerator, modid, RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get()));
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package com.teamabnormals.blueprint.core.util.registry;
 
-import com.teamabnormals.blueprint.common.world.biome.modification.BiomeModificationManager;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.level.biome.Biome;
@@ -9,7 +8,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -39,21 +37,6 @@ public class BiomeSubRegistryHelper extends AbstractSubRegistryHelper<Biome> {
 	 */
 	public KeyedBiome createBiome(String name, Supplier<Biome> biome) {
 		return new KeyedBiome(this.deferredRegister.register(name, biome));
-	}
-
-	/**
-	 * Registers a {@link Biome} and wraps it around a {@link KeyedBiome} and accepts a consumer onto {@link BiomeModificationManager#INSTANCE}.
-	 *
-	 * @param name     The name for the {@link Biome}.
-	 * @param biome    A {@link Biome} to register.
-	 * @param consumer A {@link BiConsumer} to accept for adding modifiers to the created biome.
-	 * @return A {@link KeyedBiome} wrapped around the registered {@link Biome}.
-	 * @see KeyedBiome
-	 */
-	public KeyedBiome createBiomeWithModifiers(String name, Supplier<Biome> biome, BiConsumer<RegistryObject<Biome>, BiomeModificationManager> consumer) {
-		RegistryObject<Biome> biomeRegistryObject = this.deferredRegister.register(name, biome);
-		consumer.accept(biomeRegistryObject, BiomeModificationManager.getInstance());
-		return new KeyedBiome(biomeRegistryObject);
 	}
 
 	/**

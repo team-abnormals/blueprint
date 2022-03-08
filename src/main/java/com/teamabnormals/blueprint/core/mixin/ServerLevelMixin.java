@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core.mixin;
 
 import com.teamabnormals.blueprint.common.world.storage.GlobalStorageManager;
+import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -26,7 +27,7 @@ import java.util.concurrent.Executor;
 public final class ServerLevelMixin {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void init(MinecraftServer server, Executor workerExecutor, LevelStorageSource.LevelStorageAccess levelSave, ServerLevelData serverWorldInfo, ResourceKey<Level> resourceKey, DimensionType dimensionType, ChunkProgressListener statusListener, ChunkGenerator chunkGenerator, boolean bl, long l, List<CustomSpawner> list, boolean bl2, CallbackInfo info) {
+	private void init(MinecraftServer server, Executor workerExecutor, LevelStorageSource.LevelStorageAccess levelSave, ServerLevelData serverWorldInfo, ResourceKey<Level> resourceKey, Holder<DimensionType> dimensionType, ChunkProgressListener statusListener, ChunkGenerator chunkGenerator, boolean bl, long l, List<CustomSpawner> list, boolean bl2, CallbackInfo info) {
 		if (resourceKey == Level.OVERWORLD) {
 			GlobalStorageManager.getOrCreate((ServerLevel) (Object) this);
 		}

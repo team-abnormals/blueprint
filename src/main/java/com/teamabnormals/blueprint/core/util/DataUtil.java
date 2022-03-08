@@ -1,6 +1,8 @@
 package com.teamabnormals.blueprint.core.util;
 
+import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.annotations.ConfigKey;
 import com.teamabnormals.blueprint.core.api.conditions.ConfigValueCondition;
 import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicate;
@@ -13,11 +15,15 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagManager;
 import net.minecraft.world.entity.ai.behavior.GiveGiftToHero;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.Item;
@@ -26,8 +32,8 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElement;
-import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -53,6 +59,8 @@ import java.util.function.Predicate;
  * @author abigailfails
  */
 public final class DataUtil {
+	private static final Field TAG_MANAGER = ObfuscationReflectionHelper.findField(ReloadableServerResources.class, "f_206849_");
+	private static final Field REGISTRY_ACCESS = ObfuscationReflectionHelper.findField(TagManager.class, "f_144569_");
 	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "m_43513_", Potion.class, Item.class, Potion.class);
 	private static final Vector<AlternativeDispenseBehavior> ALTERNATIVE_DISPENSE_BEHAVIORS = new Vector<>();
 	private static final Vector<CustomNoteBlockInstrument> CUSTOM_NOTE_BLOCK_INSTRUMENTS = new Vector<>();
@@ -421,6 +429,10 @@ public final class DataUtil {
 		List<CustomNoteBlockInstrument> instruments = new ArrayList<>(CUSTOM_NOTE_BLOCK_INSTRUMENTS);
 		Collections.sort(instruments);
 		return instruments;
+	}
+
+	public static RegistryOps<JsonElement> createRegistryOps(ReloadableServerResources serverResources) throws IllegalAccessException {
+		return RegistryOps.create(JsonOps.INSTANCE, (RegistryAccess) REGISTRY_ACCESS.get(TAG_MANAGER.get(serverResources)));
 	}
 
 	/**

@@ -2,6 +2,7 @@ package com.teamabnormals.blueprint.core.mixin.client;
 
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.Musics;
 import net.minecraft.client.player.LocalPlayer;
@@ -28,9 +29,9 @@ public final class MinecraftMixin {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/BossHealthOverlay;shouldPlayMusic()Z"), method = "getSituationalMusic", cancellable = true)
 	private void addCustomEndBiomeMusic(CallbackInfoReturnable<Music> info) {
 		if (!this.gui.getBossOverlay().shouldPlayMusic()) {
-			Biome biome = this.level.getBiomeManager().getNoiseBiomeAtPosition(this.player.blockPosition());
-			if (BiomeUtil.shouldPlayCustomEndMusic(biome.getRegistryName())) {
-				info.setReturnValue(biome.getBackgroundMusic().orElse(Musics.GAME));
+			Holder<Biome> biome = this.level.getBiome(this.player.blockPosition());
+			if (BiomeUtil.shouldPlayCustomEndMusic(biome.unwrapKey().orElseThrow())) {
+				info.setReturnValue(biome.value().getBackgroundMusic().orElse(Musics.GAME));
 			}
 		}
 	}

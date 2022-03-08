@@ -12,9 +12,7 @@ import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
 import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -27,13 +25,9 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -55,6 +49,10 @@ public final class LootModificationManager extends ModificationManager<LootTable
 	private LootModificationManager(PredicateManager lootPredicateManager) {
 		super(GSON, "modifiers/loot_tables", "loot_tables");
 		this.lootPredicateManager = lootPredicateManager;
+	}
+
+	public static void add(List<PreparableReloadListener> listeners, PredicateManager predicateManager) {
+		listeners.add(2, INSTANCE = new LootModificationManager(predicateManager));
 	}
 
 	static {
@@ -79,18 +77,6 @@ public final class LootModificationManager extends ModificationManager<LootTable
 	 */
 	public static LootModificationManager getInstance() {
 		return INSTANCE;
-	}
-
-	@SubscribeEvent
-	public static void onReloadListener(AddReloadListenerEvent event) {
-		ReloadableServerResources dataPackRegistries = event.getServerResources();
-		INSTANCE = new LootModificationManager(dataPackRegistries.getPredicateManager());
-		//Loot modifiers must load before loot tables
-		ReloadableResourceManager simpleReloadableResourceManager = (ReloadableResourceManager) dataPackRegistries.getResourceManager();
-		List<PreparableReloadListener> reloadListeners = ObfuscationReflectionHelper.getPrivateValue(ReloadableResourceManager.class, simpleReloadableResourceManager, "f_10871_");
-		if (reloadListeners != null) {
-			reloadListeners.add(2, INSTANCE);
-		}
 	}
 
 	@Override
