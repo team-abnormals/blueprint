@@ -111,7 +111,7 @@ public final class Blueprint {
 
 		CraftingHelper.register(new Serializer());
 		CraftingHelper.register(new BlueprintAndCondition.Serializer());
-		DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
+		//DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
 		DataUtil.registerConfigPredicate(new EqualsPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new GreaterThanOrEqualPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new GreaterThanPredicate.Serializer());
