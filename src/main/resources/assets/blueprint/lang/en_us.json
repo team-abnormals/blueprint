@@ -1,6 +1,7 @@
 {
 	"blueprint.config.screen_shake_scale": "Screen Shake Scale",
 	"blueprint.config.max_screen_shakers": "Max Screen Shakers",
+	"blueprint.config.disable_experimental_settings_screen": "Disable Experimental Settings Screen",
 	"blueprint.config.slabfish_hat.enabled": "Slabfish Hat",
 	"blueprint.config.slabfish_hat.enabled.tooltip": "Toggles the Slabfish hat. Available to Tier 2+ patrons.",
 	"blueprint.config.slabfish_hat.sweater": "Sweater",

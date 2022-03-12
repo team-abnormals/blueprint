@@ -22,6 +22,9 @@ public final class BlueprintConfig {
 		@ConfigKey("max_screen_shakers")
 		public final ConfigValue<Integer> maxScreenShakersValue;
 		public int maxScreenShakers;
+		@ConfigKey("disable_experimental_settings_screen")
+		public final ConfigValue<Boolean> disableExperimentalSettingsScreenValue;
+		public boolean disableExperimentalSettingsScreen;
 
 		public final SlabfishSettings slabfishSettings;
 
@@ -36,6 +39,11 @@ public final class BlueprintConfig {
 					.translation(makeTranslation("max_screen_shakers"))
 					.defineInRange("maxScreenShakers", 256, 0, Integer.MAX_VALUE);
 
+			this.disableExperimentalSettingsScreenValue = builder
+					.comment("Determines if the experimental settings screen should be disabled")
+					.translation(makeTranslation("disable_experimental_settings_screen"))
+					.define("disableExperimentalSettingsScreen", true);
+
 			this.slabfishSettings = new SlabfishSettings(builder);
 		}
 
@@ -45,6 +53,7 @@ public final class BlueprintConfig {
 		public void load() {
 			this.screenShakeScale = this.screenShakeScaleValue.get();
 			this.maxScreenShakers = this.maxScreenShakersValue.get();
+			this.disableExperimentalSettingsScreen = this.disableExperimentalSettingsScreenValue.get();
 		}
 	}
 

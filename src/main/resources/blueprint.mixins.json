@@ -26,6 +26,7 @@
     "client.MinecraftMixin",
     "client.ModelPartMixin",
     "client.PlayerRendererMixin",
+    "client.PrimaryLevelDataMixin",
     "client.SkinCustomizationScreenMixin"
   ],
   "injectors": {
