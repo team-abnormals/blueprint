@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * @see BiomeUtil.ModdedBiomeProvider
  */
 public final class ModdedBiomeSource extends BiomeSource {
-	public static final ResourceKey<DensityFunction> DEFAULT_MODDEDNESS = ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, new ResourceLocation(Blueprint.MOD_ID, "default_moddedness"));
+	public static final ResourceKey<DensityFunction> DEFAULT_MODDEDNESS = ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, new ResourceLocation(Blueprint.MOD_ID, "moddedness/default"));
 	public static final Codec<ModdedBiomeSource> CODEC = RecordCodecBuilder.create((instance) -> {
 		return instance.group(
 				RegistryOps.retrieveRegistry(Registry.BIOME_REGISTRY).forGetter((modded) -> modded.biomes),

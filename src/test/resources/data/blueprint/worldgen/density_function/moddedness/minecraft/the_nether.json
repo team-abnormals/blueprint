@@ -1,0 +1,30 @@
+{
+	"argument": {
+		"xz_scale": 0.25,
+		"y_scale": 0.0,
+		"noise": "minecraft:netherrack",
+		"shift_x": {
+			"argument": {
+				"argument": {
+					"argument": "minecraft:offset",
+					"type": "minecraft:shift_a"
+				},
+				"type": "minecraft:cache_2d"
+			},
+			"type": "minecraft:flat_cache"
+		},
+		"shift_y": 0.0,
+		"shift_z": {
+			"argument": {
+				"argument": {
+					"argument": "minecraft:offset",
+					"type": "minecraft:shift_b"
+				},
+				"type": "minecraft:cache_2d"
+			},
+			"type": "minecraft:flat_cache"
+		},
+		"type": "minecraft:shifted_noise"
+	},
+	"type": "minecraft:flat_cache"
+}

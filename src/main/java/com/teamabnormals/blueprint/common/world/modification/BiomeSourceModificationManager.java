@@ -114,7 +114,7 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 						} catch (IllegalAccessException ignored) {
 						}
 					}
-					DensityFunction moddedness = densityFunctionRegistry.get(location);
+					DensityFunction moddedness = densityFunctionRegistry.get(new ResourceLocation(Blueprint.MOD_ID, "moddedness/" + location.getNamespace() + "/" + location.getPath()));
 					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, noiseParametersRegistry, densityFunctionRegistry, source, noiseSettings, seed, legacy, moddedness != null ? moddedness : defaultModdedness, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
 					chunkGenerator.biomeSource = moddedBiomeSource;
 					chunkGenerator.runtimeBiomeSource = moddedBiomeSource;
