@@ -57,6 +57,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -111,7 +112,6 @@ public final class Blueprint {
 
 		CraftingHelper.register(new Serializer());
 		CraftingHelper.register(new BlueprintAndCondition.Serializer());
-		//DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
 		DataUtil.registerConfigPredicate(new EqualsPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new GreaterThanOrEqualPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new GreaterThanPredicate.Serializer());
@@ -150,6 +150,7 @@ public final class Blueprint {
 			bus.addListener(BlueprintShaders::registerShaders);
 		});
 
+		bus.addGenericListener(Block.class, this::registerConfigConditions);
 		bus.addListener(EventPriority.LOWEST, this::commonSetup);
 		bus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
 		bus.addListener(this::dataSetup);
@@ -183,6 +184,10 @@ public final class Blueprint {
 			generator.addProvider(new BlueprintBiomeTagsProvider(MOD_ID, generator, fileHelper));
 			generator.addProvider(new BlueprintBiomeSourceModifierProvider(generator));
 		}
+	}
+
+	private void registerConfigConditions(RegistryEvent.Register<Block> event) {
+		DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
 	}
 
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
