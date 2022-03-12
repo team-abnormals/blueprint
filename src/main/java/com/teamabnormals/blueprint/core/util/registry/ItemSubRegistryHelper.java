@@ -1,29 +1,16 @@
 package com.teamabnormals.blueprint.core.util.registry;
 
-import com.google.common.collect.Sets;
-import com.teamabnormals.blueprint.common.dispenser.SpawnEggDispenseItemBehavior;
 import com.teamabnormals.blueprint.common.item.BlueprintBoatItem;
-import com.teamabnormals.blueprint.common.item.BlueprintSpawnEggItem;
 import com.teamabnormals.blueprint.common.item.FuelItem;
 import com.teamabnormals.blueprint.core.registry.BoatRegistry;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -34,8 +21,6 @@ import java.util.function.Supplier;
  * @see AbstractSubRegistryHelper
  */
 public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
-	private static final Field EGGS_FIELD = ObfuscationReflectionHelper.findField(SpawnEggItem.class, "f_43201_");
-	protected final Set<Supplier<BlueprintSpawnEggItem>> spawnEggs = Sets.newHashSet();
 
 	public ItemSubRegistryHelper(RegistryHelper parent, DeferredRegister<Item> deferredRegister) {
 		super(parent, deferredRegister);
@@ -141,23 +126,6 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	}
 
 	/**
-	 * Creates and registers a {@link BlueprintSpawnEggItem}.
-	 *
-	 * @param entityName     The name of the entity this spawn egg spawns.
-	 * @param supplier       The supplied {@link EntityType}.
-	 * @param primaryColor   The egg's primary color.
-	 * @param secondaryColor The egg's secondary color.
-	 * @return A {@link RegistryObject} containing the {@link BlueprintSpawnEggItem}.
-	 * @see BlueprintSpawnEggItem
-	 */
-	public RegistryObject<BlueprintSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<?>> supplier, int primaryColor, int secondaryColor) {
-		Supplier<BlueprintSpawnEggItem> eggItem = () -> new BlueprintSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
-		RegistryObject<BlueprintSpawnEggItem> spawnEgg = this.deferredRegister.register(entityName + "_spawn_egg", eggItem);
-		this.spawnEggs.add(eggItem);
-		return spawnEgg;
-	}
-
-	/**
 	 * Creates and registers a {@link BlueprintBoatItem} and boat type.
 	 *
 	 * @param wood  The name of the wood, e.g. "oak".
@@ -170,35 +138,4 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 		return boat;
 	}
 
-	@Override
-	public void register(IEventBus eventBus) {
-		super.register(eventBus);
-		eventBus.addGenericListener(EntityType.class, EventPriority.LOWEST, this::handleSpawnEggMap);
-		eventBus.addListener(EventPriority.LOWEST, this::handleSpawnEggDispenserBehaviors);
-	}
-
-	@SuppressWarnings("unchecked")
-	private void handleSpawnEggMap(RegistryEvent.Register<EntityType<?>> event) {
-		if (!this.spawnEggs.isEmpty()) {
-			try {
-				Map<EntityType<?>, SpawnEggItem> map = (Map<EntityType<?>, SpawnEggItem>) EGGS_FIELD.get(null);
-				this.spawnEggs.forEach(supplier -> {
-					var egg = supplier.get();
-					map.put(egg.getType(null), egg);
-				});
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void handleSpawnEggDispenserBehaviors(FMLCommonSetupEvent event) {
-		if (!this.spawnEggs.isEmpty()) {
-			event.enqueueWork(() -> {
-				for (var spawnEggItem : this.spawnEggs) {
-					DispenserBlock.registerBehavior(spawnEggItem.get(), new SpawnEggDispenseItemBehavior());
-				}
-			});
-		}
-	}
 }
