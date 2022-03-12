@@ -5,6 +5,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.Blueprint;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
@@ -14,7 +15,6 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 /**
  * An {@link UnsafeChunkGeneratorModifier} subclass that modifies the surface rule of a {@link ChunkGenerator} instance.
@@ -36,7 +36,7 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 		if (chunkGenerator instanceof NoiseBasedChunkGenerator) {
 			long fieldOffset = UNSAFE.objectFieldOffset(NOISE_GENERATOR_SETTINGS);
 			SurfaceRules.RuleSource newRuleSource;
-			NoiseGeneratorSettings settings = ((Supplier<NoiseGeneratorSettings>) UNSAFE.getObject(chunkGenerator, fieldOffset)).get();
+			NoiseGeneratorSettings settings = ((Holder<NoiseGeneratorSettings>) UNSAFE.getObject(chunkGenerator, fieldOffset)).value();
 			if (config.replace) newRuleSource = config.surfaceRule;
 			else {
 				SurfaceRules.RuleSource ruleSource = settings.surfaceRule();
@@ -49,8 +49,7 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 					newRuleSource = SurfaceRules.sequence(newSequence.toArray(new SurfaceRules.RuleSource[0]));
 				} else newRuleSource = SurfaceRules.sequence(config.surfaceRule, ruleSource);
 			}
-			NoiseGeneratorSettings newSettings = new NoiseGeneratorSettings(settings.noiseSettings(), settings.defaultBlock(), settings.defaultFluid(), settings.noiseRouter(), newRuleSource, settings.seaLevel(), settings.disableMobGeneration(), settings.isAquifersEnabled(), settings.oreVeinsEnabled(), settings.useLegacyRandomSource());
-			UNSAFE.putObject(chunkGenerator, fieldOffset, (Supplier<NoiseGeneratorSettings>) () -> newSettings);
+			UNSAFE.putObject(chunkGenerator, fieldOffset, Holder.direct(new NoiseGeneratorSettings(settings.noiseSettings(), settings.defaultBlock(), settings.defaultFluid(), settings.noiseRouter(), newRuleSource, settings.seaLevel(), settings.disableMobGeneration(), settings.isAquifersEnabled(), settings.oreVeinsEnabled(), settings.useLegacyRandomSource())));
 		} else
 			Blueprint.LOGGER.warn("Could not apply surface rule modifier because " + chunkGenerator + " was not an instance of NoiseBasedChunkGenerator");
 	}
