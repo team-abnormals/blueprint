@@ -12,12 +12,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.level.levelgen.Noises;
-import net.minecraft.world.level.levelgen.PositionalRandomFactory;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 import java.util.*;
@@ -32,45 +28,48 @@ import java.util.stream.Stream;
  * @see BiomeUtil.ModdedBiomeProvider
  */
 public final class ModdedBiomeSource extends BiomeSource {
-	public static final ResourceKey<NormalNoise.NoiseParameters> MODDEDNESS = ResourceKey.create(Registry.NOISE_REGISTRY, new ResourceLocation(Blueprint.MOD_ID, "moddedness"));
+	public static final ResourceKey<DensityFunction> DEFAULT_MODDEDNESS = ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, new ResourceLocation(Blueprint.MOD_ID, "default_moddedness"));
 	public static final Codec<ModdedBiomeSource> CODEC = RecordCodecBuilder.create((instance) -> {
 		return instance.group(
 				RegistryOps.retrieveRegistry(Registry.BIOME_REGISTRY).forGetter((modded) -> modded.biomes),
-				RegistryOps.retrieveRegistry(Registry.NOISE_REGISTRY).forGetter((modded) -> modded.noises),
+				RegistryOps.retrieveRegistry(Registry.NOISE_REGISTRY).forGetter((modded) -> modded.noiseParameters),
+				RegistryOps.retrieveRegistry(Registry.DENSITY_FUNCTION_REGISTRY).forGetter((modded) -> modded.densityFunctions),
 				BiomeSource.CODEC.fieldOf("original_biome_source").forGetter(modded -> modded.originalSource),
+				NoiseSettings.CODEC.fieldOf("noise_settings").forGetter(modded -> modded.noiseSettings),
 				Codec.LONG.fieldOf("seed").forGetter(modded -> modded.seed),
 				Codec.BOOL.fieldOf("legacy_random_source").forGetter(modded -> modded.legacy),
+				DensityFunction.HOLDER_HELPER_CODEC.fieldOf("moddedness").forGetter(modded -> modded.moddedness),
 				WeightedBiomeSlices.CODEC.fieldOf("weighted_slices").forGetter(modded -> modded.weightedBiomeSlices)
 		).apply(instance, ModdedBiomeSource::new);
 	});
 	private final Registry<Biome> biomes;
-	private final Registry<NormalNoise.NoiseParameters> noises;
+	private final Registry<NormalNoise.NoiseParameters> noiseParameters;
+	private final Registry<DensityFunction> densityFunctions;
 	private final BiomeSource originalSource;
+	private final NoiseSettings noiseSettings;
 	private final long seed;
 	private final boolean legacy;
-	private final NormalNoise moddednessNoise;
-	private final NormalNoise offsetNoise;
+	private final DensityFunction moddedness;
 	private final WeightedBiomeSlices weightedBiomeSlices;
 	private final Biome originalSourceMarker;
 
-	public ModdedBiomeSource(Registry<Biome> biomes, Registry<NormalNoise.NoiseParameters> noises, BiomeSource originalSource, long seed, boolean legacy, WeightedBiomeSlices weightedBiomeSlices) {
+	public ModdedBiomeSource(Registry<Biome> biomes, Registry<NormalNoise.NoiseParameters> noiseParameters, Registry<DensityFunction> densityFunctions, BiomeSource originalSource, NoiseSettings noiseSettings, long seed, boolean legacy, DensityFunction moddedness, WeightedBiomeSlices weightedBiomeSlices) {
 		super(new ArrayList<>(weightedBiomeSlices.combinePossibleBiomes(originalSource.possibleBiomes(), biomes)));
 		this.biomes = biomes;
-		this.noises = noises;
+		this.noiseParameters = noiseParameters;
+		this.densityFunctions = densityFunctions;
 		this.originalSource = originalSource;
+		this.noiseSettings = noiseSettings;
 		this.seed = seed;
 		this.legacy = legacy;
-		if (legacy) {
-			PositionalRandomFactory positionalRandomFactory = WorldgenRandom.Algorithm.LEGACY.newInstance(seed).forkPositional();
-			this.moddednessNoise = Noises.instantiate(noises, positionalRandomFactory, MODDEDNESS);
-			this.offsetNoise = NormalNoise.create(positionalRandomFactory.fromHashOf(Noises.SHIFT.location()), new NormalNoise.NoiseParameters(0, 0.0D));
-		} else {
-			PositionalRandomFactory positionalRandomFactory = WorldgenRandom.Algorithm.XOROSHIRO.newInstance(seed).forkPositional();
-			this.moddednessNoise = Noises.instantiate(noises, positionalRandomFactory, MODDEDNESS);
-			this.offsetNoise = Noises.instantiate(noises, positionalRandomFactory, Noises.SHIFT);
-		}
+		this.moddedness = visitModdednessDensityFunction(noiseSettings, seed, noiseParameters, legacy ? WorldgenRandom.Algorithm.LEGACY : WorldgenRandom.Algorithm.XOROSHIRO, moddedness);
 		this.weightedBiomeSlices = weightedBiomeSlices;
 		this.originalSourceMarker = biomes.getOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER.getKey());
+	}
+
+	//Vanilla privates tons of stuff here, so we will create a dummy noise router to visit the moddedness density function
+	private static DensityFunction visitModdednessDensityFunction(NoiseSettings noiseSettings, long seed, Registry<NormalNoise.NoiseParameters> noiseParameters, WorldgenRandom.Algorithm algorithm, DensityFunction moddedness) {
+		return NoiseRouterData.createNoiseRouter(noiseSettings, seed, noiseParameters, algorithm, new NoiseRouterWithOnlyNoises(moddedness, DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero(), DensityFunctions.zero())).barrierNoise();
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 
 	@Override
 	public BiomeSource withSeed(long seed) {
-		return new ModdedBiomeSource(this.biomes, this.noises, this.originalSource, seed, this.legacy, this.weightedBiomeSlices);
+		return new ModdedBiomeSource(this.biomes, this.noiseParameters, this.densityFunctions, this.originalSource, this.noiseSettings, seed, this.legacy, this.moddedness, this.weightedBiomeSlices);
 	}
 
 	@Override
@@ -108,11 +107,9 @@ public final class ModdedBiomeSource extends BiomeSource {
 		return this.weightedBiomeSlices.getSliceName(this.getModdedness(x, z));
 	}
 
+	//We keep the y at 0 to avoid severely impacting performance for surface rules
 	private float getModdedness(int x, int z) {
-		NormalNoise offsetNoise = this.offsetNoise;
-		double shiftedX = x + offsetNoise.getValue(x, 0.0D, z) * 4.0D;
-		double shiftedZ = z + offsetNoise.getValue(z, x, 0.0D) * 4.0D;
-		return (float) this.moddednessNoise.getValue(shiftedX, 0.0D, shiftedZ);
+		return (float) this.moddedness.compute(new DensityFunction.SinglePointContext(QuartPos.toBlock(x), 0, QuartPos.toBlock(z)));
 	}
 
 	/**

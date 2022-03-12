@@ -23,9 +23,7 @@ import net.minecraft.world.level.biome.CheckerboardColumnBiomeSource;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraft.world.level.levelgen.WorldGenSettings;
+import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
@@ -90,8 +88,12 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 		RegistryAccess registryAccess = server.registryAccess();
 		Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registry.BIOME_REGISTRY);
 		Registry<NormalNoise.NoiseParameters> noiseParametersRegistry = registryAccess.registryOrThrow(Registry.NOISE_REGISTRY);
+		Registry<DensityFunction> densityFunctionRegistry = registryAccess.registryOrThrow(Registry.DENSITY_FUNCTION_REGISTRY);
+		NoiseSettings defaultNoiseSettings = registryAccess.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getOrThrow(NoiseGeneratorSettings.OVERWORLD).noiseSettings();
+		DensityFunction defaultModdedness = densityFunctionRegistry.getOrThrow(ModdedBiomeSource.DEFAULT_MODDEDNESS);
 		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : dimensions.entrySet()) {
-			ArrayList<BiomeUtil.ModdedBiomeProvider> providersForKey = map.get(entry.getKey().location());
+			ResourceLocation location = entry.getKey().location();
+			ArrayList<BiomeUtil.ModdedBiomeProvider> providersForKey = map.get(location);
 			if (providersForKey != null && !providersForKey.isEmpty()) {
 				ChunkGenerator chunkGenerator = entry.getValue().generator();
 				BiomeSource source = chunkGenerator.getBiomeSource();
@@ -101,16 +103,19 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 				if (!(source instanceof FixedBiomeSource) && !(source instanceof CheckerboardColumnBiomeSource)) {
 					boolean legacy = false;
 					boolean noiseBased = chunkGenerator instanceof NoiseBasedChunkGenerator;
+					NoiseSettings noiseSettings = defaultNoiseSettings;
 					if (noiseBased) {
 						try {
 							NoiseGeneratorSettings settings = ((Holder<NoiseGeneratorSettings>) NOISE_GENERATOR_SETTINGS.get(chunkGenerator)).value();
 							if (settings != null) {
 								legacy = settings.useLegacyRandomSource();
+								noiseSettings = settings.noiseSettings();
 							}
 						} catch (IllegalAccessException ignored) {
 						}
 					}
-					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, noiseParametersRegistry, source, seed, legacy, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
+					DensityFunction moddedness = densityFunctionRegistry.get(location);
+					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, noiseParametersRegistry, densityFunctionRegistry, source, noiseSettings, seed, legacy, moddedness != null ? moddedness : defaultModdedness, new ModdedBiomeSource.WeightedBiomeSlices(providersForKey.toArray(new BiomeUtil.ModdedBiomeProvider[0])));
 					chunkGenerator.biomeSource = moddedBiomeSource;
 					chunkGenerator.runtimeBiomeSource = moddedBiomeSource;
 					if (noiseBased)
