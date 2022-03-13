@@ -32,11 +32,14 @@ import java.util.Map;
 import java.util.Set;
 
 @Mixin(Entity.class)
-public final class EntityMixin implements IDataManager, Endimatable {
+public abstract class EntityMixin implements IDataManager, Endimatable {
 	@Shadow
-	private Level level;
+	public Level level;
 	@Shadow
 	private Vec3 position;
+
+	@Shadow
+	public abstract BlockPos getOnPos();
 
 	private Map<TrackedData<?>, DataEntry<?>> dataMap = Maps.newHashMap();
 	private boolean dirty = false;
@@ -164,10 +167,8 @@ public final class EntityMixin implements IDataManager, Endimatable {
 		this.endimateTick();
 	}
 
-	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;stepOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/Entity;)V"))
-	private void onEntityWalk(Block block, Level level, BlockPos pos, BlockState state, Entity entity) {
-		if (!EntityStepEvent.onEntityStep(level, pos, entity)) {
-			block.stepOn(level, pos, state, entity);
-		}
+	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;isSteppingCarefully()Z"))
+	private boolean onIsSteppingCarefully(Entity instance) {
+		return instance.isSteppingCarefully() && !EntityStepEvent.onEntityStep(this.level, this.getOnPos(), instance);
 	}
 }
