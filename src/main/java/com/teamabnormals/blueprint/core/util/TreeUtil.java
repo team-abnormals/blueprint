@@ -24,6 +24,7 @@ import java.util.Random;
  * @author bageldotjpg
  */
 public final class TreeUtil {
+
 	/**
 	 * Places a log at a {@link BlockPos} using a given {@link LevelWriter}, {@link Random}, and {@link TreeConfiguration}.
 	 *
@@ -77,14 +78,14 @@ public final class TreeUtil {
 
 	/**
 	 * Forcefully sets a {@link BlockState} at a given {@link BlockPos}.
-	 * <p>Uses flag 18.</p>
+	 * <p>Uses flag 19.</p>
 	 *
 	 * @param level A {@link LevelWriter} to use for placing the {@link BlockState}.
 	 * @param pos   A {@link BlockPos} for where to place the {@link BlockState}.
 	 * @param state A {@link BlockState} to place.
 	 */
 	public static void setForcedState(LevelWriter level, BlockPos pos, BlockState state) {
-		level.setBlock(pos, state, 18);
+		level.setBlock(pos, state, 19);
 	}
 
 	/**
@@ -129,7 +130,7 @@ public final class TreeUtil {
 	public static void setDirtAt(LevelAccessor level, BlockPos pos) {
 		Block block = level.getBlockState(pos).getBlock();
 		if (block == Blocks.GRASS_BLOCK || block == Blocks.FARMLAND) {
-			level.setBlock(pos, Blocks.DIRT.defaultBlockState(), 18);
+			level.setBlock(pos, Blocks.DIRT.defaultBlockState(), 19);
 		}
 	}
 
