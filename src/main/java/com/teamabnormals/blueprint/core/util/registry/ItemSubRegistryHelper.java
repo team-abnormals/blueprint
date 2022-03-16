@@ -3,8 +3,11 @@ package com.teamabnormals.blueprint.core.util.registry;
 import com.teamabnormals.blueprint.common.item.BlueprintBoatItem;
 import com.teamabnormals.blueprint.common.item.FuelItem;
 import com.teamabnormals.blueprint.core.registry.BoatRegistry;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -123,6 +126,21 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 */
 	public RegistryObject<Item> createCompatItem(String name, Item.Properties properties, CreativeModeTab group, String... modIds) {
 		return this.deferredRegister.register(name, () -> new Item(properties.tab(areModsLoaded(modIds) ? group : null)));
+	}
+
+	/**
+	 * Creates and registers a {@link ForgeSpawnEggItem}.
+	 *
+	 * @param entityName     The name of the entity this spawn egg spawns.
+	 * @param supplier       The supplied {@link EntityType}.
+	 * @param primaryColor   The egg's primary color.
+	 * @param secondaryColor The egg's secondary color.
+	 * @return A {@link RegistryObject} containing the {@link ForgeSpawnEggItem}.
+	 * @see ForgeSpawnEggItem
+	 */
+	public RegistryObject<ForgeSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<? extends Mob>> supplier, int primaryColor, int secondaryColor) {
+		Supplier<ForgeSpawnEggItem> eggItem = () -> new ForgeSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+		return this.deferredRegister.register(entityName + "_spawn_egg", eggItem);
 	}
 
 	/**
