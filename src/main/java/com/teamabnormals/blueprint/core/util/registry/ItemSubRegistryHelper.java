@@ -139,8 +139,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @see ForgeSpawnEggItem
 	 */
 	public RegistryObject<ForgeSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<? extends Mob>> supplier, int primaryColor, int secondaryColor) {
-		Supplier<ForgeSpawnEggItem> eggItem = () -> new ForgeSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
-		return this.deferredRegister.register(entityName + "_spawn_egg", eggItem);
+		return this.deferredRegister.register(entityName + "_spawn_egg", () -> new ForgeSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
 	}
 
 	/**
