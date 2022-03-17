@@ -58,7 +58,7 @@ public final class TagUtil {
 		return TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(modid, name));
 	}
 
-	private static boolean isTagged(Biome biome, TagKey<Biome> tagKey) {
+	public static boolean isTagged(Biome biome, TagKey<Biome> tagKey) {
 		return ForgeRegistries.BIOMES.tags().getTag(tagKey).contains(biome);
 	}
 
