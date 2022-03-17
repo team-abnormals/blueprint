@@ -1,13 +1,9 @@
 package com.teamabnormals.blueprint.core.data.server.tags;
 
 import com.teamabnormals.blueprint.core.other.tags.BlueprintBiomeTags;
-import com.teamabnormals.blueprint.core.other.tags.BlueprintEntityTypeTags;
-import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.tags.BiomeTags;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.common.data.ExistingFileHelper;

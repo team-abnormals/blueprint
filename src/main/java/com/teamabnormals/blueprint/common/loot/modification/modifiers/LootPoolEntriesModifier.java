@@ -1,6 +1,10 @@
 package com.teamabnormals.blueprint.common.loot.modification.modifiers;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import net.minecraft.util.GsonHelper;

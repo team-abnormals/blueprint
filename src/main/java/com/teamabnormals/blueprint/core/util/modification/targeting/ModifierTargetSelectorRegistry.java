@@ -2,7 +2,11 @@ package com.teamabnormals.blueprint.core.util.modification.targeting;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.teamabnormals.blueprint.core.util.modification.targeting.selectors.*;
+import com.teamabnormals.blueprint.core.util.modification.targeting.selectors.ChoiceModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.selectors.EmptyModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.selectors.MultiModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.selectors.NamesModifierTargetSelector;
+import com.teamabnormals.blueprint.core.util.modification.targeting.selectors.RegexModifierSelector;
 
 import javax.annotation.Nullable;
 

@@ -1,6 +1,10 @@
 package com.teamabnormals.blueprint.core.util.modification;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 
 /**
  * An interface that can be used to modify a type of object with a serializable/deserializable config.

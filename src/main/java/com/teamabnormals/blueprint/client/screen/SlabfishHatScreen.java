@@ -1,9 +1,9 @@
 package com.teamabnormals.blueprint.client.screen;
 
-import com.teamabnormals.blueprint.client.RewardHandler;
-import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.teamabnormals.blueprint.client.RewardHandler;
 import com.teamabnormals.blueprint.client.RewardHandler.SlabfishSetting;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;

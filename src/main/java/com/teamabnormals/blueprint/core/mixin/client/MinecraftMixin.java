@@ -2,12 +2,12 @@ package com.teamabnormals.blueprint.core.mixin.client;
 
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.Musics;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.biome.Biome;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

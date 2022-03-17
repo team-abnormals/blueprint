@@ -2,10 +2,10 @@ package com.teamabnormals.blueprint.common.block.wood;
 
 import com.teamabnormals.blueprint.common.block.BlueprintPressurePlateBlock;
 import com.teamabnormals.blueprint.core.util.item.filling.TargetedItemCategoryFiller;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.core.NonNullList;
 
 /**
  * A {@link BlueprintPressurePlateBlock} extension that fills its item after the latest vanilla wooden pressure plate item.

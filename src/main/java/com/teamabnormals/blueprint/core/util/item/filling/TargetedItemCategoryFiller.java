@@ -3,10 +3,10 @@ package com.teamabnormals.blueprint.core.util.item.filling;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.teamabnormals.blueprint.core.util.item.ItemStackUtil;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 import java.util.Set;
