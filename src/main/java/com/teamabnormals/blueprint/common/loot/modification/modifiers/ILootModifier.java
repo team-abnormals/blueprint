@@ -1,8 +1,8 @@
 package com.teamabnormals.blueprint.common.loot.modification.modifiers;
 
 import com.google.gson.Gson;
-import com.teamabnormals.blueprint.core.util.modification.IModifier;
 import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.blueprint.core.util.modification.IModifier;
 import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraftforge.event.LootTableLoadEvent;
 

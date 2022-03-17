@@ -1,9 +1,9 @@
 package com.teamabnormals.blueprint.common.block;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * A {@link Block} extension that has the same enchantment power bonus as the vanilla bookshelf.

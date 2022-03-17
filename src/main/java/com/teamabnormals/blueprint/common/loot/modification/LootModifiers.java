@@ -1,16 +1,16 @@
 package com.teamabnormals.blueprint.common.loot.modification;
 
 import com.google.gson.Gson;
+import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.loot.modification.modifiers.ILootModifier;
 import com.teamabnormals.blueprint.common.loot.modification.modifiers.LootPoolEntriesModifier;
 import com.teamabnormals.blueprint.common.loot.modification.modifiers.LootPoolsModifier;
 import com.teamabnormals.blueprint.common.loot.modification.modifiers.LootTypeModifier;
 import com.teamabnormals.blueprint.core.util.modification.ModifierDataProvider;
 import com.teamabnormals.blueprint.core.util.modification.ModifierRegistry;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraft.world.level.storage.loot.Deserializers;
+import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraftforge.event.LootTableLoadEvent;
 
 /**

@@ -2,11 +2,11 @@ package com.teamabnormals.blueprint.common.block;
 
 import com.google.common.collect.Maps;
 import com.teamabnormals.blueprint.core.util.item.filling.TargetedItemCategoryFiller;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 
 import java.util.Map;
 

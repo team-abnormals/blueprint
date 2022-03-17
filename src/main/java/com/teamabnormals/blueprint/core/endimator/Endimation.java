@@ -1,7 +1,11 @@
 package com.teamabnormals.blueprint.core.endimator;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapLike;
+import com.mojang.serialization.RecordBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.endimator.effects.ConfiguredEndimationEffect;
 import com.teamabnormals.blueprint.core.util.DataUtil;

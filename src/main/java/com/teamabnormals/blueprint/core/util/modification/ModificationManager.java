@@ -9,7 +9,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A class containing a map of the {@link ResourceLocation} targets and a prioritized {@link EnumMap} of {@link ConfiguredModifier} instances for said target.

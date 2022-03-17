@@ -1,14 +1,14 @@
 package com.teamabnormals.blueprint.core.mixin.client;
 
 import com.teamabnormals.blueprint.client.screen.SlabfishHatScreen;
-import net.minecraft.client.Options;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.SkinCustomizationScreen;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.OptionsSubScreen;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextColor;
+import net.minecraft.client.gui.screens.OptionsSubScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.SkinCustomizationScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import org.spongepowered.asm.mixin.Mixin;

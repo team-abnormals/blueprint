@@ -1,18 +1,18 @@
 package com.teamabnormals.blueprint.client.renderer;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamabnormals.blueprint.client.RewardHandler;
+import com.teamabnormals.blueprint.client.RewardHandler.RewardProperties;
 import com.teamabnormals.blueprint.client.model.SlabfishHatModel;
 import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.sonar.OnlineImageCache;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamabnormals.blueprint.client.RewardHandler.RewardProperties;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;

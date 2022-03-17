@@ -1,11 +1,11 @@
 package com.teamabnormals.blueprint.common.block.wood;
 
 import com.teamabnormals.blueprint.core.util.item.filling.TargetedItemCategoryFiller;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.core.NonNullList;
+import net.minecraft.world.level.block.Block;
 
 /**
  * A {@link Block} extension that fills its item after the latest vanilla planks item.
