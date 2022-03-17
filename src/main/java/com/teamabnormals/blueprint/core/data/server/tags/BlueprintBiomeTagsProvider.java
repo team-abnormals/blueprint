@@ -15,7 +15,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 public class BlueprintBiomeTagsProvider extends TagsProvider<Biome> {
 
 	public BlueprintBiomeTagsProvider(String modid, DataGenerator generator, ExistingFileHelper fileHelper) {
-		super(generator, BuiltinRegistries.BIOME, modid, fileHelper, "worldgen/biome");
+		super(generator, BuiltinRegistries.BIOME, modid, fileHelper);
 	}
 
 	@Override
