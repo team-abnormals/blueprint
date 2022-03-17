@@ -17,6 +17,7 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * A class containing some simple methods for making tags.
@@ -55,6 +56,10 @@ public final class TagUtil {
 
 	public static TagKey<Biome> biomeTag(String modid, String name) {
 		return TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(modid, name));
+	}
+	
+	private static boolean isTagged(Biome biome, TagKey<Biome> tagKey) {
+		return ForgeRegistries.BIOMES.tags().getTag(tagKey).contains(biome);
 	}
 
 	public static TagKey<Level> dimensionTag(String modid, String name) {
