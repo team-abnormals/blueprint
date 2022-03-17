@@ -32,12 +32,13 @@ import java.util.Map;
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class AdvancementModificationManager extends ModificationManager<Builder, Void, DeserializationContext> {
+	public static final String PATH = "modifiers/advancements";
 	private static final Gson GSON = (new GsonBuilder()).create();
 	private static AdvancementModificationManager INSTANCE;
 	private final PredicateManager lootPredicateManager;
 
 	private AdvancementModificationManager(PredicateManager lootPredicateManager) {
-		super(GSON, "modifiers/advancements", "advancements");
+		super(GSON, PATH, "advancements");
 		this.lootPredicateManager = lootPredicateManager;
 	}
 

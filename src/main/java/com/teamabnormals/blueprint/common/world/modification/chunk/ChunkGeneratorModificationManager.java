@@ -33,12 +33,13 @@ import java.util.Map;
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class ChunkGeneratorModificationManager extends SimpleJsonResourceReloadListener {
+	public static final String PATH = "modifiers/dimension/chunk_generator";
 	private static ChunkGeneratorModificationManager INSTANCE;
 	private final RegistryOps<JsonElement> registryOps;
 	private final EnumMap<EventPriority, LinkedList<TargetedModifier<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>>>> modifiers = new EnumMap<>(EventPriority.class);
 
 	public ChunkGeneratorModificationManager(RegistryOps<JsonElement> registryOps) {
-		super(new Gson(), "modifiers/dimension/chunk_generator");
+		super(new Gson(), PATH);
 		this.registryOps = registryOps;
 	}
 

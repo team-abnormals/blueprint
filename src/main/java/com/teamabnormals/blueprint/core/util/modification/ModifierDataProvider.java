@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -30,7 +30,7 @@ import java.util.function.Function;
  * @see ModifierRegistry
  * @see ProviderEntry
  */
-public class ModifierDataProvider<T, S, D> implements DataProvider {
+public abstract class ModifierDataProvider<T, S, D> implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final DataGenerator dataGenerator;
 	private final String name;
@@ -39,7 +39,7 @@ public class ModifierDataProvider<T, S, D> implements DataProvider {
 	private final String targetKeyName;
 	private final ModifierRegistry<T, S, D> modifierRegistry;
 	private final Function<TargetedModifier<T, S, D>, S> additionalSerializationGetter;
-	private final List<ProviderEntry<T, S, D>> entries;
+	private final List<ProviderEntry<T, S, D>> entries = new ArrayList<>();
 
 	/**
 	 * Main constructor for a {@link ModifierDataProvider}.
@@ -51,10 +51,8 @@ public class ModifierDataProvider<T, S, D> implements DataProvider {
 	 * @param targetKeyName                 The name for the target key in the json files for the modifiers when generating them.
 	 * @param modifierRegistry              A {@link ModifierRegistry} to lookup the names of {@link IModifier}s from.
 	 * @param additionalSerializationGetter A {@link Function} for getting the additional serialization object for a given {@link TargetedModifier}.
-	 * @param toGenerate                    An array of {@link ProviderEntry}s to be generated.
 	 */
-	@SafeVarargs
-	public ModifierDataProvider(DataGenerator dataGenerator, String name, Gson gson, BiFunction<Path, ProviderEntry<T, S, D>, Path> pathResolver, String targetKeyName, ModifierRegistry<T, S, D> modifierRegistry, Function<TargetedModifier<T, S, D>, S> additionalSerializationGetter, ProviderEntry<T, S, D>... toGenerate) {
+	public ModifierDataProvider(DataGenerator dataGenerator, String name, Gson gson, BiFunction<Path, ProviderEntry<T, S, D>, Path> pathResolver, String targetKeyName, ModifierRegistry<T, S, D> modifierRegistry, Function<TargetedModifier<T, S, D>, S> additionalSerializationGetter) {
 		this.dataGenerator = dataGenerator;
 		this.name = name;
 		this.gson = gson;
@@ -62,7 +60,6 @@ public class ModifierDataProvider<T, S, D> implements DataProvider {
 		this.targetKeyName = targetKeyName;
 		this.modifierRegistry = modifierRegistry;
 		this.additionalSerializationGetter = additionalSerializationGetter;
-		this.entries = Arrays.asList(toGenerate);
 	}
 
 	/**
@@ -75,11 +72,9 @@ public class ModifierDataProvider<T, S, D> implements DataProvider {
 	 * @param pathType         The type of path to write to when serializing. For example, "modifiers/loot_tables" for loot tables.
 	 * @param modifierRegistry A {@link ModifierRegistry} to lookup the names of {@link IModifier}s from.
 	 * @param serializerObject An additional serialization object to use when serializing a {@link ProviderEntry}.
-	 * @param toGenerate       An array of {@link ProviderEntry}s to be generated.
 	 */
-	@SafeVarargs
-	public ModifierDataProvider(DataGenerator dataGenerator, String name, Gson gson, String modId, String pathType, ModifierRegistry<T, S, D> modifierRegistry, S serializerObject, ProviderEntry<T, S, D>... toGenerate) {
-		this(dataGenerator, name, gson, (path, tsdProviderEntry) -> path.resolve("data/" + modId + "/" + pathType + "/" + tsdProviderEntry.name.getPath() + ".json"), "target", modifierRegistry, tsdTargetedModifier -> serializerObject, toGenerate);
+	public ModifierDataProvider(DataGenerator dataGenerator, String name, Gson gson, String modId, String pathType, ModifierRegistry<T, S, D> modifierRegistry, S serializerObject) {
+		this(dataGenerator, name, gson, (path, tsdProviderEntry) -> path.resolve("data/" + modId + "/" + pathType + "/" + tsdProviderEntry.name.getPath() + ".json"), "target", modifierRegistry, tsdTargetedModifier -> serializerObject);
 	}
 
 	@Override
@@ -91,7 +86,8 @@ public class ModifierDataProvider<T, S, D> implements DataProvider {
 		Function<TargetedModifier<T, S, D>, S> additionalSerializationGetter = this.additionalSerializationGetter;
 		ModifierRegistry<T, S, D> modifierRegistry = this.modifierRegistry;
 		var entries = this.entries;
-		this.addEntries(entries);
+		entries.clear();
+		this.addEntries();
 		entries.forEach(entry -> {
 			if (!entryNames.add(entry.name)) {
 				throw new IllegalStateException("Duplicate modifier: " + entry.name);
@@ -105,16 +101,21 @@ public class ModifierDataProvider<T, S, D> implements DataProvider {
 				}
 			}
 		});
-		entries.clear();
 	}
 
 	/**
 	 * Adds entries to be generated.
-	 * <p>Use this if you wish to organize your data entries more like vanilla does.</p>
-	 *
-	 * @param entries The list of entries to add to.
 	 */
-	protected void addEntries(List<ProviderEntry<T, S, D>> entries) {}
+	protected abstract void addEntries();
+
+	/**
+	 * Adds a {@link ProviderEntry} instance to the {@link #entries} list.
+	 *
+	 * @param entry A {@link ProviderEntry} instance to generate.
+	 */
+	protected void addEntry(ProviderEntry<T, S, D> entry) {
+		this.entries.add(entry);
+	}
 
 	@Override
 	public String getName() {

@@ -42,12 +42,13 @@ import java.util.Map;
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class LootModificationManager extends ModificationManager<LootTableLoadEvent, Gson, Pair<Gson, PredicateManager>> {
+	public static final String PATH = "modifiers/loot_tables";
 	private static final Gson GSON = Deserializers.createLootTableSerializer().registerTypeAdapter(LootPool.class, new LootPoolSerializer()).create();
 	private static LootModificationManager INSTANCE = null;
 	private final PredicateManager lootPredicateManager;
 
 	private LootModificationManager(PredicateManager lootPredicateManager) {
-		super(GSON, "modifiers/loot_tables", "loot_tables");
+		super(GSON, PATH, "loot_tables");
 		this.lootPredicateManager = lootPredicateManager;
 	}
 
