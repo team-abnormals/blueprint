@@ -10,7 +10,7 @@ import com.teamabnormals.blueprint.common.loot.modification.modifiers.ILootModif
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
-import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
+import com.teamabnormals.blueprint.core.util.modification.selection.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -88,8 +88,8 @@ public final class LootModificationManager extends ModificationManager<LootTable
 			ResourceLocation resourcelocation = entry.getKey();
 			if (resourcelocation.getPath().startsWith("_")) continue;
 			try {
-				TargetedModifier<LootTableLoadEvent, Gson, Pair<Gson, PredicateManager>> targetedModifier = TargetedModifier.deserialize(entry.getValue().getAsJsonObject(), Pair.of(GSON, this.lootPredicateManager), LootModifiers.REGISTRY);
-				this.addModifiers(targetedModifier.getTargetSelector().getTargetNames(unmodifiedTables), targetedModifier.getPriority(), targetedModifier.getConfiguredModifiers());
+				TargetedModifier<LootTableLoadEvent, Gson, Pair<Gson, PredicateManager>> targetedModifier = TargetedModifier.deserialize(resourcelocation.toString(), entry.getValue().getAsJsonObject(), Pair.of(GSON, this.lootPredicateManager), LootModifiers.REGISTRY);
+				this.addModifiers(targetedModifier.getResourceSelector().select(unmodifiedTables), targetedModifier.getPriority(), targetedModifier.getConfiguredModifiers());
 			} catch (IllegalArgumentException | JsonParseException jsonparseexception) {
 				Blueprint.LOGGER.error("Parsing error loading Loot Modifier: {}", resourcelocation, jsonparseexception);
 			}

@@ -8,9 +8,8 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
-import com.teamabnormals.blueprint.core.util.modification.targeting.ConditionedModifierTargetSelector;
-import com.teamabnormals.blueprint.core.util.modification.targeting.ConfiguredModifierTargetSelector;
-import com.teamabnormals.blueprint.core.util.modification.targeting.ModifierTargetSelectorRegistry;
+import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
+import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -110,7 +109,7 @@ public abstract class BiomeSourceModifierProvider implements DataProvider {
 	 * @param targets  An array of target keys.
 	 */
 	protected final void registerModifier(String name, BiomeUtil.ModdedBiomeProvider provider, ResourceLocation... targets) {
-		this.registerModifier(name, new BiomeSourceModifier(new ConditionedModifierTargetSelector<>(new ConfiguredModifierTargetSelector<>(ModifierTargetSelectorRegistry.NAMES, List.of(targets))), provider));
+		this.registerModifier(name, new BiomeSourceModifier(new ConditionedResourceSelector(new NamesResourceSelector(targets)), provider));
 	}
 
 	@Override

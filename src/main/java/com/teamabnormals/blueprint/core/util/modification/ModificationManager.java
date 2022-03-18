@@ -2,7 +2,7 @@ package com.teamabnormals.blueprint.core.util.modification;
 
 import com.google.gson.Gson;
 import com.teamabnormals.blueprint.core.events.SimpleJsonResourceListenerPreparedEvent;
-import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
+import com.teamabnormals.blueprint.core.util.modification.selection.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,7 +51,7 @@ public abstract class ModificationManager<T, S, D> extends SimpleJsonResourceRel
 		super(gson, directory);
 		MinecraftForge.EVENT_BUS.addListener((SimpleJsonResourceListenerPreparedEvent event) -> {
 			if (event.getDirectory().equals(targetDirectory)) {
-				var entries = event.getEntries();
+				var entries = event.getEntries().keySet();
 				this.unmodifiedEntries = entries::forEach;
 			}
 		});

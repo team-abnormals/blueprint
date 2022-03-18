@@ -6,7 +6,6 @@ import com.google.gson.JsonParseException;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.DataUtil;
-import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -79,12 +78,11 @@ public final class BiomeSourceModificationManager extends SimpleJsonResourceRelo
 		WorldGenSettings worldGenSettings = server.getWorldData().worldGenSettings();
 		var dimensions = worldGenSettings.dimensions();
 		var keySet = dimensions.keySet();
-		SelectionSpace selectionSpace = (consumer) -> keySet.forEach(location -> consumer.accept(location, null));
 		HashMap<ResourceLocation, ArrayList<BiomeUtil.ModdedBiomeProvider>> map = new HashMap<>();
 		for (BiomeSourceModifier modifier : modifiers) {
 			BiomeUtil.ModdedBiomeProvider provider = modifier.provider();
 			if (provider.getWeight() <= 0) return;
-			modifier.targetSelector().getTargetNames(selectionSpace).forEach(location -> {
+			modifier.selector().select(keySet::forEach).forEach(location -> {
 				map.computeIfAbsent(location, __ -> new ArrayList<>()).add(provider);
 			});
 		}

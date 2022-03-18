@@ -7,7 +7,6 @@ import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.modification.ConfiguredModifier;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
-import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -55,9 +54,8 @@ public final class ChunkGeneratorModificationManager extends SimpleJsonResourceR
 				var dimensions = event.getServer().getWorldData().worldGenSettings().dimensions();
 				var keySet = dimensions.keySet();
 				HashMap<ResourceLocation, LinkedList<ConfiguredModifier<ChunkGenerator, ?, RegistryOps<JsonElement>, RegistryOps<JsonElement>, ?>>> map = new HashMap<>();
-				SelectionSpace selectionSpace = (consumer) -> keySet.forEach(location -> consumer.accept(location, null));
 				for (var targetedModifier : targetedModifiers) {
-					targetedModifier.getTargetSelector().getTargetNames(selectionSpace).forEach(location -> {
+					targetedModifier.getResourceSelector().select(keySet::forEach).forEach(location -> {
 						map.computeIfAbsent(location, __ -> new LinkedList<>()).addAll(targetedModifier.getConfiguredModifiers());
 					});
 				}
@@ -85,12 +83,13 @@ public final class ChunkGeneratorModificationManager extends SimpleJsonResourceR
 		RegistryOps<JsonElement> registryOps = this.registryOps;
 		int loadedModifiers = 0;
 		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
+			ResourceLocation location = entry.getKey();
 			try {
-				TargetedModifier<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>> targetedModifier = TargetedModifier.deserialize(entry.getValue().getAsJsonObject(), registryOps, ChunkGeneratorModifiers.REGISTRY);
+				TargetedModifier<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>> targetedModifier = TargetedModifier.deserialize(location.toString(), entry.getValue().getAsJsonObject(), registryOps, ChunkGeneratorModifiers.REGISTRY);
 				this.modifiers.computeIfAbsent(targetedModifier.getPriority(), __ -> new LinkedList<>()).add(targetedModifier);
 				loadedModifiers++;
 			} catch (IllegalArgumentException | JsonParseException exception) {
-				Blueprint.LOGGER.error("Parsing error loading Chunk Generator Modifier: {}", entry.getKey(), exception);
+				Blueprint.LOGGER.error("Parsing error loading Chunk Generator Modifier: {}", location, exception);
 			}
 		}
 		Blueprint.LOGGER.info("Chunk Generator Modification Manager has loaded {} modifiers", loadedModifiers);

@@ -9,7 +9,7 @@ import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.events.AdvancementBuildingEvent;
 import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
-import com.teamabnormals.blueprint.core.util.modification.targeting.SelectionSpace;
+import com.teamabnormals.blueprint.core.util.modification.selection.SelectionSpace;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.advancements.critereon.DeserializationContext;
@@ -80,8 +80,8 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 			if (resourcelocation.getPath().startsWith("_")) continue;
 
 			try {
-				TargetedModifier<Builder, Void, DeserializationContext> targetedAdvancementModifier = TargetedModifier.deserialize(entry.getValue().getAsJsonObject(), "advancement", new DeserializationContext(resourcelocation, this.lootPredicateManager), AdvancementModifiers.REGISTRY, true);
-				this.addModifiers(targetedAdvancementModifier.getTargetSelector().getTargetNames(unmodifiedAdvancements), targetedAdvancementModifier.getPriority(), targetedAdvancementModifier.getConfiguredModifiers());
+				TargetedModifier<Builder, Void, DeserializationContext> targetedAdvancementModifier = TargetedModifier.deserialize(resourcelocation.toString(), entry.getValue().getAsJsonObject(), "advancement", new DeserializationContext(resourcelocation, this.lootPredicateManager), AdvancementModifiers.REGISTRY, true, true);
+				this.addModifiers(targetedAdvancementModifier.getResourceSelector().select(unmodifiedAdvancements), targetedAdvancementModifier.getPriority(), targetedAdvancementModifier.getConfiguredModifiers());
 			} catch (IllegalArgumentException | JsonParseException jsonparseexception) {
 				Blueprint.LOGGER.error("Parsing error loading Advancement Modifier: {}", resourcelocation, jsonparseexception);
 			}
