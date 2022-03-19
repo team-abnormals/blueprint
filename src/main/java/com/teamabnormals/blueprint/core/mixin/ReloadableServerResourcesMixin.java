@@ -21,8 +21,7 @@ import java.util.concurrent.Executor;
 @Mixin(ReloadableServerResources.class)
 public final class ReloadableServerResourcesMixin {
 
-	//TODO: Not working currently (was sorta a shot in the dark when porting)
-	@Inject(at = @At("RETURN"), method = "loadResources", locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/SimpleReloadInstance;create(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/server/packs/resources/ReloadInstance;"), method = "loadResources", locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void addModificationManagers(ResourceManager p_206862_, RegistryAccess.Frozen p_206863_, Commands.CommandSelection p_206864_, int p_206865_, Executor p_206866_, Executor p_206867_, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> info, ReloadableServerResources reloadableServerResources, List<PreparableReloadListener> listeners) {
 		PredicateManager predicateManager = reloadableServerResources.getPredicateManager();
 		LootModificationManager.add(listeners, predicateManager);
