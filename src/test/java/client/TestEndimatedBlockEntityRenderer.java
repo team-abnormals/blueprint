@@ -20,7 +20,7 @@ public final class TestEndimatedBlockEntityRenderer implements BlockEntityRender
 	private final ModelPart root;
 
 	public TestEndimatedBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-		this.endimator = Endimator.shortCompile(this.root = createBodyLayer().bakeRoot());
+		this.endimator = Endimator.compile(this.root = createBodyLayer().bakeRoot());
 	}
 
 	public static LayerDefinition createBodyLayer() {

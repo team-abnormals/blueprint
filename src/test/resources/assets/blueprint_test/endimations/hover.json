@@ -3,6 +3,9 @@
 		"cube": {
 			"position": [
 				{
+					"time": 0
+				},
+				{
 					"time": 1.0,
 					"transform": [0.0, 16.0, 0.0],
 					"interpolation": {

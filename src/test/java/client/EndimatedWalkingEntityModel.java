@@ -20,7 +20,7 @@ public final class EndimatedWalkingEntityModel<T extends EndimatedWalkingEntity>
 	private final Endimator endimator;
 
 	public EndimatedWalkingEntityModel() {
-		this.endimator = Endimator.shortCompile(this.root = createBodyLayer().bakeRoot());
+		this.endimator = Endimator.compile(this.root = createBodyLayer().bakeRoot());
 	}
 
 	public static LayerDefinition createBodyLayer() {

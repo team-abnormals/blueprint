@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 /**
  * A registry class for identifiable functions that specify the rate of change of a parameter over time.
- * <p>This registry is used when serializing and deserializing {@link EndimationInterpolator} instances.</p>
+ * <p>This registry is used when serializing and deserializing {@link InterpolationType} instances.</p>
  * <p>Pull Requests to add more of these are welcomed!</p>
  *
  * @author SmellyModder (Luke Tonon)
@@ -33,8 +33,7 @@ public final class EndimationEasers {
 		}
 	});
 
-	private EndimationEasers() {
-	}
+	private EndimationEasers() {}
 
 	private static Function<Float, Float> register(String name, Function<Float, Float> easer) {
 		REGISTRY.register(new ResourceLocation(name), easer);

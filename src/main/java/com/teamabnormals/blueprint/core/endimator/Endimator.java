@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.core.endimator;
 import com.mojang.math.Vector3f;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -39,18 +40,18 @@ public final class Endimator {
 	 * @param root A root {@link ModelPart} to use.
 	 * @return A new {@link Endimator} instance containing the recursive children of a given root part.
 	 */
-	public static Endimator shortCompile(ModelPart root) {
+	public static Endimator compile(ModelPart root) {
 		return new Endimator(compileMap(new HashMap<>(), root));
 	}
 
 	/**
 	 * Compiles a new {@link Endimator} instance by recursively putting children from a given root part.
-	 * <p>The children are mapped out in a path format. Use {@link #shortCompile(ModelPart)} if this behavior is not desired.</p>
+	 * <p>The children are mapped out in a path format. Use {@link #compile(ModelPart)} if this behavior is not desired.</p>
 	 *
 	 * @param root A root {@link ModelPart} to use.
 	 * @return A new {@link Endimator} instance containing the recursive children of a given root part.
 	 */
-	public static Endimator compile(ModelPart root) {
+	public static Endimator treeCompile(ModelPart root) {
 		return new Endimator(compileMap(new HashMap<>(), "", root));
 	}
 
@@ -77,27 +78,17 @@ public final class Endimator {
 
 	private static void applyType(PosedPart posedPart, KeyframeType type, EndimationKeyframe[] frames, float blendWeight, float time) {
 		int length = frames.length;
-		for (int i = 0; i < length; i++) {
-			EndimationKeyframe keyframe = frames[i];
-			float keyframeTime = keyframe.time;
-			if ((keyframeTime < time && i != length - 1) || keyframeTime == 0.0F) {
-				continue;
-			}
-			float progress;
-			if (i == 0) {
-				progress = time / keyframeTime;
-			} else {
-				float prevFrameTime = frames[i - 1].time;
-				progress = (time - prevFrameTime) / (keyframeTime - prevFrameTime);
-			}
-			if (progress > 1.0F) {
-				progress = 1.0F;
-			}
-			keyframe.apply(ADD_VECTOR::set, frames, i, length, progress);
-			ADD_VECTOR.mul(blendWeight);
-			type.apply(posedPart, ADD_VECTOR);
-			break;
-		}
+		if (length <= 0) return;
+		int fromIndex = Mth.binarySearch(0, length, i -> time <= frames[i].time) - 1;
+		if (fromIndex < 0) fromIndex = 0;
+		int toIndex = fromIndex + 1;
+		if (toIndex > length - 1) toIndex = length - 1;
+		EndimationKeyframe from = frames[fromIndex];
+		float fromTime = from.time;
+		EndimationKeyframe to = frames[toIndex];
+		to.apply(ADD_VECTOR, frames, from, to, toIndex, length, Mth.clamp((time - fromTime) / (to.time - fromTime), 0.0F, 1.0F));
+		ADD_VECTOR.mul(blendWeight);
+		type.apply(posedPart, ADD_VECTOR);
 	}
 
 	/**

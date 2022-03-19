@@ -100,6 +100,9 @@
 		"main": {
 			"position": [
 				{
+					"time": 0
+				},
+				{
 					"time": 0.35,
 					"transform": [0, 0, 0],
 					"interpolation": {

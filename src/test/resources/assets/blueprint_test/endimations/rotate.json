@@ -3,6 +3,9 @@
 		"cube": {
 			"rotation": [
 				{
+					"time": 0
+				},
+				{
 					"time": 1.0,
 					"transform": [360, 0, 0],
 					"interpolation": {
