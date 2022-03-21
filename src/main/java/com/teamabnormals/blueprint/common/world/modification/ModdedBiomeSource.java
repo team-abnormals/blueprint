@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
-import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
@@ -37,7 +36,7 @@ import java.util.stream.Stream;
  *
  * @author SmellyModder (Luke Tonon)
  * @see WeightedBiomeSlices
- * @see BiomeUtil.ModdedBiomeProvider
+ * @see ModdedBiomeSlice
  */
 public final class ModdedBiomeSource extends BiomeSource {
 	public static final ResourceKey<DensityFunction> DEFAULT_MODDEDNESS = ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, new ResourceLocation(Blueprint.MOD_ID, "moddedness/default"));
@@ -109,11 +108,11 @@ public final class ModdedBiomeSource extends BiomeSource {
 	}
 
 	/**
-	 * Gets the name of a modded provider at a horizontal position.
+	 * Gets the {@link ModdedBiomeSlice#name()} of a {@link ModdedBiomeSlice} instance at a horizontal position.
 	 *
 	 * @param x The x pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 	 * @param z The z pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
-	 * @return The name of a modded provider at a horizontal position.
+	 * @return The {@link ModdedBiomeSlice#name()} of a {@link ModdedBiomeSlice} instance at a horizontal position.
 	 */
 	public ResourceLocation getSliceName(int x, int z) {
 		return this.weightedBiomeSlices.getSliceName(this.getModdedness(x, z));
@@ -125,44 +124,44 @@ public final class ModdedBiomeSource extends BiomeSource {
 	}
 
 	/**
-	 * Handles the storing and processing of {@link BiomeUtil.ModdedBiomeProvider} instances.
-	 * <p>A moddedness noise is used to slowly go over {@link BiomeUtil.ModdedBiomeProvider} instances that are sliced into weighted thresholds.</p>
+	 * Handles the storing and processing of {@link ModdedBiomeSlice} instances.
+	 * <p>A moddedness noise is used to slowly go over {@link ModdedBiomeSlice} instances that are sliced into weighted thresholds.</p>
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
 	public static final class WeightedBiomeSlices {
-		public static final Codec<WeightedBiomeSlices> CODEC = BiomeUtil.ModdedBiomeProvider.CODEC.listOf().xmap(moddedBiomeSamplers -> new WeightedBiomeSlices(moddedBiomeSamplers.toArray(new BiomeUtil.ModdedBiomeProvider[0])), sliced -> List.of(sliced.providers));
-		private final BiomeUtil.ModdedBiomeProvider[] providers;
-		private final float[] providerThresholds;
+		public static final Codec<WeightedBiomeSlices> CODEC = ModdedBiomeSlice.CODEC.listOf().xmap(slices -> new WeightedBiomeSlices(slices.toArray(new ModdedBiomeSlice[0])), weighted -> List.of(weighted.slices));
+		private final ModdedBiomeSlice[] slices;
+		private final float[] sliceThresholds;
 
 		/**
 		 * Constructs a new {@link WeightedBiomeSlices} instance.
 		 *
-		 * @param providers An array of {@link BiomeUtil.ModdedBiomeProvider} instances to use.
+		 * @param slices An array of {@link ModdedBiomeSlice} instances to use.
 		 */
-		public WeightedBiomeSlices(BiomeUtil.ModdedBiomeProvider... providers) {
-			Arrays.sort(providers, Comparator.comparingInt(BiomeUtil.ModdedBiomeProvider::getWeight));
-			this.providers = providers;
-			int samplerCount = providers.length;
-			this.providerThresholds = new float[samplerCount];
+		public WeightedBiomeSlices(ModdedBiomeSlice... slices) {
+			Arrays.sort(slices, Comparator.comparingInt(ModdedBiomeSlice::weight));
+			this.slices = slices;
+			int sliceCount = slices.length;
+			this.sliceThresholds = new float[sliceCount];
 			float intervalProgress = -1.0F;
-			float totalWeight = Stream.of(providers).map(BiomeUtil.ModdedBiomeProvider::getWeight).reduce(0, Integer::sum);
-			for (int i = 0; i < samplerCount; i++) {
-				this.providerThresholds[i] = (intervalProgress += (this.providers[i].getWeight() * 2) / totalWeight);
+			float totalWeight = Stream.of(slices).map(ModdedBiomeSlice::weight).reduce(0, Integer::sum);
+			for (int i = 0; i < sliceCount; i++) {
+				this.sliceThresholds[i] = (intervalProgress += (this.slices[i].weight() * 2) / totalWeight);
 			}
 		}
 
 		/**
-		 * Merges the additional possible biomes of the {@link #providers} with another set of possible biomes.
+		 * Merges the additional possible biomes of the {@link #slices} with another set of possible biomes.
 		 *
 		 * @param possibleBiomes The possible biomes to merge with the additional possible biomes.
 		 * @param registry The biome {@link Registry} instance to use if needed.
-		 * @return The additional possible biomes of the {@link #providers} merged with another set of possible biomes.
+		 * @return The additional possible biomes of the {@link #slices} merged with another set of possible biomes.
 		 */
 		public Set<Holder<Biome>> combinePossibleBiomes(Set<Holder<Biome>> possibleBiomes, Registry<Biome> registry) {
 			Set<Holder<Biome>> biomes = new HashSet<>(possibleBiomes);
-			for (BiomeUtil.ModdedBiomeProvider provider : this.providers) {
-				biomes.addAll(provider.getAdditionalPossibleBiomes(registry));
+			for (ModdedBiomeSlice slice : this.slices) {
+				biomes.addAll(slice.provider().getAdditionalPossibleBiomes(registry));
 			}
 			return biomes;
 		}
@@ -173,35 +172,35 @@ public final class ModdedBiomeSource extends BiomeSource {
 		 * @param x          The x pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param y          The y pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param z          The z pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
-		 * @param moddedness A moddedness noise value between 0 and 1 inclusive to get a {@link BiomeUtil.ModdedBiomeProvider} instance within its range.
+		 * @param moddedness A moddedness noise value between 0 and 1 inclusive to get a {@link ModdedBiomeSlice} instance within its range.
 		 * @param sampler    A {@link Climate.Sampler} instance to sample {@link Climate.TargetPoint} instances.
 		 * @param original   The original {@link BiomeSource} instance being modded.
 		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return A noise {@link Biome} at a position.
 		 */
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, float moddedness, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
-			return this.getProvider(moddedness).getNoiseBiome(x, y, z, sampler, original, registry);
+			return this.getSlice(moddedness).provider().getNoiseBiome(x, y, z, sampler, original, registry);
 		}
 
 		/**
-		 * Gets the name of a provider at a horizontal position.
+		 * Gets the name of a slice for a moddedness value.
 		 *
-		 * @param moddedness A moddedness noise value between 0 and 1 inclusive to get a {@link BiomeUtil.ModdedBiomeProvider} instance within its range.
-		 * @return The name of a provider at a horizontal position.
+		 * @param moddedness A moddedness noise value between 0 and 1 inclusive to get a {@link ModdedBiomeSlice} instance within its range.
+		 * @return The name of a slice for a moddedness value.
 		 */
 		public ResourceLocation getSliceName(float moddedness) {
-			return this.getProvider(moddedness).getName();
+			return this.getSlice(moddedness).name();
 		}
 
-		private BiomeUtil.ModdedBiomeProvider getProvider(float moddedness) {
-			float[] providerThresholds = this.providerThresholds;
-			int length = providerThresholds.length;
+		private ModdedBiomeSlice getSlice(float moddedness) {
+			float[] sliceThresholds = this.sliceThresholds;
+			int length = sliceThresholds.length;
 			for (int i = 0; i < length; i++) {
-				if (providerThresholds[i] >= moddedness) {
-					return this.providers[i];
+				if (sliceThresholds[i] >= moddedness) {
+					return this.slices[i];
 				}
 			}
-			return this.providers[length - 1];
+			return this.slices[length - 1];
 		}
 	}
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.blueprint.common.loot.modification.LootModifierSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.PredicateManager;
@@ -16,38 +17,42 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 
 /**
- * An {@link ILootModifier} that modifies the {@link LootContextParamSet} of a {@link LootTable}.
+ * A {@link LootModifier} implementation that modifies the {@link LootContextParamSet} of a {@link LootTable}.
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class LootTypeModifier implements ILootModifier<LootContextParamSet> {
+public record LootTypeModifier(LootContextParamSet lootContextParamSet) implements LootModifier<LootTypeModifier> {
 	private static final Field PARAMETER_SET = ObfuscationReflectionHelper.findField(LootTable.class, "f_79108_");
 
 	@Override
-	public void modify(LootTableLoadEvent event, LootContextParamSet config) {
+	public void modify(LootTableLoadEvent event) {
 		try {
-			PARAMETER_SET.set(event.getTable(), config);
+			PARAMETER_SET.set(event.getTable(), this.lootContextParamSet);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public JsonElement serialize(LootContextParamSet config, Gson additional) throws JsonParseException {
-		ResourceLocation resourceLocation = LootContextParamSets.getKey(config);
-		if (resourceLocation == null) {
-			throw new JsonParseException("Unknown Loot Parameter Set: " + config);
-		}
-		return new JsonPrimitive(resourceLocation.toString());
+	public Serializer getSerializer() {
+		return LootModifierSerializers.TYPE;
 	}
 
-	@Override
-	public LootContextParamSet deserialize(JsonElement element, Pair<Gson, PredicateManager> additional) throws JsonParseException {
-		String type = element.getAsString();
-		LootContextParamSet lootParameterSet = LootContextParamSets.get(new ResourceLocation(type));
-		if (lootParameterSet != null) {
-			return lootParameterSet;
+	public static final class Serializer implements LootModifier.Serializer<LootTypeModifier> {
+		@Override
+		public JsonElement serialize(LootTypeModifier modifier, Gson additional) throws JsonParseException {
+			LootContextParamSet lootContextParamSet = modifier.lootContextParamSet;
+			ResourceLocation resourceLocation = LootContextParamSets.getKey(lootContextParamSet);
+			if (resourceLocation == null) throw new JsonParseException("Unknown Loot Parameter Set: " + lootContextParamSet);
+			return new JsonPrimitive(resourceLocation.toString());
 		}
-		throw new JsonParseException("Unknown type: " + type);
+
+		@Override
+		public LootTypeModifier deserialize(JsonElement element, Pair<Gson, PredicateManager> additional) throws JsonParseException {
+			String type = element.getAsString();
+			LootContextParamSet lootParameterSet = LootContextParamSets.get(new ResourceLocation(type));
+			if (lootParameterSet != null) return new LootTypeModifier(lootParameterSet);
+			throw new JsonParseException("Unknown type: " + type);
+		}
 	}
 }

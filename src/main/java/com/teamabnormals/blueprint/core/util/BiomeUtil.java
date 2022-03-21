@@ -87,7 +87,7 @@ public final class BiomeUtil {
 	}
 
 	/**
-	 * The interface for weighted biome source slices used in the {@link com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource} class.
+	 * The interface used for selecting biomes in {@link com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlice} instances.
 	 * <p>Use {@link #CODEC} for serializing and deserializing instances of this class.</p>
 	 *
 	 * @author SmellyModder (Luke Tonon)
@@ -119,22 +119,6 @@ public final class BiomeUtil {
 		Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry);
 
 		/**
-		 * Gets the weight of this provider.
-		 * <p>Higher weights mean more common.</p>
-		 *
-		 * @return The weight of this provider.
-		 */
-		int getWeight();
-
-		/**
-		 * Gets the name of this provider.
-		 * <p>This is used for debugging and checking if the provider's name equals another name.</p>
-		 *
-		 * @return The name of this provider.
-		 */
-		ResourceLocation getName();
-
-		/**
 		 * Gets a {@link Codec} instance for serializing and deserializing this provider.
 		 *
 		 * @return A {@link Codec} instance for serializing and deserializing this provider.
@@ -147,27 +131,12 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record OriginalModdedBiomeProvider(ResourceLocation name, int weight) implements ModdedBiomeProvider {
-		public static final Codec<OriginalModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
-			return instance.group(
-					ResourceLocation.CODEC.fieldOf("name").forGetter(provider -> provider.name),
-					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weight").forGetter(provider -> provider.weight)
-			).apply(instance, OriginalModdedBiomeProvider::new);
-		});
+	public static record OriginalModdedBiomeProvider() implements ModdedBiomeProvider {
+		public static final Codec<OriginalModdedBiomeProvider> CODEC = Codec.unit(new OriginalModdedBiomeProvider());
 
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
 			return original.getNoiseBiome(x, y, z, sampler);
-		}
-
-		@Override
-		public int getWeight() {
-			return this.weight;
-		}
-
-		@Override
-		public ResourceLocation getName() {
-			return this.name;
 		}
 
 		@Override
@@ -182,34 +151,22 @@ public final class BiomeUtil {
 	}
 
 	/**
-	 * A {@link ModdedBiomeProvider} implementation that uses a {@link net.minecraft.world.level.biome.Climate.ParameterList} instance for selecting its biomes.
+	 * A {@link ModdedBiomeProvider} implementation that uses a {@link Climate.ParameterList} instance for selecting its biomes.
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record MultiNoiseModdedBiomeProvider(ResourceLocation name, Climate.ParameterList<ResourceKey<Biome>> biomes, int weight) implements ModdedBiomeProvider {
+	public static record MultiNoiseModdedBiomeProvider(Climate.ParameterList<ResourceKey<Biome>> biomes) implements ModdedBiomeProvider {
 		public static final Codec<MultiNoiseModdedBiomeProvider> CODEC = RecordCodecBuilder.create((instance) -> {
 			return instance.group(
-					ResourceLocation.CODEC.fieldOf("name").forGetter(provider -> provider.name),
 					ExtraCodecs.nonEmptyList(RecordCodecBuilder.<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>create((pairInstance) -> {
 						return pairInstance.group(Climate.ParameterPoint.CODEC.fieldOf("parameters").forGetter(Pair::getFirst), ResourceKey.codec(Registry.BIOME_REGISTRY).fieldOf("biome").forGetter(Pair::getSecond)).apply(pairInstance, Pair::of);
-					}).listOf()).xmap(Climate.ParameterList::new, Climate.ParameterList::values).fieldOf("biomes").forGetter(sampler -> sampler.biomes),
-					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weight").forGetter(MultiNoiseModdedBiomeProvider::getWeight)
+					}).listOf()).xmap(Climate.ParameterList::new, Climate.ParameterList::values).fieldOf("biomes").forGetter(sampler -> sampler.biomes)
 			).apply(instance, MultiNoiseModdedBiomeProvider::new);
 		});
 
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
 			return registry.getHolderOrThrow(this.biomes.findValue(sampler.sample(x, y, z)));
-		}
-
-		@Override
-		public int getWeight() {
-			return this.weight;
-		}
-
-		@Override
-		public ResourceLocation getName() {
-			return this.name;
 		}
 
 		@Override
@@ -229,10 +186,10 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record OverlayModdedBiomeProvider(ResourceLocation name, Map<ResourceLocation, BiomeSource> map, int weight) implements ModdedBiomeProvider {
+	//TODO: Allow usage of biome tags for 'target_biomes'
+	public static record OverlayModdedBiomeProvider(Map<ResourceLocation, BiomeSource> map) implements ModdedBiomeProvider {
 		public static final Codec<OverlayModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
 			return instance.group(
-					ResourceLocation.CODEC.fieldOf("name").forGetter(provider -> provider.name),
 					//Using a list of pairs significantly saves file size
 					Codec.mapPair(ResourceLocation.CODEC.listOf().fieldOf("target_biomes"), BiomeSource.CODEC.fieldOf("biome_source")).codec().listOf().xmap(list -> {
 						ImmutableMap.Builder<ResourceLocation, BiomeSource> map = ImmutableMap.builder();
@@ -247,8 +204,7 @@ public final class BiomeUtil {
 						map.forEach((location, source) -> collected.computeIfAbsent(source, __ -> new LinkedList<>()).add(location));
 						collected.forEach((source, locations) -> list.add(Pair.of(locations, source)));
 						return list.build();
-					}).fieldOf("overlays").forGetter(provider -> provider.map),
-					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weight").forGetter(OverlayModdedBiomeProvider::getWeight)
+					}).fieldOf("overlays").forGetter(provider -> provider.map)
 			).apply(instance, OverlayModdedBiomeProvider::new);
 		});
 
@@ -265,16 +221,6 @@ public final class BiomeUtil {
 			HashSet<Holder<Biome>> biomes = new HashSet<>();
 			this.map.values().forEach(source -> biomes.addAll(source.possibleBiomes()));
 			return biomes;
-		}
-
-		@Override
-		public int getWeight() {
-			return this.weight;
-		}
-
-		@Override
-		public ResourceLocation getName() {
-			return this.name;
 		}
 
 		@Override

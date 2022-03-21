@@ -2,61 +2,40 @@ package com.teamabnormals.blueprint.common.advancement.modification;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.teamabnormals.blueprint.common.advancement.modification.modifiers.IAdvancementModifier;
+import com.teamabnormals.blueprint.common.advancement.modification.modifiers.AdvancementModifier;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.events.AdvancementBuildingEvent;
-import com.teamabnormals.blueprint.core.util.modification.ModificationManager;
-import com.teamabnormals.blueprint.core.util.modification.TargetedModifier;
-import com.teamabnormals.blueprint.core.util.modification.selection.SelectionSpace;
-import net.minecraft.advancements.Advancement;
+import com.teamabnormals.blueprint.core.util.modification.ObjectModificationManager;
 import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
- * Data manager class for {@link IAdvancementModifier}s.
+ * Data manager class for the {@link AdvancementModifier} system.
  *
  * @author SmellyModder (Luke Tonon)
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
-public final class AdvancementModificationManager extends ModificationManager<Builder, Void, DeserializationContext> {
-	public static final String PATH = "modifiers/advancements";
+public final class AdvancementModificationManager extends ObjectModificationManager<Builder, Void, DeserializationContext> {
+	public static final String TARGET_PATH = "advancements";
 	private static final Gson GSON = (new GsonBuilder()).create();
 	private static AdvancementModificationManager INSTANCE;
-	private final PredicateManager lootPredicateManager;
 
 	private AdvancementModificationManager(PredicateManager lootPredicateManager) {
-		super(GSON, PATH, "advancements");
-		this.lootPredicateManager = lootPredicateManager;
-	}
-
-	public static void add(List<PreparableReloadListener> listeners, PredicateManager predicateManager) {
-		listeners.add(4, INSTANCE = new AdvancementModificationManager(predicateManager));
+		super(GSON, TARGET_PATH, TARGET_PATH, "Advancement", AdvancementModifierSerializers.REGISTRY, (location) -> new DeserializationContext(location, lootPredicateManager), true, true);
 	}
 
 	static {
+		registerInitializer("ServerAdvancementManager", (registryAccess, commandSelection, reloadableServerResources) -> INSTANCE = new AdvancementModificationManager(reloadableServerResources.getPredicateManager()));
 		for (EventPriority priority : EventPriority.values()) {
 			MinecraftForge.EVENT_BUS.addListener(priority, (AdvancementBuildingEvent event) -> {
 				//Should not happen, but it's possible that this event will get fired before the manager is initialized
-				if (INSTANCE != null) {
-					var modifiers = INSTANCE.getModifiers(event.getLocation(), priority);
-					if (modifiers != null) {
-						Advancement.Builder builder = event.getBuilder();
-						modifiers.forEach(configured -> configured.modify(builder));
-					}
-				}
+				if (INSTANCE != null) INSTANCE.applyModifiers(priority, event.getLocation(), event.getBuilder());
 			});
 		}
 	}
@@ -67,25 +46,8 @@ public final class AdvancementModificationManager extends ModificationManager<Bu
 	 *
 	 * @return The instance of the {@link AdvancementModificationManager}.
 	 */
+	@Nullable
 	public static AdvancementModificationManager getInstance() {
 		return INSTANCE;
-	}
-
-	@Override
-	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler) {
-		this.reset();
-		SelectionSpace unmodifiedAdvancements = this.getUnmodifiedEntries();
-		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
-			ResourceLocation resourcelocation = entry.getKey();
-			if (resourcelocation.getPath().startsWith("_")) continue;
-
-			try {
-				TargetedModifier<Builder, Void, DeserializationContext> targetedAdvancementModifier = TargetedModifier.deserialize(resourcelocation.toString(), entry.getValue().getAsJsonObject(), "advancement", new DeserializationContext(resourcelocation, this.lootPredicateManager), AdvancementModifiers.REGISTRY, true, true);
-				this.addModifiers(targetedAdvancementModifier.getResourceSelector().select(unmodifiedAdvancements), targetedAdvancementModifier.getPriority(), targetedAdvancementModifier.getConfiguredModifiers());
-			} catch (IllegalArgumentException | JsonParseException jsonparseexception) {
-				Blueprint.LOGGER.error("Parsing error loading Advancement Modifier: {}", resourcelocation, jsonparseexception);
-			}
-		}
-		Blueprint.LOGGER.info("Advancement Modification Manager has assigned {} sets of modifiers", this.size());
 	}
 }

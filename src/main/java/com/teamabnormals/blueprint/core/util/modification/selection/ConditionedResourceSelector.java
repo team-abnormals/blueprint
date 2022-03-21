@@ -54,7 +54,8 @@ public final class ConditionedResourceSelector {
 				throw new JsonParseException("Unknown selector type: " + type);
 			}
 			return EMPTY;
-		} else throw new JsonParseException(key + " must be a string or object!");
+		} else if (element == null) throw new JsonParseException("Missing '" + key + "' member!");
+		throw new JsonParseException("'" + key + "' must be a string or object!");
 	}
 
 	/**

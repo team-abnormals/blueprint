@@ -1,0 +1,50 @@
+{
+	"selector": "entities/chicken",
+	"modifiers": [
+		{
+			"type": "pools",
+			"conditions": [
+				{
+					"type": "forge:mod_loaded",
+					"modid": "blueprint"
+				}
+			],
+			"config": {
+				"replace": true,
+				"pools": [
+					{
+						"name": "blueprint_test:chicken",
+						"rolls": 1,
+						"entries": [
+							{
+								"type": "minecraft:item",
+								"functions": [
+									{
+										"function": "minecraft:set_count",
+										"count": {
+											"min": 0.0,
+											"max": 2.0,
+											"type": "minecraft:uniform"
+										}
+									},
+									{
+										"function": "minecraft:looting_enchant",
+										"count": {
+											"min": 0.0,
+											"max": 1.0
+										}
+									}
+								],
+								"name": "minecraft:dirt"
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			"type": "type",
+			"config": "minecraft:fishing"
+		}
+	]
+}
