@@ -14,6 +14,7 @@ import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
 import core.registry.*;
+import net.minecraft.client.renderer.entity.CodRenderer;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -80,6 +81,7 @@ public final class BlueprintTest {
 	@OnlyIn(Dist.CLIENT)
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(TestEntities.COW.get(), CowRenderer::new);
+		event.registerEntityRenderer(TestEntities.COD.get(), CodRenderer::new);
 		event.registerEntityRenderer(TestEntities.ENDIMATED_TEST.get(), TestEndimatedEntityRenderer::new);
 		event.registerEntityRenderer(TestEntities.ENDIMATED_WALKING.get(), EndimatedWalkingEntityRenderer::new);
 		event.registerBlockEntityRenderer(TestBlockEntities.TEST_ENDIMATED.get(), TestEndimatedBlockEntityRenderer::new);
