@@ -1,16 +1,20 @@
 package com.teamabnormals.blueprint.core.util.registry;
 
 import com.teamabnormals.blueprint.common.item.BlueprintBoatItem;
+import com.teamabnormals.blueprint.common.item.BlueprintMobBucketItem;
 import com.teamabnormals.blueprint.common.item.FuelItem;
 import com.teamabnormals.blueprint.core.registry.BoatRegistry;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
@@ -144,6 +148,18 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 */
 	public RegistryObject<ForgeSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<? extends Mob>> supplier, int primaryColor, int secondaryColor) {
 		return this.deferredRegister.register(entityName + "_spawn_egg", () -> new ForgeSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
+	}
+
+	/**
+	 * Creates and registers a {@link BlueprintMobBucketItem}.
+	 *
+	 * @param entityName	The name of the entity in this bucket.
+	 * @param supplier		The supplied {@link EntityType}.
+	 * @return A {@link RegistryObject} containing the {@link BlueprintMobBucketItem}.
+	 * @see BlueprintMobBucketItem
+	 */
+	public RegistryObject<Item> createMobBucketItem(String entityName, Supplier<EntityType<? extends WaterAnimal>> supplier) {
+		return this.deferredRegister.register(entityName + "_bucket", () -> new BlueprintMobBucketItem(supplier, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_FISH, new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC)));
 	}
 
 	/**
