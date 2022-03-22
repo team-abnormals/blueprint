@@ -1,14 +1,14 @@
 package com.teamabnormals.blueprint.core.util;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -19,10 +19,7 @@ import net.minecraft.world.level.biome.Climate;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -186,40 +183,26 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	//TODO: Allow usage of biome tags for 'target_biomes'
-	public static record OverlayModdedBiomeProvider(Map<ResourceLocation, BiomeSource> map) implements ModdedBiomeProvider {
+	public static record OverlayModdedBiomeProvider(List<Pair<HolderSet<Biome>, BiomeSource>> overlays) implements ModdedBiomeProvider {
 		public static final Codec<OverlayModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
 			return instance.group(
-					//Using a list of pairs significantly saves file size
-					Codec.mapPair(ResourceLocation.CODEC.listOf().fieldOf("target_biomes"), BiomeSource.CODEC.fieldOf("biome_source")).codec().listOf().xmap(list -> {
-						ImmutableMap.Builder<ResourceLocation, BiomeSource> map = ImmutableMap.builder();
-						for (var pair : list) {
-							BiomeSource source = pair.getSecond();
-							pair.getFirst().forEach(location -> map.put(location, source));
-						}
-						return (Map<ResourceLocation, BiomeSource>) map.build();
-					}, map -> {
-						ImmutableList.Builder<Pair<List<ResourceLocation>, BiomeSource>> list = new ImmutableList.Builder<>();
-						Map<BiomeSource, List<ResourceLocation>> collected = new IdentityHashMap<>();
-						map.forEach((location, source) -> collected.computeIfAbsent(source, __ -> new LinkedList<>()).add(location));
-						collected.forEach((source, locations) -> list.add(Pair.of(locations, source)));
-						return list.build();
-					}).fieldOf("overlays").forGetter(provider -> provider.map)
+					Codec.mapPair(RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("matches_biomes"), BiomeSource.CODEC.fieldOf("biome_source")).codec().listOf().fieldOf("overlays").forGetter(provider -> provider.overlays)
 			).apply(instance, OverlayModdedBiomeProvider::new);
 		});
 
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
 			Holder<Biome> originalBiome = original.getNoiseBiome(x, y, z, sampler);
-			BiomeSource source = this.map.get(originalBiome.unwrapKey().orElseThrow().location());
-			if (source == null) return originalBiome;
-			return source.getNoiseBiome(x, y, z, sampler);
+			for (var overlay : this.overlays) {
+				if (overlay.getFirst().contains(originalBiome)) return overlay.getSecond().getNoiseBiome(x, y, z, sampler);
+			}
+			return originalBiome;
 		}
 
 		@Override
 		public Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry) {
 			HashSet<Holder<Biome>> biomes = new HashSet<>();
-			this.map.values().forEach(source -> biomes.addAll(source.possibleBiomes()));
+			this.overlays.forEach(overlay -> biomes.addAll(overlay.getSecond().possibleBiomes()));
 			return biomes;
 		}
 
