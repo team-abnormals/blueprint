@@ -195,12 +195,20 @@ public final class ModdedBiomeSource extends BiomeSource {
 		private ModdedBiomeSlice getSlice(float moddedness) {
 			float[] sliceThresholds = this.sliceThresholds;
 			int length = sliceThresholds.length;
-			for (int i = 0; i < length; i++) {
-				if (sliceThresholds[i] >= moddedness) {
-					return this.slices[i];
+			int high = length;
+			int low = 0;
+			while (high > 0) {
+				int mid = high / 2;
+				int i = low + mid;
+				if (moddedness <= sliceThresholds[i]) {
+					high = mid;
+				} else {
+					low = i + 1;
+					high -= mid + 1;
 				}
 			}
-			return this.slices[length - 1];
+			int maxIndex = length - 1;
+			return low > maxIndex ? this.slices[maxIndex] : this.slices[low];
 		}
 	}
 }
