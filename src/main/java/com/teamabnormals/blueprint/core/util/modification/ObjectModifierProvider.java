@@ -31,6 +31,7 @@ import java.util.function.Function;
 public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final DataGenerator dataGenerator;
+	private final String modId;
 	private final String name;
 	private final String directory;
 	private final Gson gson;
@@ -40,6 +41,7 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 
 	public ObjectModifierProvider(DataGenerator dataGenerator, String modId, boolean data, String subDirectory, Gson gson, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, Function<ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter) {
 		this.dataGenerator = dataGenerator;
+		this.modId = modId;
 		this.name = "Object Modifier Groups (" + subDirectory + "): " + modId;
 		this.directory = (data ? "data/" : "assets/") + modId + "/" + ObjectModificationManager.MAIN_PATH + "/" + subDirectory + "/";
 		this.gson = gson;
@@ -121,6 +123,10 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 	@Override
 	public String getName() {
 		return this.name;
+	}
+
+	public String getModId() {
+		return this.modId;
 	}
 
 	/**
