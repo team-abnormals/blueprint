@@ -61,7 +61,7 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 			if (!entryNames.add(entry.name)) {
 				throw new IllegalStateException("Duplicate modifier group: " + entry.name);
 			} else {
-				Path resolvedPath = outputFolder.resolve(this.directory + entry.name);
+				Path resolvedPath = outputFolder.resolve(this.directory + entry.name + ".json");
 				try {
 					ObjectModifierGroup<T, S, D> group = entry.group;
 					DataProvider.save(gson, directoryCache, group.serialize(additionalSerializationGetter.apply(group), serializerRegistry, entry.conditions), resolvedPath);
