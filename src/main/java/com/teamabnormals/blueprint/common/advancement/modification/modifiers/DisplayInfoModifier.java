@@ -38,7 +38,7 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 	/**
 	 * Creates a new {@link Builder} instance to simplify creation of {@link DisplayInfoModifier} instances.
 	 *
-	 * @return A new {@link Builder} instance
+	 * @return A new {@link Builder} instance.
 	 */
 	public static Builder builder() {
 		return new Builder();

@@ -4,7 +4,6 @@
 	{
 	  "type": "criteria",
 	  "config": {
-		"mode": "replace",
 		"criteria": {
 		  "test": {
 			"trigger": "blueprint_test:empty_test"
@@ -14,7 +13,8 @@
 		  [
 			"test"
 		  ]
-		]
+		],
+		"should_replace_requirements": true
 	  }
 	}
   ]

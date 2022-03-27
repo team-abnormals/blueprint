@@ -31,7 +31,6 @@
 	{
 	  "type": "criteria",
 	  "config": {
-		"mode": "modify",
 		"criteria": {
 		  "test": {
 			"trigger": "minecraft:inventory_changed",
@@ -48,7 +47,8 @@
 		  [
 			"test"
 		  ]
-		]
+		],
+		"should_replace_requirements": false
 	  }
 	}
   ]

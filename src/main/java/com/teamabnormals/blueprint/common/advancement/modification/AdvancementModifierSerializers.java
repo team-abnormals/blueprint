@@ -17,6 +17,5 @@ public final class AdvancementModifierSerializers {
 	public static final RewardsModifier.Serializer REWARDS = REGISTRY.register("rewards", new RewardsModifier.Serializer());
 	public static final DisplayInfoModifier.Serializer DISPLAY_INFO = REGISTRY.register("display", new DisplayInfoModifier.Serializer());
 	public static final CriteriaModifier.Serializer CRITERIA = REGISTRY.register("criteria", new CriteriaModifier.Serializer());
-	public static final IndexedRequirementsModifier.Serializer INDEXED_REQUIREMENTS = REGISTRY.register("indexed_requirements", new IndexedRequirementsModifier.Serializer());
 	public static final EffectsChangedModifier.Serializer EFFECTS_CHANGED = REGISTRY.register("effects_changed", new EffectsChangedModifier.Serializer());
 }
