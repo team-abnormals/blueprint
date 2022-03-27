@@ -27,6 +27,10 @@ import java.util.List;
 public record LootPoolEntriesModifier(boolean replace, int index, List<LootPoolEntryContainer> entries) implements LootModifier<LootPoolEntriesModifier> {
 	public static final Field ENTRIES = ObfuscationReflectionHelper.findField(LootPool.class, "f_79023_");
 
+	public LootPoolEntriesModifier(boolean replace, int index, LootPoolEntryContainer... entries) {
+		this(replace, index, List.of(entries));
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void modify(LootTableLoadEvent object) {
