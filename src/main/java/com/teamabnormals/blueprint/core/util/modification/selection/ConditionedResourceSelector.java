@@ -59,22 +59,31 @@ public final class ConditionedResourceSelector {
 	}
 
 	/**
-	 * Serializes this as a {@link JsonObject} instance.
+	 * Serializes this as a {@link JsonElement} instance.
 	 *
-	 * @return A {@link JsonObject} representation of this {@link ConditionedResourceSelector} instance.
+	 * @return A {@link JsonElement} representation of this {@link ConditionedResourceSelector} instance.
 	 */
-	public JsonObject serialize() {
-		JsonObject jsonObject = new JsonObject();
-		ResourceSelector.Serializer<?> serializer = this.resourceSelector.getSerializer();
+	public JsonElement serialize() {
+		var conditions = this.conditions;
+		boolean hasConditions = conditions.length > 0;
+		ResourceSelector<?> selector = this.resourceSelector;
+		if (!hasConditions && selector instanceof NamesResourceSelector namesResourceSelector) {
+			var names = namesResourceSelector.names();
+			if (names.size() == 1) return new JsonPrimitive(names.get(0).toString());
+		}
+		ResourceSelector.Serializer<?> serializer = selector.getSerializer();
 		String type = ResourceSelectorSerializers.INSTANCE.getSerializerID(serializer);
 		if (type == null) throw new JsonParseException("Could not find name for selector serializer: " + serializer);
+		JsonObject jsonObject = new JsonObject();
 		jsonObject.add("type", new JsonPrimitive(type));
-		jsonObject.add("config", this.resourceSelector.serialize());
-		JsonArray conditions = new JsonArray();
-		for (ICondition condition : this.conditions) {
-			conditions.add(CraftingHelper.serialize(condition));
+		jsonObject.add("config", selector.serialize());
+		if (hasConditions) {
+			JsonArray conditionsArray = new JsonArray();
+			for (ICondition condition : conditions) {
+				conditionsArray.add(CraftingHelper.serialize(condition));
+			}
+			jsonObject.add("conditions", conditionsArray);
 		}
-		jsonObject.add("conditions", conditions);
 		return jsonObject;
 	}
 
