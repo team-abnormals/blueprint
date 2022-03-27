@@ -40,7 +40,7 @@ import java.util.function.Function;
  * @see ObjectModifier
  */
 public class ObjectModificationManager<T, S, D> extends SimpleJsonResourceReloadListener {
-	public static final String MAIN_PATH = "modifier_groups";
+	public static final String MAIN_PATH = "modifiers";
 	private static final HashMultimap<String, Initializer<?>> INITIALIZER_MAP = HashMultimap.create();
 	protected final EnumMap<EventPriority, Map<ResourceLocation, List<ObjectModifier<T, S, D, ?>>>> prioritizedAssignedModifiers = new EnumMap<>(EventPriority.class);
 	private final String type;
