@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.core.util.modification;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -130,6 +131,17 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 	 */
 	protected void registerEntry(String name, ObjectModifier<T, S, D, ?> modifier, ResourceLocation... names) {
 		this.registerEntry(name, new ObjectModifierGroup<>(new NamesResourceSelector(names), List.of(modifier)), ProviderEntry.NO_CONDITIONS);
+	}
+
+	/**
+	 * Creates and registers a {@link ProviderEntry} instance that has no priority, a selector with no conditions, and uses an array of modifiers.
+	 *
+	 * @param name      The name of the group.
+	 * @param selector  A {@link ResourceSelector} instance to use.
+	 * @param modifiers An array of {@link ObjectModifier} instances to use in the group.
+	 */
+	protected void registerEntry(String name, ResourceSelector<?> selector, ObjectModifier<T, S, D, ?>... modifiers) {
+		this.registerEntry(name, new ObjectModifierGroup<>(selector, modifiers));
 	}
 
 	@Override

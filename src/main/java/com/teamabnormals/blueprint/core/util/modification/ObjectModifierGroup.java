@@ -33,8 +33,16 @@ public record ObjectModifierGroup<T, S, D>(ConditionedResourceSelector selector,
 		this(selector, modifiers, EventPriority.NORMAL);
 	}
 
+	public ObjectModifierGroup(ConditionedResourceSelector selector, ObjectModifier<T, S, D, ?>... modifiers) {
+		this(selector, List.of(modifiers), EventPriority.NORMAL);
+	}
+
 	public ObjectModifierGroup(ResourceSelector<?> selector, List<ObjectModifier<T, S, D, ?>> modifiers) {
 		this(new ConditionedResourceSelector(selector), modifiers, EventPriority.NORMAL);
+	}
+
+	public ObjectModifierGroup(ResourceSelector<?> selector, ObjectModifier<T, S, D, ?>... modifiers) {
+		this(new ConditionedResourceSelector(selector), List.of(modifiers), EventPriority.NORMAL);
 	}
 
 	/**
