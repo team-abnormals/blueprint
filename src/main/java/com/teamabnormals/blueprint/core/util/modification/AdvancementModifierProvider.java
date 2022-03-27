@@ -7,14 +7,9 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.data.DataGenerator;
 
-public class AdvancementModifierProvider extends ObjectModifierProvider<Advancement.Builder, Void, DeserializationContext> {
+public abstract class AdvancementModifierProvider extends ObjectModifierProvider<Advancement.Builder, Void, DeserializationContext> {
 
 	public AdvancementModifierProvider(DataGenerator dataGenerator, String modid) {
 		super(dataGenerator, modid, true, AdvancementModificationManager.TARGET_PATH, new GsonBuilder().setPrettyPrinting().create(), AdvancementModifierSerializers.REGISTRY, (group) -> null);
-	}
-
-	@Override
-	protected void registerEntries() {
-
 	}
 }
