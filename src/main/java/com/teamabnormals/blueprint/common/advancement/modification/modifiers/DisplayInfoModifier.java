@@ -35,6 +35,15 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 	private static final Field BACKGROUND_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14961_");
 	private static final Field SHOW_TOAST_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14963_");
 
+	/**
+	 * Creates a new {@link Builder} instance to simplify creation of {@link DisplayInfoModifier} instances.
+	 *
+	 * @return A new {@link Builder} instance
+	 */
+	public static Builder builder() {
+		return new Builder();
+	}
+
 	private static ItemStack deserializeIcon(JsonObject object) {
 		if (!object.has("item")) {
 			throw new JsonSyntaxException("Unsupported icon type, currently only items are supported (add 'item' key)");
@@ -120,6 +129,134 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 			Optional<Boolean> announceToChat = GsonHelper.isValidNode(object, "announce_to_chat") ? Optional.of(GsonHelper.getAsBoolean(object, "announce_to_chat")) : Optional.empty();
 			Optional<Boolean> hidden = GsonHelper.isValidNode(object, "hidden") ? Optional.of(GsonHelper.getAsBoolean(object, "hidden")) : Optional.empty();
 			return new DisplayInfoModifier(mode, title, description, icon, background, frameType, showToast, announceToChat, hidden);
+		}
+	}
+
+	/**
+	 * The builder class for simpler creation of {@link DisplayInfoModifier} instances.
+	 * <p>Use {@link DisplayInfoModifier#builder()} to create new instances of this class.</p>
+	 *
+	 * @author SmellyModder (Luke Tonon)
+	 */
+	public static final class Builder {
+		private Mode mode = Mode.MODIFY;
+		private Optional<Component> title;
+		private Optional<Component> description;
+		private Optional<ItemStack> icon;
+		private Optional<ResourceLocation> background;
+		private Optional<FrameType> frame;
+		private Optional<Boolean> showToast;
+		private Optional<Boolean> announceToChat;
+		private Optional<Boolean> hidden;
+
+		private Builder() {}
+
+		/**
+		 * Updates the {@link #mode}.
+		 *
+		 * @param mode A {@link Mode} value to use.
+		 * @return This builder.
+		 */
+		public Builder mode(Mode mode) {
+			this.mode = mode;
+			return this;
+		}
+
+		/**
+		 * Updates the {@link #title}.
+		 *
+		 * @param title A {@link Component} instance to use as the title.
+		 * @return This builder.
+		 */
+		public Builder title(Component title) {
+			this.title = Optional.of(title);
+			return this;
+		}
+
+		/**
+		 * Updates the {@link #description}.
+		 *
+		 * @param description A {@link Component} instance to use as the description.
+		 * @return This builder.
+		 */
+		public Builder description(Component description) {
+			this.description = Optional.of(description);
+			return this;
+		}
+
+		/**
+		 * Updates the {@link #icon}.
+		 *
+		 * @param icon A {@link ItemStack} instance to use as the icon.
+		 * @return This builder.
+		 */
+		public Builder icon(ItemStack icon) {
+			this.icon = Optional.of(icon);
+			return this;
+		}
+
+		/**
+		 * Updates the {@link #background}.
+		 *
+		 * @param background A {@link ResourceLocation} instance to use as the background.
+		 * @return This builder.
+		 */
+		public Builder background(ResourceLocation background) {
+			this.background = Optional.of(background);
+			return this;
+		}
+
+		/**
+		 * Updates the {@link #frame}.
+		 *
+		 * @param frame A {@link FrameType} value to use as the frame type.
+		 * @return This builder.
+		 */
+		public Builder frame(FrameType frame) {
+			this.frame = Optional.of(frame);
+			return this;
+		}
+
+		/**
+		 * Updates the {@link #showToast}.
+		 *
+		 * @param showToast If the advancement should show toast.
+		 * @return This builder.
+		 */
+		public Builder showToast(boolean showToast) {
+			this.showToast = Optional.of(showToast);
+			return this;
+		}
+
+		/**
+		 * Updates the {@link #announceToChat}.
+		 *
+		 * @param announceToChat If the advancement should announce to chat.
+		 * @return This builder.
+		 */
+		public Builder announceToChat(boolean announceToChat) {
+			this.announceToChat = Optional.of(announceToChat);
+			return this;
+		}
+
+		/**
+		 * Updates the {@link #hidden}.
+		 *
+		 * @param hidden If the advancement should be hidden.
+		 * @return This builder.
+		 */
+		public Builder hidden(boolean hidden) {
+			this.hidden = Optional.of(hidden);
+			return this;
+		}
+
+		/**
+		 * Builds a new {@link DisplayInfoModifier} instance.
+		 *
+		 * @return A new {@link DisplayInfoModifier} instance.
+		 */
+		public DisplayInfoModifier build() {
+			return new DisplayInfoModifier(this.mode, this.title, this.description, this.icon, this.background, this.frame, this.showToast, this.announceToChat, this.hidden);
 		}
 	}
 }
