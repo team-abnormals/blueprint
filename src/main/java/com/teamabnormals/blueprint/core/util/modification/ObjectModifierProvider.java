@@ -2,6 +2,7 @@ package com.teamabnormals.blueprint.core.util.modification;
 
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -30,8 +31,9 @@ import java.util.function.Function;
  */
 public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Gson DEFAULT_GSON = new GsonBuilder().setPrettyPrinting().create();
 	private final DataGenerator dataGenerator;
-	private final String modId;
+	protected final String modId;
 	private final String name;
 	private final String directory;
 	private final Gson gson;
@@ -47,6 +49,16 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 		this.gson = gson;
 		this.serializerRegistry = serializerRegistry;
 		this.additionalSerializationGetter = additionalSerializationGetter;
+	}
+
+	public ObjectModifierProvider(DataGenerator dataGenerator, String modId, boolean data, String subDirectory, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, S additionalSerializationObject) {
+		this.dataGenerator = dataGenerator;
+		this.modId = modId;
+		this.name = "Object Modifier Groups (" + subDirectory + "): " + modId;
+		this.directory = (data ? "data/" : "assets/") + modId + "/" + ObjectModificationManager.MAIN_PATH + "/" + subDirectory + "/";
+		this.gson = DEFAULT_GSON;
+		this.serializerRegistry = serializerRegistry;
+		this.additionalSerializationGetter = group -> additionalSerializationObject;
 	}
 
 	@Override
@@ -123,10 +135,6 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 	@Override
 	public String getName() {
 		return this.name;
-	}
-
-	public String getModId() {
-		return this.modId;
 	}
 
 	/**
