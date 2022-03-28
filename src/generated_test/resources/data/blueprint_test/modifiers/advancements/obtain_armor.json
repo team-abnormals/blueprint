@@ -1,0 +1,24 @@
+{
+  "selector": "minecraft:story/obtain_armor",
+  "priority": "normal",
+  "modifiers": [
+    {
+      "type": "display",
+      "config": {
+        "mode": "modify",
+        "title": {
+          "translate": "blueprint_test.advancements.husbandry.obtain_armor.title"
+        },
+        "description": {
+          "text": "Erm, yeah, environmental is loaded"
+        }
+      },
+      "conditions": [
+        {
+          "modid": "environmental",
+          "type": "forge:mod_loaded"
+        }
+      ]
+    }
+  ]
+}

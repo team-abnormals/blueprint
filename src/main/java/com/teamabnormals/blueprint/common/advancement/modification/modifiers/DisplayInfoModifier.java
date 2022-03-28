@@ -140,14 +140,14 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 	 */
 	public static final class Builder {
 		private Mode mode = Mode.MODIFY;
-		private Optional<Component> title;
-		private Optional<Component> description;
-		private Optional<ItemStack> icon;
-		private Optional<ResourceLocation> background;
-		private Optional<FrameType> frame;
-		private Optional<Boolean> showToast;
-		private Optional<Boolean> announceToChat;
-		private Optional<Boolean> hidden;
+		private Optional<Component> title = Optional.empty();
+		private Optional<Component> description = Optional.empty();
+		private Optional<ItemStack> icon = Optional.empty();
+		private Optional<ResourceLocation> background = Optional.empty();
+		private Optional<FrameType> frame = Optional.empty();
+		private Optional<Boolean> showToast = Optional.empty();
+		private Optional<Boolean> announceToChat = Optional.empty();
+		private Optional<Boolean> hidden = Optional.empty();
 
 		private Builder() {}
 

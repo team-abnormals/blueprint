@@ -1,0 +1,16 @@
+{
+  "selector": "minecraft:nether/all_potions",
+  "priority": "normal",
+  "modifiers": [
+    {
+      "type": "effects_changed",
+      "config": {
+        "criteria": "all_effects",
+        "removes": false,
+        "effects": {
+          "minecraft:blindness": {}
+        }
+      }
+    }
+  ]
+}

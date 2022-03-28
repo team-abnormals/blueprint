@@ -89,7 +89,7 @@ public record CriteriaModifier(Map<String, Criterion> criteria, Optional<String[
 				for (String[] astring : requirements) {
 					JsonArray jsonarray = new JsonArray();
 					for (String s : astring) {
-						if (criteria.containsKey(s)) throw new JsonParseException("Unknown criterion: " + s);
+						if (!criteria.containsKey(s)) throw new JsonParseException("Unknown criterion: " + s);
 						jsonarray.add(s);
 					}
 					requirementsArray.add(jsonarray);
@@ -106,7 +106,7 @@ public record CriteriaModifier(Map<String, Criterion> criteria, Optional<String[
 						entry.addProperty("replace", indexedRequirementsEntry.replace);
 						JsonArray requirementsArray = new JsonArray();
 						for (String key : indexedRequirementsEntry.requirements) {
-							if (criteria.containsKey(key)) throw new JsonParseException("Unknown criterion: " + key);
+							if (!criteria.containsKey(key)) throw new JsonParseException("Unknown criterion: " + key);
 							requirementsArray.add(key);
 						}
 						entry.add("requirements", requirementsArray);
@@ -327,7 +327,7 @@ public record CriteriaModifier(Map<String, Criterion> criteria, Optional<String[
 		 *
 		 * @return A new {@link CriteriaModifier} instance.
 		 */
-		public CriteriaModifier builder() {
+		public CriteriaModifier build() {
 			var criteria = this.criteria;
 			if (criteria.isEmpty()) throw new IllegalStateException("Cannot have no criteria!");
 			return new CriteriaModifier(ImmutableMap.copyOf(criteria), Optional.ofNullable(this.requirements), this.shouldReplaceRequirements, Optional.of(ImmutableList.copyOf(this.indexedRequirements)));
