@@ -1,0 +1,37 @@
+{
+  "selector": "minecraft:chests/igloo_chest",
+  "priority": "normal",
+  "modifiers": [
+    {
+      "type": "entries",
+      "config": {
+        "replace": false,
+        "index": 1,
+        "entries": [
+          {
+            "type": "minecraft:item",
+            "weight": 10,
+            "functions": [
+              {
+                "function": "minecraft:set_count",
+                "count": {
+                  "type": "minecraft:uniform",
+                  "min": 1.0,
+                  "max": 2.0
+                },
+                "add": false
+              }
+            ],
+            "name": "minecraft:nether_star"
+          }
+        ]
+      },
+      "conditions": [
+        {
+          "modid": "blueprint",
+          "type": "forge:mod_loaded"
+        }
+      ]
+    }
+  ]
+}

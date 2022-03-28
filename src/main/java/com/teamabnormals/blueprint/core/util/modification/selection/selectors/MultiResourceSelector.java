@@ -53,7 +53,7 @@ public record MultiResourceSelector(List<ConditionedResourceSelector> selectors)
 		public MultiResourceSelector deserialize(JsonElement element) {
 			JsonArray jsonArray = element.getAsJsonArray();
 			List<ConditionedResourceSelector> targetSelectors = new ArrayList<>(jsonArray.size());
-			jsonArray.forEach(entry -> targetSelectors.add(ConditionedResourceSelector.deserialize(entry.toString(), entry.getAsJsonObject())));
+			jsonArray.forEach(entry -> targetSelectors.add(ConditionedResourceSelector.deserialize(entry.toString(), entry)));
 			return new MultiResourceSelector(targetSelectors);
 		}
 	}
