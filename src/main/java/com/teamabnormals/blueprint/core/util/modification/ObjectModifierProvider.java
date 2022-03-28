@@ -45,7 +45,7 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 	public ObjectModifierProvider(DataGenerator dataGenerator, String modId, boolean data, String subDirectory, Gson gson, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, Function<ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter) {
 		this.dataGenerator = dataGenerator;
 		this.modId = modId;
-		this.name = "Object Modifier Groups (" + subDirectory + "): " + modId;
+		this.name = "Object Modifiers (" + subDirectory + "): " + modId;
 		this.directory = (data ? "data/" : "assets/") + modId + "/" + ObjectModificationManager.MAIN_PATH + "/" + subDirectory + "/";
 		this.gson = gson;
 		this.serializerRegistry = serializerRegistry;
@@ -55,7 +55,7 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 	public ObjectModifierProvider(DataGenerator dataGenerator, String modId, boolean data, String subDirectory, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, S additionalSerializationObject) {
 		this.dataGenerator = dataGenerator;
 		this.modId = modId;
-		this.name = "Object Modifier Groups (" + subDirectory + "): " + modId;
+		this.name = "Object Modifiers (" + subDirectory + "): " + modId;
 		this.directory = (data ? "data/" : "assets/") + modId + "/" + ObjectModificationManager.MAIN_PATH + "/" + subDirectory + "/";
 		this.gson = DEFAULT_GSON;
 		this.serializerRegistry = serializerRegistry;
