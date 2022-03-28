@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * A {@link ResourceSelector} implementation that returns a configurable list of target names.
@@ -16,8 +17,13 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public record NamesResourceSelector(List<ResourceLocation> names) implements ResourceSelector<NamesResourceSelector> {
+
 	public NamesResourceSelector(ResourceLocation... names) {
 		this(List.of(names));
+	}
+
+	public NamesResourceSelector(String... names) {
+		this(Stream.of(names).map(ResourceLocation::new).toList());
 	}
 
 	@Override
@@ -46,4 +52,5 @@ public record NamesResourceSelector(List<ResourceLocation> names) implements Res
 			return new NamesResourceSelector(names);
 		}
 	}
+
 }

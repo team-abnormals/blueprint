@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * A {@link ResourceSelector} implementation that acts as multiple {@link ConditionedResourceSelector} instances.
@@ -14,6 +15,15 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public record MultiResourceSelector(List<ConditionedResourceSelector> selectors) implements ResourceSelector<MultiResourceSelector> {
+
+	public MultiResourceSelector(ConditionedResourceSelector... selectors) {
+		this(List.of(selectors));
+	}
+
+	public MultiResourceSelector(ResourceSelector<?>... selectors) {
+		this(Stream.of(selectors).map(ConditionedResourceSelector::new).toList());
+	}
+
 	@Override
 	public List<ResourceLocation> select(SelectionSpace space) {
 		List<ResourceLocation> targetNames = new ArrayList<>();

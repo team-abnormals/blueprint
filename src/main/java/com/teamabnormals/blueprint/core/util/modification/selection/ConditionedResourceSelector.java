@@ -30,8 +30,8 @@ public final class ConditionedResourceSelector {
 		this.conditions = conditions;
 	}
 
-	public ConditionedResourceSelector(ResourceSelector<?> targetSelector) {
-		this(targetSelector, NO_CONDITIONS);
+	public ConditionedResourceSelector(ResourceSelector<?> resourceSelector) {
+		this(resourceSelector, NO_CONDITIONS);
 	}
 
 	/**

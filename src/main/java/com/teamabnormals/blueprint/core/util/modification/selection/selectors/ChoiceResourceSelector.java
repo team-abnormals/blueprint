@@ -18,6 +18,11 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public record ChoiceResourceSelector(ConditionedResourceSelector first, ConditionedResourceSelector second, ICondition condition) implements ResourceSelector<ChoiceResourceSelector> {
+
+	public ChoiceResourceSelector(ResourceSelector<?> first, ResourceSelector<?> second, ICondition condition) {
+		this(new ConditionedResourceSelector(first), new ConditionedResourceSelector(second), condition);
+	}
+
 	@Override
 	public List<ResourceLocation> select(SelectionSpace space) {
 		return this.condition.test() ? this.first.select(space) : this.second.select(space);
