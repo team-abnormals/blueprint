@@ -14,6 +14,7 @@ import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
 import core.data.server.TestAdvancementModifiersProvider;
+import core.data.server.TestChunkGeneratorModifiersProvider;
 import core.data.server.TestLootModifiersProvider;
 import core.registry.*;
 import net.minecraft.client.renderer.entity.CowRenderer;
@@ -87,6 +88,7 @@ public final class BlueprintTest {
 		if (event.includeServer()) {
 			generator.addProvider(new TestAdvancementModifiersProvider(generator));
 			generator.addProvider(new TestLootModifiersProvider(generator));
+			generator.addProvider(new TestChunkGeneratorModifiersProvider(generator));
 		}
 	}
 
