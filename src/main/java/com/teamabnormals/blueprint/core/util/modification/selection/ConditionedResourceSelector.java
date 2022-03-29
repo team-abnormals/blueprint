@@ -25,7 +25,7 @@ public final class ConditionedResourceSelector {
 	private final ResourceSelector<?> resourceSelector;
 	private final ICondition[] conditions;
 
-	public ConditionedResourceSelector(ResourceSelector<?> resourceSelector, ICondition[] conditions) {
+	public ConditionedResourceSelector(ResourceSelector<?> resourceSelector, ICondition... conditions) {
 		this.resourceSelector = resourceSelector;
 		this.conditions = conditions;
 	}

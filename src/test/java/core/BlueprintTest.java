@@ -16,6 +16,7 @@ import common.world.TestGlobalStorage;
 import core.data.server.TestAdvancementModifiersProvider;
 import core.data.server.TestChunkGeneratorModifiersProvider;
 import core.data.server.TestLootModifiersProvider;
+import core.data.server.TestModdedBiomeSlicesProvider;
 import core.registry.*;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.data.DataGenerator;
@@ -89,6 +90,7 @@ public final class BlueprintTest {
 			generator.addProvider(new TestAdvancementModifiersProvider(generator));
 			generator.addProvider(new TestLootModifiersProvider(generator));
 			generator.addProvider(new TestChunkGeneratorModifiersProvider(generator));
+			generator.addProvider(new TestModdedBiomeSlicesProvider(generator));
 		}
 	}
 

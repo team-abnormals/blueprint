@@ -7,7 +7,7 @@
       "config": {
         "surface_rule": {
           "if_true": {
-            "slice_name": "blueprint_test:overworld_test",
+            "slice_name": "blueprint_test:overworld_crimson_forest_caves",
             "type": "blueprint:moddedness_slice"
           },
           "then_run": {
