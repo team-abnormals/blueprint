@@ -29,7 +29,7 @@ import net.minecraftforge.registries.RegistryObject;
 @Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class TestBlocks {
 	private static final BlockSubRegistryHelper HELPER = BlueprintTest.REGISTRY_HELPER.getBlockSubHelper();
-	public static final WoodSetProperties TEST_WOOD_SET = new WoodSetProperties.Builder(MaterialColor.TERRACOTTA_PINK).sound(SoundType.AMETHYST).build();
+	public static final WoodSetProperties TEST_WOOD_SET = WoodSetProperties.builder(MaterialColor.TERRACOTTA_PINK).sound(SoundType.AMETHYST).build();
 
 	public static final RegistryObject<Block> BLOCK = HELPER.createBlock("block", () -> new Block(Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> TEST_LOADER = HELPER.createBlock("test_loader", () -> new ChunkLoadTestBlock(Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_BUILDING_BLOCKS);

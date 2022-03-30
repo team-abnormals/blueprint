@@ -56,6 +56,10 @@ public final class PropertyUtil {
 
 	public static record WoodSetProperties(MaterialColor woodColor, Material material, SoundType sound, SoundType logSound, SoundType leavesSound) {
 
+		public static Builder builder(MaterialColor woodColor)  {
+			return new Builder(woodColor);
+		}
+
 		public Block.Properties planks() {
 			return Block.Properties.of(this.material, this.woodColor).strength(2.0F, 3.0F).sound(this.sound);
 		}
@@ -119,7 +123,7 @@ public final class PropertyUtil {
 			private SoundType logSound = SoundType.WOOD;
 			private SoundType leavesSound = SoundType.GRASS;
 
-			public Builder(MaterialColor woodColor) {
+			private Builder(MaterialColor woodColor) {
 				this.woodColor = woodColor;
 			}
 
