@@ -21,6 +21,9 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.Random;
 import java.util.stream.Stream;
 
+/**
+ * A {@link Block} extension for leaf pile compatibility with the Woodworks mod.
+ */
 public class LeafPileBlock extends MultifaceBlock implements BonemealableBlock, SimpleWaterloggedBlock {
 	private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
