@@ -13,6 +13,7 @@ public class BlueprintBlockTagsProvider extends BlockTagsProvider {
 
 	@Override
 	protected void addTags() {
+		this.tag(BlueprintBlockTags.LEAF_PILES);
 		this.tag(BlueprintBlockTags.HEDGES);
 		this.tag(BlueprintBlockTags.LADDERS);
 		this.tag(BlueprintBlockTags.VERTICAL_SLABS);
