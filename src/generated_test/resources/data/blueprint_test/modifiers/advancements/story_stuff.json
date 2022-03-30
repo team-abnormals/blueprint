@@ -1,0 +1,31 @@
+{
+  "selector": {
+    "type": "multi",
+    "config": [
+      {
+        "type": "choice",
+        "config": {
+          "first": "minecraft:story/mine_diamond",
+          "second": "minecraft:story/mine_stone",
+          "condition": {
+            "modid": "blueprint",
+            "type": "forge:mod_loaded"
+          }
+        }
+      },
+      "minecraft:story/root"
+    ]
+  },
+  "priority": "normal",
+  "modifiers": [
+    {
+      "type": "display",
+      "config": {
+        "mode": "modify",
+        "description": {
+          "text": "Get modified!"
+        }
+      }
+    }
+  ]
+}

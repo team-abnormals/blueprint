@@ -150,7 +150,7 @@ public final class Blueprint {
 			bus.addListener(BlueprintShaders::registerShaders);
 		});
 
-		bus.addGenericListener(Block.class, this::registerConfigConditions);
+		bus.addGenericListener(Block.class, this::registerUnsupportedRegistryEntries);
 		bus.addListener(EventPriority.LOWEST, this::commonSetup);
 		bus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
 		bus.addListener(this::dataSetup);
@@ -159,12 +159,7 @@ public final class Blueprint {
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
-		event.enqueueWork(() -> {
-			this.replaceBeehivePOI();
-			BlueprintLootConditions.registerLootConditions();
-			BuiltinRegistries.register(Registry.BIOME_SOURCE, new ResourceLocation(MOD_ID, "modded"), ModdedBiomeSource.CODEC);
-			BlueprintSurfaceRules.register();
-		});
+		event.enqueueWork(this::replaceBeehivePOI);
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "slabfish_head"), SLABFISH_SETTINGS);
 	}
 
@@ -175,7 +170,6 @@ public final class Blueprint {
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
 		ExistingFileHelper fileHelper = event.getExistingFileHelper();
-
 		if (event.includeServer()) {
 			BlueprintBlockTagsProvider blockTags = new BlueprintBlockTagsProvider(MOD_ID, generator, fileHelper);
 			generator.addProvider(blockTags);
@@ -186,8 +180,12 @@ public final class Blueprint {
 		}
 	}
 
-	private void registerConfigConditions(RegistryEvent.Register<Block> event) {
+	//Registers stuff for registries that forge doesn't support
+	private void registerUnsupportedRegistryEntries(RegistryEvent.Register<Block> event) {
 		DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
+		BlueprintLootConditions.registerLootConditions();
+		BuiltinRegistries.register(Registry.BIOME_SOURCE, new ResourceLocation(MOD_ID, "modded"), ModdedBiomeSource.CODEC);
+		BlueprintSurfaceRules.register();
 	}
 
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {

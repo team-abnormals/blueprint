@@ -13,8 +13,13 @@ import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
+import core.data.server.TestAdvancementModifiersProvider;
+import core.data.server.TestChunkGeneratorModifiersProvider;
+import core.data.server.TestLootModifiersProvider;
+import core.data.server.TestModdedBiomeSlicesProvider;
 import core.registry.*;
 import net.minecraft.client.renderer.entity.CowRenderer;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -36,6 +41,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(BlueprintTest.MOD_ID)
@@ -60,6 +66,7 @@ public final class BlueprintTest {
 			modEventBus.addListener(this::rendererSetup);
 			modEventBus.register(TestClientEvents.HUMANOID_ENDIMATORS);
 		});
+		modEventBus.addListener(this::dataSetup);
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "tracked_data"), TEST_TRACKED_DATA);
 	}
 
@@ -75,6 +82,16 @@ public final class BlueprintTest {
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(FMLClientSetupEvent event) {
 		BiomeUtil.markEndBiomeCustomMusic(Biomes.ICE_SPIKES);
+	}
+
+	private void dataSetup(GatherDataEvent event) {
+		DataGenerator generator = event.getGenerator();
+		if (event.includeServer()) {
+			generator.addProvider(new TestAdvancementModifiersProvider(generator));
+			generator.addProvider(new TestLootModifiersProvider(generator));
+			generator.addProvider(new TestChunkGeneratorModifiersProvider(generator));
+			generator.addProvider(new TestModdedBiomeSlicesProvider(generator));
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -25,13 +25,13 @@ public final class ConditionedResourceSelector {
 	private final ResourceSelector<?> resourceSelector;
 	private final ICondition[] conditions;
 
-	public ConditionedResourceSelector(ResourceSelector<?> resourceSelector, ICondition[] conditions) {
+	public ConditionedResourceSelector(ResourceSelector<?> resourceSelector, ICondition... conditions) {
 		this.resourceSelector = resourceSelector;
 		this.conditions = conditions;
 	}
 
-	public ConditionedResourceSelector(ResourceSelector<?> targetSelector) {
-		this(targetSelector, NO_CONDITIONS);
+	public ConditionedResourceSelector(ResourceSelector<?> resourceSelector) {
+		this(resourceSelector, NO_CONDITIONS);
 	}
 
 	/**

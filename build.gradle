@@ -58,20 +58,40 @@ minecraft {
                 }
             }
         }
+        def blueprintDataArgs = [
+                "--mod", project.modId,
+                "--all",
+                "--output", file("src/generated/resources/"),
+                "--existing", file("src/main/resources")
+        ]
         data {
             workingDirectory project.file("run")
             property "forge.logging.markers", "REGISTRIES"
             property "forge.logging.console.level", "debug"
             property "mixin.env.remapRefMap", "true"
             property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
-            args "--mod", project.modId, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources")
+            args blueprintDataArgs
             mods {
                 blueprint {
                     source sourceSets.main
                 }
+            }
+        }
+        testData {
+            parent runs.data
+
+            mods {
                 blueprint_test {
                     source sourceSets.test
                 }
+            }
+
+            afterEvaluate {
+                //Weird trick, but forge test mods do it too
+                args.removeAll {
+                    blueprintDataArgs.contains(it instanceof File ? (it as File).absolutePath : it.toString())
+                }
+                args "--mod", "blueprint_test", "--all", "--output", file("src/generated_test/resources/"), "--existing", file("src/test/resources")
             }
         }
     }
@@ -79,6 +99,10 @@ minecraft {
 
 sourceSets.main.resources {
     srcDir "src/generated/resources"
+}
+
+sourceSets.test.resources {
+    srcDir "src/generated_test/resources"
 }
 
 dependencies {

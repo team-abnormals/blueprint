@@ -1,0 +1,34 @@
+{
+  "selector": {
+    "type": "regex",
+    "config": "minecraft:chests\\/.+"
+  },
+  "priority": "normal",
+  "modifiers": [
+    {
+      "type": "entries",
+      "config": {
+        "replace": false,
+        "index": 0,
+        "entries": [
+          {
+            "type": "minecraft:item",
+            "weight": 5,
+            "functions": [
+              {
+                "function": "minecraft:set_count",
+                "count": {
+                  "type": "minecraft:uniform",
+                  "min": 1.0,
+                  "max": 2.0
+                },
+                "add": false
+              }
+            ],
+            "name": "minecraft:netherite_ingot"
+          }
+        ]
+      }
+    }
+  ]
+}

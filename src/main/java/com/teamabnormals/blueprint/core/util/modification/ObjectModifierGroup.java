@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
-import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelector;
 import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -28,23 +27,6 @@ import java.util.List;
  * @see ObjectModifierSerializerRegistry
  */
 public record ObjectModifierGroup<T, S, D>(ConditionedResourceSelector selector, List<ObjectModifier<T, S, D, ?>> modifiers, EventPriority priority) {
-
-	public ObjectModifierGroup(ConditionedResourceSelector selector, List<ObjectModifier<T, S, D, ?>> modifiers) {
-		this(selector, modifiers, EventPriority.NORMAL);
-	}
-
-	public ObjectModifierGroup(ConditionedResourceSelector selector, ObjectModifier<T, S, D, ?>... modifiers) {
-		this(selector, List.of(modifiers), EventPriority.NORMAL);
-	}
-
-	public ObjectModifierGroup(ResourceSelector<?> selector, List<ObjectModifier<T, S, D, ?>> modifiers) {
-		this(new ConditionedResourceSelector(selector), modifiers, EventPriority.NORMAL);
-	}
-
-	public ObjectModifierGroup(ResourceSelector<?> selector, ObjectModifier<T, S, D, ?>... modifiers) {
-		this(new ConditionedResourceSelector(selector), List.of(modifiers), EventPriority.NORMAL);
-	}
-
 	/**
 	 * Deserializes a {@link ObjectModifierGroup} instance from a {@link JsonObject} instance.
 	 *
@@ -107,7 +89,6 @@ public record ObjectModifierGroup<T, S, D>(ConditionedResourceSelector selector,
 		jsonObject.add("selector", this.selector.serialize());
 		jsonObject.addProperty("priority", this.priority.toString().toLowerCase());
 		var objectModifiers = this.modifiers;
-		int conditionsLength = conditions.length;
 		JsonArray modifiers = new JsonArray();
 		for (int i = 0; i < objectModifiers.size(); i++) {
 			var modifier = objectModifiers.get(i);
@@ -117,9 +98,10 @@ public record ObjectModifierGroup<T, S, D>(ConditionedResourceSelector selector,
 			JsonObject modifierObject = new JsonObject();
 			modifierObject.addProperty("type", name);
 			modifierObject.add("config", modifier.serialize(additional));
-			if (i < conditionsLength) {
+			var modifierConditions = conditions[i];
+			if (modifierConditions.length > 0) {
 				JsonArray conditionsObject = new JsonArray();
-				for (ICondition condition : conditions[i]) {
+				for (ICondition condition : modifierConditions) {
 					conditionsObject.add(CraftingHelper.serialize(condition));
 				}
 				modifierObject.add("conditions", conditionsObject);
@@ -129,5 +111,4 @@ public record ObjectModifierGroup<T, S, D>(ConditionedResourceSelector selector,
 		jsonObject.add("modifiers", modifiers);
 		return jsonObject;
 	}
-
 }

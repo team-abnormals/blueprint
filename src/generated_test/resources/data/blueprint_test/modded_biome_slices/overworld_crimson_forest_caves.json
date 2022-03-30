@@ -1,0 +1,37 @@
+{
+  "selector": "minecraft:overworld",
+  "name": "blueprint_test:overworld_crimson_forest_caves",
+  "weight": 4,
+  "provider": {
+    "biomes": [
+      {
+        "parameters": {
+          "erosion": 0.0,
+          "depth": 0.0,
+          "weirdness": 0.0,
+          "offset": 0.0,
+          "temperature": 0.0,
+          "humidity": 0.0,
+          "continentalness": 0.0
+        },
+        "biome": "blueprint:original_source_marker"
+      },
+      {
+        "parameters": {
+          "erosion": 0.0,
+          "depth": [
+            0.3,
+            1.0
+          ],
+          "weirdness": 0.0,
+          "offset": 0.0,
+          "temperature": 0.0,
+          "humidity": 0.0,
+          "continentalness": 0.0
+        },
+        "biome": "minecraft:crimson_forest"
+      }
+    ],
+    "type": "blueprint:multi_noise"
+  }
+}

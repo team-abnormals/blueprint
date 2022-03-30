@@ -1,0 +1,22 @@
+{
+  "selector": {
+    "type": "names",
+    "config": [
+      "minecraft:nether/distract_piglin",
+      "minecraft:nether/explore_nether",
+      "minecraft:nether/fast_travel"
+    ]
+  },
+  "priority": "normal",
+  "modifiers": [
+    {
+      "type": "display",
+      "config": {
+        "mode": "modify",
+        "icon": {
+          "item": "minecraft:nether_star"
+        }
+      }
+    }
+  ]
+}

@@ -18,6 +18,11 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public record ChoiceResourceSelector(ConditionedResourceSelector first, ConditionedResourceSelector second, ICondition condition) implements ResourceSelector<ChoiceResourceSelector> {
+
+	public ChoiceResourceSelector(ResourceSelector<?> first, ResourceSelector<?> second, ICondition condition) {
+		this(new ConditionedResourceSelector(first), new ConditionedResourceSelector(second), condition);
+	}
+
 	@Override
 	public List<ResourceLocation> select(SelectionSpace space) {
 		return this.condition.test() ? this.first.select(space) : this.second.select(space);
@@ -54,7 +59,7 @@ public record ChoiceResourceSelector(ConditionedResourceSelector first, Conditio
 				//Support for conditions that may not exist under certain circumstances
 				return new ChoiceResourceSelector(ConditionedResourceSelector.EMPTY, ConditionedResourceSelector.deserialize("second", GsonHelper.convertToJsonObject(jsonObject.get("second"), "second")), FalseCondition.INSTANCE);
 			}
-			return new ChoiceResourceSelector(ConditionedResourceSelector.deserialize("first", GsonHelper.convertToJsonObject(jsonObject.get("first"), "first")), ConditionedResourceSelector.deserialize("second", GsonHelper.convertToJsonObject(jsonObject.get("second"), "second")), condition);
+			return new ChoiceResourceSelector(ConditionedResourceSelector.deserialize("first", jsonObject.get("first")), ConditionedResourceSelector.deserialize("second", jsonObject.get("second")), condition);
 		}
 	}
 }
