@@ -54,66 +54,103 @@ public final class PropertyUtil {
 		return entity == EntityType.OCELOT || entity == EntityType.PARROT;
 	}
 
-	public static class WoodSetProperties {
-		private final MaterialColor woodColor;
-		private final SoundType logSound;
-
-		public WoodSetProperties(MaterialColor woodColor) {
-			this.woodColor = woodColor;
-			this.logSound = SoundType.WOOD;
-		}
-
-		public WoodSetProperties(MaterialColor woodColor, SoundType logSound) {
-			this.woodColor = woodColor;
-			this.logSound = logSound;
-		}
+	public static record WoodSetProperties(MaterialColor woodColor, Material material, SoundType sound, SoundType logSound, SoundType leavesSound) {
 
 		public Block.Properties planks() {
-			return Block.Properties.of(Material.WOOD, this.woodColor).strength(2.0F, 3.0F).sound(SoundType.WOOD);
+			return Block.Properties.of(this.material, this.woodColor).strength(2.0F, 3.0F).sound(this.sound);
 		}
 
 		public Block.Properties log() {
-			return Block.Properties.of(Material.WOOD, this.woodColor).strength(2.0F).sound(logSound);
+			return Block.Properties.of(this.material, this.woodColor).strength(2.0F).sound(logSound);
 		}
 
 		public Block.Properties leaves() {
-			return Block.Properties.of(Material.LEAVES).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion().isValidSpawn(PropertyUtil::ocelotOrParrot).isSuffocating(PropertyUtil::never).isViewBlocking(PropertyUtil::never);
+			return Block.Properties.of(Material.LEAVES).strength(0.2F).randomTicks().sound(this.leavesSound).noOcclusion().isValidSpawn(PropertyUtil::ocelotOrParrot).isSuffocating(PropertyUtil::never).isViewBlocking(PropertyUtil::never);
 		}
 
 		public Block.Properties pressurePlate() {
-			return Block.Properties.of(Material.WOOD, this.woodColor).noCollission().strength(0.5F).sound(SoundType.WOOD);
+			return Block.Properties.of(this.material, this.woodColor).noCollission().strength(0.5F).sound(this.sound);
 		}
 
 		public Block.Properties trapdoor() {
-			return Block.Properties.of(Material.WOOD, this.woodColor).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn(PropertyUtil::never);
+			return Block.Properties.of(this.material, this.woodColor).strength(3.0F).sound(this.sound).noOcclusion().isValidSpawn(PropertyUtil::never);
 		}
 
 		public Block.Properties button() {
-			return Block.Properties.of(Material.DECORATION).noCollission().strength(0.5F).sound(SoundType.WOOD);
+			return Block.Properties.of(Material.DECORATION).noCollission().strength(0.5F).sound(this.sound);
 		}
 
 		public Block.Properties door() {
-			return Block.Properties.of(Material.WOOD, this.woodColor).strength(3.0F).sound(SoundType.WOOD).noOcclusion();
+			return Block.Properties.of(this.material, this.woodColor).strength(3.0F).sound(this.sound).noOcclusion();
 		}
 
 		public Block.Properties beehive() {
-			return Block.Properties.of(Material.WOOD, this.woodColor).strength(0.6F).sound(SoundType.WOOD);
+			return Block.Properties.of(this.material, this.woodColor).strength(0.6F).sound(this.sound);
 		}
 
 		public Block.Properties bookshelf() {
-			return Block.Properties.of(Material.WOOD, this.woodColor).strength(1.5F).sound(SoundType.WOOD);
+			return Block.Properties.of(this.material, this.woodColor).strength(1.5F).sound(this.sound);
+		}
+
+		public Block.Properties ladder() {
+			return LADDER;
 		}
 
 		public Block.Properties chest() {
-			return Block.Properties.of(Material.WOOD, this.woodColor).strength(2.5F).sound(SoundType.WOOD);
+			return Block.Properties.of(this.material, this.woodColor).strength(2.5F).sound(this.sound);
+		}
+
+		public Block.Properties leafPile() {
+			return Block.Properties.of(Material.REPLACEABLE_PLANT).noCollission().strength(0.2F).sound(this.leavesSound);
 		}
 
 		public Block.Properties leafCarpet() {
-			return Block.Properties.of(Material.CLOTH_DECORATION).strength(0.0F).sound(SoundType.GRASS).noOcclusion();
+			return Block.Properties.of(Material.CLOTH_DECORATION).strength(0.0F).sound(this.leavesSound).noOcclusion();
 		}
 
 		public Block.Properties post() {
-			return Block.Properties.of(Material.WOOD, this.woodColor).strength(2.0F, 3.0F).sound(this.logSound);
+			return Block.Properties.of(this.material, this.woodColor).strength(2.0F, 3.0F).sound(this.logSound);
+		}
+
+		public static final class Builder {
+			private MaterialColor woodColor;
+			private Material material = Material.WOOD;
+			private SoundType sound = SoundType.WOOD;
+			private SoundType logSound = SoundType.WOOD;
+			private SoundType leavesSound = SoundType.GRASS;
+
+			public Builder(MaterialColor woodColor) {
+				this.woodColor = woodColor;
+			}
+
+			public Builder material(Material material) {
+				this.material = material;
+				return this;
+			}
+
+			public Builder woodColor(MaterialColor woodColor) {
+				this.woodColor = woodColor;
+				return this;
+			}
+
+			public Builder sound(SoundType soundType) {
+				this.sound = soundType;
+				return this;
+			}
+
+			public Builder logSound(SoundType soundType) {
+				this.logSound = soundType;
+				return this;
+			}
+
+			public Builder leavesSound(SoundType soundType) {
+				this.leavesSound = soundType;
+				return this;
+			}
+
+			public WoodSetProperties build() {
+				return new WoodSetProperties(this.woodColor, this.material, this.sound, this.logSound, this.leavesSound);
+			}
 		}
 	}
 
