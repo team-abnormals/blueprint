@@ -1,0 +1,17 @@
+{
+	"parent": "minecraft:block/cube_all",
+	"elements": [
+		{
+			"from": [ 0, 0, 0 ],
+			"to": [ 16, 16, 16 ],
+			"faces": {
+				"down":  { "texture": "#all", "rotation": 180, "cullface": "down"},
+				"up":    { "texture": "#all", "rotation": 180, "cullface": "up"},
+				"north": { "texture": "#all", "rotation": 90, "cullface": "north"},
+				"south": { "texture": "#all", "rotation": 90, "cullface": "south"},
+				"east":  { "texture": "#all", "rotation": 90, "cullface": "east"},
+				"west":  { "texture": "#all", "rotation": 90, "cullface": "west"}
+			}
+		}
+	]
+}
