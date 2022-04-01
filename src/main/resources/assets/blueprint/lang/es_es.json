@@ -1,17 +1,18 @@
 {
 	"blueprint.config.screen_shake_scale": "Escala de vibración de pantalla",
 	"blueprint.config.max_screen_shakers": "Vibración de pantalla máxima",
+	"blueprint.config.disable_experimental_settings_screen": "Desactivar pantalla de ajustes experimentales",
 	"blueprint.config.slabfish_hat.enabled": "Sombrero de pez losa",
-	"blueprint.config.slabfish_hat.enabled.tooltip": "Activa el sombrero de pez losa. Disponible para patrons de nivel 2+.",
+	"blueprint.config.slabfish_hat.enabled.tooltip": "Activa el sombrero de pez losa. Disponible para patrocinadores de nivel 2+.",
 	"blueprint.config.slabfish_hat.sweater": "Suéter",
-	"blueprint.config.slabfish_hat.sweater.tooltip": "Activa el suéter del sombrero de pez losa. Disponible para patrons de nivel 2+.",
+	"blueprint.config.slabfish_hat.sweater.tooltip": "Activa el suéter del sombrero de pez losa. Disponible para patrocinadores de nivel 2+.",
 	"blueprint.config.slabfish_hat.backpack": "Mochila",
-	"blueprint.config.slabfish_hat.backpack.tooltip": "Activa la mochila del sombrero de pez losa. Disponible para patrons de nivel 3+.",
+	"blueprint.config.slabfish_hat.backpack.tooltip": "Activa la mochila del sombrero de pez losa. Disponible para patrocinadores de nivel 3+.",
 	"blueprint.config.slabfish_hat.type": "Tipo",
-	"blueprint.config.slabfish_hat.type.tooltip": "Cambia el tipo del sombrero de pez losa. Disponible para patrons de nivel 4+.",
+	"blueprint.config.slabfish_hat.type.tooltip": "Cambia el tipo del sombrero de pez losa. Disponible para patrocinadores de nivel 4+.",
 	"blueprint.screen.slabfish_settings": "Ajustes del sombrero de pez losa...",
 	"blueprint.screen.slabfish_settings.title": "Ajustes del sombrero de pez losa",
-	"blueprint.screen.slabfish_settings.tooltip": "Ajustes del sombrero de pez losa para patrons de Team Abnormals. Puedes hacerte patron en %s.",
+	"blueprint.screen.slabfish_settings.tooltip": "Ajustes del sombrero de pez losa para patrocinadores de Team Abnormals. Puedes hacerte patrocinador en %s.",
 	"blueprint.message.redirect": "Redireccionando",
 	"entity.blueprint.boat": "Barca"
 }
