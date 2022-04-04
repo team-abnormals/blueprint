@@ -2,6 +2,7 @@ package com.teamabnormals.blueprint.core.endimator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.blueprint.core.endimator.model.EndimatorPartPose;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -134,5 +135,16 @@ public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 		this.xScale += x;
 		this.yScale += y;
 		this.zScale += z;
+	}
+
+	/**
+	 * Loads the pose values of an {@link EndimatorPartPose} instance onto this part.
+	 *
+	 * @param endimatorPartPose An {@link EndimatorPartPose} instance to load its pose values onto this part.
+	 */
+	public void loadPose(EndimatorPartPose endimatorPartPose) {
+		this.loadPose(endimatorPartPose.partPose);
+		this.setOffset(endimatorPartPose.offsetX, endimatorPartPose.offsetY, endimatorPartPose.offsetZ);
+		this.setScale(endimatorPartPose.scaleX, endimatorPartPose.scaleY, endimatorPartPose.scaleZ);
 	}
 }

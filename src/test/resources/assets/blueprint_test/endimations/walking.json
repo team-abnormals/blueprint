@@ -156,6 +156,31 @@
 					}
 				}
 			]
+		},
+		"ball": {
+			"scale": [
+				{
+					"time": 0,
+					"transform": [1, 1, 1],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				},
+				{
+					"time": 0.45,
+					"transform": [1.25, 1, 1.25],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				},
+				{
+					"time": 0.9,
+					"transform": [1, 1, 1],
+					"interpolation": {
+						"type": "catmullrom"
+					}
+				}
+			]
 		}
 	}
 }
