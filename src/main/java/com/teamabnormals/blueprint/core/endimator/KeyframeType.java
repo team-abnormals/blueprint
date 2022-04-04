@@ -14,13 +14,17 @@ import java.util.function.Function;
  * @see EndimationKeyframe
  */
 public enum KeyframeType {
-	POSITION(Endimation.PartKeyframes::getPosFrames, Endimator.PosedPart::addPos),
-	ROTATION(Endimation.PartKeyframes::getRotationFrames, (pose, x, y, z) -> {
-		pose.addRotation(x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, z * Mth.DEG_TO_RAD);
+	POSITION(Endimation.PartKeyframes::getPosFrames, (pose, x, y, z, weight) -> {
+		pose.addPos(x * weight, y * weight, z * weight);
 	}),
-	OFFSET(Endimation.PartKeyframes::getOffsetFrames, Endimator.PosedPart::addOffset),
-	SCALE(Endimation.PartKeyframes::getScaleFrames, (pose, x, y, z) -> {
-		pose.addScale(x - 1.0F, y - 1.0F, z - 1.0F);
+	ROTATION(Endimation.PartKeyframes::getRotationFrames, (pose, x, y, z, weight) -> {
+		pose.addRotation(x * weight * Mth.DEG_TO_RAD, y * weight * Mth.DEG_TO_RAD, z * weight * Mth.DEG_TO_RAD);
+	}),
+	OFFSET(Endimation.PartKeyframes::getOffsetFrames, (pose, x, y, z, weight) -> {
+		pose.addOffset(x * weight, y * weight, z * weight);
+	}),
+	SCALE(Endimation.PartKeyframes::getScaleFrames, (pose, x, y, z, weight) -> {
+		pose.addScale(weight * (x - 1.0F), weight * (y - 1.0F), weight * (z - 1.0F));
 	});
 
 	private final Function<Endimation.PartKeyframes, EndimationKeyframe[]> getter;
@@ -46,14 +50,15 @@ public enum KeyframeType {
 	 *
 	 * @param pose     A {@link Endimator.PosedPart} to apply to.
 	 * @param vector3f A transformation {@link Vector3f} to apply.
+	 * @param weight   The weight multiplier.
 	 * @see Endimator#apply(Endimation, float, Endimator.ResetMode)
 	 */
-	public void apply(Endimator.PosedPart pose, Vector3f vector3f) {
-		this.procedure.apply(pose, vector3f.x(), vector3f.y(), vector3f.z());
+	public void apply(Endimator.PosedPart pose, Vector3f vector3f, float weight) {
+		this.procedure.apply(pose, vector3f.x(), vector3f.y(), vector3f.z(), weight);
 	}
 
 	@FunctionalInterface
 	interface Procedure {
-		void apply(Endimator.PosedPart pose, float x, float y, float z);
+		void apply(Endimator.PosedPart pose, float x, float y, float z, float weight);
 	}
 }

@@ -87,8 +87,7 @@ public final class Endimator {
 		float fromTime = from.time;
 		EndimationKeyframe to = frames[toIndex];
 		to.apply(ADD_VECTOR, frames, from, to, toIndex, length, Mth.clamp((time - fromTime) / (to.time - fromTime), 0.0F, 1.0F));
-		ADD_VECTOR.mul(blendWeight);
-		type.apply(posedPart, ADD_VECTOR);
+		type.apply(posedPart, ADD_VECTOR, blendWeight);
 	}
 
 	/**
