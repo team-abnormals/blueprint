@@ -114,8 +114,7 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 								legacy = settings.useLegacyRandomSource();
 								noiseSettings = settings.noiseSettings();
 							}
-						} catch (IllegalAccessException ignored) {
-						}
+						} catch (IllegalAccessException ignored) {}
 					}
 					DensityFunction moddedness = densityFunctionRegistry.get(new ResourceLocation(Blueprint.MOD_ID, "moddedness/" + location.getNamespace() + "/" + location.getPath()));
 					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, noiseParametersRegistry, densityFunctionRegistry, source, noiseSettings, seed, legacy, moddedness != null ? moddedness : defaultModdedness, new ModdedBiomeSource.WeightedBiomeSlices(slicesForKey.toArray(new ModdedBiomeSlice[0])));

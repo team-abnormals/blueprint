@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
@@ -32,7 +31,6 @@ import java.util.stream.Stream;
 
 /**
  * A {@link BiomeSource} subclass that wraps another {@link BiomeSource} instance and overlays its biomes with sliced modded biome providers.
- * <p>Use {@link #CODEC} for serializing and deserializing instances of this class.</p>
  *
  * @author SmellyModder (Luke Tonon)
  * @see WeightedBiomeSlices
@@ -40,25 +38,16 @@ import java.util.stream.Stream;
  */
 public final class ModdedBiomeSource extends BiomeSource {
 	public static final ResourceKey<DensityFunction> DEFAULT_MODDEDNESS = ResourceKey.create(Registry.DENSITY_FUNCTION_REGISTRY, new ResourceLocation(Blueprint.MOD_ID, "moddedness/default"));
-	public static final Codec<ModdedBiomeSource> CODEC = RecordCodecBuilder.create((instance) -> {
+	public static final Codec<BiomeSource> CODEC = RecordCodecBuilder.create((instance) -> {
 		return instance.group(
-				RegistryOps.retrieveRegistry(Registry.BIOME_REGISTRY).forGetter((modded) -> modded.biomes),
-				RegistryOps.retrieveRegistry(Registry.NOISE_REGISTRY).forGetter((modded) -> modded.noiseParameters),
-				RegistryOps.retrieveRegistry(Registry.DENSITY_FUNCTION_REGISTRY).forGetter((modded) -> modded.densityFunctions),
-				BiomeSource.CODEC.fieldOf("original_biome_source").forGetter(modded -> modded.originalSource),
-				NoiseSettings.CODEC.fieldOf("noise_settings").forGetter(modded -> modded.noiseSettings),
-				Codec.LONG.fieldOf("seed").forGetter(modded -> modded.seed),
-				Codec.BOOL.fieldOf("legacy_random_source").forGetter(modded -> modded.legacy),
-				DensityFunction.HOLDER_HELPER_CODEC.fieldOf("moddedness").forGetter(modded -> modded.moddedness),
-				WeightedBiomeSlices.CODEC.fieldOf("weighted_slices").forGetter(modded -> modded.weightedBiomeSlices)
-		).apply(instance, ModdedBiomeSource::new);
+				BiomeSource.CODEC.fieldOf("original_biome_source").forGetter(thisBiomeSource -> thisBiomeSource instanceof ModdedBiomeSource moddedBiomeSource ? moddedBiomeSource.originalSource : thisBiomeSource)
+		).apply(instance, biomeSource -> biomeSource);
 	});
 	private final Registry<Biome> biomes;
 	private final Registry<NormalNoise.NoiseParameters> noiseParameters;
 	private final Registry<DensityFunction> densityFunctions;
 	private final BiomeSource originalSource;
 	private final NoiseSettings noiseSettings;
-	private final long seed;
 	private final boolean legacy;
 	private final DensityFunction moddedness;
 	private final WeightedBiomeSlices weightedBiomeSlices;
@@ -71,7 +60,6 @@ public final class ModdedBiomeSource extends BiomeSource {
 		this.densityFunctions = densityFunctions;
 		this.originalSource = originalSource;
 		this.noiseSettings = noiseSettings;
-		this.seed = seed;
 		this.legacy = legacy;
 		this.moddedness = visitModdednessDensityFunction(noiseSettings, seed, noiseParameters, legacy ? WorldgenRandom.Algorithm.LEGACY : WorldgenRandom.Algorithm.XOROSHIRO, moddedness);
 		this.weightedBiomeSlices = weightedBiomeSlices;
