@@ -12,7 +12,8 @@
 	"blueprint.config.slabfish_hat.type.tooltip": "Cambia el tipo del sombrero de pez losa. Disponible para patrocinadores de nivel 4+.",
 	"blueprint.screen.slabfish_settings": "Ajustes del sombrero de pez losa...",
 	"blueprint.screen.slabfish_settings.title": "Ajustes del sombrero de pez losa",
-	"blueprint.screen.slabfish_settings.tooltip": "Ajustes del sombrero de pez losa para patrocinadores de Team Abnormals. Puedes hacerte patrocinador en %s.",
+	"blueprint.screen.slabfish_settings.tooltip": "Ajustes del sombrero de pez losa para patrocinadores de Team Abnormals. Puedes convertirte en patrocinador en %s.",
 	"blueprint.message.redirect": "Redireccionando",
+	"biome.blueprint.original_source_marker": "Marcador de fuente original",
 	"entity.blueprint.boat": "Barca"
 }
