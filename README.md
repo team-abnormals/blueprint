@@ -9,7 +9,7 @@
 ![](https://i.imgur.com/U7uo5Va.png)
 ## **📖 About**
 Blueprint is a mod library developed for easily accessing code which is shared across most Team Abnormals mods.
-It comes with many useful features, such as a registry helper, data syncing, and the Endimator animation API.
+It comes with many useful features, such as a registry helper, data syncing, various data-driven modification systems, and the Endimator animation API.
 
 ![](https://i.imgur.com/U7uo5Va.png)
 ## **💻 For Developers**
@@ -28,7 +28,14 @@ dependencies {
 }
 ```
 Replace `<version>` with the desired version of Blueprint, including the desired version of Minecraft.<br />
-For example, `1.17.1-4.0.0` will give us `blueprint-1.17.1-4.0.0.jar`.
+For example, `1.18.2-5.3.1` will give us `blueprint-1.18.2-5.3.1.jar`.
+
+Next, you need to add two properties to your runs in your `build.gradle`:
+```
+property "mixin.env.remapRefMap", "true"
+property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
+```
+Your runs in your `build.gradle` are found under `minecraft{runs{}}`.
 
 Next you need to add it as a dependecy on Forge to make your mod require Blueprint when loading. In your `mods.toml`, add the following block to the file:
 ```
@@ -40,7 +47,7 @@ Next you need to add it as a dependecy on Forge to make your mod require Bluepri
     side = "BOTH"
 ```
 Replace `<version>` with the desired version of Blueprint.<br />
-For example, `4.0.0` will target version `4.0.0` of Blueprint.<br />
+For example, `5.3.1` will target version `5.3.1` of Blueprint.<br />
 The code block above for the `mods.toml` is targeting the version selected and any versions beyond. If you want to target it differently, you may want to read up on the `mods.toml` spec.
 
 ![](https://i.imgur.com/U7uo5Va.png)
