@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * A {@link DataProvider} implementation for {@link ModdedBiomeSlice} instances.
@@ -36,7 +37,7 @@ public abstract class ModdedBiomeSliceProvider implements DataProvider {
 	private final List<Pair<ConditionedResourceSelector, ModdedBiomeSlice>> slices = new LinkedList<>();
 	private final DataGenerator dataGenerator;
 	private final String modid;
-	private final DynamicOps<JsonElement> ops;
+	private final Supplier<DynamicOps<JsonElement>> ops;
 
 	/**
 	 * Constructs a new {@link ModdedBiomeSliceProvider} instance.
@@ -48,7 +49,7 @@ public abstract class ModdedBiomeSliceProvider implements DataProvider {
 	protected ModdedBiomeSliceProvider(DataGenerator dataGenerator, String modid, DynamicOps<JsonElement> ops) {
 		this.dataGenerator = dataGenerator;
 		this.modid = modid;
-		this.ops = ops;
+		this.ops = () -> ops;
 	}
 
 	/**
@@ -59,7 +60,9 @@ public abstract class ModdedBiomeSliceProvider implements DataProvider {
 	 * @see #ModdedBiomeSliceProvider(DataGenerator, String, DynamicOps)
 	 */
 	protected ModdedBiomeSliceProvider(DataGenerator dataGenerator, String modid) {
-		this(dataGenerator, modid, RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get()));
+		this.dataGenerator = dataGenerator;
+		this.modid = modid;
+		this.ops = () -> RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get());
 	}
 
 	@Override
@@ -67,7 +70,7 @@ public abstract class ModdedBiomeSliceProvider implements DataProvider {
 		HashSet<ResourceLocation> names = new HashSet<>();
 		Path outputFolder = this.dataGenerator.getOutputFolder();
 		String basePath = "data/" + this.modid + "/modded_biome_slices/";
-		DynamicOps<JsonElement> ops = this.ops;
+		DynamicOps<JsonElement> ops = this.ops.get();
 		var slices = this.slices;
 		slices.clear();
 		this.registerSlices();
