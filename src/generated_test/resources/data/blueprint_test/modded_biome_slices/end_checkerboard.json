@@ -1,0 +1,29 @@
+{
+  "selector": {
+    "type": "names",
+    "config": [
+      "minecraft:the_end"
+    ],
+    "conditions": [
+      {
+        "modid": "blueprint",
+        "type": "forge:mod_loaded"
+      }
+    ]
+  },
+  "name": "blueprint_test:end_checkerboard",
+  "weight": 5,
+  "provider": {
+    "overlays": [
+      {
+        "biome_source": {
+          "biomes": "#minecraft:has_structure/stronghold",
+          "scale": 2,
+          "type": "minecraft:checkerboard"
+        },
+        "matches_biomes": "#minecraft:has_structure/end_city"
+      }
+    ],
+    "type": "blueprint:overlay"
+  }
+}
