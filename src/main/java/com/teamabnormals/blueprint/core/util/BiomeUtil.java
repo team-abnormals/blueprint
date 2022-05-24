@@ -39,6 +39,7 @@ public final class BiomeUtil {
 		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "original"), BiomeUtil.OriginalModdedBiomeProvider.CODEC);
 		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "multi_noise"), BiomeUtil.MultiNoiseModdedBiomeProvider.CODEC);
 		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "overlay"), BiomeUtil.OverlayModdedBiomeProvider.CODEC);
+		MODDED_PROVIDERS.register(new ResourceLocation(Blueprint.MOD_ID, "biome_source"), BiomeUtil.BiomeSourceModdedBiomeProvider.CODEC);
 	}
 
 	/**
@@ -204,6 +205,34 @@ public final class BiomeUtil {
 			HashSet<Holder<Biome>> biomes = new HashSet<>();
 			this.overlays.forEach(overlay -> biomes.addAll(overlay.getSecond().possibleBiomes()));
 			return biomes;
+		}
+
+		@Override
+		public Codec<? extends ModdedBiomeProvider> codec() {
+			return CODEC;
+		}
+	}
+
+	/**
+	 * A {@link ModdedBiomeProvider} implementation that uses a {@link BiomeSource} instance for selecting its biomes.
+	 *
+	 * @author SmellyModder (Luke Tonon)
+	 */
+	public static record BiomeSourceModdedBiomeProvider(BiomeSource biomeSource) implements ModdedBiomeProvider {
+		public static final Codec<BiomeSourceModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
+			return instance.group(
+					BiomeSource.CODEC.fieldOf("biome_source").forGetter(provider -> provider.biomeSource)
+			).apply(instance, BiomeSourceModdedBiomeProvider::new);
+		});
+
+		@Override
+		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
+			return this.biomeSource.getNoiseBiome(x, y, z, sampler);
+		}
+
+		@Override
+		public Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry) {
+			return this.biomeSource.possibleBiomes();
 		}
 
 		@Override
