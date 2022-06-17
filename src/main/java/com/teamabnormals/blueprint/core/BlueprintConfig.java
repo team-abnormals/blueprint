@@ -1,5 +1,7 @@
 package com.teamabnormals.blueprint.core;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
+import com.electronwill.nightconfig.toml.TomlFormat;
 import com.teamabnormals.blueprint.core.annotations.ConfigKey;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -11,6 +13,28 @@ import org.apache.commons.lang3.tuple.Pair;
  * @author SmellyModder(Luke Tonon)
  */
 public final class BlueprintConfig {
+
+	/**
+	 * Class that stores all the information about the Blueprint common config.
+	 */
+	public static final class Common {
+		public final ConfigValue<CommentedConfig> moddedBiomeSliceSizes;
+
+		public Common(ForgeConfigSpec.Builder builder) {
+			builder.comment(
+					"The modded biome slice sizes for dimensions",
+					"Blueprint's Modded Biome Slice System allows for datapacks and mods to add new biome areas to any dimension",
+					"Changing the size values will affect the size of all modded biome areas in their respected dimension",
+					"If a slice size isn't a positive integer, it will get ignored and the default slice size will get used instead"
+			);
+			CommentedConfig config = TomlFormat.newConfig();
+			config.setComment("default", "If the slice size for a dimension isn't defined, this value will get used for that dimension");
+			config.set("default", 8);
+			config.setComment("minecraft:overworld", "For example, the overworld's slice size would be formatted like this");
+			config.set("minecraft:overworld", 8);
+			this.moddedBiomeSliceSizes = builder.define("modded_biome_slice_sizes", config);
+		}
+	}
 
 	/**
 	 * Class that stores all the information about the Blueprint client config.
@@ -101,11 +125,17 @@ public final class BlueprintConfig {
 
 	public static final ForgeConfigSpec CLIENT_SPEC;
 	public static final Client CLIENT;
+	public static final ForgeConfigSpec COMMON_SPEC;
+	public static final Common COMMON;
 
 	static {
-		final Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Client::new);
+		Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Client::new);
 		CLIENT_SPEC = clientSpecPair.getRight();
 		CLIENT = clientSpecPair.getLeft();
+
+		Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Common::new);
+		COMMON_SPEC = commonSpecPair.getRight();
+		COMMON = commonSpecPair.getLeft();
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.core.mixin;
 
+import com.google.common.base.Suppliers;
 import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource;
 import com.teamabnormals.blueprint.common.world.modification.ModdedSurfaceSystem;
 import com.teamabnormals.blueprint.common.world.modification.ModdednessSliceGetter;
@@ -19,9 +20,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Mixin(targets = "net.minecraft.world.level.levelgen.SurfaceRules$Context")
 public final class SurfaceRulesContextMixin implements ModdednessSliceGetter {
+	@Unique
+	@Nullable
+	private Supplier<ResourceLocation> moddedBiomeSlice;
 	@Unique
 	@Nullable
 	private ModdedBiomeSource moddedBiomeSource;
@@ -31,13 +36,21 @@ public final class SurfaceRulesContextMixin implements ModdednessSliceGetter {
 		this.moddedBiomeSource = ((ModdedSurfaceSystem) surfaceSystem).getModdedBiomeSource();
 	}
 
+	@Inject(at = @At("RETURN"), method = "updateY")
+	private void updateModdedBiomeSlice(int stoneDepthAbove, int stoneDepthBelow, int waterHeight, int x, int y, int z, CallbackInfo info) {
+		ModdedBiomeSource moddedBiomeSource = this.moddedBiomeSource;
+		if (moddedBiomeSource != null) {
+			this.moddedBiomeSlice = Suppliers.memoize(() -> moddedBiomeSource.getSliceWithVanillaZoom(x, y, z).name());
+		}
+	}
+
 	@Override
 	public boolean cannotGetSlices() {
 		return this.moddedBiomeSource == null;
 	}
 
 	@Override
-	public ResourceLocation getSliceName(int x, int z) {
-		return this.moddedBiomeSource.getSliceName(x, z);
+	public ResourceLocation getSliceName() {
+		return this.moddedBiomeSlice.get();
 	}
 }

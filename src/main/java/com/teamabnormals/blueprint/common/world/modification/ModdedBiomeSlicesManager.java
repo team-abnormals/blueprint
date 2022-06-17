@@ -1,15 +1,15 @@
 package com.teamabnormals.blueprint.common.world.modification;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.BlueprintConfig;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -23,19 +23,13 @@ import net.minecraft.world.level.biome.CheckerboardColumnBiomeSource;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
-import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -50,7 +44,6 @@ import java.util.Map;
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadListener {
-	private static final Field NOISE_GENERATOR_SETTINGS = ObfuscationReflectionHelper.findField(NoiseBasedChunkGenerator.class, "f_64318_");
 	private static ModdedBiomeSlicesManager INSTANCE;
 	private final List<Pair<ConditionedResourceSelector, ModdedBiomeSlice>> unassignedSlices = new LinkedList<>();
 	private final RegistryOps<JsonElement> registryOps;
@@ -69,7 +62,6 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@SubscribeEvent
 	public static void onServerAboutToStart(ServerAboutToStartEvent event) {
 		if (INSTANCE == null) return;
@@ -87,13 +79,16 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 				assignedSlices.computeIfAbsent(location, __ -> new ArrayList<>()).add(slice);
 			});
 		}
+
+		CommentedConfig moddedBiomeSliceSizes = BlueprintConfig.COMMON.moddedBiomeSliceSizes.get();
+		int defaultSize = moddedBiomeSliceSizes.getIntOrElse("default", 9);
+		if (defaultSize <= 0) {
+			Blueprint.LOGGER.warn("Found a non-positive value for the default slice size! Slice size 9 will be used instead.");
+			defaultSize = 9;
+		}
+
+		Registry<Biome> biomeRegistry = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
 		long seed = worldGenSettings.seed();
-		RegistryAccess registryAccess = server.registryAccess();
-		Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registry.BIOME_REGISTRY);
-		Registry<NormalNoise.NoiseParameters> noiseParametersRegistry = registryAccess.registryOrThrow(Registry.NOISE_REGISTRY);
-		Registry<DensityFunction> densityFunctionRegistry = registryAccess.registryOrThrow(Registry.DENSITY_FUNCTION_REGISTRY);
-		NoiseSettings defaultNoiseSettings = registryAccess.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY).getOrThrow(NoiseGeneratorSettings.OVERWORLD).noiseSettings();
-		DensityFunction defaultModdedness = densityFunctionRegistry.getOrThrow(ModdedBiomeSource.DEFAULT_MODDEDNESS);
 		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : dimensions.entrySet()) {
 			ResourceLocation location = entry.getKey().location();
 			var slicesForKey = assignedSlices.get(location);
@@ -104,23 +99,12 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 				//If we do replace something we shouldn't then players can remove providers in a datapack
 				//TODO: Mostly experimental! Works with Terralith, Biomes O' Plenty, and more, but still needs more testing!
 				if (!(source instanceof FixedBiomeSource) && !(source instanceof CheckerboardColumnBiomeSource)) {
-					boolean legacy = false;
-					boolean noiseBased = chunkGenerator instanceof NoiseBasedChunkGenerator;
-					NoiseSettings noiseSettings = defaultNoiseSettings;
-					if (noiseBased) {
-						try {
-							NoiseGeneratorSettings settings = ((Holder<NoiseGeneratorSettings>) NOISE_GENERATOR_SETTINGS.get(chunkGenerator)).value();
-							if (settings != null) {
-								legacy = settings.useLegacyRandomSource();
-								noiseSettings = settings.noiseSettings();
-							}
-						} catch (IllegalAccessException ignored) {}
-					}
-					DensityFunction moddedness = densityFunctionRegistry.get(new ResourceLocation(Blueprint.MOD_ID, "moddedness/" + location.getNamespace() + "/" + location.getPath()));
-					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, noiseParametersRegistry, densityFunctionRegistry, source, noiseSettings, seed, legacy, moddedness != null ? moddedness : defaultModdedness, new ModdedBiomeSource.WeightedBiomeSlices(slicesForKey.toArray(new ModdedBiomeSlice[0])));
+					int size = moddedBiomeSliceSizes.getIntOrElse(location.toString(), defaultSize);
+					if (size <= 0) size = defaultSize;
+					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForKey, size, seed, location.hashCode());
 					chunkGenerator.biomeSource = moddedBiomeSource;
 					chunkGenerator.runtimeBiomeSource = moddedBiomeSource;
-					if (noiseBased)
+					if (chunkGenerator instanceof NoiseBasedChunkGenerator)
 						((ModdedSurfaceSystem) ((NoiseBasedChunkGenerator) chunkGenerator).surfaceSystem).setModdedBiomeSource(moddedBiomeSource);
 				}
 			}

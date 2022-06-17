@@ -156,6 +156,7 @@ public final class Blueprint {
 		bus.addListener(this::dataSetup);
 		bus.addListener(this::registerCapabilities);
 		context.registerConfig(ModConfig.Type.CLIENT, BlueprintConfig.CLIENT_SPEC);
+		context.registerConfig(ModConfig.Type.COMMON, BlueprintConfig.COMMON_SPEC);
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
