@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.common.block.entity;
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -15,9 +16,13 @@ public class BlueprintTrappedChestBlockEntity extends BlueprintChestBlockEntity 
 	}
 
 	@Override
-	protected void signalOpenCount(Level level, BlockPos pos, BlockState state, int int1, int int2) {
-		super.signalOpenCount(level, pos, state, int1, int2);
-		level.updateNeighborsAt(this.worldPosition.below(), this.getBlockState().getBlock());
+	protected void signalOpenCount(Level level, BlockPos pos, BlockState state, int oldOpenCount, int openCount) {
+		super.signalOpenCount(level, pos, state, oldOpenCount, openCount);
+		if (oldOpenCount != openCount) {
+			Block block = state.getBlock();
+			level.updateNeighborsAt(pos, block);
+			level.updateNeighborsAt(pos.below(), block);
+		}
 	}
 
 }

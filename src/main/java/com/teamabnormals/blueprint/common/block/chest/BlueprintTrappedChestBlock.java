@@ -28,18 +28,13 @@ public class BlueprintTrappedChestBlock extends ChestBlock implements IChestBloc
 	}
 
 	@Override
-	public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-		return false;
+	public String getChestType() {
+		return this.type;
 	}
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new BlueprintTrappedChestBlockEntity(pos, state);
-	}
-
-	@Override
-	public String getChestType() {
-		return this.type;
 	}
 
 	@Override
@@ -53,12 +48,12 @@ public class BlueprintTrappedChestBlock extends ChestBlock implements IChestBloc
 	}
 
 	@Override
-	public int getSignal(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-		return Mth.clamp(ChestBlockEntity.getOpenCount(world, pos), 0, 15);
+	public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction face) {
+		return Mth.clamp(ChestBlockEntity.getOpenCount(getter, pos), 0, 15);
 	}
 
 	@Override
-	public int getDirectSignal(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-		return face == Direction.UP ? state.getSignal(world, pos, face) : 0;
+	public int getDirectSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction face) {
+		return face == Direction.UP ? state.getSignal(getter, pos, face) : 0;
 	}
 }
