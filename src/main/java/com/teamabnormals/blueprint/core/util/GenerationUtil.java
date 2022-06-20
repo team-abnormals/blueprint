@@ -2,6 +2,7 @@ package com.teamabnormals.blueprint.core.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.Weight;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandomList;
@@ -67,25 +68,25 @@ public final class GenerationUtil {
 	/**
 	 * Fills a specified area using a given {@link LevelAccessor} with random weighted states if a given {@link Predicate} is met.
 	 *
-	 * @param level    A {@link LevelAccessor} to use.
-	 * @param rand     A {@link Random} to use for randomizing the states.
-	 * @param x1       Minimum x.
-	 * @param y1       Minimum y.
-	 * @param z1       Minimum z.
-	 * @param x2       Maximum x.
-	 * @param y2       Maximum y.
-	 * @param z2       Maximum z.
-	 * @param canPlace If the {@link BlockState} can replace a found {@link BlockState}.
-	 * @param states   A {@link WeightedRandomList} to use for selecting a random {@link BlockState}.
+	 * @param level        A {@link LevelAccessor} to use.
+	 * @param randomSource A {@link RandomSource} to use for randomizing the states.
+	 * @param x1           Minimum x.
+	 * @param y1           Minimum y.
+	 * @param z1           Minimum z.
+	 * @param x2           Maximum x.
+	 * @param y2           Maximum y.
+	 * @param z2           Maximum z.
+	 * @param canPlace     If the {@link BlockState} can replace a found {@link BlockState}.
+	 * @param states       A {@link WeightedRandomList} to use for selecting a random {@link BlockState}.
 	 */
-	public static void fillAreaWithBlockCube(LevelAccessor level, Random rand, int x1, int y1, int z1, int x2, int y2, int z2, @Nullable Predicate<BlockState> canPlace, WeightedRandomList<WeightedStateEntry> states) {
+	public static void fillAreaWithBlockCube(LevelAccessor level, RandomSource randomSource, int x1, int y1, int z1, int x2, int y2, int z2, @Nullable Predicate<BlockState> canPlace, WeightedRandomList<WeightedStateEntry> states) {
 		BlockPos.MutableBlockPos positions = new BlockPos.MutableBlockPos();
 		for (int xx = x1; xx <= x2; xx++) {
 			for (int yy = y1; yy <= y2; yy++) {
 				for (int zz = z1; zz <= z2; zz++) {
 					positions.set(xx, yy, zz);
 					if (canPlace == null || canPlace.test(level.getBlockState(positions))) {
-						level.setBlock(positions, states.getRandom(rand).get().getState(), 2);
+						level.setBlock(positions, states.getRandom(randomSource).get().getState(), 2);
 					}
 				}
 			}
@@ -122,25 +123,25 @@ public final class GenerationUtil {
 	/**
 	 * Outlines a specified area using a given {@link LevelAccessor} with random weighted states if a given {@link Predicate} is met.
 	 *
-	 * @param level    A {@link LevelAccessor} to use.
-	 * @param rand     A {@link Random} to use for randomizing the states.
-	 * @param x1       Minimum x.
-	 * @param y1       Minimum y.
-	 * @param z1       Minimum z.
-	 * @param x2       Maximum x.
-	 * @param y2       Maximum y.
-	 * @param z2       Maximum z.
-	 * @param canPlace If the {@link BlockState} can replace a found {@link BlockState}.
-	 * @param states   A {@link WeightedRandomList} to use for selecting a random {@link BlockState}.
+	 * @param level        A {@link LevelAccessor} to use.
+	 * @param randomSource A {@link Random} to use for randomizing the states.
+	 * @param x1           Minimum x.
+	 * @param y1           Minimum y.
+	 * @param z1           Minimum z.
+	 * @param x2           Maximum x.
+	 * @param y2           Maximum y.
+	 * @param z2           Maximum z.
+	 * @param canPlace     If the {@link BlockState} can replace a found {@link BlockState}.
+	 * @param states       A {@link WeightedRandomList} to use for selecting a random {@link BlockState}.
 	 */
-	public static void fillAreaWithBlockCubeEdged(LevelAccessor level, Random rand, int x1, int y1, int z1, int x2, int y2, int z2, @Nullable Predicate<BlockState> canPlace, WeightedRandomList<WeightedStateEntry> states) {
+	public static void fillAreaWithBlockCubeEdged(LevelAccessor level, RandomSource randomSource, int x1, int y1, int z1, int x2, int y2, int z2, @Nullable Predicate<BlockState> canPlace, WeightedRandomList<WeightedStateEntry> states) {
 		BlockPos.MutableBlockPos positions = new BlockPos.MutableBlockPos();
 		for (int xx = x1; xx <= x2; xx++) {
 			for (int yy = y1; yy <= y2; yy++) {
 				for (int zz = z1; zz <= z2; zz++) {
 					positions.set(xx, yy, zz);
 					if ((canPlace == null || canPlace.test(level.getBlockState(positions))) && (xx == x2 || zz == z2)) {
-						level.setBlock(positions, states.getRandom(rand).get().getState(), 2);
+						level.setBlock(positions, states.getRandom(randomSource).get().getState(), 2);
 					}
 				}
 			}

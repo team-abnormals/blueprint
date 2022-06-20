@@ -85,11 +85,6 @@ public final class ModdedBiomeSource extends BiomeSource {
 	}
 
 	@Override
-	public BiomeSource withSeed(long seed) {
-		return new ModdedBiomeSource(this.biomes, this.originalSource, new ArrayList<>(List.of(this.slices)), this.size, seed, this.slicesSeed, this.slicesZoomSeed);
-	}
-
-	@Override
 	public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
 		Holder<Biome> biome = this.getSlice(x, z).provider().getNoiseBiome(x, y, z, sampler, this.originalSource, this.biomes);
 		return biome.value() == this.originalSourceMarker ? this.originalSource.getNoiseBiome(x, y, z, sampler) : biome;

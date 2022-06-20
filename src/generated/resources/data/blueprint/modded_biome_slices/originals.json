@@ -1,4 +1,8 @@
 {
+  "name": "blueprint:originals",
+  "provider": {
+    "type": "blueprint:original"
+  },
   "selector": {
     "type": "names",
     "config": [
@@ -7,9 +11,5 @@
       "minecraft:the_end"
     ]
   },
-  "name": "blueprint:originals",
-  "weight": 10,
-  "provider": {
-    "type": "blueprint:original"
-  }
+  "weight": 10
 }

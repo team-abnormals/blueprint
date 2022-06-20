@@ -88,8 +88,7 @@ public final class RewardHandler {
 	@SubscribeEvent
 	public static void onEvent(RenderPlayerEvent.Post event) {
 		Player player = event.getPlayer();
-		UUID uuid = Player.createPlayerUUID(player.getGameProfile());
-
+		UUID uuid = player.getGameProfile().getId();
 		if (REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
 			AbstractClientPlayer clientPlayer = (AbstractClientPlayer) player;
 			if (clientPlayer.isCapeLoaded() && clientPlayer.getCloakTextureLocation() == null) {

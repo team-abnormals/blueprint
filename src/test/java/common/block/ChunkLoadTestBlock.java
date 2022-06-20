@@ -10,6 +10,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -40,7 +41,7 @@ public class ChunkLoadTestBlock extends Block {
 						zombie.setPos(x, pos.getY(), z);
 						chunk.getWorldForge().addFreshEntity(zombie);
 						for (int i2 = 0; i2 < 3; i2++) {
-							NetworkUtil.spawnParticle(ParticleTypes.CLOUD.getRegistryName().toString(), x, pos.getY(), z, 0.0F, 0.25F, 0.0F);
+							NetworkUtil.spawnParticle(ForgeRegistries.PARTICLE_TYPES.getKey(ParticleTypes.CLOUD).toString(), x, pos.getY(), z, 0.0F, 0.25F, 0.0F);
 						}
 					}
 				}, 20);

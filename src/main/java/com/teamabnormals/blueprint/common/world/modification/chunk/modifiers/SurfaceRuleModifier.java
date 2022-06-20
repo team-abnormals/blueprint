@@ -57,7 +57,7 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 					newRuleSource = SurfaceRules.sequence(newSequence.toArray(new SurfaceRules.RuleSource[0]));
 				} else newRuleSource = SurfaceRules.sequence(this.surfaceRule, ruleSource);
 			}
-			UNSAFE.putObject(chunkGenerator, fieldOffset, Holder.direct(new NoiseGeneratorSettings(settings.noiseSettings(), settings.defaultBlock(), settings.defaultFluid(), settings.noiseRouter(), newRuleSource, settings.seaLevel(), settings.disableMobGeneration(), settings.isAquifersEnabled(), settings.oreVeinsEnabled(), settings.useLegacyRandomSource())));
+			UNSAFE.putObject(chunkGenerator, fieldOffset, Holder.direct(new NoiseGeneratorSettings(settings.noiseSettings(), settings.defaultBlock(), settings.defaultFluid(), settings.noiseRouter(), newRuleSource, settings.spawnTarget(), settings.seaLevel(), settings.disableMobGeneration(), settings.isAquifersEnabled(), settings.oreVeinsEnabled(), settings.useLegacyRandomSource())));
 		} else Blueprint.LOGGER.warn("Could not apply surface rule modifier because " + chunkGenerator + " was not an instance of NoiseBasedChunkGenerator");
 	}
 

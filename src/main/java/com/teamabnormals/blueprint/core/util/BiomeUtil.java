@@ -18,6 +18,7 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -112,7 +113,7 @@ public final class BiomeUtil {
 		 *
 		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return A set of the additional possible biomes that this provider may have.
-		 * @see com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource.WeightedBiomeSlices#combinePossibleBiomes(Set, Registry).
+		 * @see com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource#combinePossibleBiomes(Set, ArrayList, Registry).
 		 */
 		Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry);
 

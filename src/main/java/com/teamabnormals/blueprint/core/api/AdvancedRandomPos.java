@@ -3,12 +3,12 @@ package com.teamabnormals.blueprint.core.api;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.function.ToDoubleFunction;
 
 /**
@@ -33,7 +33,7 @@ public final class AdvancedRandomPos {
 	@Nullable
 	private static Vec3 generateRandomPos(PathfinderMob pathfinder, int xz, int y, @Nullable Vec3 p_191379_3_, boolean p_191379_4_, double p_191379_5_, boolean goDeep, ToDoubleFunction<BlockPos> p_191379_7_) {
 		PathNavigation pathnavigator = pathfinder.getNavigation();
-		Random random = pathfinder.getRandom();
+		RandomSource random = pathfinder.getRandom();
 		boolean flag = pathfinder.hasRestriction() && pathfinder.getRestrictCenter().closerThan(pathfinder.blockPosition(), (double) (pathfinder.getRestrictRadius() + (float) xz) + 1.0D);
 		boolean flag1 = false;
 		double d0 = Double.NEGATIVE_INFINITY;
@@ -87,7 +87,7 @@ public final class AdvancedRandomPos {
 	}
 
 	@Nullable
-	private static BlockPos getBlockPos(Random rand, int xz, int y, @Nullable Vec3 Vector3d, double angle, boolean goDeep) {
+	private static BlockPos getBlockPos(RandomSource rand, int xz, int y, @Nullable Vec3 Vector3d, double angle, boolean goDeep) {
 		if (Vector3d != null && !(angle >= Math.PI)) {
 			double d3 = Mth.atan2(Vector3d.z, Vector3d.x) - (double) ((float) Math.PI / 2F);
 			double d4 = d3 + (double) (2.0F * rand.nextFloat() - 1.0F) * angle;

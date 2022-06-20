@@ -1,8 +1,9 @@
 package com.teamabnormals.blueprint.core.util.registry;
 
+import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.item.BlueprintBoatItem;
 import com.teamabnormals.blueprint.common.item.FuelItem;
-import com.teamabnormals.blueprint.core.registry.BoatRegistry;
+import com.teamabnormals.blueprint.core.registry.BoatTypeRegistry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.BlockItem;
@@ -147,16 +148,18 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	}
 
 	/**
-	 * Creates and registers a {@link BlueprintBoatItem} and boat type.
+	 * Registers a new boat type and registers two new {@link BlueprintBoatItem} instances for a boat and a chest boat.
 	 *
 	 * @param wood  The name of the wood, e.g. "oak".
 	 * @param block The {@link Block} for the boat to drop.
+	 * @return A {@link Pair} instance containing the boat item and the chest boat item.
 	 */
-	public RegistryObject<Item> createBoatItem(String wood, RegistryObject<Block> block) {
+	public Pair<RegistryObject<Item>, RegistryObject<Item>> createBoatAndChestBoatItem(String wood, RegistryObject<Block> block) {
 		String type = this.parent.getModId() + ":" + wood;
-		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new BlueprintBoatItem(type, createSimpleItemProperty(1, CreativeModeTab.TAB_TRANSPORTATION)));
-		BoatRegistry.registerBoat(type, boat, block);
-		return boat;
+		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new BlueprintBoatItem(false, type, createSimpleItemProperty(1, CreativeModeTab.TAB_TRANSPORTATION)));
+		RegistryObject<Item> chestBoat = this.deferredRegister.register(wood + "_chest_boat", () -> new BlueprintBoatItem(true, type, createSimpleItemProperty(1, CreativeModeTab.TAB_TRANSPORTATION)));
+		BoatTypeRegistry.registerBoat(type, boat, chestBoat, block);
+		return Pair.of(boat, chestBoat);
 	}
 
 }

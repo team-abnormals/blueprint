@@ -3,12 +3,12 @@ package com.teamabnormals.blueprint.common.world.modification;
 import javax.annotation.Nullable;
 
 /**
- * The interface used for adding methods to handle storage of {@link ModdedBiomeSource} instances in {@link net.minecraft.world.level.levelgen.SurfaceSystem} instances.
+ * The interface used for adding methods to handle storage of {@link ModdedBiomeSource} instances in {@link net.minecraft.world.level.levelgen.WorldGenerationContext} instances.
  *
  * @author SmellyModder (Luke Tonon)
- * @see com.teamabnormals.blueprint.core.mixin.SurfaceSystemMixin
+ * @see com.teamabnormals.blueprint.core.mixin.WorldGenerationContextMixin
  */
-public interface ModdedSurfaceSystem {
+public interface HasModdedBiomeSource {
 	/**
 	 * Gets the {@link ModdedBiomeSource} instance being stored.
 	 *

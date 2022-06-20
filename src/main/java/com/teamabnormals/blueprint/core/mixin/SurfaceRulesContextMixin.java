@@ -1,15 +1,17 @@
 package com.teamabnormals.blueprint.core.mixin;
 
 import com.google.common.base.Suppliers;
+import com.teamabnormals.blueprint.common.world.modification.HasModdedBiomeSource;
 import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource;
-import com.teamabnormals.blueprint.common.world.modification.ModdedSurfaceSystem;
 import com.teamabnormals.blueprint.common.world.modification.ModdednessSliceGetter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.NoiseChunk;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.SurfaceSystem;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,8 +34,8 @@ public final class SurfaceRulesContextMixin implements ModdednessSliceGetter {
 	private ModdedBiomeSource moddedBiomeSource;
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void initModdedBiomeSource(SurfaceSystem surfaceSystem, ChunkAccess p_189563_, NoiseChunk p_189564_, Function<BlockPos, Biome> p_189565_, Registry<Biome> p_189566_, WorldGenerationContext p_189567_, CallbackInfo info) {
-		this.moddedBiomeSource = ((ModdedSurfaceSystem) surfaceSystem).getModdedBiomeSource();
+	private void initModdedBiomeSource(SurfaceSystem surfaceSystem, RandomState p_224617_, ChunkAccess p_224618_, NoiseChunk p_224619_, Function<BlockPos, Holder<Biome>> p_224620_, Registry<Biome> p_224621_, WorldGenerationContext p_224622_, CallbackInfo info) {
+		this.moddedBiomeSource = ((HasModdedBiomeSource) surfaceSystem).getModdedBiomeSource();
 	}
 
 	@Inject(at = @At("RETURN"), method = "updateY")

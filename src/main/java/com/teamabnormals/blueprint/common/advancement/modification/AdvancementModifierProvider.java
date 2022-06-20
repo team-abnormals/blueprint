@@ -8,7 +8,7 @@ import net.minecraft.data.DataGenerator;
 public abstract class AdvancementModifierProvider extends ObjectModifierProvider<Advancement.Builder, Void, DeserializationContext> {
 
 	public AdvancementModifierProvider(DataGenerator dataGenerator, String modid) {
-		super(dataGenerator, modid, true, AdvancementModificationManager.TARGET_PATH, AdvancementModifierSerializers.REGISTRY, null);
+		super(dataGenerator, modid, true, AdvancementModificationManager.TARGET_PATH, AdvancementModifierSerializers.REGISTRY, (Void) null);
 	}
 
 }

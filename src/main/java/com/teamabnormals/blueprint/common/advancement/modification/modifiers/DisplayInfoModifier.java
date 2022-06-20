@@ -14,7 +14,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -84,7 +83,7 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 				e.printStackTrace();
 			}
 		} else {
-			builder.display(new DisplayInfo(this.icon.orElse(ItemStack.EMPTY), this.title.orElse(TextComponent.EMPTY), this.description.orElse(TextComponent.EMPTY), this.background.orElse(null), this.frame.orElse(FrameType.TASK), this.showToast.orElse(true), this.announceToChat.orElse(true), this.hidden.orElse(false)));
+			builder.display(new DisplayInfo(this.icon.orElse(ItemStack.EMPTY), this.title.orElse(Component.empty()), this.description.orElse(Component.empty()), this.background.orElse(null), this.frame.orElse(FrameType.TASK), this.showToast.orElse(true), this.announceToChat.orElse(true), this.hidden.orElse(false)));
 		}
 	}
 

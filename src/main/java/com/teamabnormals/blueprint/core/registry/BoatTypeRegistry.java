@@ -17,42 +17,43 @@ import java.util.function.Supplier;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class BoatRegistry {
-	private static final Map<String, BoatData> BOATS = Util.make(Maps.newHashMap(), (entries) -> {
-		entries.put("minecraft:oak", new BoatData(() -> Items.OAK_BOAT, () -> Blocks.OAK_PLANKS, "minecraft:oak"));
+public final class BoatTypeRegistry {
+	private static final Map<String, BoatTypeData> BOATS = Util.make(Maps.newHashMap(), (entries) -> {
+		entries.put("minecraft:oak", new BoatTypeData(() -> Items.OAK_BOAT, () -> Items.OAK_CHEST_BOAT, () -> Blocks.OAK_PLANKS, "minecraft:oak"));
 	});
 
 	/**
-	 * Registers a new {@link BoatData} using a given name, boat item, and plank item.
+	 * Registers a new {@link BoatTypeData} using a given name, boat item, and plank item.
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
-	 * @param boatName A registry name for the {@link BoatData}.
+	 * @param boatName A registry name for the {@link BoatTypeData}.
 	 * @param boat     A boat item.
+	 * @param chestBoat A chest boat item.
 	 * @param plank    A planks item.
 	 */
-	public static synchronized void registerBoat(String boatName, Supplier<Item> boat, Supplier<Block> plank) {
-		BOATS.put(boatName, new BoatData(boat, plank, boatName));
+	public static synchronized void registerBoat(String boatName, Supplier<Item> boat, Supplier<Item> chestBoat, Supplier<Block> plank) {
+		BOATS.put(boatName, new BoatTypeData(boat, chestBoat, plank, boatName));
 	}
 
 	/**
-	 * Gets the {@link BoatData} for a given name, or null if the given name is not in the registry.
+	 * Gets the {@link BoatTypeData} for a given name, or null if the given name is not in the registry.
 	 *
 	 * @param boatName A name to look up.
-	 * @return The {@link BoatData} for a given name, or null if the given name is not in the registry.
+	 * @return The {@link BoatTypeData} for a given name, or null if the given name is not in the registry.
 	 */
 	@Nullable
-	public static BoatData getDataForBoat(String boatName) {
+	public static BoatTypeData getTypeData(String boatName) {
 		return BOATS.get(boatName);
 	}
 
 	/**
-	 * Gets serializing name for a given {@link BoatData}.
+	 * Gets serializing name for a given {@link BoatTypeData}.
 	 *
-	 * @param data A {@link BoatData} instance to process.
-	 * @return The serializing name for a given {@link BoatData}.
+	 * @param data A {@link BoatTypeData} instance to process.
+	 * @return The serializing name for a given {@link BoatTypeData}.
 	 */
-	public static String getNameForData(BoatData data) {
-		for (Map.Entry<String, BoatData> entries : BOATS.entrySet()) {
+	public static String getNameForData(BoatTypeData data) {
+		for (Map.Entry<String, BoatTypeData> entries : BOATS.entrySet()) {
 			if (entries.getValue().equals(data)) {
 				return entries.getKey();
 			}
@@ -76,15 +77,21 @@ public final class BoatRegistry {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static class BoatData {
+	public static class BoatTypeData {
 		private final Supplier<Item> boat;
+		private final Supplier<Item> chestBoat;
 		private final Supplier<Block> plank;
 		private final ResourceLocation texture;
+		private final ResourceLocation chestVariantTexture;
 
-		public BoatData(Supplier<Item> boat, Supplier<Block> plank, String texture) {
+		public BoatTypeData(Supplier<Item> boat, Supplier<Item> chestBoat, Supplier<Block> plank, String texture) {
 			this.boat = boat;
+			this.chestBoat = chestBoat;
 			this.plank = plank;
-			this.texture = this.processTexture(texture);
+			String modId = findModId(texture);
+			String wood = findWood(texture);
+			this.texture = new ResourceLocation(modId, "textures/entity/boat/" + wood + ".png");
+			this.chestVariantTexture = new ResourceLocation(modId, "textures/entity/chest_boat/" + wood + ".png");
 		}
 
 		/**
@@ -94,6 +101,15 @@ public final class BoatRegistry {
 		 */
 		public Item getBoatItem() {
 			return this.boat.get();
+		}
+
+		/**
+		 * Gets the value of {@link #chestBoat} in this data.
+		 *
+		 * @return The value of {@link #chestBoat} in this data.
+		 */
+		public Item getChestBoatItem() {
+			return this.chestBoat.get();
 		}
 
 		/**
@@ -114,13 +130,16 @@ public final class BoatRegistry {
 			return this.texture;
 		}
 
-		private ResourceLocation processTexture(String texture) {
-			String modId = findModId(texture);
-			String wood = findWood(texture);
-			return new ResourceLocation(modId, "textures/entity/boat/" + wood + ".png");
+		/**
+		 * Gets the {@link #chestVariantTexture} in this data.
+		 *
+		 * @return The {@link #chestVariantTexture} in this data.
+		 */
+		public ResourceLocation getChestVariantTexture() {
+			return this.chestVariantTexture;
 		}
 
-		private String findModId(String parentString) {
+		private static String findModId(String parentString) {
 			StringBuilder builder = new StringBuilder();
 			for (char parentChars : parentString.toCharArray()) {
 				if (parentChars == ':') {
@@ -131,7 +150,7 @@ public final class BoatRegistry {
 			return builder.toString();
 		}
 
-		private String findWood(String parentString) {
+		private static String findWood(String parentString) {
 			StringBuilder builder = new StringBuilder();
 			boolean start = false;
 			for (char parentChars : parentString.toCharArray()) {

@@ -1,14 +1,12 @@
 package com.teamabnormals.blueprint.core.util.modification;
 
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -35,35 +33,31 @@ import java.util.function.Function;
  */
 public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final Gson DEFAULT_GSON = new GsonBuilder().setPrettyPrinting().create();
 	protected final String modId;
 	private final DataGenerator dataGenerator;
 	private final String name;
 	private final String directory;
-	private final Gson gson;
 	private final ObjectModifierSerializerRegistry<T, S, D> serializerRegistry;
 	private final Function<ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter;
 	private final List<EntryBuilder<T, S, D>> entries = new ArrayList<>();
 
-	public ObjectModifierProvider(DataGenerator dataGenerator, String modId, boolean data, String subDirectory, Gson gson, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, Function<ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter) {
+	public ObjectModifierProvider(DataGenerator dataGenerator, String modId, boolean data, String subDirectory, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, Function<ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter) {
 		this.dataGenerator = dataGenerator;
 		this.modId = modId;
 		this.name = "Object Modifiers (" + subDirectory + "): " + modId;
 		this.directory = (data ? "data/" : "assets/") + modId + "/" + ObjectModificationManager.MAIN_PATH + "/" + subDirectory + "/";
-		this.gson = gson;
 		this.serializerRegistry = serializerRegistry;
 		this.additionalSerializationGetter = additionalSerializationGetter;
 	}
 
 	public ObjectModifierProvider(DataGenerator dataGenerator, String modId, boolean data, String subDirectory, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, S additionalSerializationObject) {
-		this(dataGenerator, modId, data, subDirectory, DEFAULT_GSON, serializerRegistry, group -> additionalSerializationObject);
+		this(dataGenerator, modId, data, subDirectory, serializerRegistry, group -> additionalSerializationObject);
 	}
 
 	@Override
-	public void run(HashCache directoryCache) {
+	public void run(CachedOutput cachedOutput) {
 		Set<String> entryNames = Sets.newHashSet();
 		Path outputFolder = this.dataGenerator.getOutputFolder();
-		Gson gson = this.gson;
 		Function<ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter = this.additionalSerializationGetter;
 		ObjectModifierSerializerRegistry<T, S, D> serializerRegistry = this.serializerRegistry;
 		var entries = this.entries;
@@ -76,7 +70,7 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 				Path resolvedPath = outputFolder.resolve(this.directory + entry.name + ".json");
 				try {
 					ObjectModifierGroup<T, S, D> group = new ObjectModifierGroup<>(entry.selector, entry.modifiers, entry.priority);
-					DataProvider.save(gson, directoryCache, group.serialize(additionalSerializationGetter.apply(group), serializerRegistry, entry.conditions.toArray(new ICondition[0][])), resolvedPath);
+					DataProvider.saveStable(cachedOutput, group.serialize(additionalSerializationGetter.apply(group), serializerRegistry, entry.conditions.toArray(new ICondition[0][])), resolvedPath);
 				} catch (IOException e) {
 					LOGGER.error("Couldn't save modifier group {}", resolvedPath, e);
 				}

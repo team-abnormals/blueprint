@@ -63,7 +63,7 @@ public record ObjectModifierGroup<T, S, D>(ConditionedResourceSelector selector,
 		List<ObjectModifier<T, S, D, ?>> objectModifiers = new ArrayList<>();
 		GsonHelper.getAsJsonArray(object, "modifiers").forEach(element -> {
 			JsonObject entry = element.getAsJsonObject();
-			if (!GsonHelper.isValidNode(entry, "conditions") || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(entry, "conditions"))) {
+			if (!GsonHelper.isValidNode(entry, "conditions") || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(entry, "conditions"), ICondition.IContext.EMPTY)) {
 				String type = GsonHelper.getAsString(entry, "type");
 				ObjectModifier.Serializer<? extends ObjectModifier<T, S, D, ?>, S, D> serializer = registry.getSerializer(type);
 				if (serializer == null) throw new JsonParseException("Unknown modifier type: " + type);

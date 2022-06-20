@@ -1,6 +1,4 @@
 {
-  "selector": "minecraft:husbandry/balanced_diet",
-  "priority": "normal",
   "modifiers": [
     {
       "type": "parent",
@@ -9,24 +7,24 @@
     {
       "type": "rewards",
       "config": {
-        "mode": "modify",
         "experience": 100000,
         "loot": [
           "minecraft:chests/jungle_temple"
-        ]
+        ],
+        "mode": "modify"
       }
     },
     {
       "type": "display",
       "config": {
-        "mode": "modify",
-        "title": {
-          "translate": "blueprint_test.advancements.husbandry.balanced_diet.title"
-        },
         "description": {
           "text": "Momma."
         },
-        "frame": "challenge"
+        "frame": "challenge",
+        "mode": "modify",
+        "title": {
+          "translate": "blueprint_test.advancements.husbandry.balanced_diet.title"
+        }
       }
     },
     {
@@ -34,7 +32,6 @@
       "config": {
         "criteria": {
           "blueprint_test:test": {
-            "trigger": "minecraft:inventory_changed",
             "conditions": {
               "items": [
                 {
@@ -43,7 +40,8 @@
                   ]
                 }
               ]
-            }
+            },
+            "trigger": "minecraft:inventory_changed"
           }
         },
         "requirements": [
@@ -54,5 +52,7 @@
         "should_replace_requirements": false
       }
     }
-  ]
+  ],
+  "priority": "normal",
+  "selector": "minecraft:husbandry/balanced_diet"
 }

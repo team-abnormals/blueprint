@@ -60,7 +60,7 @@ public class ConfigValueCondition implements ICondition {
 	}
 
 	@Override
-	public boolean test() {
+	public boolean test(IContext context) {
 		boolean returnValue;
 		Map<IConfigPredicate, Boolean> predicates = this.predicates;
 		ForgeConfigSpec.ConfigValue<?> value = this.value;

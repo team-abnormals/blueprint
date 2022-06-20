@@ -4,8 +4,9 @@ import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.api.conditions.loot.RaidCheckCondition.RaidCheckSerializer;
 import com.teamabnormals.blueprint.core.api.conditions.loot.RandomDifficultyChanceCondition.RandomDifficultyChanceSerializer;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 /**
  * Registry class for Blueprint's built-in loot conditions.
@@ -15,11 +16,8 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
  * @author abigailfails
  */
 public final class BlueprintLootConditions {
-    public static final ResourceLocation RANDOM_DIFFICULTY_CHANCE = new ResourceLocation(Blueprint.MOD_ID, "random_difficulty_chance");
-    public static final ResourceLocation RAID_CHECK = new ResourceLocation(Blueprint.MOD_ID, "raid_check");
+    public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registry.LOOT_ITEM_REGISTRY, Blueprint.MOD_ID);
 
-    public static void registerLootConditions() {
-        Registry.register(Registry.LOOT_CONDITION_TYPE, RANDOM_DIFFICULTY_CHANCE, new LootItemConditionType(new RandomDifficultyChanceSerializer()));
-        Registry.register(Registry.LOOT_CONDITION_TYPE, RAID_CHECK, new LootItemConditionType(new RaidCheckSerializer()));
-    }
+    public static final RegistryObject<LootItemConditionType> RANDOM_DIFFICULTY_CHANCE = LOOT_CONDITION_TYPES.register("random_difficulty_chance", () -> new LootItemConditionType(new RandomDifficultyChanceSerializer()));
+    public static final RegistryObject<LootItemConditionType> RAID_CHECK = LOOT_CONDITION_TYPES.register("raid_check", () -> new LootItemConditionType(new RaidCheckSerializer()));
 }

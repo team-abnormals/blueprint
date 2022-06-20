@@ -4,7 +4,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.teamabnormals.blueprint.core.registry.BlueprintLootConditions;
-import net.minecraft.core.Registry;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -32,7 +31,7 @@ public class RaidCheckCondition implements LootItemCondition {
 
 	@Override
 	public LootItemConditionType getType() {
-		return Registry.LOOT_CONDITION_TYPE.get(BlueprintLootConditions.RAID_CHECK);
+		return BlueprintLootConditions.RAID_CHECK.get();
 	}
 
 	@Override

@@ -1,34 +1,34 @@
 {
-  "selector": {
-    "type": "regex",
-    "config": "minecraft:chests\\/.+"
-  },
-  "priority": "normal",
   "modifiers": [
     {
       "type": "entries",
       "config": {
-        "replace": false,
-        "index": 0,
         "entries": [
           {
             "type": "minecraft:item",
-            "weight": 5,
             "functions": [
               {
-                "function": "minecraft:set_count",
+                "add": false,
                 "count": {
                   "type": "minecraft:uniform",
-                  "min": 1.0,
-                  "max": 2.0
+                  "max": 2.0,
+                  "min": 1.0
                 },
-                "add": false
+                "function": "minecraft:set_count"
               }
             ],
-            "name": "minecraft:netherite_ingot"
+            "name": "minecraft:netherite_ingot",
+            "weight": 5
           }
-        ]
+        ],
+        "index": 0,
+        "replace": false
       }
     }
-  ]
+  ],
+  "priority": "normal",
+  "selector": {
+    "type": "regex",
+    "config": "minecraft:chests\\/.+"
+  }
 }

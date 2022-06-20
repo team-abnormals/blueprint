@@ -12,7 +12,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 import javax.annotation.Nullable;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -23,6 +23,7 @@ import java.util.concurrent.Executor;
  *
  * @author SmellyModder (Luke Tonon)
  */
+@SuppressWarnings("deprecation")
 public final class EndimationLoader implements PreparableReloadListener {
 	private static final JsonParser PARSER = new JsonParser();
 	private final BiMap<ResourceLocation, Endimation> registry = HashBiMap.create();
@@ -53,21 +54,22 @@ public final class EndimationLoader implements PreparableReloadListener {
 	public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager manager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller2, Executor executor, Executor executor2) {
 		return CompletableFuture.supplyAsync(() -> {
 			Map<ResourceLocation, Endimation> endimations = new HashMap<>();
-			for (ResourceLocation resourcelocation : manager.listResources("endimations", (file) -> file.endsWith(".json"))) {
-				try (InputStreamReader inputStreamReader = new InputStreamReader(manager.getResource(resourcelocation).getInputStream())) {
-					var dataResult = Endimation.CODEC.decode(JsonOps.INSTANCE, PARSER.parse(inputStreamReader));
+			for (var entry : manager.listResources("endimations", (location) -> location.getPath().endsWith(".json")).entrySet()) {
+				try (Reader reader = entry.getValue().openAsReader()) {
+					var dataResult = Endimation.CODEC.decode(JsonOps.INSTANCE, PARSER.parse(reader));
 					var error = dataResult.error();
 					if (error.isPresent()) {
 						throw new JsonParseException(error.get().message());
 					} else {
-						String path = resourcelocation.getPath();
-						ResourceLocation adjustedLocation = new ResourceLocation(resourcelocation.getNamespace(), path.substring(12, path.length() - 5));
+						ResourceLocation location = entry.getKey();
+						String path = location.getPath();
+						ResourceLocation adjustedLocation = new ResourceLocation(location.getNamespace(), path.substring(12, path.length() - 5));
 						if (endimations.put(adjustedLocation, dataResult.result().get().getFirst()) != null) {
 							Blueprint.LOGGER.warn("Loaded Duplicate Endimation: {}", adjustedLocation);
 						}
 					}
 				} catch (Exception exception) {
-					Blueprint.LOGGER.error("Error while loading Endimation: {}", resourcelocation, exception);
+					Blueprint.LOGGER.error("Error while loading Endimation: {}", entry.getKey(), exception);
 				}
 			}
 			return endimations;

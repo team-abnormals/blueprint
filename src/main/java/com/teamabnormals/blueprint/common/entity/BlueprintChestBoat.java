@@ -15,6 +15,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
@@ -24,20 +25,15 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
-/**
- * A {@link Boat} extension responsible for Blueprint's boats.
- *
- * @author SmellyModder (Luke Tonon)
- */
-public class BlueprintBoat extends Boat implements IBlueprintBoat {
-	private static final EntityDataAccessor<String> BOAT_TYPE = SynchedEntityData.defineId(BlueprintBoat.class, EntityDataSerializers.STRING);
+public class BlueprintChestBoat extends ChestBoat implements IBlueprintBoat {
+	private static final EntityDataAccessor<String> BOAT_TYPE = SynchedEntityData.defineId(BlueprintChestBoat.class, EntityDataSerializers.STRING);
 
-	public BlueprintBoat(EntityType<? extends Boat> type, Level level) {
+	public BlueprintChestBoat(EntityType<? extends Boat> type, Level level) {
 		super(type, level);
 	}
 
-	public BlueprintBoat(Level level, String type, double x, double y, double z) {
-		this(BlueprintEntityTypes.BOAT.get(), level);
+	public BlueprintChestBoat(Level level, String type, double x, double y, double z) {
+		super(BlueprintEntityTypes.CHEST_BOAT.get(), level);
 		this.setType(type);
 		this.setPos(x, y, z);
 		this.setDeltaMovement(Vec3.ZERO);
@@ -46,8 +42,8 @@ public class BlueprintBoat extends Boat implements IBlueprintBoat {
 		this.zo = z;
 	}
 
-	public BlueprintBoat(PlayMessages.SpawnEntity spawnEntity, Level level) {
-		this(BlueprintEntityTypes.BOAT.get(), level);
+	public BlueprintChestBoat(PlayMessages.SpawnEntity spawnEntity, Level level) {
+		this(BlueprintEntityTypes.CHEST_BOAT.get(), level);
 	}
 
 	@Override
@@ -58,11 +54,13 @@ public class BlueprintBoat extends Boat implements IBlueprintBoat {
 
 	@Override
 	protected void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putString("Type", BoatTypeRegistry.getNameForData(this.getBoatTypeData()));
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
 		if (compound.contains("Type", Tag.TAG_STRING)) {
 			String type = compound.getString("Type");
 			BoatTypeRegistry.BoatTypeData data = BoatTypeRegistry.getTypeData(type);
@@ -108,7 +106,7 @@ public class BlueprintBoat extends Boat implements IBlueprintBoat {
 
 	@Override
 	public Item getDropItem() {
-		return this.getBoatTypeData().getBoatItem();
+		return this.getBoatTypeData().getChestBoatItem();
 	}
 
 	@Override
@@ -131,6 +129,6 @@ public class BlueprintBoat extends Boat implements IBlueprintBoat {
 
 	@Override
 	public ResourceLocation getTexture() {
-		return this.getBoatTypeData().getTexture();
+		return this.getBoatTypeData().getChestVariantTexture();
 	}
 }

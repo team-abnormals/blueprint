@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core.registry;
 
 import com.teamabnormals.blueprint.common.entity.BlueprintBoat;
+import com.teamabnormals.blueprint.common.entity.BlueprintChestBoat;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.registry.EntitySubRegistryHelper;
 import net.minecraft.world.entity.EntityType;
@@ -16,4 +17,5 @@ public final class BlueprintEntityTypes {
 	private static final EntitySubRegistryHelper HELPER = Blueprint.REGISTRY_HELPER.getEntitySubHelper();
 
 	public static final RegistryObject<EntityType<BlueprintBoat>> BOAT = HELPER.createEntity("boat", BlueprintBoat::new, BlueprintBoat::new, MobCategory.MISC, 1.375F, 0.5625F);
+	public static final RegistryObject<EntityType<BlueprintChestBoat>> CHEST_BOAT = HELPER.createEntity("chest_boat", BlueprintChestBoat::new, BlueprintChestBoat::new, MobCategory.MISC, 1.375F, 0.5625F);
 }

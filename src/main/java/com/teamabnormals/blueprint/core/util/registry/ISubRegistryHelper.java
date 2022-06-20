@@ -2,15 +2,14 @@ package com.teamabnormals.blueprint.core.util.registry;
 
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
  * An interface for 'sub' registry helpers used in {@link RegistryHelper}.
  *
- * @param <T> The type of {@link IForgeRegistryEntry} this is for.
+ * @param <T> The type of objects this helper registers.
  * @author SmellyModder (Luke Tonon)
  */
-public interface ISubRegistryHelper<T extends IForgeRegistryEntry<T>> {
+public interface ISubRegistryHelper<T> {
 	/**
 	 * @return The {@link RegistryHelper} this is a child of.
 	 */

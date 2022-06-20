@@ -1,29 +1,29 @@
 {
-  "selector": {
-    "type": "names",
-    "config": [
-      "minecraft:the_end"
-    ],
-    "conditions": [
-      {
-        "modid": "blueprint",
-        "type": "forge:mod_loaded"
-      }
-    ]
-  },
   "name": "blueprint_test:end_checkerboard",
-  "weight": 5,
   "provider": {
+    "type": "blueprint:overlay",
     "overlays": [
       {
         "biome_source": {
+          "type": "minecraft:checkerboard",
           "biomes": "#minecraft:has_structure/stronghold",
-          "scale": 2,
-          "type": "minecraft:checkerboard"
+          "scale": 2
         },
         "matches_biomes": "#minecraft:has_structure/end_city"
       }
+    ]
+  },
+  "selector": {
+    "type": "names",
+    "conditions": [
+      {
+        "type": "forge:mod_loaded",
+        "modid": "blueprint"
+      }
     ],
-    "type": "blueprint:overlay"
-  }
+    "config": [
+      "minecraft:the_end"
+    ]
+  },
+  "weight": 5
 }

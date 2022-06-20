@@ -2,16 +2,15 @@ package com.teamabnormals.blueprint.core.events;
 
 import com.teamabnormals.blueprint.core.mixin.client.ClientLevelMixin;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
-import java.util.Random;
-
 /**
- * This event is fired before {@link net.minecraft.world.level.material.FluidState#animateTick(Level, BlockPos, Random)} gets called in {@link net.minecraft.client.multiplayer.ClientLevel}.
+ * This event is fired before {@link net.minecraft.world.level.material.FluidState#animateTick(Level, BlockPos, RandomSource)} gets called in {@link net.minecraft.client.multiplayer.ClientLevel}.
  * <p>Canceling this event will prevent the original method from being called.</p>
  *
  * @author abigailfails
@@ -22,9 +21,9 @@ public final class AnimateFluidTickEvent extends Event {
 	private final Level level;
 	private final BlockPos pos;
 	private final FluidState state;
-	private final Random random;
+	private final RandomSource random;
 
-	public AnimateFluidTickEvent(Level level, BlockPos pos, FluidState state, Random random) {
+	public AnimateFluidTickEvent(Level level, BlockPos pos, FluidState state, RandomSource random) {
 		this.level = level;
 		this.pos = pos;
 		this.state = state;
@@ -32,14 +31,14 @@ public final class AnimateFluidTickEvent extends Event {
 	}
 
 	/**
-	 * Fires the {@link AnimateFluidTickEvent} for a given {@link FluidState}, {@link Level}, {@link BlockPos} and {@link Random}.
+	 * Fires the {@link AnimateFluidTickEvent} for a given {@link FluidState}, {@link Level}, {@link BlockPos} and {@link RandomSource}.
 	 *
 	 * @param level The {@link Level} that the {@code state} is in.
 	 * @param pos   The {@link BlockPos} that the {@code state} is at.
-	 * @param state The {@link FluidState} that {@link net.minecraft.world.level.material.FluidState#animateTick(Level, BlockPos, Random)} is being fired for.
-	 * @param rand  The {@link Random} to be used for randomizing particle placement.
+	 * @param state The {@link FluidState} that {@link net.minecraft.world.level.material.FluidState#animateTick(Level, BlockPos, RandomSource)} is being fired for.
+	 * @param rand  The {@link RandomSource} to be used for randomizing particle placement.
 	 */
-	public static boolean onAnimateFluidTick(Level level, BlockPos pos, FluidState state, Random rand) {
+	public static boolean onAnimateFluidTick(Level level, BlockPos pos, FluidState state, RandomSource rand) {
 		return MinecraftForge.EVENT_BUS.post(new AnimateFluidTickEvent(level, pos, state, rand));
 	}
 
@@ -75,7 +74,7 @@ public final class AnimateFluidTickEvent extends Event {
 	 *
 	 * @return The {@link #random} used for animate ticking the fluid.
 	 */
-	public Random getRandom() {
+	public RandomSource getRandom() {
 		return this.random;
 	}
 

@@ -3,18 +3,17 @@ package com.teamabnormals.blueprint.core.util.registry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
  * An abstract implementation class of {@link ISubRegistryHelper}.
  * This contains a {@link RegistryHelper} parent and a {@link DeferredRegister} to register objects.
  * <p> It is recommended you use this for making a new {@link ISubRegistryHelper}. </p>
  *
- * @param <T> The type of {@link IForgeRegistryEntry} to register objects for.
+ * @param <T> The type of objects this helper registers.
  * @author SmellyModder (Luke Tonon)
  * @see ISubRegistryHelper
  */
-public abstract class AbstractSubRegistryHelper<T extends IForgeRegistryEntry<T>> implements ISubRegistryHelper<T> {
+public abstract class AbstractSubRegistryHelper<T> implements ISubRegistryHelper<T> {
 	protected final RegistryHelper parent;
 	protected final DeferredRegister<T> deferredRegister;
 

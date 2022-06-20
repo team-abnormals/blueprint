@@ -8,5 +8,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(Item.class)
 public interface ItemInvokerMixin {
 	@Invoker
-	boolean callAllowdedIn(CreativeModeTab group);
+	boolean callAllowedIn(CreativeModeTab group);
 }

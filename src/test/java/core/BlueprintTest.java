@@ -86,12 +86,11 @@ public final class BlueprintTest {
 
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
-		if (event.includeServer()) {
-			generator.addProvider(new TestAdvancementModifiersProvider(generator));
-			generator.addProvider(new TestLootModifiersProvider(generator));
-			generator.addProvider(new TestChunkGeneratorModifiersProvider(generator));
-			generator.addProvider(new TestModdedBiomeSlicesProvider(generator));
-		}
+		boolean includeServer = event.includeServer();
+		generator.addProvider(includeServer, new TestAdvancementModifiersProvider(generator));
+		generator.addProvider(includeServer, new TestLootModifiersProvider(generator));
+		generator.addProvider(includeServer, new TestChunkGeneratorModifiersProvider(generator));
+		generator.addProvider(includeServer, new TestModdedBiomeSlicesProvider(generator));
 	}
 
 	@OnlyIn(Dist.CLIENT)

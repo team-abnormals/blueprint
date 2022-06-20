@@ -12,6 +12,7 @@
     "FluidInvokerMixin",
     "ItemInvokerMixin",
     "LanternBlockMixin",
+    "NoiseBasedChunkGeneratorMixin",
     "ReloadableServerResourcesMixin",
     "ServerEntityMixin",
     "ServerLevelMixin",

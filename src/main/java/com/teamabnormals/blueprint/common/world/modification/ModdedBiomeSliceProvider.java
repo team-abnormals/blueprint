@@ -1,7 +1,5 @@
 package com.teamabnormals.blueprint.common.world.modification;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
@@ -11,9 +9,9 @@ import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +31,6 @@ import java.util.function.Supplier;
  */
 public abstract class ModdedBiomeSliceProvider implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
 	private final List<Pair<ConditionedResourceSelector, ModdedBiomeSlice>> slices = new LinkedList<>();
 	private final DataGenerator dataGenerator;
 	private final String modid;
@@ -66,7 +63,7 @@ public abstract class ModdedBiomeSliceProvider implements DataProvider {
 	}
 
 	@Override
-	public void run(HashCache hashCache) {
+	public void run(CachedOutput cachedOutput) {
 		HashSet<ResourceLocation> names = new HashSet<>();
 		Path outputFolder = this.dataGenerator.getOutputFolder();
 		String basePath = "data/" + this.modid + "/modded_biome_slices/";
@@ -82,7 +79,7 @@ public abstract class ModdedBiomeSliceProvider implements DataProvider {
 			} else {
 				Path path = outputFolder.resolve(basePath + name.getPath() + ".json");
 				try {
-					DataProvider.save(GSON, hashCache, slice.serializeWithSelector(pair.getFirst(), ops), path);
+					DataProvider.saveStable(cachedOutput, slice.serializeWithSelector(pair.getFirst(), ops), path);
 				} catch (JsonParseException | IOException exception) {
 					LOGGER.error("Couldn't save modded biome slice {}", path, exception);
 				}

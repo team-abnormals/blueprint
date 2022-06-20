@@ -137,7 +137,7 @@ public enum ScreenShakeHandler {
 	private void shakeCamera(EntityViewRenderEvent.CameraSetup event) {
 		double screenShakeScale = BlueprintConfig.CLIENT.screenShakeScale;
 		if (screenShakeScale > 0.0D) {
-			double partialTicks = event.getPartialTicks();
+			double partialTicks = event.getPartialTick();
 			double x = Mth.lerp(partialTicks, this.prevIntensityX, this.intensityX), y = Mth.lerp(partialTicks, this.prevIntensityY, this.intensityY), z = Mth.lerp(partialTicks, this.prevIntensityZ, this.intensityZ);
 			if (x != 0.0F || y != 0.0F || z != 0.0F) {
 				((CameraInvokerMixin) event.getCamera()).callMove(z * screenShakeScale, y * screenShakeScale, x * screenShakeScale);

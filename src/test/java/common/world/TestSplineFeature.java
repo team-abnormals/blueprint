@@ -3,6 +3,7 @@ package common.world;
 import com.teamabnormals.blueprint.core.util.MathUtil;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -12,7 +13,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public final class TestSplineFeature extends Feature<NoneFeatureConfiguration> {
 	private static final Vec3 UP = new Vec3(0.0F, 1.0F, 0.0F);
@@ -24,7 +24,7 @@ public final class TestSplineFeature extends Feature<NoneFeatureConfiguration> {
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
 		BlockPos pos = context.origin();
-		Random rand = context.random();
+		RandomSource rand = context.random();
 		BlockPos end = pos.offset(rand.nextInt(16) - rand.nextInt(16), rand.nextInt(33) - rand.nextInt(33), rand.nextInt(16) - rand.nextInt(16));
 		List<Vec3> points = new ArrayList<>();
 		Vec3 startVec = Vec3.atLowerCornerOf(pos);

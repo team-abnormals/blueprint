@@ -1,5 +1,6 @@
 package core.registry;
 
+import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import core.BlueprintTest;
@@ -15,7 +16,7 @@ public final class TestItems {
 
 	public static final RegistryObject<Item> ITEM = HELPER.createTest();
 	public static final RegistryObject<ForgeSpawnEggItem> COW_SPAWN_EGG = HELPER.createItem("test_spawn_egg", () -> new ForgeSpawnEggItem(TestEntities.COW, 100, 200, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
-	public static final RegistryObject<Item> BOAT = HELPER.createBoatItem("test", TestBlocks.BLOCK);
+	public static final Pair<RegistryObject<Item>, RegistryObject<Item>> BOAT = HELPER.createBoatAndChestBoatItem("test", TestBlocks.BLOCK);
 
 	public static class Helper extends ItemSubRegistryHelper {
 

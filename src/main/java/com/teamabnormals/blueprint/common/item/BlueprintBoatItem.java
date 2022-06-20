@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.common.item;
 
 import com.teamabnormals.blueprint.common.entity.BlueprintBoat;
+import com.teamabnormals.blueprint.common.entity.BlueprintChestBoat;
 import com.teamabnormals.blueprint.core.util.item.filling.TargetedItemCategoryFiller;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
@@ -15,6 +16,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,14 +38,16 @@ import java.util.function.Predicate;
  * @author SmellyModder (Luke Tonon)
  */
 public class BlueprintBoatItem extends Item {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.DARK_OAK_BOAT);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_CHEST_BOAT);
 	private static final Predicate<Entity> COLLISION_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
+	private final boolean hasChest;
 	private final String type;
 
-	public BlueprintBoatItem(String type, Item.Properties properties) {
+	public BlueprintBoatItem(boolean hasChest, String type, Item.Properties properties) {
 		super(properties);
+		this.hasChest = hasChest;
 		this.type = type;
-		DispenserBlock.registerBehavior(this, new DispenserBoatBehavior(type));
+		DispenserBlock.registerBehavior(this, new DispenserBoatBehavior(hasChest, type));
 	}
 
 	@Override
@@ -61,7 +65,7 @@ public class BlueprintBoatItem extends Item {
 			Vec3 vec3d = playerIn.getViewVector(1.0F);
 			List<Entity> list = level.getEntities(playerIn, playerIn.getBoundingBox().expandTowards(vec3d.scale(5.0D)).inflate(1.0D), COLLISION_PREDICATE);
 			if (!list.isEmpty()) {
-				Vec3 vec3d1 = playerIn.getEyePosition(1.0F);
+				Vec3 vec3d1 = playerIn.getEyePosition();
 
 				for (Entity entity : list) {
 					AABB aabb = entity.getBoundingBox().inflate(entity.getPickRadius());
@@ -72,8 +76,7 @@ public class BlueprintBoatItem extends Item {
 			}
 
 			if (hitResult.getType() == HitResult.Type.BLOCK) {
-				BlueprintBoat boat = new BlueprintBoat(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z);
-				boat.setBoat(this.type);
+				Boat boat = this.hasChest ? new BlueprintChestBoat(level, this.type, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z) : new BlueprintBoat(level, this.type, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z);
 				boat.setYRot(playerIn.getYRot());
 				if (!level.noCollision(boat, boat.getBoundingBox().inflate(-0.1D))) {
 					return new InteractionResultHolder<>(InteractionResult.FAIL, itemstack);
@@ -97,9 +100,11 @@ public class BlueprintBoatItem extends Item {
 
 	static class DispenserBoatBehavior extends DefaultDispenseItemBehavior {
 		private final DefaultDispenseItemBehavior defaultDispenseItemBehavior = new DefaultDispenseItemBehavior();
+		private final boolean hasChest;
 		private final String type;
 
-		public DispenserBoatBehavior(String type) {
+		public DispenserBoatBehavior(boolean hasChest, String type) {
+			this.hasChest = hasChest;
 			this.type = type;
 		}
 
@@ -119,8 +124,7 @@ public class BlueprintBoatItem extends Item {
 				}
 				adjustY = 0d;
 			}
-			BlueprintBoat boat = new BlueprintBoat(level, x, y + adjustY, z);
-			boat.setBoat(this.type);
+			Boat boat = this.hasChest ? new BlueprintChestBoat(level, this.type, x, y + adjustY, z) : new BlueprintBoat(level, this.type, x, y + adjustY, z);
 			boat.setYRot(direction.toYRot());
 			level.addFreshEntity(boat);
 			stack.shrink(1);

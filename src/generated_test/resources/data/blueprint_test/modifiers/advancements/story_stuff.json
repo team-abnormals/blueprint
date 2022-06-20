@@ -1,31 +1,31 @@
 {
+  "modifiers": [
+    {
+      "type": "display",
+      "config": {
+        "description": {
+          "text": "Get modified!"
+        },
+        "mode": "modify"
+      }
+    }
+  ],
+  "priority": "normal",
   "selector": {
     "type": "multi",
     "config": [
       {
         "type": "choice",
         "config": {
-          "first": "minecraft:story/mine_diamond",
-          "second": "minecraft:story/mine_stone",
           "condition": {
-            "modid": "blueprint",
-            "type": "forge:mod_loaded"
-          }
+            "type": "forge:mod_loaded",
+            "modid": "blueprint"
+          },
+          "first": "minecraft:story/mine_diamond",
+          "second": "minecraft:story/mine_stone"
         }
       },
       "minecraft:story/root"
     ]
-  },
-  "priority": "normal",
-  "modifiers": [
-    {
-      "type": "display",
-      "config": {
-        "mode": "modify",
-        "description": {
-          "text": "Get modified!"
-        }
-      }
-    }
-  ]
+  }
 }

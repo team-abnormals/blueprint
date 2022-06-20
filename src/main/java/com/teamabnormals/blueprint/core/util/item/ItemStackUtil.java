@@ -74,6 +74,6 @@ public final class ItemStackUtil {
 	 * @return Whether the item is in the {@link CreativeModeTab}.
 	 */
 	public static boolean isAllowedInTab(Item item, @Nonnull CreativeModeTab tab) {
-		return ((ItemInvokerMixin) item).callAllowdedIn(tab);
+		return ((ItemInvokerMixin) item).callAllowedIn(tab);
 	}
 }

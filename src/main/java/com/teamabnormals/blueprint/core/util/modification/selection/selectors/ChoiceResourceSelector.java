@@ -25,7 +25,7 @@ public record ChoiceResourceSelector(ConditionedResourceSelector first, Conditio
 
 	@Override
 	public List<ResourceLocation> select(SelectionSpace space) {
-		return this.condition.test() ? this.first.select(space) : this.second.select(space);
+		return this.condition.test(ICondition.IContext.EMPTY) ? this.first.select(space) : this.second.select(space);
 	}
 
 	@Override

@@ -1,6 +1,4 @@
 {
-  "selector": "minecraft:husbandry/obtain_netherite_hoe",
-  "priority": "normal",
   "modifiers": [
     {
       "type": "criteria",
@@ -18,5 +16,7 @@
         "should_replace_requirements": true
       }
     }
-  ]
+  ],
+  "priority": "normal",
+  "selector": "minecraft:husbandry/obtain_netherite_hoe"
 }

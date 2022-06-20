@@ -4,9 +4,8 @@ import com.teamabnormals.blueprint.core.util.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -102,10 +101,10 @@ public class WoodPostBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Nullable
 	@Override
-	public BlockState getToolModifiedState(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, ToolAction action) {
+	public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction action, boolean simulate) {
 		if (action == ToolActions.AXE_STRIP)
 			return this.block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().defaultBlockState()) : null;
-		return super.getToolModifiedState(state, world, pos, player, stack, action);
+		return super.getToolModifiedState(state, context, action, simulate);
 	}
 
 	private BlockState getRelevantState(Level world, BlockPos pos, Axis axis) {

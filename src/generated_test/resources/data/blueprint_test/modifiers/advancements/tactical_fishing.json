@@ -1,20 +1,18 @@
 {
-  "selector": "minecraft:husbandry/tactical_fishing",
-  "priority": "normal",
   "modifiers": [
     {
       "type": "criteria",
       "config": {
         "criteria": {
           "blueprint_test:test": {
-            "trigger": "minecraft:filled_bucket",
             "conditions": {
               "item": {
                 "items": [
                   "minecraft:lava_bucket"
                 ]
               }
-            }
+            },
+            "trigger": "minecraft:filled_bucket"
           }
         },
         "indexed_requirements": [
@@ -28,5 +26,7 @@
         ]
       }
     }
-  ]
+  ],
+  "priority": "normal",
+  "selector": "minecraft:husbandry/tactical_fishing"
 }

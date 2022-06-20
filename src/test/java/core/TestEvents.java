@@ -9,6 +9,7 @@ import core.registry.TestItems;
 import core.registry.TestTriggers;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Cow;
@@ -21,8 +22,6 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID)
 public final class TestEvents {
@@ -47,7 +46,7 @@ public final class TestEvents {
 	public static void onLivingTick(LivingEvent.LivingUpdateEvent event) {
 		LivingEntity entity = event.getEntityLiving();
 		if (entity.level.isClientSide && (entity instanceof Cow || entity instanceof Player) && TrackedDataManager.INSTANCE.getValue(entity, BlueprintTest.TEST_TRACKED_DATA)) {
-			Random rand = entity.getRandom();
+			RandomSource rand = entity.getRandom();
 			for (int i = 0; i < 2; ++i) {
 				entity.level.addParticle(ParticleTypes.PORTAL, entity.getRandomX(0.5D), entity.getRandomY() - 0.25D, entity.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(), (rand.nextDouble() - 0.5D) * 2.0D);
 			}
@@ -61,7 +60,7 @@ public final class TestEvents {
 				new BlueprintTrade(TestItems.ITEM.get(), 5, 2, 6, 55),
 				new BlueprintTrade(TestItems.ITEM.get(), 5, 9, 6, 75)
 		);
-		TradeUtil.addVillagerTrades(event, VillagerProfession.CARTOGRAPHER, 2, new BlueprintTrade(TestItems.BOAT.get(), 5, 10, 6, 100));
+		TradeUtil.addVillagerTrades(event, VillagerProfession.CARTOGRAPHER, 2, new BlueprintTrade(TestItems.BOAT.getFirst().get(), 5, 10, 6, 100));
 	}
 
 	@SubscribeEvent

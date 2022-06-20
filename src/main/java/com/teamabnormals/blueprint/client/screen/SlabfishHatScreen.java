@@ -8,7 +8,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.Locale;
@@ -25,7 +24,7 @@ public class SlabfishHatScreen extends Screen {
 	private final Screen parent;
 
 	public SlabfishHatScreen(Screen parent) {
-		super(new TranslatableComponent(SLABFISH_SCREEN_KEY + ".title"));
+		super(Component.translatable(SLABFISH_SCREEN_KEY + ".title"));
 		this.parent = parent;
 	}
 
@@ -41,7 +40,7 @@ public class SlabfishHatScreen extends Screen {
 				configValue.set(enabled);
 				button.setMessage(this.getOptionName(setting, enabled));
 				NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
-			}, (button, stack, mouseX, mouseY) -> this.renderTooltip(stack, this.font.split(new TranslatableComponent("blueprint.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"), 200), mouseX, mouseY)));
+			}, (button, stack, mouseX, mouseY) -> this.renderTooltip(stack, this.font.split(Component.translatable("blueprint.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"), 200), mouseX, mouseY)));
 			++i;
 		}
 
@@ -65,6 +64,6 @@ public class SlabfishHatScreen extends Screen {
 	}
 
 	private Component getOptionName(RewardHandler.SlabfishSetting setting, boolean enabled) {
-		return CommonComponents.optionStatus(new TranslatableComponent("blueprint.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT)), enabled);
+		return CommonComponents.optionStatus(Component.translatable("blueprint.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT)), enabled);
 	}
 }

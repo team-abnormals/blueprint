@@ -1,6 +1,5 @@
 package com.teamabnormals.blueprint.core;
 
-import com.google.common.collect.Sets;
 import com.teamabnormals.blueprint.client.BlueprintShaders;
 import com.teamabnormals.blueprint.client.RewardHandler;
 import com.teamabnormals.blueprint.client.renderer.BlueprintBoatRenderer;
@@ -40,12 +39,12 @@ import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,7 +56,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -73,8 +71,10 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.minecraftforge.registries.RegisterEvent;
 
 import java.util.Map;
 
@@ -123,6 +123,8 @@ public final class Blueprint {
 		REGISTRY_HELPER.getEntitySubHelper().register(bus);
 		REGISTRY_HELPER.getBlockEntitySubHelper().register(bus);
 		REGISTRY_HELPER.getBiomeSubHelper().register(bus);
+		BlueprintSurfaceRules.CONDITIONS.register(bus);
+		BlueprintLootConditions.LOOT_CONDITION_TYPES.register(bus);
 
 		bus.addListener((ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
@@ -150,7 +152,7 @@ public final class Blueprint {
 			bus.addListener(BlueprintShaders::registerShaders);
 		});
 
-		bus.addGenericListener(Block.class, this::registerUnsupportedRegistryEntries);
+		bus.addListener(this::registerOnEvent);
 		bus.addListener(EventPriority.LOWEST, this::commonSetup);
 		bus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
 		bus.addListener(this::dataSetup);
@@ -160,7 +162,10 @@ public final class Blueprint {
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
-		event.enqueueWork(this::replaceBeehivePOI);
+		event.enqueueWork(() -> {
+			this.addModdedBeehivesToPOI();
+			DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
+		});
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "slabfish_head"), SLABFISH_SETTINGS);
 	}
 
@@ -171,26 +176,24 @@ public final class Blueprint {
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
 		ExistingFileHelper fileHelper = event.getExistingFileHelper();
-		if (event.includeServer()) {
-			BlueprintBlockTagsProvider blockTags = new BlueprintBlockTagsProvider(MOD_ID, generator, fileHelper);
-			generator.addProvider(blockTags);
-			generator.addProvider(new BlueprintItemTagsProvider(MOD_ID, generator, blockTags, fileHelper));
-			generator.addProvider(new BlueprintEntityTypeTagsProvider(MOD_ID, generator, fileHelper));
-			generator.addProvider(new BlueprintBiomeTagsProvider(MOD_ID, generator, fileHelper));
-			generator.addProvider(new BlueprintModdedBiomeSliceProvider(generator));
-		}
+		boolean includeServer = event.includeServer();
+		BlueprintBlockTagsProvider blockTags = new BlueprintBlockTagsProvider(MOD_ID, generator, fileHelper);
+		generator.addProvider(includeServer, blockTags);
+		generator.addProvider(includeServer, new BlueprintItemTagsProvider(MOD_ID, generator, blockTags, fileHelper));
+		generator.addProvider(includeServer, new BlueprintEntityTypeTagsProvider(MOD_ID, generator, fileHelper));
+		generator.addProvider(includeServer, new BlueprintBiomeTagsProvider(MOD_ID, generator, fileHelper));
+		generator.addProvider(includeServer, new BlueprintModdedBiomeSliceProvider(generator));
 	}
 
-	//Registers stuff for registries that forge doesn't support
-	private void registerUnsupportedRegistryEntries(RegistryEvent.Register<Block> event) {
-		DataUtil.registerConfigCondition(Blueprint.MOD_ID, BlueprintConfig.CLIENT, BlueprintConfig.CLIENT.slabfishSettings);
-		BlueprintLootConditions.registerLootConditions();
-		BuiltinRegistries.register(Registry.BIOME_SOURCE, new ResourceLocation(MOD_ID, "modded"), ModdedBiomeSource.CODEC);
-		BlueprintSurfaceRules.register();
+	private void registerOnEvent(RegisterEvent event) {
+		event.register(Registry.BIOME_SOURCE_REGISTRY, (helper) -> {
+			helper.register("modded", ModdedBiomeSource.CODEC);
+		});
 	}
 
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
-		event.registerEntityRenderer(BlueprintEntityTypes.BOAT.get(), BlueprintBoatRenderer::new);
+		event.registerEntityRenderer(BlueprintEntityTypes.BOAT.get(), BlueprintBoatRenderer::simple);
+		event.registerEntityRenderer(BlueprintEntityTypes.CHEST_BOAT.get(), BlueprintBoatRenderer::chest);
 
 		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.CHEST.get(), BlueprintChestBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.TRAPPED_CHEST.get(), BlueprintChestBlockEntityRenderer::new);
@@ -221,15 +224,16 @@ public final class Blueprint {
 		CHANNEL.registerMessage(++id, MessageC2SUpdateSlabfishHat.class, MessageC2SUpdateSlabfishHat::serialize, MessageC2SUpdateSlabfishHat::deserialize, MessageC2SUpdateSlabfishHat::handle);
 	}
 
-	private void replaceBeehivePOI() {
-		PoiType.BEEHIVE.matchingStates = Sets.newHashSet(PoiType.BEEHIVE.matchingStates);
-		Map<BlockState, PoiType> statePointOfInterestMap = ObfuscationReflectionHelper.getPrivateValue(PoiType.class, null, "f_27323_");
-		if (statePointOfInterestMap != null) {
-			for (Block block : BlockEntitySubRegistryHelper.collectBlocks(BlueprintBeehiveBlock.class)) {
-				block.getStateDefinition().getPossibleStates().forEach(state -> {
-					statePointOfInterestMap.put(state, PoiType.BEEHIVE);
-					PoiType.BEEHIVE.matchingStates.add(state);
-				});
+	private void addModdedBeehivesToPOI() {
+		PoiType beehive = ForgeRegistries.POI_TYPES.getValue(PoiTypes.BEEHIVE.location());
+		if (beehive != null) {
+			Map<BlockState, PoiType> typeByState = ObfuscationReflectionHelper.getPrivateValue(PoiTypes.class, null, "f_218070_");
+			if (typeByState != null) {
+				for (Block block : BlockEntitySubRegistryHelper.collectBlocks(BlueprintBeehiveBlock.class)) {
+					block.getStateDefinition().getPossibleStates().forEach(state -> {
+						typeByState.put(state, beehive);
+					});
+				}
 			}
 		}
 	}

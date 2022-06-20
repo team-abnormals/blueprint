@@ -15,8 +15,7 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MobEffectsPredicate;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +43,7 @@ public final class TestAdvancementModifiersProvider extends AdvancementModifierP
 				.selects("husbandry/balanced_diet")
 				.addModifier(new ParentModifier(new ResourceLocation("end/root")))
 				.addModifier(new RewardsModifier(AdvancementModifier.Mode.MODIFY, of(100000), of(List.of(new ResourceLocation("chests/jungle_temple"))), empty(), empty()))
-				.addModifier(DisplayInfoModifier.builder().title(new TranslatableComponent("blueprint_test.advancements.husbandry.balanced_diet.title")).description(new TextComponent("Momma.")).frame(FrameType.CHALLENGE).build())
+				.addModifier(DisplayInfoModifier.builder().title(Component.translatable("blueprint_test.advancements.husbandry.balanced_diet.title")).description(Component.literal("Momma.")).frame(FrameType.CHALLENGE).build())
 				.addModifier(CriteriaModifier.builder(this.modId).addCriterion("test", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHERITE_SWORD)).requirements(RequirementsStrategy.AND).build());
 
 		this.entry("nether_displays")
@@ -53,7 +52,7 @@ public final class TestAdvancementModifiersProvider extends AdvancementModifierP
 
 		this.entry("obtain_armor")
 				.selects("story/obtain_armor")
-				.addModifier(DisplayInfoModifier.builder().title(new TranslatableComponent("blueprint_test.advancements.husbandry.obtain_armor.title")).description(new TextComponent("Erm, yeah, environmental is loaded")).build(), new ModLoadedCondition("environmental"));
+				.addModifier(DisplayInfoModifier.builder().title(Component.translatable("blueprint_test.advancements.husbandry.obtain_armor.title")).description(Component.literal("Erm, yeah, environmental is loaded")).build(), new ModLoadedCondition("environmental"));
 
 		this.entry("obtain_netherite_hoe")
 				.selects("husbandry/obtain_netherite_hoe")
@@ -66,7 +65,7 @@ public final class TestAdvancementModifiersProvider extends AdvancementModifierP
 								new NamesResourceSelector("story/root")
 						)
 				)
-				.addModifier(DisplayInfoModifier.builder().description(new TextComponent("Get modified!")).build());
+				.addModifier(DisplayInfoModifier.builder().description(Component.literal("Get modified!")).build());
 
 		this.entry("tactical_fishing")
 				.selects("husbandry/tactical_fishing")

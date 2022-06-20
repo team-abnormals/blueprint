@@ -5,9 +5,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.world.modification.ModdednessSliceGetter;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.SurfaceRules;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 /**
  * The class for Blueprint's surface rule types.
@@ -15,13 +17,9 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
  * @author SmellyModder (Luke Tonon)
  */
 public final class BlueprintSurfaceRules extends SurfaceRules {
-	/**
-	 * Registers Blueprint's surface rule types.
-	 * <p><b>This is for internal use only!</b></p>
-	 */
-	public static void register() {
-		BuiltinRegistries.register(Registry.CONDITION, new ResourceLocation(Blueprint.MOD_ID, "moddedness_slice"), ModdednessSliceConditionSource.CODEC);
-	}
+	public static final DeferredRegister<Codec<? extends ConditionSource>> CONDITIONS = DeferredRegister.create(Registry.CONDITION_REGISTRY, Blueprint.MOD_ID);
+
+	public static final RegistryObject<Codec<? extends ConditionSource>> MODDED_SLICE = CONDITIONS.register("modded_slice", ModdednessSliceConditionSource.CODEC::codec);
 
 	/**
 	 * A {@link SurfaceRules.ConditionSource} implementation that checks for a named moddedness slice.
@@ -29,14 +27,14 @@ public final class BlueprintSurfaceRules extends SurfaceRules {
 	 * @author SmellyModder (Luke Tonon)
 	 */
 	public record ModdednessSliceConditionSource(ResourceLocation sliceName) implements SurfaceRules.ConditionSource {
-		public static final Codec<ModdednessSliceConditionSource> CODEC = RecordCodecBuilder.create(instance -> {
+		public static final KeyDispatchDataCodec<ModdednessSliceConditionSource> CODEC = KeyDispatchDataCodec.of(RecordCodecBuilder.create(instance -> {
 			return instance.group(
 					ResourceLocation.CODEC.fieldOf("slice_name").forGetter(condition -> condition.sliceName)
 			).apply(instance, ModdednessSliceConditionSource::new);
-		});
+		}));
 
 		@Override
-		public Codec<? extends ConditionSource> codec() {
+		public KeyDispatchDataCodec<? extends ConditionSource> codec() {
 			return CODEC;
 		}
 

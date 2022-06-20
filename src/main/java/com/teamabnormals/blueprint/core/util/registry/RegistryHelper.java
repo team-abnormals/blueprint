@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -71,9 +70,9 @@ public class RegistryHelper {
 	 *
 	 * @param registry  The {@link IForgeRegistry} to map the key to.
 	 * @param subHelper The {@link ISubRegistryHelper} to be mapped.
-	 * @param <K>       The type of {@link IForgeRegistry}
+	 * @param <V>       The type of objects to register in the helper.
 	 */
-	public <K extends IForgeRegistryEntry<K>> void putSubHelper(IForgeRegistry<K> registry, ISubRegistryHelper<K> subHelper) {
+	public <V> void putSubHelper(IForgeRegistry<V> registry, ISubRegistryHelper<V> subHelper) {
 		this.subHelpers.put(registry, subHelper);
 	}
 
@@ -91,10 +90,10 @@ public class RegistryHelper {
 
 	@SuppressWarnings("unchecked")
 	@Nonnull
-	public <T extends IForgeRegistryEntry<T>, S extends ISubRegistryHelper<T>> S getSubHelper(IForgeRegistry<T> registry) {
+	public <T, S extends ISubRegistryHelper<T>> S getSubHelper(IForgeRegistry<T> registry) {
 		S subHelper = (S) this.subHelpers.get(registry);
 		if (subHelper == null) {
-			throw new NullPointerException("No Sub Helper is registered for the forge registry of type " + registry.getRegistrySuperType());
+			throw new NullPointerException("No Sub Helper is registered for the forge registry: " + registry);
 		}
 		return subHelper;
 	}

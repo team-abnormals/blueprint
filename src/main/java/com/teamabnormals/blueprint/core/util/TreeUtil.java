@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelSimulatedRW;
 import net.minecraft.world.level.LevelSimulatedReader;
@@ -16,8 +17,6 @@ import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 
-import java.util.Random;
-
 /**
  * A utility class containing some useful methods for trees.
  *
@@ -26,27 +25,27 @@ import java.util.Random;
 public final class TreeUtil {
 
 	/**
-	 * Places a log at a {@link BlockPos} using a given {@link LevelWriter}, {@link Random}, and {@link TreeConfiguration}.
+	 * Places a log at a {@link BlockPos} using a given {@link LevelWriter}, {@link RandomSource}, and {@link TreeConfiguration}.
 	 *
 	 * @param level  A {@link LevelWriter} to use for placing the log.
 	 * @param pos    A {@link BlockPos} for where to place the log.
-	 * @param rand   A {@link Random} for randomly selecting the log state.
+	 * @param rand   A {@link RandomSource} for randomly selecting the log state.
 	 * @param config A {@link TreeConfiguration} to select the log state.
 	 */
-	public static void placeLogAt(LevelWriter level, BlockPos pos, Random rand, TreeConfiguration config) {
+	public static void placeLogAt(LevelWriter level, BlockPos pos, RandomSource rand, TreeConfiguration config) {
 		setForcedState(level, pos, config.trunkProvider.getState(rand, pos));
 	}
 
 	/**
-	 * Places a directional log at a {@link BlockPos} using a given {@link LevelWriter}, {@link Random}, and {@link TreeConfiguration}.
+	 * Places a directional log at a {@link BlockPos} using a given {@link LevelWriter}, {@link RandomSource}, and {@link TreeConfiguration}.
 	 *
 	 * @param level     A {@link LevelWriter} to use for placing the log.
 	 * @param pos       A {@link BlockPos} for where to place the log.
 	 * @param direction The {@link Direction} of the log.
-	 * @param rand      A {@link Random} for randomly selecting the log state.
+	 * @param rand      A {@link RandomSource} for randomly selecting the log state.
 	 * @param config    A {@link TreeConfiguration} to select the log state.
 	 */
-	public static void placeDirectionalLogAt(LevelWriter level, BlockPos pos, Direction direction, Random rand, TreeConfiguration config) {
+	public static void placeDirectionalLogAt(LevelWriter level, BlockPos pos, Direction direction, RandomSource rand, TreeConfiguration config) {
 		setForcedState(level, pos, config.trunkProvider.getState(rand, pos).setValue(RotatedPillarBlock.AXIS, direction.getAxis()));
 	}
 
@@ -63,14 +62,14 @@ public final class TreeUtil {
 	}
 
 	/**
-	 * Places a foliage block at a {@link BlockPos} using a given {@link LevelSimulatedRW}, {@link Random}, and {@link TreeConfiguration}.
+	 * Places a foliage block at a {@link BlockPos} using a given {@link LevelSimulatedRW}, {@link RandomSource}, and {@link TreeConfiguration}.
 	 *
 	 * @param level  A {@link LevelSimulatedRW} for placing the foliage.
 	 * @param pos    A {@link BlockPos} for where to place the foliage.
-	 * @param rand   A {@link Random} for randomly selecting the foliage state.
+	 * @param rand   A {@link RandomSource} for randomly selecting the foliage state.
 	 * @param config A {@link TreeConfiguration} to select the foliage state.
 	 */
-	public static void placeLeafAt(LevelSimulatedRW level, BlockPos pos, Random rand, TreeConfiguration config) {
+	public static void placeLeafAt(LevelSimulatedRW level, BlockPos pos, RandomSource rand, TreeConfiguration config) {
 		if (isAirOrLeaves(level, pos)) {
 			setForcedState(level, pos, config.foliageProvider.getState(rand, pos).setValue(LeavesBlock.DISTANCE, 1));
 		}

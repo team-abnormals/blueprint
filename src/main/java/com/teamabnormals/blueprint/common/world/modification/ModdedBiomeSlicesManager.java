@@ -103,9 +103,8 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 					if (size <= 0) size = defaultSize;
 					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForKey, size, seed, location.hashCode());
 					chunkGenerator.biomeSource = moddedBiomeSource;
-					chunkGenerator.runtimeBiomeSource = moddedBiomeSource;
 					if (chunkGenerator instanceof NoiseBasedChunkGenerator)
-						((ModdedSurfaceSystem) ((NoiseBasedChunkGenerator) chunkGenerator).surfaceSystem).setModdedBiomeSource(moddedBiomeSource);
+						((HasModdedBiomeSource) chunkGenerator).setModdedBiomeSource(moddedBiomeSource);
 				}
 			}
 		}

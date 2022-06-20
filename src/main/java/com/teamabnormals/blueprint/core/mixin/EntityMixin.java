@@ -17,6 +17,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -165,8 +167,10 @@ public abstract class EntityMixin implements IDataManager, Endimatable {
 		this.endimateTick();
 	}
 
-	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;isSteppingCarefully()Z"))
-	private boolean onIsSteppingCarefully(Entity instance) {
-		return instance.isSteppingCarefully() && !EntityStepEvent.onEntityStep(this.level, this.getOnPos(), instance);
+	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;stepOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/Entity;)V"))
+	private void onIsSteppingCarefully(Block block, Level level, BlockPos pos, BlockState state, Entity entity) {
+		if (!EntityStepEvent.onEntityStep(this.level, this.getOnPos(), entity)) {
+			block.stepOn(level, pos, state, entity);
+		}
 	}
 }

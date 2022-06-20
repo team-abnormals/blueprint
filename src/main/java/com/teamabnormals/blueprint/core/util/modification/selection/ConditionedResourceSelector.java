@@ -46,7 +46,7 @@ public final class ConditionedResourceSelector {
 		if (element instanceof JsonPrimitive primitive && primitive.isString()) {
 			return new ConditionedResourceSelector(new NamesResourceSelector(new ResourceLocation(primitive.getAsString())));
 		} else if (element instanceof JsonObject jsonObject) {
-			if (!GsonHelper.isValidNode(jsonObject, "conditions") || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"))) {
+			if (!GsonHelper.isValidNode(jsonObject, "conditions") || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"), ICondition.IContext.EMPTY)) {
 				String type = GsonHelper.getAsString(jsonObject, "type");
 				ResourceSelector.Serializer<?> serializer = ResourceSelectorSerializers.INSTANCE.getSerializer(type);
 				if (serializer != null)

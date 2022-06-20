@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -78,8 +78,8 @@ public final class TagUtil {
 		return TagKey.create(Registry.PLACED_FEATURE_REGISTRY, new ResourceLocation(modid, name));
 	}
 
-	public static TagKey<ConfiguredStructureFeature<?, ?>> configuredStructureTag(String modid, String name) {
-		return TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(modid, name));
+	public static TagKey<Structure> structureTag(String modid, String name) {
+		return TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<ConfiguredWorldCarver<?>> configuredCarverTag(String modid, String name) {

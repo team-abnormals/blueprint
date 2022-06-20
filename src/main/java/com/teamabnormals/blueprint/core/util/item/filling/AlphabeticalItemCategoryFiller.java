@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Predicate;
 
@@ -37,7 +38,7 @@ public final class AlphabeticalItemCategoryFiller implements IItemCategoryFiller
 	@Override
 	public void fillItem(Item item, CreativeModeTab group, NonNullList<ItemStack> items) {
 		if (ItemStackUtil.isAllowedInTab(item, group)) {
-			ResourceLocation location = item.getRegistryName();
+			ResourceLocation location = ForgeRegistries.ITEMS.getKey(item);
 			if (location != null) {
 				String itemName = location.getPath();
 				int insert = -1;
@@ -45,7 +46,7 @@ public final class AlphabeticalItemCategoryFiller implements IItemCategoryFiller
 				for (int i = 0; i < items.size(); i++) {
 					Item next = items.get(i).getItem();
 					if (shouldInclude.test(next)) {
-						ResourceLocation nextName = next.getRegistryName();
+						ResourceLocation nextName = ForgeRegistries.ITEMS.getKey(next);
 						if (nextName == null || itemName.compareTo(nextName.getPath()) > 0) {
 							insert = i + 1;
 						} else if (insert == -1) {

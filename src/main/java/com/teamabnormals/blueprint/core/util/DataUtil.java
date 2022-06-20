@@ -107,7 +107,7 @@ public final class DataUtil {
 		try {
 			ADD_MIX_METHOD.invoke(null, input, reactant, result);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new IllegalStateException("Failed to add mix for " + result.getRegistryName() + " from " + reactant.getRegistryName(), e);
+			throw new IllegalStateException("Failed to add mix for " + ForgeRegistries.POTIONS.getKey(result) + " from " + ForgeRegistries.ITEMS.getKey(reactant), e);
 		}
 	}
 
@@ -153,7 +153,7 @@ public final class DataUtil {
 	 * @param profession The profession that will give a gift
 	 */
 	public static void registerVillagerGift(VillagerProfession profession) {
-		ResourceLocation name = profession.getRegistryName();
+		ResourceLocation name = ForgeRegistries.PROFESSIONS.getKey(profession);
 		if (name != null) {
 			GiveGiftToHero.GIFTS.put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
 		}

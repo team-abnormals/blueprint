@@ -35,7 +35,7 @@ public final class BlueprintAndCondition implements ICondition {
 	}
 
 	@Override
-	public boolean test() {
+	public boolean test(IContext context) {
 		return !this.children.isEmpty();
 	}
 
@@ -63,7 +63,7 @@ public final class BlueprintAndCondition implements ICondition {
 					throw new JsonSyntaxException("And condition values must be an array of JsonObjects");
 				}
 				ICondition condition = CraftingHelper.getCondition(elements.getAsJsonObject());
-				if (!condition.test()) {
+				if (!condition.test(IContext.EMPTY)) {
 					children.clear();
 					break;
 				} else {

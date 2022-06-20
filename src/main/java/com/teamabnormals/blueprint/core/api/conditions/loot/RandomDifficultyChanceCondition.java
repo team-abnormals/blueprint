@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSyntaxException;
 import com.teamabnormals.blueprint.core.registry.BlueprintLootConditions;
-import net.minecraft.core.Registry;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.Serializer;
@@ -45,7 +44,7 @@ public class RandomDifficultyChanceCondition implements LootItemCondition {
 
 	@Override
 	public LootItemConditionType getType() {
-		return Registry.LOOT_CONDITION_TYPE.get(BlueprintLootConditions.RANDOM_DIFFICULTY_CHANCE);
+		return BlueprintLootConditions.RANDOM_DIFFICULTY_CHANCE.get();
 	}
 
 	@Override
