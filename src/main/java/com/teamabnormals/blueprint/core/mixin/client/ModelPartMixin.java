@@ -19,6 +19,12 @@ public final class ModelPartMixin implements EndimatablePart {
 	public float yRot;
 	@Shadow
 	public float zRot;
+	@Shadow
+	public float xScale;
+	@Shadow
+	public float yScale;
+	@Shadow
+	public float zScale;
 
 	@Override
 	public void addPos(float x, float y, float z) {
@@ -32,5 +38,12 @@ public final class ModelPartMixin implements EndimatablePart {
 		this.xRot += x;
 		this.yRot += y;
 		this.zRot += z;
+	}
+
+	@Override
+	public void addScale(float x, float y, float z) {
+		this.xScale += x;
+		this.yScale += y;
+		this.zScale += z;
 	}
 }

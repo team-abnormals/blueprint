@@ -2,6 +2,7 @@ package com.teamabnormals.blueprint.core.endimator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import com.teamabnormals.blueprint.core.endimator.model.EndimatorPartPose;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,7 +19,6 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 	public float xOffset, yOffset, zOffset;
-	public float xScale = 1.0F, yScale = 1.0F, zScale = 1.0F;
 	public boolean scaleChildren = true;
 
 	public EndimatorModelPart(List<Cube> cubes, Map<String, ModelPart> children) {
@@ -97,7 +97,20 @@ public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 			Map<String, ModelPart> children = this.children;
 			if (!this.cubes.isEmpty() || !children.isEmpty()) {
 				pose.pushPose();
-				this.translateAndRotate(pose);
+
+				pose.translate(this.x / 16.0F, this.y / 16.0F, this.z / 16.0F);
+				if (this.zRot != 0.0F) {
+					pose.mulPose(Vector3f.ZP.rotation(this.zRot));
+				}
+
+				if (this.yRot != 0.0F) {
+					pose.mulPose(Vector3f.YP.rotation(this.yRot));
+				}
+
+				if (this.xRot != 0.0F) {
+					pose.mulPose(Vector3f.XP.rotation(this.xRot));
+				}
+
 				if (this.scaleChildren) {
 					pose.translate(this.xOffset, this.yOffset, this.zOffset);
 					pose.scale(this.xScale, this.yScale, this.zScale);
@@ -128,13 +141,6 @@ public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 		this.xOffset -= x;
 		this.yOffset -= y;
 		this.zOffset -= z;
-	}
-
-	@Override
-	public void addScale(float x, float y, float z) {
-		this.xScale += x;
-		this.yScale += y;
-		this.zScale += z;
 	}
 
 	/**
