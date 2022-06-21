@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.common.world.modification;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
+import com.google.common.base.Suppliers;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
@@ -20,6 +21,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.CheckerboardColumnBiomeSource;
+import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -62,7 +65,8 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SuppressWarnings("deprecation")
 	public static void onServerAboutToStart(ServerAboutToStartEvent event) {
 		if (INSTANCE == null) return;
 		var unassignedSlices = INSTANCE.unassignedSlices;
@@ -103,6 +107,11 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 					if (size <= 0) size = defaultSize;
 					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForKey, size, seed, location.hashCode());
 					chunkGenerator.biomeSource = moddedBiomeSource;
+					chunkGenerator.featuresPerStep = Suppliers.memoize(() -> {
+						return FeatureSorter.buildFeaturesPerStep(List.copyOf(moddedBiomeSource.possibleBiomes()), (biomeHolder) -> {
+							return chunkGenerator.getBiomeGenerationSettings(biomeHolder).features();
+						}, true);
+					});
 					if (chunkGenerator instanceof NoiseBasedChunkGenerator)
 						((HasModdedBiomeSource) chunkGenerator).setModdedBiomeSource(moddedBiomeSource);
 				}
