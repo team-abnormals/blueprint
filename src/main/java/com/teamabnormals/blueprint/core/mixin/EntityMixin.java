@@ -169,7 +169,7 @@ public abstract class EntityMixin implements IDataManager, Endimatable {
 
 	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;stepOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/Entity;)V"))
 	private void onIsSteppingCarefully(Block block, Level level, BlockPos pos, BlockState state, Entity entity) {
-		if (!EntityStepEvent.onEntityStep(this.level, this.getOnPos(), entity)) {
+		if (!EntityStepEvent.onEntityStep(this.level, this.getOnPos(), state, entity)) {
 			block.stepOn(level, pos, state, entity);
 		}
 	}

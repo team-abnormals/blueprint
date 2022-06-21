@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * A {@link BlueprintStairsBlock} extension that fills its item after the latest vanilla wooden stairs item.
+ * A {@link StairBlock} extension that fills its item after the latest vanilla wooden stairs item.
  */
 public class WoodStairBlock extends StairBlock {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_STAIRS);

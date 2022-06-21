@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.core.events;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
@@ -18,11 +19,13 @@ import net.minecraftforge.eventbus.api.Event;
 public final class EntityStepEvent extends Event {
 	private final Level level;
 	private final BlockPos pos;
+	private final BlockState state;
 	private final Entity entity;
 
-	public EntityStepEvent(Level level, BlockPos pos, Entity entity) {
+	public EntityStepEvent(Level level, BlockPos pos, BlockState state, Entity entity) {
 		this.level = level;
 		this.pos = pos;
+		this.state = state;
 		this.entity = entity;
 	}
 
@@ -31,10 +34,11 @@ public final class EntityStepEvent extends Event {
 	 *
 	 * @param level  The {@link Level} that the {@code pos} is in.
 	 * @param pos    The {@link BlockPos} that the stepped-on block is at.
+	 * @param state  The {@link BlockState} getting stepped on.
 	 * @param entity The {@link Entity} that stepped on the block at {@code pos}.
 	 */
-	public static boolean onEntityStep(Level level, BlockPos pos, Entity entity) {
-		return MinecraftForge.EVENT_BUS.post(new EntityStepEvent(level, pos, entity));
+	public static boolean onEntityStep(Level level, BlockPos pos, BlockState state, Entity entity) {
+		return MinecraftForge.EVENT_BUS.post(new EntityStepEvent(level, pos, state, entity));
 	}
 
 	public Level getLevel() {
@@ -43,6 +47,10 @@ public final class EntityStepEvent extends Event {
 
 	public BlockPos getPos() {
 		return this.pos;
+	}
+
+	public BlockState getState() {
+		return this.state;
 	}
 
 	public Entity getEntity() {

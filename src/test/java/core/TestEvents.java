@@ -3,12 +3,16 @@ package core;
 import com.teamabnormals.blueprint.client.screen.shaking.EmanatingShakeSource;
 import com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
+import com.teamabnormals.blueprint.core.events.AnimateFluidTickEvent;
+import com.teamabnormals.blueprint.core.events.AnimateTickEvent;
+import com.teamabnormals.blueprint.core.events.EntityStepEvent;
 import com.teamabnormals.blueprint.core.util.TradeUtil;
 import com.teamabnormals.blueprint.core.util.TradeUtil.BlueprintTrade;
 import core.registry.TestItems;
 import core.registry.TestTriggers;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,6 +20,7 @@ import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -70,6 +75,27 @@ public final class TestEvents {
 				new BlueprintTrade(TestItems.COW_SPAWN_EGG.get(), 5, 2, 6, 15),
 				new BlueprintTrade(TestItems.COW_SPAWN_EGG.get(), 5, 2, 6, 55)
 		);
+	}
+
+	@SubscribeEvent
+	public static void onEntityStep(EntityStepEvent event) {
+		if (event.getState().getBlock() == Blocks.MAGMA_BLOCK) {
+			event.setCanceled(true);
+		}
+	}
+
+	@SubscribeEvent
+	public static void onAnimateTick(AnimateTickEvent event) {
+		if (event.getState().getBlock() == Blocks.REDSTONE_ORE) {
+			event.setCanceled(true);
+		}
+	}
+
+	@SubscribeEvent
+	public static void onFluidAnimateTick(AnimateFluidTickEvent event) {
+		if (event.getState().is(FluidTags.LAVA)) {
+			event.setCanceled(true);
+		}
 	}
 
 }
