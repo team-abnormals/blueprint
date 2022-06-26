@@ -20,14 +20,16 @@ import java.util.Map;
 public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 	public float xOffset, yOffset, zOffset;
 	public boolean scaleChildren = true;
+	public EndimatorPartPose initialPartPose = new EndimatorPartPose();
 
 	public EndimatorModelPart(List<Cube> cubes, Map<String, ModelPart> children) {
 		super(cubes, children);
 	}
 
 	public EndimatorModelPart(ModelPart part) {
-		super(part.cubes, part.children);
+		this(part.cubes, part.children);
 		this.copyFrom(part);
+		this.setInitialPose(new EndimatorPartPose().setPartPose(part.getInitialPose()));
 	}
 
 	public EndimatorModelPart(ModelPart part, float xOffset, float yOffset, float zOffset, float xScale, float yScale, float zScale, boolean scaleChildren) {
@@ -92,6 +94,16 @@ public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 	}
 
 	@Override
+	public void resetPose() {
+		this.loadPose(this.initialPartPose);
+	}
+
+	@Override
+	public void reset() {
+		this.resetPose();
+	}
+
+	@Override
 	public void render(PoseStack pose, VertexConsumer consumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		if (this.visible) {
 			Map<String, ModelPart> children = this.children;
@@ -152,5 +164,15 @@ public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 		this.loadPose(endimatorPartPose.partPose);
 		this.setOffset(endimatorPartPose.offsetX, endimatorPartPose.offsetY, endimatorPartPose.offsetZ);
 		this.setScale(endimatorPartPose.scaleX, endimatorPartPose.scaleY, endimatorPartPose.scaleZ);
+	}
+
+	/**
+	 * Sets the initial pose values.
+	 *
+	 * @param endimatorPartPose An {@link EndimatorPartPose} instance to set the initial pose values.
+	 */
+	public void setInitialPose(EndimatorPartPose endimatorPartPose) {
+		this.setInitialPose(endimatorPartPose.partPose);
+		this.initialPartPose = endimatorPartPose;
 	}
 }

@@ -33,6 +33,10 @@ public abstract class EndimatorEntityModel<E extends Entity & Endimatable> exten
 	 * @param endimatedEntity The entity to animate for.
 	 */
 	public void animateModel(E endimatedEntity, float partialTicks) {
+		this.endimator.getPoseMap().forEach((partName, posedPart) -> {
+			posedPart.reset();
+			posedPart.part.reset();
+		});
 		PlayableEndimation playingEndimation = endimatedEntity.getPlayingEndimation();
 		Endimation endimation = playingEndimation.asEndimation();
 		if (endimation != null) {
@@ -41,7 +45,7 @@ public abstract class EndimatorEntityModel<E extends Entity & Endimatable> exten
 			if (time > length) {
 				time = length;
 			}
-			this.endimator.apply(endimation, time, Endimator.ResetMode.ALL);
+			this.endimator.apply(endimation, time, Endimator.ResetMode.NONE);
 			endimatedEntity.getEffectHandler().update(endimation, time);
 		}
 	}

@@ -75,6 +75,7 @@ public final class EndimatorPartDefinition {
 		Object2ObjectArrayMap<String, ModelPart> bakedChildren = this.children.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, (entry) -> entry.getValue().bake(xTexSize, yTexSize), (modelPart, modelPart2) -> modelPart, Object2ObjectArrayMap::new));
 		List<ModelPart.Cube> bakedCubes = this.cubes.stream().map((cubeDefinition) -> cubeDefinition.bake(xTexSize, yTexSize)).collect(ImmutableList.toImmutableList());
 		EndimatorModelPart modelpart = new EndimatorModelPart(bakedCubes, bakedChildren);
+		modelpart.setInitialPose(this.partPose);
 		modelpart.loadPose(this.partPose);
 		return modelpart;
 	}

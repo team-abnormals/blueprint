@@ -207,6 +207,15 @@ public final class Endimator {
 	}
 
 	/**
+	 * Gets the {@link #poseMap}.
+	 *
+	 * @return The {@link #poseMap}.
+	 */
+	public Map<String, PosedPart> getPoseMap() {
+		return this.poseMap;
+	}
+
+	/**
 	 * Applies an {@link Endimation} at a given time.
 	 *
 	 * @param endimation An {@link Endimation} to apply.

@@ -46,4 +46,9 @@ public final class ModelPartMixin implements EndimatablePart {
 		this.yScale += y;
 		this.zScale += z;
 	}
+
+	@Override
+	public void reset() {
+		((ModelPart) (Object) this).resetPose();
+	}
 }

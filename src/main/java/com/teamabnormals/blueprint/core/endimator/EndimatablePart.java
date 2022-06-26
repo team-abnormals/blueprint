@@ -55,4 +55,9 @@ public interface EndimatablePart {
 	 */
 	default void addScale(float x, float y, float z) {
 	}
+
+	/**
+	 * Resets the part values to their intitial values.
+	 */
+	default void reset() {}
 }
