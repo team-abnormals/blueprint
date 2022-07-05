@@ -15,5 +15,6 @@
 	"blueprint.screen.slabfish_settings.tooltip": "Settings for the Team Abnormals patron Slabfish hat. Become a patron at %s.",
 	"blueprint.message.redirect": "Redirecting",
 	"biome.blueprint.original_source_marker": "Original Source Marker",
-	"entity.blueprint.boat": "Boat"
+	"entity.blueprint.boat": "Boat",
+	"entity.blueprint.chest_boat": "Boat with Chest"
 }
