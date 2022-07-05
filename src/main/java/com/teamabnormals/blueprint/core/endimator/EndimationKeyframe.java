@@ -24,7 +24,8 @@ import java.util.function.Supplier;
  * @see EndimationInterpolator
  */
 public final class EndimationKeyframe implements Comparable<EndimationKeyframe> {
-	private static final EndimationInterpolator LINEAR = new EndimationInterpolator(InterpolationType.LINEAR, EndimationEasers.LINEAR);
+	public static final EndimationInterpolator LINEAR = new EndimationInterpolator(InterpolationType.LINEAR, EndimationEasers.LINEAR);
+	public static final EndimationInterpolator CATMULL_ROM = new EndimationInterpolator(InterpolationType.CATMULL_ROM, EndimationEasers.LINEAR);
 	private static final Either<Transform, Pair<Transform, Transform>> DEFAULT_TRANSFORM = Either.left(new Transform(() -> 0.0F, () -> 0.0F, () -> 0.0F));
 	private static final Codec<Vector3f> VECTOR_CODEC = Codec.FLOAT.listOf().comapFlatMap((floats) -> {
 		return Util.fixedSize(floats, 3).map((vec) -> new Vector3f(vec.get(0), vec.get(1), vec.get(2)));
@@ -42,7 +43,9 @@ public final class EndimationKeyframe implements Comparable<EndimationKeyframe> 
 		return instance.group(
 				Codec.FLOAT.fieldOf("time").forGetter(keyframe -> keyframe.time),
 				Codec.either(PRE_POST_CODEC, PRE_AND_POST_CODEC).optionalFieldOf("transform", DEFAULT_TRANSFORM).forGetter(keyframe -> {
-					return Either.right(Pair.of(new Transform(keyframe.preX, keyframe.preY, keyframe.preZ), new Transform(keyframe.postX, keyframe.postY, keyframe.postZ)));
+					Transform pre = new Transform(keyframe.preX, keyframe.preY, keyframe.preZ);
+					Transform post = new Transform(keyframe.postX, keyframe.postY, keyframe.postZ);
+					return pre.equals(post) ? Either.left(post) : Either.right(Pair.of(pre, post));
 				}),
 				ErrorableOptionalFieldCodec.errorableOptional("interpolation", EndimationInterpolator.CODEC, LINEAR).forGetter(keyframe -> keyframe.interpolator)
 		).apply(instance, (time, singleTransformOrPreAndPost, interpolator) -> {

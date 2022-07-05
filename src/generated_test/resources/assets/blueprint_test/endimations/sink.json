@@ -1,0 +1,39 @@
+{
+  "length": 1.0,
+  "parts": {
+    "cube": {
+      "position": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.5,
+          "transform": [
+            0.0,
+            -16.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 1.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    }
+  }
+}

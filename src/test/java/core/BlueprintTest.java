@@ -13,6 +13,7 @@ import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
+import core.data.client.TestEndimationProvider;
 import core.data.server.TestAdvancementModifiersProvider;
 import core.data.server.TestChunkGeneratorModifiersProvider;
 import core.data.server.TestLootModifiersProvider;
@@ -86,11 +87,15 @@ public final class BlueprintTest {
 
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
+
 		boolean includeServer = event.includeServer();
 		generator.addProvider(includeServer, new TestAdvancementModifiersProvider(generator));
 		generator.addProvider(includeServer, new TestLootModifiersProvider(generator));
 		generator.addProvider(includeServer, new TestChunkGeneratorModifiersProvider(generator));
 		generator.addProvider(includeServer, new TestModdedBiomeSlicesProvider(generator));
+
+		boolean includeClient = event.includeClient();
+		generator.addProvider(includeClient, new TestEndimationProvider(generator));
 	}
 
 	@OnlyIn(Dist.CLIENT)
