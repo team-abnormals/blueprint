@@ -19,14 +19,13 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.geometry.ISimpleModelGeometry;
-import net.minecraftforge.client.model.pipeline.LightUtil;
+import net.minecraftforge.client.model.IQuadTransformer;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -38,14 +37,15 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * An {@link ISimpleModelGeometry} implementation where its parts are full-bright.
+ * A {@link SimpleUnbakedGeometry} subclass where its parts are full-bright.
  */
-public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
+public class FullbrightModel extends SimpleUnbakedGeometry<FullbrightModel> {
 	private static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(FullbrightBlockPart.class, new FullbrightBlockPart.Deserializer())
 			.registerTypeAdapter(FullbrightBlockPartFace.class, new FullbrightBlockPartFace.Deserializer())
 			.registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
 			.create();
+	private static final IQuadTransformer MAX_LIGHTMAP_TRANSFORMER = IQuadTransformer.applyingLightmap(0x00F000F0);
 
 	private final List<FullbrightBlockPart> elements;
 
@@ -54,29 +54,29 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
 	}
 
 	@Override
-	public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
+	public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
 		for (FullbrightBlockPart part : this.elements) {
 			for (Map.Entry<Direction, BlockElementFace> entry : part.faces.entrySet()) {
 				FullbrightBlockPartFace face = (FullbrightBlockPartFace) entry.getValue();
-				BakedQuad quad = BlockModel.makeBakedQuad(part, face, spriteGetter.apply(owner.resolveTexture(face.texture)), entry.getKey(), modelTransform, modelLocation);
+				BakedQuad quad = BlockModel.bakeFace(part, face, spriteGetter.apply(owner.getMaterial(face.texture)), entry.getKey(), modelTransform, modelLocation);
 				if ((!face.override && part.fullbright) || (face.override && face.fullbright))
-					LightUtil.setLightData(quad, 0xF000F0);
+					MAX_LIGHTMAP_TRANSFORMER.processInPlace(quad);
 
 				if (face.cullForDirection == null) {
-					modelBuilder.addGeneralQuad(quad);
+					modelBuilder.addUnculledFace(quad);
 				} else {
-					modelBuilder.addFaceQuad(modelTransform.getRotation().rotateTransform(face.cullForDirection), quad);
+					modelBuilder.addCulledFace(modelTransform.getRotation().rotateTransform(face.cullForDirection), quad);
 				}
 			}
 		}
 	}
 
 	@Override
-	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+	public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
 		Set<Material> textures = Sets.newHashSet();
 		for (FullbrightBlockPart part : this.elements) {
 			for (BlockElementFace face : part.faces.values()) {
-				textures.add(owner.resolveTexture(face.texture));
+				textures.add(owner.getMaterial(face.texture));
 			}
 		}
 
@@ -84,17 +84,13 @@ public class FullbrightModel implements ISimpleModelGeometry<FullbrightModel> {
 	}
 
 	/**
-	 * An {@link IModelLoader} implementation for {@link FullbrightModel}s.
+	 * An {@link IGeometryLoader} implementation for {@link FullbrightModel}s.
 	 */
-	public enum Loader implements IModelLoader<FullbrightModel> {
+	public enum Loader implements IGeometryLoader<FullbrightModel> {
 		INSTANCE;
 
 		@Override
-		public void onResourceManagerReload(ResourceManager manager) {
-		}
-
-		@Override
-		public FullbrightModel read(JsonDeserializationContext context, JsonObject model) {
+		public FullbrightModel read(JsonObject model, JsonDeserializationContext context) {
 			List<FullbrightBlockPart> list = Lists.newArrayList();
 			if (model.has("elements")) {
 				for (JsonElement jsonelement : GsonHelper.getAsJsonArray(model, "elements")) {

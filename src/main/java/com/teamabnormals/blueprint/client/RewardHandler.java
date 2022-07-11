@@ -100,7 +100,7 @@ public final class RewardHandler {
 	}
 	
 	@SubscribeEvent
-	public static void onEvent(ClientPlayerNetworkEvent.LoggedInEvent event) {
+	public static void onEvent(ClientPlayerNetworkEvent.LoggingIn event) {
 		NetworkUtil.updateSlabfish(SlabfishSetting.getConfig());
 	}
 

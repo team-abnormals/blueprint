@@ -9,8 +9,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedOutEvent;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -48,13 +48,13 @@ public enum ScreenShakeHandler {
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void onCameraSetup(EntityViewRenderEvent.CameraSetup event) {
+	public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
 		INSTANCE.shakeCamera(event);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void onPlayerLoggedOut(LoggedOutEvent event) {
+	public static void onPlayerLoggedOut(LoggingOut event) {
 		INSTANCE.clear();
 	}
 
@@ -134,7 +134,7 @@ public enum ScreenShakeHandler {
 		}
 	}
 
-	private void shakeCamera(EntityViewRenderEvent.CameraSetup event) {
+	private void shakeCamera(ViewportEvent.ComputeCameraAngles event) {
 		double screenShakeScale = BlueprintConfig.CLIENT.screenShakeScale;
 		if (screenShakeScale > 0.0D) {
 			double partialTicks = event.getPartialTick();

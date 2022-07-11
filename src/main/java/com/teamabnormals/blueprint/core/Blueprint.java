@@ -48,10 +48,9 @@ import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -134,7 +133,7 @@ public final class Blueprint {
 		});
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			bus.addListener(EventPriority.NORMAL, false, ColorHandlerEvent.Block.class, event -> {
+			bus.addListener(EventPriority.NORMAL, false, RegisterColorHandlersEvent.Block.class, event -> {
 				ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
 				if (resourceManager instanceof ReloadableResourceManager) {
 					((ReloadableResourceManager) resourceManager).registerReloadListener(ENDIMATION_LOADER);
@@ -211,8 +210,8 @@ public final class Blueprint {
 		ChunkLoaderCapability.register(event);
 	}
 
-	private void modelSetup(ModelRegistryEvent event) {
-		ModelLoaderRegistry.registerLoader(new ResourceLocation(MOD_ID, "fullbright"), FullbrightModel.Loader.INSTANCE);
+	private void modelSetup(RegisterGeometryLoaders event) {
+		event.register("fullbright", FullbrightModel.Loader.INSTANCE);
 	}
 
 	private void registerMessages() {
