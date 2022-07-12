@@ -36,7 +36,7 @@ public final class TestEvents {
 		Entity entity = event.getTarget();
 		if (entity instanceof Cow || entity instanceof Player) {
 			if (!entity.level.isClientSide) {
-				Player player = event.getPlayer();
+				Player player = event.getEntity();
 				if (player instanceof ServerPlayer) {
 					TestTriggers.EMPTY_TEST.trigger((ServerPlayer) player);
 				}
@@ -48,8 +48,8 @@ public final class TestEvents {
 	}
 
 	@SubscribeEvent
-	public static void onLivingTick(LivingEvent.LivingUpdateEvent event) {
-		LivingEntity entity = event.getEntityLiving();
+	public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+		LivingEntity entity = event.getEntity();
 		if (entity.level.isClientSide && (entity instanceof Cow || entity instanceof Player) && TrackedDataManager.INSTANCE.getValue(entity, BlueprintTest.TEST_TRACKED_DATA)) {
 			RandomSource rand = entity.getRandom();
 			for (int i = 0; i < 2; ++i) {

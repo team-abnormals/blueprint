@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.world.NoteBlockEvent;
+import net.minecraftforge.event.level.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,7 +29,7 @@ public final class BlueprintEvents {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onNoteBlockPlay(NoteBlockEvent.Play event) {
 		if (SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS != null) {
-			Level level = (Level) event.getWorld();
+			Level level = (Level) event.getLevel();
 			if (!level.isClientSide()) {
 				BlockPos pos = event.getPos();
 				BlockSource source = new BlockSourceImpl((ServerLevel) level, pos.relative(Direction.DOWN));

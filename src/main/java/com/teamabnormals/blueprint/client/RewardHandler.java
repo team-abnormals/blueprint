@@ -87,7 +87,7 @@ public final class RewardHandler {
 
 	@SubscribeEvent
 	public static void onEvent(RenderPlayerEvent.Post event) {
-		Player player = event.getPlayer();
+		Player player = event.getEntity();
 		UUID uuid = player.getGameProfile().getId();
 		if (REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
 			AbstractClientPlayer clientPlayer = (AbstractClientPlayer) player;

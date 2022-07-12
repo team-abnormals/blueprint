@@ -153,7 +153,7 @@ public final class DataUtil {
 	 * @param profession The profession that will give a gift
 	 */
 	public static void registerVillagerGift(VillagerProfession profession) {
-		ResourceLocation name = ForgeRegistries.PROFESSIONS.getKey(profession);
+		ResourceLocation name = ForgeRegistries.VILLAGER_PROFESSIONS.getKey(profession);
 		if (name != null) {
 			GiveGiftToHero.GIFTS.put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
 		}

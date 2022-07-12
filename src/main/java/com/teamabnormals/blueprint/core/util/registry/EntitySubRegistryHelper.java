@@ -27,7 +27,7 @@ public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityTyp
 	}
 
 	public EntitySubRegistryHelper(RegistryHelper parent) {
-		super(parent, DeferredRegister.create(ForgeRegistries.ENTITIES, parent.getModId()));
+		super(parent, DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, parent.getModId()));
 	}
 
 	/**

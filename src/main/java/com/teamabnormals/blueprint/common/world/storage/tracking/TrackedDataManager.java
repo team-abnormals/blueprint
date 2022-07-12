@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -135,13 +135,13 @@ public enum TrackedDataManager {
 		if (!target.level.isClientSide) {
 			Set<IDataManager.DataEntry<?>> entries = ((IDataManager) target).getEntries(true);
 			if (!entries.isEmpty()) {
-				NetworkUtil.updateTrackedData((ServerPlayer) event.getPlayer(), target.getId(), entries);
+				NetworkUtil.updateTrackedData((ServerPlayer) event.getEntity(), target.getId(), entries);
 			}
 		}
 	}
 
 	@SubscribeEvent
-	public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+		public void onEntityJoinWorld(EntityJoinLevelEvent event) {
 		Entity target = event.getEntity();
 		if (!target.level.isClientSide) {
 			Set<IDataManager.DataEntry<?>> entries = ((IDataManager) target).getEntries(false);
@@ -160,15 +160,16 @@ public enum TrackedDataManager {
 				dataMap.entrySet().removeIf(entry -> !entry.getKey().isPersistent());
 			}
 			dataMap.values().forEach(IDataManager.DataEntry::markDirty);
-			((IDataManager) event.getPlayer()).setDataMap(dataMap);
+			((IDataManager) event.getEntity()).setDataMap(dataMap);
 		}
 	}
 
 	@SubscribeEvent
 	public void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-		IDataManager dataManager = (IDataManager) event.getPlayer();
+		Player player = event.getEntity();
+		IDataManager dataManager = (IDataManager) player;
 		Map<TrackedData<?>, IDataManager.DataEntry<?>> dataMap = dataManager.getDataMap();
 		dataMap.values().forEach(IDataManager.DataEntry::markDirty);
-		((IDataManager) event.getPlayer()).setDataMap(dataMap);
+		((IDataManager) player).setDataMap(dataMap);
 	}
 }

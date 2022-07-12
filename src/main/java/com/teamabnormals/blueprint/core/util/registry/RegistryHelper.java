@@ -83,8 +83,8 @@ public class RegistryHelper {
 		this.putSubHelper(ForgeRegistries.ITEMS, new ItemSubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.BLOCKS, new BlockSubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.SOUND_EVENTS, new SoundSubRegistryHelper(this));
-		this.putSubHelper(ForgeRegistries.BLOCK_ENTITIES, new BlockEntitySubRegistryHelper(this));
-		this.putSubHelper(ForgeRegistries.ENTITIES, new EntitySubRegistryHelper(this));
+		this.putSubHelper(ForgeRegistries.BLOCK_ENTITY_TYPES, new BlockEntitySubRegistryHelper(this));
+		this.putSubHelper(ForgeRegistries.ENTITY_TYPES, new EntitySubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.BIOMES, new BiomeSubRegistryHelper(this));
 	}
 
@@ -115,12 +115,12 @@ public class RegistryHelper {
 
 	@Nonnull
 	public <T extends AbstractSubRegistryHelper<BlockEntityType<?>>> T getBlockEntitySubHelper() {
-		return this.getSubHelper(ForgeRegistries.BLOCK_ENTITIES);
+		return this.getSubHelper(ForgeRegistries.BLOCK_ENTITY_TYPES);
 	}
 
 	@Nonnull
 	public <T extends AbstractSubRegistryHelper<EntityType<?>>> T getEntitySubHelper() {
-		return this.getSubHelper(ForgeRegistries.ENTITIES);
+		return this.getSubHelper(ForgeRegistries.ENTITY_TYPES);
 	}
 
 	@Nonnull
