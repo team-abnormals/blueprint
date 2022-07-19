@@ -28,7 +28,8 @@
     "client.ModelPartMixin",
     "client.PlayerRendererMixin",
     "client.PrimaryLevelDataMixin",
-    "client.SkinCustomizationScreenMixin"
+    "client.SkinCustomizationScreenMixin",
+    "client.SplashManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

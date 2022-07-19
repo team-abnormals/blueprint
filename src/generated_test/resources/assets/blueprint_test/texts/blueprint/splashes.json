@@ -1,0 +1,9 @@
+[
+  {
+    "type": "blueprint:literal",
+    "text": "Blueprint Test!"
+  },
+  {
+    "type": "blueprint_test:custom"
+  }
+]

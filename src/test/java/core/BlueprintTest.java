@@ -2,8 +2,10 @@ package core;
 
 import client.EndimatedWalkingEntityRenderer;
 import client.TestClientEvents;
+import client.TestCustomSplash;
 import client.TestEndimatedBlockEntityRenderer;
 import client.TestEndimatedEntityRenderer;
+import com.teamabnormals.blueprint.client.screen.splash.SplashSerializers;
 import com.teamabnormals.blueprint.common.world.storage.GlobalStorage;
 import com.teamabnormals.blueprint.common.world.storage.tracking.DataProcessors;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
@@ -14,6 +16,7 @@ import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
 import core.data.client.TestEndimationProvider;
+import core.data.client.TestSplashProvider;
 import core.data.server.TestAdvancementModifiersProvider;
 import core.data.server.TestChunkGeneratorModifiersProvider;
 import core.data.server.TestLootModifiersProvider;
@@ -63,6 +66,8 @@ public final class BlueprintTest {
 		TestFeatures.FEATURES.register(modEventBus);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			SplashSerializers.register(new ResourceLocation(MOD_ID, "custom"), TestCustomSplash.CODEC);
+
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(this::rendererSetup);
 			modEventBus.register(TestClientEvents.HUMANOID_ENDIMATORS);
@@ -96,6 +101,7 @@ public final class BlueprintTest {
 
 		boolean includeClient = event.includeClient();
 		generator.addProvider(includeClient, new TestEndimationProvider(generator));
+		generator.addProvider(includeClient, new TestSplashProvider(generator));
 	}
 
 	@OnlyIn(Dist.CLIENT)
