@@ -19,13 +19,11 @@ import java.util.LinkedList;
  */
 public abstract class SplashProvider implements DataProvider {
 	private final String modId;
-	private final String path;
 	private final DataGenerator dataGenerator;
 	private final LinkedList<Splash> splashes = new LinkedList<>();
 
 	protected SplashProvider(String modId, DataGenerator dataGenerator) {
 		this.modId = modId;
-		this.path = "assets/" + modId + "/" + BlueprintSplashManager.PATH;
 		this.dataGenerator = dataGenerator;
 	}
 
@@ -57,7 +55,7 @@ public abstract class SplashProvider implements DataProvider {
 		this.splashes.clear();
 		this.registerSplashes();
 		Path outputFolder = this.dataGenerator.getOutputFolder();
-		Path resolvedPath = outputFolder.resolve(this.path);
+		Path resolvedPath = outputFolder.resolve("assets/" + this.modId + "/" + BlueprintSplashManager.PATH);
 		try {
 			var dataResult = Splash.LIST_CODEC.encodeStart(JsonOps.INSTANCE, this.splashes);
 			var error = dataResult.error();
