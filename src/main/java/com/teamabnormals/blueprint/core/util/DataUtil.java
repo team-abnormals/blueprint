@@ -14,7 +14,6 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockSource;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.data.BuiltinRegistries;
@@ -382,9 +381,10 @@ public final class DataUtil {
 	 *                      register your values under {@code "blueprint:config"} is because there could be duplicate keys
 	 *                      between mods.
 	 * @param configObjects The list of objects to get config keys from. The {@link ConfigKey} values must be unique.
+	 * @return The created {@link LootItemConditionType} to register
 	 * @author abigailfails
 	 */
-	public static void registerConfigCondition(String modId, Object... configObjects) {
+	public static LootItemConditionType registerConfigCondition(String modId, Object... configObjects) {
 		HashMap<String, ForgeConfigSpec.ConfigValue<?>> configValues = new HashMap<>();
 		for (Object object : configObjects) {
 			for (Field field : object.getClass().getDeclaredFields()) {
@@ -398,7 +398,7 @@ public final class DataUtil {
 			}
 		}
 		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, configValues));
-		Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(modId, "config"), new LootItemConditionType(new ConfigLootCondition.ConfigSerializer(modId, configValues)));
+		return new LootItemConditionType(new ConfigLootCondition.ConfigSerializer(modId, configValues));
 	}
 
 	/**
