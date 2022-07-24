@@ -10,5 +10,6 @@ public class BlueprintBiomeTags {
 	public static final TagKey<Biome> IS_DESERT = TagUtil.biomeTag("forge", "is_desert");
 	public static final TagKey<Biome> IS_OUTER_END = TagUtil.biomeTag("forge", "is_outer_end");
 
-	public static final TagKey<Biome> WITHOUT_MONSTER_SPAWNS = TagUtil.biomeTag("forge", "without_monster_spawns");
+	public static final TagKey<Biome> WITH_DEFAULT_MONSTER_SPAWNS = TagUtil.biomeTag("forge", "with_default_monster_spawns");
+	public static final TagKey<Biome> WITHOUT_DEFAULT_MONSTER_SPAWNS = TagUtil.biomeTag("forge", "without_default_monster_spawns");
 }
