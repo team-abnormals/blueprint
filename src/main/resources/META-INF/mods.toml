@@ -28,6 +28,6 @@ license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 [[dependencies.blueprint]]
     modId = "forge"
     mandatory = true
-    versionRange = "[41.0.94,)"
+    versionRange = "[41.0.100,)"
     ordering = "NONE"
     side = "BOTH"
