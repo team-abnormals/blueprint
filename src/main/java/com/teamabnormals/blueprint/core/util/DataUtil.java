@@ -23,7 +23,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagManager;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.behavior.GiveGiftToHero;
+import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -58,6 +60,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * A utility class containing some useful stuff related to Minecraft data modification.
@@ -156,6 +159,16 @@ public final class DataUtil {
 		if (name != null) {
 			GiveGiftToHero.GIFTS.put(profession, new ResourceLocation(name.getNamespace(), "gameplay/hero_of_the_village/" + name.getPath() + "_gift"));
 		}
+	}
+
+	/**
+	 * Adds a {@link SoundEvent} for when a Parrot imitates a specific {@link EntityType}
+	 *
+	 * @param entityType The entity type to imitate
+	 * @param soundEvent The sound event to play when imitating
+	 */
+	public static void registerParrotImitation(EntityType<?> entityType, SoundEvent soundEvent) {
+		Parrot.MOB_SOUND_MAP.put(entityType, soundEvent);
 	}
 
 	/**
