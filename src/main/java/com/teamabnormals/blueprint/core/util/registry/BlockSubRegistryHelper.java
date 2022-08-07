@@ -264,7 +264,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createCompatBlock(String modId, String name, Supplier<? extends B> supplier, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
+		this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(areModsLoaded(modId) ? group : null)));
 		return block;
 	}
 
@@ -295,7 +295,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> RegistryObject<B> createCompatFuelBlock(String modId, String name, Supplier<? extends B> supplier, int burnTime, @Nullable CreativeModeTab group) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().tab(ModList.get().isLoaded(modId) || modId == "indev" ? group : null)));
+		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties().tab(areModsLoaded(modId) ? group : null)));
 		return block;
 	}
 
@@ -324,7 +324,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link BlueprintChestBlock} and the {@link BlueprintTrappedChestBlock}.
 	 */
 	public Pair<RegistryObject<BlueprintChestBlock>, RegistryObject<BlueprintTrappedChestBlock>> createCompatChestBlocks(String compatModId, String name, MaterialColor color) {
-		boolean isModLoaded = ModList.get().isLoaded(compatModId) || compatModId == "indev";
+		boolean isModLoaded = areModsLoaded(compatModId);
 		CreativeModeTab chestGroup = isModLoaded ? CreativeModeTab.TAB_DECORATIONS : null;
 		CreativeModeTab trappedChestGroup = isModLoaded ? CreativeModeTab.TAB_REDSTONE : null;
 		String modId = this.parent.getModId();

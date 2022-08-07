@@ -16,6 +16,7 @@ public final class TestItems {
 	public static final RegistryObject<Item> ITEM = HELPER.createTest();
 	public static final RegistryObject<ForgeSpawnEggItem> COW_SPAWN_EGG = HELPER.createItem("test_spawn_egg", () -> new ForgeSpawnEggItem(TestEntities.COW, 100, 200, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
 	public static final RegistryObject<Item> BOAT = HELPER.createBoatItem("test", TestBlocks.BLOCK);
+	public static final RegistryObject<Item> ITEM_THE_SQUEAKQUEL = HELPER.createCompatItem("fortnite", "item_the_squeakquel", new Item.Properties().fireResistant(), CreativeModeTab.TAB_BREWING);
 
 	public static class Helper extends ItemSubRegistryHelper {
 
