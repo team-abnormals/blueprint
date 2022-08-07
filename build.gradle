@@ -32,6 +32,7 @@ minecraft {
             workingDirectory project.file("run")
             property "forge.logging.markers", "REGISTRIES"
             property "forge.logging.console.level", "debug"
+            property "blueprint.indev", "true"
             arg "-mixin.config=" + project.modId + ".mixins.json"
             arg "-mixin.config=" + "blueprint_test.mixins.json"
             mods {
@@ -47,6 +48,7 @@ minecraft {
             workingDirectory project.file("run")
             property "forge.logging.markers", "REGISTRIES"
             property "forge.logging.console.level", "debug"
+            property "blueprint.indev", "true"
             arg "-mixin.config=" + project.modId + ".mixins.json"
             arg "-mixin.config=" + "blueprint_test.mixins.json"
             mods {
@@ -70,6 +72,7 @@ minecraft {
             property "forge.logging.console.level", "debug"
             property "mixin.env.remapRefMap", "true"
             property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
+            property "blueprint.indev", "true"
             args blueprintDataArgs
             mods {
                 blueprint {
