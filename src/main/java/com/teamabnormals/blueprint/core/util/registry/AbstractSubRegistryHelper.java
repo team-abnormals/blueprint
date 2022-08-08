@@ -55,8 +55,7 @@ public abstract class AbstractSubRegistryHelper<T> implements ISubRegistryHelper
 	 * @return A boolean representing whether all the mods passed in are loaded.
 	 */
 	public static boolean areModsLoaded(String... modIds) {
-		String indev = System.getProperty("blueprint.indev");
-		if (indev != null && indev.equals("true"))
+		if ("true".equals(System.getProperty("blueprint.indev")))
 			return true;
 		ModList modList = ModList.get();
 		for (String mod : modIds)
