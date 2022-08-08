@@ -72,7 +72,7 @@ public final class TreeUtil {
 	 */
 	public static void placeLeafAt(LevelSimulatedRW level, BlockPos pos, Random rand, TreeConfiguration config) {
 		if (isAirOrLeaves(level, pos)) {
-			setForcedState(level, pos, config.foliageProvider.getState(rand, pos).setValue(LeavesBlock.DISTANCE, 1));
+			setForcedState(level, pos, config.foliageProvider.getState(rand, pos));
 		}
 	}
 
