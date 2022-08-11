@@ -8,8 +8,10 @@
     "AdvancementBuilderMixin",
     "BiomeSpecialEffectsInvokerMixin",
     "ConfiguredWorldCarverAccessorMixin",
+    "DedicatedServerMixin",
     "EntityMixin",
     "FluidInvokerMixin",
+    "GameTestServerMixin",
     "ItemInvokerMixin",
     "LanternBlockMixin",
     "ReloadableServerResourcesMixin",
@@ -23,6 +25,7 @@
   "client": [
     "client.CameraInvokerMixin",
     "client.ClientLevelMixin",
+    "client.IntegratedServerMixin",
     "client.MinecraftMixin",
     "client.ModelPartMixin",
     "client.PlayerRendererMixin",

@@ -62,12 +62,11 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 		}
 	}
 
-	@SubscribeEvent
-	public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+	//Called from mixins instead of listening for ServerAboutToStartEvent because Terrablender uses lowest priority for their listener
+	public static void onServerAboutToStart(MinecraftServer server) {
 		if (INSTANCE == null) return;
 		var unassignedSlices = INSTANCE.unassignedSlices;
 		if (unassignedSlices.isEmpty()) return;
-		MinecraftServer server = event.getServer();
 		WorldGenSettings worldGenSettings = server.getWorldData().worldGenSettings();
 		var dimensions = worldGenSettings.dimensions();
 		var keySet = dimensions.keySet();
