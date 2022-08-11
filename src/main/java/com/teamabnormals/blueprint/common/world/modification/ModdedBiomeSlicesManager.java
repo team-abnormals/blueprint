@@ -28,8 +28,6 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -65,13 +63,12 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	//Called from mixins instead of listening for ServerAboutToStartEvent because Terrablender uses lowest priority for their listener
 	@SuppressWarnings("deprecation")
-	public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+	public static void onServerAboutToStart(MinecraftServer server) {
 		if (INSTANCE == null) return;
 		var unassignedSlices = INSTANCE.unassignedSlices;
 		if (unassignedSlices.isEmpty()) return;
-		MinecraftServer server = event.getServer();
 		WorldGenSettings worldGenSettings = server.getWorldData().worldGenSettings();
 		var dimensions = worldGenSettings.dimensions();
 		var keySet = dimensions.keySet();
