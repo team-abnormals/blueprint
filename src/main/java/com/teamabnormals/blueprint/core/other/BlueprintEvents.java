@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core.other;
 
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;
 import com.teamabnormals.blueprint.core.util.DataUtil.CustomNoteBlockInstrument;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -45,5 +47,11 @@ public final class BlueprintEvents {
 				}
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
+		if (event.getState().is(BlueprintBlockTags.LEAF_PILES))
+			event.setNewSpeed(15.0F);
 	}
 }
