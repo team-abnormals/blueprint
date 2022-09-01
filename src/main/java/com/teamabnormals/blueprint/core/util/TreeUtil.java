@@ -1,5 +1,7 @@
 package com.teamabnormals.blueprint.core.util;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -11,11 +13,15 @@ import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.LevelWriter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * A utility class containing some useful methods for trees.
@@ -70,7 +76,7 @@ public final class TreeUtil {
 	 * @param config A {@link TreeConfiguration} to select the foliage state.
 	 */
 	public static void placeLeafAt(LevelSimulatedRW level, BlockPos pos, RandomSource rand, TreeConfiguration config) {
-		if (isAirOrLeaves(level, pos)) {
+		if (TreeFeature.validTreePos(level, pos)) {
 			setForcedState(level, pos, config.foliageProvider.getState(rand, pos));
 		}
 	}
@@ -143,5 +149,54 @@ public final class TreeUtil {
 	 */
 	public static boolean isValidGround(LevelAccessor level, BlockPos pos, SaplingBlock sapling) {
 		return level.getBlockState(pos).canSustainPlant(level, pos, Direction.UP, sapling);
+	}
+
+	/**
+	 * Updates the distances of nearby leaves around a set of logPositions
+	 *
+	 * @param level        A {@link LevelAccessor} to use.
+	 * @param logPositions A {@link Set} of {@link BlockPos} where logs are at.
+	 */
+	public static void updateLeaves(LevelAccessor level, Set<BlockPos> logPositions) {
+		List<Set<BlockPos>> list = Lists.newArrayList();
+
+		for (int j = 0; j < 6; ++j) {
+			list.add(Sets.newHashSet());
+		}
+		BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
+
+		for (BlockPos pos : Lists.newArrayList(logPositions)) {
+			for (Direction direction : Direction.values()) {
+				mutablePos.setWithOffset(pos, direction);
+				if (!logPositions.contains(mutablePos)) {
+					BlockState state = level.getBlockState(mutablePos);
+					if (state.hasProperty(BlockStateProperties.DISTANCE)) {
+						list.get(0).add(mutablePos.immutable());
+						TreeUtil.setForcedState(level, mutablePos, state.setValue(BlockStateProperties.DISTANCE, 1));
+					}
+				}
+			}
+		}
+
+		for (int l = 1; l < 6; ++l) {
+			Set<BlockPos> set = list.get(l - 1);
+			Set<BlockPos> set1 = list.get(l);
+
+			for (BlockPos pos : set) {
+				for (Direction direction1 : Direction.values()) {
+					mutablePos.setWithOffset(pos, direction1);
+					if (!set.contains(mutablePos) && !set1.contains(mutablePos)) {
+						BlockState state = level.getBlockState(mutablePos);
+						if (state.hasProperty(BlockStateProperties.DISTANCE)) {
+							int k = state.getValue(BlockStateProperties.DISTANCE);
+							if (k > l + 1) {
+								TreeUtil.setForcedState(level, mutablePos, state.setValue(BlockStateProperties.DISTANCE, l + 1));
+								set1.add(mutablePos.immutable());
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
