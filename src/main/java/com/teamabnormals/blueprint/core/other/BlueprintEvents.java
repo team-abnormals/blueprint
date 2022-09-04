@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -51,7 +52,7 @@ public final class BlueprintEvents {
 
 	@SubscribeEvent
 	public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-		if (event.getState().is(BlueprintBlockTags.LEAF_PILES))
+		if (event.getState().is(BlueprintBlockTags.LEAF_PILES) && event.getPlayer().getMainHandItem().is(Tags.Items.SHEARS))
 			event.setNewSpeed(15.0F);
 	}
 }
