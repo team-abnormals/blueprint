@@ -24,7 +24,9 @@ public class BlueprintItemTags {
 	public static final TagKey<Item> BUCKETS_POWDER_SNOW = TagUtil.itemTag("forge", "buckets/powder_snow");
 
 	public static final TagKey<Item> BOATABLE_CHESTS = TagUtil.itemTag("quark", "boatable_chests");
+	public static final TagKey<Item> REVERTABLE_CHESTS = TagUtil.itemTag("quark", "revertable_chests");
 	public static final TagKey<Item> LADDERS = TagUtil.itemTag("quark", "ladders");
+	public static final TagKey<Item> HEDGES = TagUtil.itemTag("quark", "hedges");
 	public static final TagKey<Item> VERTICAL_SLABS = TagUtil.itemTag("quark", "vertical_slabs");
 	public static final TagKey<Item> WOODEN_VERTICAL_SLABS = TagUtil.itemTag("quark", "wooden_vertical_slabs");
 }

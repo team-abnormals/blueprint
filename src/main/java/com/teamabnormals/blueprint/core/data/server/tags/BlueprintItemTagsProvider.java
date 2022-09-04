@@ -35,6 +35,8 @@ public class BlueprintItemTagsProvider extends ItemTagsProvider {
 		this.tag(BlueprintItemTags.TOOLS).addTag(BlueprintItemTags.TOOLS_AXES).addTag(BlueprintItemTags.TOOLS_HOES).addTag(BlueprintItemTags.TOOLS_PICKAXES).addTag(BlueprintItemTags.TOOLS_SHOVELS).addTag(BlueprintItemTags.TOOLS_SWORDS);
 
 		this.tag(BlueprintItemTags.BOATABLE_CHESTS);
+		this.tag(BlueprintItemTags.REVERTABLE_CHESTS);
+		this.copy(BlueprintBlockTags.HEDGES, BlueprintItemTags.HEDGES);
 		this.copy(BlueprintBlockTags.LADDERS, BlueprintItemTags.LADDERS);
 		this.copy(BlueprintBlockTags.VERTICAL_SLABS, BlueprintItemTags.VERTICAL_SLABS);
 		this.copy(BlueprintBlockTags.WOODEN_VERTICAL_SLABS, BlueprintItemTags.WOODEN_VERTICAL_SLABS);
