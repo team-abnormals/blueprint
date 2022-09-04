@@ -1,3 +1,6 @@
 {
-  "values": []
+  "replace": false,
+  "values": [
+    "#quark:wooden_vertical_slabs"
+  ]
 }
