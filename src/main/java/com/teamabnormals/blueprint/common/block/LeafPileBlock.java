@@ -19,7 +19,6 @@ import net.minecraft.world.level.material.Fluids;
 /**
  * A {@link Block} extension for leaf pile compatibility with the Woodworks mod.
  */
-@SuppressWarnings("deprecation")
 public class LeafPileBlock extends MultifaceBlock implements SimpleWaterloggedBlock {
 	private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
