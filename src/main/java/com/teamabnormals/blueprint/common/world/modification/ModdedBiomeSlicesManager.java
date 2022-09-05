@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.common.world.modification;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
+import com.google.common.base.Suppliers;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
@@ -101,6 +102,7 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 					int size = moddedBiomeSliceSizes.getIntOrElse(location.toString(), defaultSize);
 					if (size <= 0) size = defaultSize;
 					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForKey, size, seed, location.hashCode());
+					moddedBiomeSource.featuresPerStep = Suppliers.memoize(() -> moddedBiomeSource.buildFeaturesPerStep(List.copyOf(moddedBiomeSource.possibleBiomes()), true));
 					chunkGenerator.biomeSource = moddedBiomeSource;
 					chunkGenerator.runtimeBiomeSource = moddedBiomeSource;
 					if (chunkGenerator instanceof NoiseBasedChunkGenerator)
