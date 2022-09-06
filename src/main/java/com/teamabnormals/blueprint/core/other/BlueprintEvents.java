@@ -52,7 +52,7 @@ public final class BlueprintEvents {
 
 	@SubscribeEvent
 	public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-		if (event.getState().is(BlueprintBlockTags.LEAF_PILES) && event.getPlayer().getMainHandItem().is(Tags.Items.SHEARS))
+		if (event.getState().is(BlueprintBlockTags.LEAF_PILES) && event.getEntity().getMainHandItem().is(Tags.Items.SHEARS))
 			event.setNewSpeed(15.0F);
 	}
 }
