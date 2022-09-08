@@ -162,7 +162,7 @@ public abstract class EntityMixin implements IDataManager, Endimatable {
 		}
 	}
 
-	@Inject(at = @At(value = "HEAD", shift = At.Shift.BY, by = 1), method = "baseTick")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", shift = At.Shift.AFTER), method = "baseTick")
 	private void baseTick(CallbackInfo info) {
 		this.endimateTick();
 	}
