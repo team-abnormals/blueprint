@@ -111,6 +111,7 @@ public final class StructureRepalleterManager extends SimpleJsonResourceReloadLi
 
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager manager, ProfilerFiller profilerFiller) {
+		ASSIGNED_REPALLETERS.clear();
 		var registryAccess = this.registryAccess;
 		var registryOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
 		var configuredStructureFeatureLocations = registryAccess.registry(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY).orElseThrow().keySet();
