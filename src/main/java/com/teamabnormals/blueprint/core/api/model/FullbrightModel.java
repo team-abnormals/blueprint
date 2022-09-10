@@ -23,6 +23,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IQuadTransformer;
+import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
@@ -45,7 +46,7 @@ public class FullbrightModel extends SimpleUnbakedGeometry<FullbrightModel> {
 			.registerTypeAdapter(FullbrightBlockPartFace.class, new FullbrightBlockPartFace.Deserializer())
 			.registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
 			.create();
-	private static final IQuadTransformer MAX_LIGHTMAP_TRANSFORMER = IQuadTransformer.applyingLightmap(0x00F000F0);
+	private static final IQuadTransformer MAX_LIGHTMAP_TRANSFORMER = QuadTransformers.applyingLightmap(0x00F000F0);
 
 	private final List<FullbrightBlockPart> elements;
 
