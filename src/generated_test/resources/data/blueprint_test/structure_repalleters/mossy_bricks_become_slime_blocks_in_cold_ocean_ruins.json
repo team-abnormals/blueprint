@@ -1,0 +1,18 @@
+{
+  "selector": {
+    "type": "names",
+    "config": [
+      "minecraft:ocean_ruin_cold"
+    ],
+    "conditions": [
+      {
+        "modid": "blueprint_test",
+        "type": "forge:mod_loaded"
+      }
+    ]
+  },
+  "priority": "highest",
+  "replaces_block": "minecraft:mossy_stone_bricks",
+  "replaces_with": "minecraft:slime_block",
+  "type": "blueprint:simple"
+}

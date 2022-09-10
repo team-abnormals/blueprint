@@ -1,0 +1,16 @@
+{
+  "selector": "minecraft:mineshaft",
+  "priority": "normal",
+  "replaces_blocks": "minecraft:wooden_fences",
+  "replaces_with": [
+    {
+      "data": "minecraft:crimson_fence",
+      "weight": 1
+    },
+    {
+      "data": "minecraft:warped_fence",
+      "weight": 1
+    }
+  ],
+  "type": "blueprint:weighted"
+}

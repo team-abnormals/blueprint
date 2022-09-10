@@ -1,0 +1,7 @@
+{
+  "selector": "minecraft:village_savanna",
+  "priority": "normal",
+  "replaces_block": "minecraft:acacia_planks",
+  "replaces_with": "minecraft:copper_block",
+  "type": "blueprint:simple"
+}

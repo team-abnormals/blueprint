@@ -28,6 +28,25 @@ import java.util.List;
  */
 public record ObjectModifierGroup<T, S, D>(ConditionedResourceSelector selector, List<ObjectModifier<T, S, D, ?>> modifiers, EventPriority priority) {
 	/**
+	 * Deserializes an {@link EventPriority} instance from a {@link JsonObject} instance.
+	 *
+	 * @param object A {@link JsonObject} instance to get the "priority" member from.
+	 * @return An {@link EventPriority} instance from a {@link JsonObject} instance.
+	 */
+	public static EventPriority deserializePriority(JsonObject object) {
+		if (object.has("priority")) {
+			String priorityName = GsonHelper.getAsString(object, "priority").toUpperCase();
+			for (EventPriority priority : EventPriority.values()) {
+				if (priority.name().equals(priorityName)) {
+					return priority;
+				}
+			}
+			throw new JsonParseException("Unknown priority type: " + priorityName);
+		}
+		return EventPriority.NORMAL;
+	}
+
+	/**
 	 * Deserializes a {@link ObjectModifierGroup} instance from a {@link JsonObject} instance.
 	 *
 	 * @param name          The name of the {@link JsonObject} instance to deserialize.
@@ -44,17 +63,7 @@ public record ObjectModifierGroup<T, S, D>(ConditionedResourceSelector selector,
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T, S, D> ObjectModifierGroup<T, S, D> deserialize(String name, JsonObject object, D additional, ObjectModifierSerializerRegistry<T, S, D> registry, boolean logSkipping, boolean allowPriority) throws JsonParseException {
-		EventPriority priority = null;
-		if (allowPriority && object.has("priority")) {
-			String priorityName = GsonHelper.getAsString(object, "priority").toUpperCase();
-			for (EventPriority test : EventPriority.values()) {
-				if (test.name().equals(priorityName)) {
-					priority = test;
-					break;
-				}
-			}
-			if (priority == null) throw new JsonParseException("Unknown priority type: " + priorityName);
-		} else priority = EventPriority.NORMAL;
+		EventPriority priority = allowPriority ? deserializePriority(object) : EventPriority.NORMAL;
 		ConditionedResourceSelector selector = ConditionedResourceSelector.deserialize("selector", object.get("selector"));
 		if (selector == ConditionedResourceSelector.EMPTY) {
 			if (logSkipping) Blueprint.LOGGER.info("Skipped modifier group named '" + name + "' as its conditions were not met");

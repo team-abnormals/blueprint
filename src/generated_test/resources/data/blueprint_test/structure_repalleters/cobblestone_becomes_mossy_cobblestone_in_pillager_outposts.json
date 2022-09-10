@@ -1,0 +1,7 @@
+{
+  "selector": "minecraft:pillager_outpost",
+  "priority": "normal",
+  "replaces_block": "minecraft:cobblestone",
+  "replaces_with": "minecraft:mossy_cobblestone",
+  "type": "blueprint:simple"
+}
