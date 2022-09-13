@@ -17,10 +17,7 @@ import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
 import core.data.client.TestEndimationProvider;
 import core.data.client.TestSplashProvider;
-import core.data.server.TestAdvancementModifiersProvider;
-import core.data.server.TestChunkGeneratorModifiersProvider;
-import core.data.server.TestLootModifiersProvider;
-import core.data.server.TestModdedBiomeSlicesProvider;
+import core.data.server.*;
 import core.registry.*;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.data.DataGenerator;
@@ -98,6 +95,7 @@ public final class BlueprintTest {
 		generator.addProvider(includeServer, new TestLootModifiersProvider(generator));
 		generator.addProvider(includeServer, new TestChunkGeneratorModifiersProvider(generator));
 		generator.addProvider(includeServer, new TestModdedBiomeSlicesProvider(generator));
+		generator.addProvider(includeServer, new TestStructureRepaletterProvider(generator));
 
 		boolean includeClient = event.includeClient();
 		generator.addProvider(includeClient, new TestEndimationProvider(generator));

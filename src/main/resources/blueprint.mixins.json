@@ -20,6 +20,9 @@
     "ServerLevelMixin",
     "SimpleJsonResourceReloadListenerMixin",
     "SpawnEggItemMixin",
+    "StructurePieceMixin",
+    "StructureStartMixin",
+    "StructureTemplateMixin",
     "SurfaceRulesContextMixin",
     "SurfaceSystemMixin"
   ],
