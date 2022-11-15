@@ -11,6 +11,7 @@ import com.teamabnormals.blueprint.common.world.storage.tracking.DataProcessors;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.events.AnimateTickEvents;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
@@ -85,6 +86,8 @@ public final class BlueprintTest {
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(FMLClientSetupEvent event) {
 		BiomeUtil.markEndBiomeCustomMusic(Biomes.ICE_SPIKES);
+		AnimateTickEvents.BLOCK.registerListener(TestEvents::onAnimateTick);
+		AnimateTickEvents.FLUID.registerListener(TestEvents::onFluidAnimateTick);
 	}
 
 	private void dataSetup(GatherDataEvent event) {
