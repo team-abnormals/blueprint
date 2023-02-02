@@ -1,0 +1,20 @@
+{
+	"blueprint.config.screen_shake_scale": "Шкала тремтіння екрана",
+	"blueprint.config.max_screen_shakers": "Максимальне тремтіння екрану",
+	"blueprint.config.disable_experimental_settings_screen": "Вимкнути вікно експерементальних налаштувань",
+	"blueprint.config.slabfish_hat.enabled": "Капелюх плиториби",
+	"blueprint.config.slabfish_hat.enabled.tooltip": "Перемикає капелюх плиториби. Доступно для патронів Рівна 2+.",
+	"blueprint.config.slabfish_hat.sweater": "Светр",
+	"blueprint.config.slabfish_hat.sweater.tooltip": "Перемикає светр плиториби. Доступно для патронів Рівна 2+.",
+	"blueprint.config.slabfish_hat.backpack": "Рюкзак",
+	"blueprint.config.slabfish_hat.backpack.tooltip": "Перемикає рюкзак плиториби. Доступно для патронів Рівна 3+.",
+	"blueprint.config.slabfish_hat.type": "Тип",
+	"blueprint.config.slabfish_hat.type.tooltip": "Перемикає тид капелюха плиториби. Доступно для патронів Рівна 4+.",
+	"blueprint.screen.slabfish_settings": "Налаштування капелюху плиториби...",
+	"blueprint.screen.slabfish_settings.title": "Налаштування капелюха плиториби",
+	"blueprint.screen.slabfish_settings.tooltip": "Налаштування капелюха плиториби для патронів Team Abnormals. Стати меценатом %s.",
+	"blueprint.message.redirect": "Перенаправлення",
+	"biome.blueprint.original_source_marker": "Маркер оригінального джерела",
+	"entity.blueprint.boat": "Човен",
+	"entity.blueprint.chest_boat": "Човен зі скринею"
+}
