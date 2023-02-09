@@ -18,5 +18,4 @@ public class BlueprintPoiTypeTagsProvider extends PoiTypeTagsProvider {
 	protected void addTags() {
 		this.tag(PoiTypeTags.BEE_HOME).add(BlueprintPoiTypes.BEEHIVE.get());
 	}
-
 }

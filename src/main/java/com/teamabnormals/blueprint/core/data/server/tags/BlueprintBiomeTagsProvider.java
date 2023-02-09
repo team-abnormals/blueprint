@@ -28,9 +28,4 @@ public class BlueprintBiomeTagsProvider extends BiomeTagsProvider {
 				withMonsterSpawns.add(biome);
 		});
 	}
-
-	@Override
-	public String getName() {
-		return "Biome Tags";
-	}
 }
