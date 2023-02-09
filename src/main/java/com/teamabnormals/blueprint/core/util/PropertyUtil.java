@@ -25,7 +25,7 @@ public final class PropertyUtil {
 		return new Item.Properties().food(food).tab(CreativeModeTab.TAB_FOOD);
 	}
 
-	public static final Block.Properties FLOWER = Block.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.GRASS);
+	public static final Block.Properties FLOWER = Block.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(Block.OffsetType.XZ);
 	public static final Block.Properties SAPLING = Block.Properties.of(Material.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.GRASS);
 	public static final Block.Properties LADDER = Block.Properties.of(Material.DECORATION).strength(0.4F).sound(SoundType.LADDER).noOcclusion();
 	public static final Block.Properties FLOWER_POT = Block.Properties.of(Material.DECORATION).instabreak().noOcclusion();
