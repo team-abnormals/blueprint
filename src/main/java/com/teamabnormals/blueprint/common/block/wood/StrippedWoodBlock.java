@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
  * A {@link RotatedPillarBlock} extension that fills its item after the latest vanilla stripped wood item.
  */
 public class StrippedWoodBlock extends RotatedPillarBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.STRIPPED_WARPED_HYPHAE);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.STRIPPED_MANGROVE_WOOD);
 
 	public StrippedWoodBlock(Properties properties) {
 		super(properties);

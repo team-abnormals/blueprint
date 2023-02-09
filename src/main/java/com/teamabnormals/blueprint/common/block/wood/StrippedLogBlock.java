@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
  * A {@link RotatedPillarBlock} extension that fills its item after the latest vanilla stripped log item.
  */
 public class StrippedLogBlock extends RotatedPillarBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.STRIPPED_WARPED_STEM);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.STRIPPED_MANGROVE_LOG);
 
 	public StrippedLogBlock(Properties properties) {
 		super(properties);

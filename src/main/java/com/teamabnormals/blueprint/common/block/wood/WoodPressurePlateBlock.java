@@ -11,7 +11,7 @@ import net.minecraft.world.item.Items;
  * A {@link BlueprintPressurePlateBlock} extension that fills its item after the latest vanilla wooden pressure plate item.
  */
 public class WoodPressurePlateBlock extends BlueprintPressurePlateBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_PRESSURE_PLATE);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_PRESSURE_PLATE);
 
 	public WoodPressurePlateBlock(Sensitivity sensitivityIn, Properties propertiesIn) {
 		super(sensitivityIn, propertiesIn);

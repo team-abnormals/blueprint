@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.DoorBlock;
  * A {@link DoorBlock} extension that fills its item after the latest vanilla wooden door item.
  */
 public class WoodDoorBlock extends DoorBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_DOOR);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_DOOR);
 
 	public WoodDoorBlock(Properties builder) {
 		super(builder);

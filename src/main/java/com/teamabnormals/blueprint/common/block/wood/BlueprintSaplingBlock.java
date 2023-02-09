@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.grower.AbstractTreeGrower;
  * A {@link SaplingBlock} extension that fills its item after the latest vanilla sapling item.
  */
 public class BlueprintSaplingBlock extends SaplingBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.DARK_OAK_SAPLING);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_PROPAGULE);
 
 	public BlueprintSaplingBlock(AbstractTreeGrower tree, Properties properties) {
 		super(tree, properties);

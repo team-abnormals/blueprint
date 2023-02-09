@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.TrapDoorBlock;
  * A {@link TrapDoorBlock} extension that fills its item after the latest vanilla wooden trapdoor item.
  */
 public class WoodTrapDoorBlock extends TrapDoorBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_TRAPDOOR);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_TRAPDOOR);
 
 	public WoodTrapDoorBlock(Properties properties) {
 		super(properties);

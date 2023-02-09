@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.FenceGateBlock;
  * A {@link FenceGateBlock} extension that fills its item after the latest vanilla wooden fence gate item.
  */
 public class WoodFenceGateBlock extends FenceGateBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_FENCE_GATE);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_FENCE_GATE);
 
 	public WoodFenceGateBlock(Properties properties) {
 		super(properties);

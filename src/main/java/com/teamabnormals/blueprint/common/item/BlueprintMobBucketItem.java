@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  * A {@link MobBucketItem} extension that fills itself after the latest vanilla fish bucket item.
  */
 public class BlueprintMobBucketItem extends MobBucketItem {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.TROPICAL_FISH_BUCKET);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.TADPOLE_BUCKET);
 
 	public BlueprintMobBucketItem(Supplier<? extends EntityType<?>> entitySupplier, Supplier<? extends Fluid> fluidSupplier, Supplier<? extends SoundEvent> soundSupplier, Properties properties) {
 		super(entitySupplier, fluidSupplier, soundSupplier, properties);

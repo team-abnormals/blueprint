@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.SlabBlock;
  * A {@link SlabBlock} extension that fills its item after the latest vanilla wooden slab item.
  */
 public class WoodSlabBlock extends SlabBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_SLAB);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_SLAB);
 
 	public WoodSlabBlock(Properties properties) {
 		super(properties);

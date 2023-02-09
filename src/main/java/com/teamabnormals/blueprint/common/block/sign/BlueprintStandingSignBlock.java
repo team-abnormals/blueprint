@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
  * A {@link StandingSignBlock} extension used for Blueprint's standing signs.
  */
 public class BlueprintStandingSignBlock extends StandingSignBlock implements IBlueprintSign {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_SIGN);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_SIGN);
 
 	public BlueprintStandingSignBlock(Properties properties, WoodType woodType) {
 		super(properties, woodType);

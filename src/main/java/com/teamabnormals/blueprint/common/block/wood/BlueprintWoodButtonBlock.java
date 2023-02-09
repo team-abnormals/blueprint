@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.WoodButtonBlock;
  * A {@link WoodButtonBlock} extension that fills its item after the latest vanilla wood button item.
  */
 public class BlueprintWoodButtonBlock extends WoodButtonBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_BUTTON);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_BUTTON);
 
 	public BlueprintWoodButtonBlock(Properties properties) {
 		super(properties);

@@ -20,7 +20,7 @@ import java.util.function.Supplier;
  * A {@link RotatedPillarBlock} extension that fills its item after the latest vanilla wood item.
  */
 public class WoodBlock extends RotatedPillarBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_HYPHAE);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_WOOD);
 	private final Supplier<Block> block;
 
 	public WoodBlock(Supplier<Block> strippedBlock, Properties properties) {

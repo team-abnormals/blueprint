@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.FenceBlock;
  * A {@link FenceBlock} extension that fills its item after the latest vanilla wooden fence item.
  */
 public class WoodFenceBlock extends FenceBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.WARPED_FENCE);
+	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_FENCE);
 
 	public WoodFenceBlock(Properties properties) {
 		super(properties);
