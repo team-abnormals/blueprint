@@ -18,17 +18,41 @@ import net.minecraft.world.level.material.MaterialColor;
  * @author bageldotjpg
  */
 public final class PropertyUtil {
-	public static final Item.Properties TOOL = new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_TOOLS);
-	public static final Item.Properties MISC_TOOL = new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC);
+	@Deprecated public static final Item.Properties TOOL = new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_TOOLS);
+	@Deprecated public static final Item.Properties MISC_TOOL = new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC);
+
+	public static Item.Properties tool() {
+		return new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_TOOLS);
+	}
+
+	public static Item.Properties miscTool() {
+		return new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC);
+	}
 
 	public static Item.Properties food(FoodProperties food) {
 		return new Item.Properties().food(food).tab(CreativeModeTab.TAB_FOOD);
 	}
 
-	public static final Block.Properties FLOWER = Block.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(Block.OffsetType.XZ);
-	public static final Block.Properties SAPLING = Block.Properties.of(Material.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.GRASS);
-	public static final Block.Properties LADDER = Block.Properties.of(Material.DECORATION).strength(0.4F).sound(SoundType.LADDER).noOcclusion();
-	public static final Block.Properties FLOWER_POT = Block.Properties.of(Material.DECORATION).instabreak().noOcclusion();
+	@Deprecated public static final Block.Properties FLOWER = Block.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(Block.OffsetType.XZ);
+	@Deprecated public static final Block.Properties SAPLING = Block.Properties.of(Material.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.GRASS);
+	@Deprecated public static final Block.Properties LADDER = Block.Properties.of(Material.DECORATION).strength(0.4F).sound(SoundType.LADDER).noOcclusion();
+	@Deprecated public static final Block.Properties FLOWER_POT = Block.Properties.of(Material.DECORATION).instabreak().noOcclusion();
+
+	public static Block.Properties flower() {
+		return Block.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(Block.OffsetType.XZ);
+	}
+
+	public static Block.Properties sapling() {
+		return Block.Properties.of(Material.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.GRASS);
+	}
+
+	public static Block.Properties ladder() {
+		return Block.Properties.of(Material.DECORATION).strength(0.4F).sound(SoundType.LADDER).noOcclusion();
+	}
+
+	public static Block.Properties flowerPot() {
+		return Block.Properties.of(Material.DECORATION).instabreak().noOcclusion();
+	}
 
 	public static Block.Properties thatch(MaterialColor color, SoundType soundType) {
 		return Block.Properties.of(Material.GRASS, color).strength(0.5F).sound(soundType).noOcclusion();
@@ -97,7 +121,7 @@ public final class PropertyUtil {
 		}
 
 		public Block.Properties ladder() {
-			return LADDER;
+			return PropertyUtil.ladder();
 		}
 
 		public Block.Properties sapling() {
