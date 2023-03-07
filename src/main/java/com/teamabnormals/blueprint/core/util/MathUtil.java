@@ -2,10 +2,9 @@ package com.teamabnormals.blueprint.core.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.Random;
 
 /**
  * A fairly simple Math utility class.
@@ -43,10 +42,10 @@ public final class MathUtil {
 	 * Flips a number to its negative form with a 50/50 chance.
 	 *
 	 * @param value A value to flip.
-	 * @param rand  A {@link Random} to get the next boolean from.
+	 * @param rand  A {@link RandomSource} to get the next boolean from.
 	 * @return A number that will be in its negative form 50% of the time.
 	 */
-	public static double makeNegativeRandomly(double value, Random rand) {
+	public static double makeNegativeRandomly(double value, RandomSource rand) {
 		return rand.nextBoolean() ? -value : value;
 	}
 
@@ -54,11 +53,11 @@ public final class MathUtil {
 	 * Flips a number to its negative form with a given chance.
 	 *
 	 * @param value  A value to flip.
-	 * @param rand   A {@link Random} to get the next float from.
+	 * @param rand   A {@link RandomSource} to get the next float from.
 	 * @param chance The chance to flip the value.
 	 * @return A number that will be in its negative form when the next float is less than the given chance.
 	 */
-	public static double makeNegativeRandomlyWithFavoritism(double value, Random rand, float chance) {
+	public static double makeNegativeRandomlyWithFavoritism(double value, RandomSource rand, float chance) {
 		return rand.nextFloat() < chance ? -value : value;
 	}
 
