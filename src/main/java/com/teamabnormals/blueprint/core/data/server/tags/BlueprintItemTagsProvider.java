@@ -34,6 +34,9 @@ public class BlueprintItemTagsProvider extends ItemTagsProvider {
 		this.tag(BlueprintItemTags.TOOLS_SWORDS).add(Items.WOODEN_SWORD, Items.STONE_SWORD, Items.IRON_SWORD, Items.GOLDEN_SWORD, Items.DIAMOND_SWORD, Items.NETHERITE_SWORD);
 		this.tag(BlueprintItemTags.TOOLS).addTag(BlueprintItemTags.TOOLS_AXES).addTag(BlueprintItemTags.TOOLS_HOES).addTag(BlueprintItemTags.TOOLS_PICKAXES).addTag(BlueprintItemTags.TOOLS_SHOVELS).addTag(BlueprintItemTags.TOOLS_SWORDS);
 
+		this.tag(BlueprintItemTags.FURNACE_BOATS);
+		this.tag(BlueprintItemTags.LARGE_BOATS);
+
 		this.tag(BlueprintItemTags.BOATABLE_CHESTS);
 		this.tag(BlueprintItemTags.REVERTABLE_CHESTS);
 		this.copy(BlueprintBlockTags.HEDGES, BlueprintItemTags.HEDGES);
