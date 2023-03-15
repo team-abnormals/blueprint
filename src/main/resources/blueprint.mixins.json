@@ -34,6 +34,7 @@
     "client.ModelPartMixin",
     "client.PlayerRendererMixin",
     "client.PrimaryLevelDataMixin",
+    "client.RabbitRendererMixin",
     "client.SkinCustomizationScreenMixin",
     "client.SplashManagerMixin"
   ],
