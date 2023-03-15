@@ -16,7 +16,7 @@ public class BlueprintBiomeTagsProvider extends BiomeTagsProvider {
 
 	@Override
 	protected void addTags() {
-		this.tag(BlueprintBiomeTags.IS_GRASSLAND).add(Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS);
+		this.tag(BlueprintBiomeTags.IS_GRASSLAND).add(Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS, Biomes.MEADOW);
 		this.tag(BlueprintBiomeTags.IS_ICY).add(Biomes.SNOWY_PLAINS, Biomes.ICE_SPIKES);
 		this.tag(BlueprintBiomeTags.IS_DESERT).add(Biomes.DESERT);
 		this.tag(BlueprintBiomeTags.IS_OUTER_END).add(Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS, Biomes.SMALL_END_ISLANDS, Biomes.END_BARRENS);
