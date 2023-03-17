@@ -16,5 +16,6 @@
 	"blueprint.message.redirect": "Redirecting",
 	"biome.blueprint.original_source_marker": "Original Source Marker",
 	"entity.blueprint.boat": "Boat",
-	"entity.blueprint.chest_boat": "Boat with Chest"
+	"entity.blueprint.chest_boat": "Boat with Chest",
+	"entity.blueprint.falling_block": "Falling Block"
 }
