@@ -16,6 +16,7 @@ import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
 import common.block.ChunkLoadTestBlock;
 import common.block.RotatedVoxelShapeTestBlock;
 import common.block.TestEndimatedBlock;
+import common.block.TestFallingBlock;
 import core.BlueprintTest;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
@@ -46,6 +47,7 @@ public final class TestBlocks {
 	public static final RegistryObject<Block> TEST_POST = HELPER.createBlock("test_post", () -> new WoodPostBlock(TEST_STRIPPED_POST, Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> TEST_HEDGE = HELPER.createBlock("test_hedge", () -> new HedgeBlock(TEST_WOOD_SET.planks()), CreativeModeTab.TAB_DECORATIONS);
 	public static final RegistryObject<Block> TEST_THATCH_STAIRS = HELPER.createBlock("test_thatch_stairs", () -> new ThatchStairBlock(Blocks.DIRT.defaultBlockState(), PropertyUtil.thatch(MaterialColor.COLOR_YELLOW, SoundType.AMETHYST)), CreativeModeTab.TAB_DECORATIONS);
+	public static final RegistryObject<Block> TEST_FALLING = HELPER.createBlock("test_falling", () -> new TestFallingBlock(Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_BUILDING_BLOCKS);
 
 	public static final RegistryObject<Block> TEST_ENDIMATED = HELPER.createBlock("test_endimated", () -> new TestEndimatedBlock(Block.Properties.copy(Blocks.DIRT)), CreativeModeTab.TAB_DECORATIONS);
 }
