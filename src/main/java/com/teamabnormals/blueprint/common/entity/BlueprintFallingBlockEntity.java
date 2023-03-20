@@ -39,6 +39,7 @@ import org.apache.logging.log4j.Logger;
 public class BlueprintFallingBlockEntity extends FallingBlockEntity implements IEntityAdditionalSpawnData {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private boolean dropBlockLoot = true;
+	private boolean allowsPlacing = true;
 
 	public BlueprintFallingBlockEntity(EntityType<? extends FallingBlockEntity> type, Level level) {
 		super(type, level);
@@ -119,7 +120,7 @@ public class BlueprintFallingBlockEntity extends FallingBlockEntity implements I
 										this.blockState = this.blockState.setValue(BlockStateProperties.WATERLOGGED, Boolean.valueOf(true));
 									}
 
-									if (this.level.setBlock(blockpos, this.blockState, 3)) {
+									if (this.allowsPlacing && this.level.setBlock(blockpos, this.blockState, 3)) {
 										((ServerLevel) this.level).getChunkSource().chunkMap.broadcast(this, new ClientboundBlockUpdatePacket(blockpos, this.level.getBlockState(blockpos)));
 										this.discard();
 										if (block instanceof Fallable) {
@@ -171,6 +172,10 @@ public class BlueprintFallingBlockEntity extends FallingBlockEntity implements I
 
 	public void setDropBlockLoot(boolean dropLoot) {
 		this.dropBlockLoot = dropLoot;
+	}
+
+	public void setAllowsPlacing(boolean allowsPlacing) {
+		this.allowsPlacing = allowsPlacing;
 	}
 
 	public void setBlockState(BlockState state) {
