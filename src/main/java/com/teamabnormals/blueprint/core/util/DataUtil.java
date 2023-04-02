@@ -32,11 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.FireBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -52,15 +48,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * A utility class containing some useful stuff related to Minecraft data modification.
@@ -169,6 +159,15 @@ public final class DataUtil {
 	 */
 	public static void registerParrotImitation(EntityType<?> entityType, SoundEvent soundEvent) {
 		Parrot.MOB_SOUND_MAP.put(entityType, soundEvent);
+	}
+
+	/**
+	 * Adds an {@link Item} as a valid item for taming Parrots
+	 *
+	 * @param items The items to add as Parrot food
+	 */
+	public static void addParrotFood(Item... items) {
+		Collections.addAll(Parrot.TAME_FOOD, items);
 	}
 
 	/**

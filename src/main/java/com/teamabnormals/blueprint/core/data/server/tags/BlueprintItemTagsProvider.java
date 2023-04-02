@@ -16,6 +16,13 @@ public class BlueprintItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	protected void addTags() {
+		this.tag(BlueprintItemTags.CHICKEN_FOOD);
+		this.tag(BlueprintItemTags.PIG_FOOD);
+		this.tag(BlueprintItemTags.STRIDER_FOOD);
+		this.tag(BlueprintItemTags.STRIDER_TEMPT_ITEMS);
+		this.tag(BlueprintItemTags.OCELOT_FOOD);
+		this.tag(BlueprintItemTags.CAT_FOOD);
+
 		this.tag(BlueprintItemTags.EGGS).add(Items.EGG);
 		this.tag(BlueprintItemTags.MILK).addTag(BlueprintItemTags.BUCKETS_MILK);
 		this.tag(BlueprintItemTags.PUMPKINS).add(Items.PUMPKIN);

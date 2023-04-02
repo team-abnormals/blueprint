@@ -27,6 +27,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
@@ -35,6 +36,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -78,6 +80,7 @@ public final class BlueprintTest {
 		event.enqueueWork(() -> {
 			SpawnPlacements.register(TestEntities.COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, Cow::checkAnimalSpawnRules);
 			DataUtil.concatArrays(ObfuscationReflectionHelper.findField(CreativeModeTab.class, "f_40769_"), CreativeModeTab.TAB_TOOLS, EnchantmentCategory.BOW);
+			DataUtil.addParrotFood(Items.ALLIUM, Items.ALLAY_SPAWN_EGG);
 		});
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(Blueprint.MOD_ID, source -> source.getBlockState().getMaterial() == Material.HEAVY_METAL, SoundEvents.BELL_BLOCK));
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.getBlockState().is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, (id1, id2) -> id2.equals("blueprint") ? -1 : 0));
@@ -92,8 +95,10 @@ public final class BlueprintTest {
 
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
+		ExistingFileHelper helper = event.getExistingFileHelper();
 
 		boolean includeServer = event.includeServer();
+		generator.addProvider(includeServer, new TestItemTagsProvider(generator, helper));
 		generator.addProvider(includeServer, new TestAdvancementModifiersProvider(generator));
 		generator.addProvider(includeServer, new TestLootModifiersProvider(generator));
 		generator.addProvider(includeServer, new TestChunkGeneratorModifiersProvider(generator));

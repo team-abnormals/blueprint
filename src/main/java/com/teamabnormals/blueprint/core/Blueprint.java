@@ -25,6 +25,7 @@ import com.teamabnormals.blueprint.core.data.server.modifiers.BlueprintModdedBio
 import com.teamabnormals.blueprint.core.data.server.tags.*;
 import com.teamabnormals.blueprint.core.endimator.EndimationLoader;
 import com.teamabnormals.blueprint.core.other.BlueprintEvents;
+import com.teamabnormals.blueprint.core.other.tags.BlueprintItemTags;
 import com.teamabnormals.blueprint.core.registry.*;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
@@ -37,12 +38,19 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.Ocelot;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.monster.Strider;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.crafting.CompoundIngredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -189,6 +197,13 @@ public final class Blueprint {
 
 	private void postLoadingSetup(FMLLoadCompleteEvent event) {
 		event.enqueueWork(() -> {
+			Chicken.FOOD_ITEMS = CompoundIngredient.of(Chicken.FOOD_ITEMS, Ingredient.of(BlueprintItemTags.CHICKEN_FOOD));
+			Pig.FOOD_ITEMS = CompoundIngredient.of(Pig.FOOD_ITEMS, Ingredient.of(BlueprintItemTags.PIG_FOOD));
+			Strider.FOOD_ITEMS = CompoundIngredient.of(Strider.FOOD_ITEMS, Ingredient.of(BlueprintItemTags.STRIDER_FOOD));
+			Strider.TEMPT_ITEMS = CompoundIngredient.of(Strider.TEMPT_ITEMS, Ingredient.of(BlueprintItemTags.STRIDER_TEMPT_ITEMS));
+			Ocelot.TEMPT_INGREDIENT = CompoundIngredient.of(Ocelot.TEMPT_INGREDIENT, Ingredient.of(BlueprintItemTags.OCELOT_FOOD));
+			Cat.TEMPT_INGREDIENT = CompoundIngredient.of(Cat.TEMPT_INGREDIENT, Ingredient.of(BlueprintItemTags.CAT_FOOD));
+
 			DataUtil.getSortedAlternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register);
 			BlueprintEvents.SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS = DataUtil.getSortedCustomNoteBlockInstruments();
 		});
