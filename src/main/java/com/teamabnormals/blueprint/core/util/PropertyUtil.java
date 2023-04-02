@@ -1,14 +1,17 @@
 package com.teamabnormals.blueprint.core.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
@@ -78,10 +81,14 @@ public final class PropertyUtil {
 		return entity == EntityType.OCELOT || entity == EntityType.PARROT;
 	}
 
-	public record WoodSetProperties(MaterialColor woodColor, MaterialColor leavesColor, Material material, SoundType sound, SoundType logSound, SoundType leavesSound) {
+	public record WoodSetProperties(MaterialColor woodColor, MaterialColor barkColor, MaterialColor leavesColor, Material material, SoundType sound, SoundType logSound, SoundType leavesSound) {
+
+		public static Builder builder(MaterialColor woodColor, MaterialColor barkColor) {
+			return new Builder(woodColor, barkColor);
+		}
 
 		public static Builder builder(MaterialColor woodColor) {
-			return new Builder(woodColor);
+			return new Builder(woodColor, woodColor);
 		}
 
 		public Block.Properties planks() {
@@ -89,7 +96,7 @@ public final class PropertyUtil {
 		}
 
 		public Block.Properties log() {
-			return Block.Properties.of(this.material, this.woodColor).strength(2.0F).sound(this.logSound);
+			return Block.Properties.of(this.material, state -> state.getValue(BlockStateProperties.AXIS) == Axis.Y ? woodColor : barkColor).strength(2.0F).sound(this.logSound);
 		}
 
 		public Block.Properties leaves() {
@@ -146,14 +153,16 @@ public final class PropertyUtil {
 
 		public static final class Builder {
 			private MaterialColor woodColor;
+			private MaterialColor barkColor;
 			private MaterialColor leavesColor = MaterialColor.PLANT;
 			private Material material = Material.WOOD;
 			private SoundType sound = SoundType.WOOD;
 			private SoundType logSound = SoundType.WOOD;
 			private SoundType leavesSound = SoundType.GRASS;
 
-			private Builder(MaterialColor woodColor) {
+			private Builder(MaterialColor woodColor, MaterialColor barkColor) {
 				this.woodColor = woodColor;
+				this.barkColor = barkColor;
 			}
 
 			public Builder material(Material material) {
@@ -161,8 +170,15 @@ public final class PropertyUtil {
 				return this;
 			}
 
+			@Deprecated
 			public Builder woodColor(MaterialColor woodColor) {
 				this.woodColor = woodColor;
+				return this;
+			}
+
+			@Deprecated
+			public Builder barkColor(MaterialColor barkColor) {
+				this.barkColor = woodColor;
 				return this;
 			}
 
@@ -187,7 +203,7 @@ public final class PropertyUtil {
 			}
 
 			public WoodSetProperties build() {
-				return new WoodSetProperties(this.woodColor, this.leavesColor, this.material, this.sound, this.logSound, this.leavesSound);
+				return new WoodSetProperties(this.barkColor, this.woodColor, this.leavesColor, this.material, this.sound, this.logSound, this.leavesSound);
 			}
 		}
 	}
