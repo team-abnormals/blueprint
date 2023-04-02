@@ -28,6 +28,7 @@ import java.util.Set;
  *
  * @author bageldotjpg
  */
+@Deprecated
 public final class TreeUtil {
 
 	/**

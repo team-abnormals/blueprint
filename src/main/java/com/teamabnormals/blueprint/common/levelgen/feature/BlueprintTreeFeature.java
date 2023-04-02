@@ -5,6 +5,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -127,6 +129,19 @@ public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
 
 	public void addLog(BlockPos pos) {
 		this.logPositions.add(pos.immutable());
+	}
+
+	public void addAxisLog(BlockPos pos, Axis axis, TreeConfiguration config, RandomSource random) {
+		BlockState state = config.trunkProvider.getState(random, pos);
+		if (state.hasProperty(BlockStateProperties.AXIS)) {
+			this.addSpecialLog(pos, state.setValue(BlockStateProperties.AXIS, axis));
+		} else {
+			this.addLog(pos);
+		}
+	}
+
+	public void addAxisLog(BlockPos pos, Direction direction, TreeConfiguration config, RandomSource random) {
+		this.addAxisLog(pos, direction.getAxis(), config, random);
 	}
 
 	public void addSpecialLog(BlockPos pos, BlockState state) {
