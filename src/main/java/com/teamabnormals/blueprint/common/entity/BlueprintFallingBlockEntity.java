@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.common.entity;
 
 import com.teamabnormals.blueprint.common.block.BlueprintFallingBlock;
+import com.teamabnormals.blueprint.core.events.FallingBlockEvent;
 import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,18 +35,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A {@link FallingBlockEntity} extension that uses the loot table of a defined {@link #blockState} to determine its drops.
+ * A {@link FallingBlockEntity} extension with some additional attributes.
+ * The entity is spawned when a {@link BlueprintFallingBlock} falls.
  */
 public class BlueprintFallingBlockEntity extends FallingBlockEntity implements IEntityAdditionalSpawnData {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private boolean dropBlockLoot = true;
+	private boolean dropsBlockLoot = true;
 	private boolean allowsPlacing = true;
 
 	public BlueprintFallingBlockEntity(EntityType<? extends FallingBlockEntity> type, Level level) {
 		super(type, level);
 	}
 
-	private BlueprintFallingBlockEntity(Level level, double x, double y, double z, BlockState state) {
+	public BlueprintFallingBlockEntity(Level level, double x, double y, double z, BlockState state) {
 		this(BlueprintEntityTypes.FALLING_BLOCK.get(), level);
 		this.blockState = state;
 		this.blocksBuilding = true;
@@ -62,7 +64,11 @@ public class BlueprintFallingBlockEntity extends FallingBlockEntity implements I
 	}
 
 	public static BlueprintFallingBlockEntity fall(Level level, BlockPos pos, BlockState state) {
-		BlueprintFallingBlockEntity fallingblockentity = new BlueprintFallingBlockEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, state.hasProperty(BlockStateProperties.WATERLOGGED) ? state.setValue(BlockStateProperties.WATERLOGGED, Boolean.valueOf(false)) : state);
+		BlueprintFallingBlockEntity fallingblockentity = new BlueprintFallingBlockEntity(level, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, state.hasProperty(BlockStateProperties.WATERLOGGED) ? state.setValue(BlockStateProperties.WATERLOGGED, Boolean.valueOf(false)) : state);
+		FallingBlockEntity fallingblockentity1 = FallingBlockEvent.onBlockFall(level, pos, state, fallingblockentity);
+		if (fallingblockentity1 instanceof BlueprintFallingBlockEntity)
+			fallingblockentity = (BlueprintFallingBlockEntity) fallingblockentity1;
+
 		level.setBlock(pos, state.getFluidState().createLegacyBlock(), 3);
 		level.addFreshEntity(fallingblockentity);
 		return fallingblockentity;
@@ -82,108 +88,116 @@ public class BlueprintFallingBlockEntity extends FallingBlockEntity implements I
 
 			this.move(MoverType.SELF, this.getDeltaMovement());
 
-			if (block instanceof BlueprintFallingBlock)
-				((BlueprintFallingBlock) block).fallingEntityTick(this.level, this);
+			if (FallingBlockEvent.onFallingBlockTick(this)) {
+				return;
+			}
 
-			if (!this.isRemoved()) {
-				if (!this.level.isClientSide) {
-					BlockPos blockpos = this.blockPosition();
-					boolean flag = this.blockState.getBlock() instanceof ConcretePowderBlock;
-					boolean flag1 = flag && this.blockState.canBeHydrated(this.level, blockpos, this.level.getFluidState(blockpos), blockpos);
-					double d0 = this.getDeltaMovement().lengthSqr();
-					if (flag && d0 > 1.0D) {
-						BlockHitResult blockhitresult = this.level.clip(new ClipContext(new Vec3(this.xo, this.yo, this.zo), this.position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, this));
-						if (blockhitresult.getType() != HitResult.Type.MISS && this.blockState.canBeHydrated(this.level, blockpos, this.level.getFluidState(blockhitresult.getBlockPos()), blockhitresult.getBlockPos())) {
-							blockpos = blockhitresult.getBlockPos();
-							flag1 = true;
-						}
-					}
-
-					if (!this.onGround && !flag1) {
-						if (!this.level.isClientSide && (this.time > 100 && (blockpos.getY() <= this.level.getMinBuildHeight() || blockpos.getY() > this.level.getMaxBuildHeight()) || this.time > 600)) {
-							if (this.dropItem && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-								this.spawnDrops();
-							}
-
-							this.discard();
-						}
-					} else {
-						BlockState blockstate = this.level.getBlockState(blockpos);
-						this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
-						if (!blockstate.is(Blocks.MOVING_PISTON)) {
-							if (!this.cancelDrop) {
-								boolean flag2 = blockstate.canBeReplaced(new DirectionalPlaceContext(this.level, blockpos, Direction.DOWN, ItemStack.EMPTY, Direction.UP));
-								boolean flag3 = FallingBlock.isFree(this.level.getBlockState(blockpos.below())) && (!flag || !flag1);
-								boolean flag4 = this.blockState.canSurvive(this.level, blockpos) && !flag3;
-								if (flag2 && flag4) {
-									if (this.blockState.hasProperty(BlockStateProperties.WATERLOGGED) && this.level.getFluidState(blockpos).getType() == Fluids.WATER) {
-										this.blockState = this.blockState.setValue(BlockStateProperties.WATERLOGGED, Boolean.valueOf(true));
-									}
-
-									if (this.allowsPlacing && this.level.setBlock(blockpos, this.blockState, 3)) {
-										((ServerLevel) this.level).getChunkSource().chunkMap.broadcast(this, new ClientboundBlockUpdatePacket(blockpos, this.level.getBlockState(blockpos)));
-										this.discard();
-										if (block instanceof Fallable) {
-											((Fallable) block).onLand(this.level, blockpos, this.blockState, blockstate, this);
-										}
-
-										if (this.blockData != null && this.blockState.hasBlockEntity()) {
-											BlockEntity blockentity = this.level.getBlockEntity(blockpos);
-											if (blockentity != null) {
-												CompoundTag compoundtag = blockentity.saveWithoutMetadata();
-
-												for (String s : this.blockData.getAllKeys()) {
-													compoundtag.put(s, this.blockData.get(s).copy());
-												}
-
-												try {
-													blockentity.load(compoundtag);
-												} catch (Exception exception) {
-													LOGGER.error("Failed to load block entity from falling block", exception);
-												}
-
-												blockentity.setChanged();
-											}
-										}
-									} else if (this.dropItem && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-										this.discard();
-										this.callOnBrokenAfterFall(block, blockpos);
-										this.spawnDrops();
-									}
-								} else {
-									this.discard();
-									if (this.dropItem && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-										this.callOnBrokenAfterFall(block, blockpos);
-										this.spawnDrops();
-									}
-								}
-							} else {
-								this.discard();
-								this.callOnBrokenAfterFall(block, blockpos);
-							}
-						}
+			if (!this.level.isClientSide) {
+				BlockPos blockpos = this.blockPosition();
+				boolean flag = this.blockState.getBlock() instanceof ConcretePowderBlock;
+				boolean flag1 = flag && this.blockState.canBeHydrated(this.level, blockpos, this.level.getFluidState(blockpos), blockpos);
+				double d0 = this.getDeltaMovement().lengthSqr();
+				if (flag && d0 > 1.0D) {
+					BlockHitResult blockhitresult = this.level.clip(new ClipContext(new Vec3(this.xo, this.yo, this.zo), this.position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, this));
+					if (blockhitresult.getType() != HitResult.Type.MISS && this.blockState.canBeHydrated(this.level, blockpos, this.level.getFluidState(blockhitresult.getBlockPos()), blockhitresult.getBlockPos())) {
+						blockpos = blockhitresult.getBlockPos();
+						flag1 = true;
 					}
 				}
 
-				this.setDeltaMovement(this.getDeltaMovement().scale(0.98D));
+				if (!this.onGround && !flag1) {
+					if (!this.level.isClientSide && (this.time > 100 && (blockpos.getY() <= this.level.getMinBuildHeight() || blockpos.getY() > this.level.getMaxBuildHeight()) || this.time > 600)) {
+						if (this.dropItem && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+							this.spawnDrops();
+						}
+
+						this.discard();
+					}
+				} else {
+					BlockState blockstate = this.level.getBlockState(blockpos);
+					this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
+					if (!blockstate.is(Blocks.MOVING_PISTON)) {
+						if (!this.cancelDrop) {
+							boolean flag2 = blockstate.canBeReplaced(new DirectionalPlaceContext(this.level, blockpos, Direction.DOWN, ItemStack.EMPTY, Direction.UP));
+							boolean flag3 = FallingBlock.isFree(this.level.getBlockState(blockpos.below())) && (!flag || !flag1);
+							boolean flag4 = this.blockState.canSurvive(this.level, blockpos) && !flag3;
+							if (flag2 && flag4) {
+								if (this.blockState.hasProperty(BlockStateProperties.WATERLOGGED) && this.level.getFluidState(blockpos).getType() == Fluids.WATER) {
+									this.blockState = this.blockState.setValue(BlockStateProperties.WATERLOGGED, Boolean.valueOf(true));
+								}
+
+								if (this.allowsPlacing && this.level.setBlock(blockpos, this.blockState, 3)) {
+									((ServerLevel) this.level).getChunkSource().chunkMap.broadcast(this, new ClientboundBlockUpdatePacket(blockpos, this.level.getBlockState(blockpos)));
+									this.discard();
+									if (block instanceof Fallable) {
+										((Fallable) block).onLand(this.level, blockpos, this.blockState, blockstate, this);
+									}
+
+									if (this.blockData != null && this.blockState.hasBlockEntity()) {
+										BlockEntity blockentity = this.level.getBlockEntity(blockpos);
+										if (blockentity != null) {
+											CompoundTag compoundtag = blockentity.saveWithoutMetadata();
+
+											for (String s : this.blockData.getAllKeys()) {
+												compoundtag.put(s, this.blockData.get(s).copy());
+											}
+
+											try {
+												blockentity.load(compoundtag);
+											} catch (Exception exception) {
+												LOGGER.error("Failed to load block entity from falling block", exception);
+											}
+
+											blockentity.setChanged();
+										}
+									}
+								} else if (this.dropItem && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+									this.discard();
+									this.callOnBrokenAfterFall(block, blockpos);
+									this.spawnDrops();
+								}
+							} else {
+								this.discard();
+								if (this.dropItem && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+									this.callOnBrokenAfterFall(block, blockpos);
+									this.spawnDrops();
+								}
+							}
+						} else {
+							this.discard();
+							this.callOnBrokenAfterFall(block, blockpos);
+						}
+					}
+				}
 			}
+
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.98D));
 		}
 	}
 
-	public void setDropBlockLoot(boolean dropLoot) {
-		this.dropBlockLoot = dropLoot;
+	/**
+	 * Sets the falling block to use the loot table of its block state to determine its drops when broken by a fall.
+	 */
+	public void setDropsBlockLoot(boolean dropsLoot) {
+		this.dropsBlockLoot = dropsLoot;
 	}
 
+	/**
+	 * Sets the falling block to not place itself when it hits the ground. Instead, it will break into its drops.
+	 */
 	public void setAllowsPlacing(boolean allowsPlacing) {
 		this.allowsPlacing = allowsPlacing;
 	}
 
+	/**
+	 * Sets the {@link #blockState} stored by the falling block.
+	 */
 	public void setBlockState(BlockState state) {
 		this.blockState = state;
 	}
 
 	protected void spawnDrops() {
-		if (this.dropBlockLoot) {
+		if (this.dropsBlockLoot) {
 			LootContext.Builder builder = (new LootContext.Builder((ServerLevel) this.level)).withRandom(this.random).withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.TOOL, ItemStack.EMPTY);
 			this.blockState.getDrops(builder).forEach((stack) -> {
 				this.spawnAtLocation(stack);
@@ -196,14 +210,17 @@ public class BlueprintFallingBlockEntity extends FallingBlockEntity implements I
 	@Override
 	protected void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.putBoolean("DropBlockLoot", this.dropBlockLoot);
+		compound.putBoolean("DropsBlockLoot", this.dropsBlockLoot);
+		compound.putBoolean("AllowsPlacing", this.allowsPlacing);
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		if (compound.contains("DropBlockLoot", 99))
-			this.dropBlockLoot = compound.getBoolean("DropBlockLoot");
+		if (compound.contains("DropsBlockLoot", 99))
+			this.dropsBlockLoot = compound.getBoolean("DropsBlockLoot");
+		if (compound.contains("AllowsPlacing", 99))
+			this.allowsPlacing = compound.getBoolean("AllowsPlacing");
 	}
 
 	@Override
