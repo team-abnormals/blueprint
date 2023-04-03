@@ -10,7 +10,7 @@
     "ConfiguredWorldCarverAccessorMixin",
     "DedicatedServerMixin",
     "EntityMixin",
-	"FallingBlockEntityMixin",
+    "FallingBlockEntityMixin",
     "FluidInvokerMixin",
     "GameTestServerMixin",
     "ItemInvokerMixin",
