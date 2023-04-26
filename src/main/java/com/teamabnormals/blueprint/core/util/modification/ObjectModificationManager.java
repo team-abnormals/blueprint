@@ -142,6 +142,8 @@ public class ObjectModificationManager<T, S, D> extends SimpleJsonResourceReload
 			}
 		}
 		Blueprint.LOGGER.info(type + " Modification Manager has loaded {} modifier groups", groupsLoaded);
+		// Empty Selection Space to prevent memory from lying around until the next reload
+		this.selectionSpace = consumer -> {};
 	}
 
 	/**
