@@ -85,7 +85,6 @@ public class RegistryHelper {
 		this.putSubHelper(ForgeRegistries.SOUND_EVENTS, new SoundSubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.BLOCK_ENTITY_TYPES, new BlockEntitySubRegistryHelper(this));
 		this.putSubHelper(ForgeRegistries.ENTITY_TYPES, new EntitySubRegistryHelper(this));
-		this.putSubHelper(ForgeRegistries.BIOMES, new BiomeSubRegistryHelper(this));
 	}
 
 	@SuppressWarnings("unchecked")

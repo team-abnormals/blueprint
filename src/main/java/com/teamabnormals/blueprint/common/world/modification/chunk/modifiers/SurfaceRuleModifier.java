@@ -72,7 +72,7 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 			var dataResult = CODEC.encodeStart(additional, modifier);
 			var result = dataResult.result();
 			if (result.isPresent()) return result.get();
-			throw new JsonParseException(dataResult.error().get().message());
+			throw new JsonParseException(DataResult.error(() -> ).get().message());
 		}
 
 		@Override
@@ -80,7 +80,7 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 			var dataResult = CODEC.decode(additional, element);
 			var result = dataResult.result();
 			if (result.isPresent()) return result.get().getFirst();
-			throw new JsonParseException(dataResult.error().get().message());
+			throw new JsonParseException(DataResult.error(() -> ).get().message());
 		}
 	}
 }

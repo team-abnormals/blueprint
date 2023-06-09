@@ -1,12 +1,12 @@
 package com.teamabnormals.blueprint.core.endimator.interpolation;
 
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.teamabnormals.blueprint.core.endimator.Endimation;
 import com.teamabnormals.blueprint.core.endimator.EndimationKeyframe;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.joml.Vector3f;
 
 /**
  * The interface representing an identifiable function that applies progressed dimensional values from {@link EndimationKeyframe} instances.

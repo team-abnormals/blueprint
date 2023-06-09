@@ -8,21 +8,19 @@ import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A {@link DataProvider} implementation for {@link ModdedBiomeSlice} instances.
@@ -32,65 +30,50 @@ import java.util.function.Supplier;
 public abstract class ModdedBiomeSliceProvider implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final List<Pair<ConditionedResourceSelector, ModdedBiomeSlice>> slices = new LinkedList<>();
-	private final DataGenerator dataGenerator;
+	private final PackOutput.PathProvider pathProvider;
+	private final CompletableFuture<HolderLookup.Provider> lookupProvider;
 	private final String modid;
-	private final Supplier<DynamicOps<JsonElement>> ops;
 
 	/**
 	 * Constructs a new {@link ModdedBiomeSliceProvider} instance.
 	 *
-	 * @param dataGenerator A {@link DataGenerator} instance to use.
-	 * @param modid         The ID of the mod to provide data for.
-	 * @param ops           A {@link DynamicOps} instance for serializing the {@link ModdedBiomeSliceProvider} instances.
+	 * @param modid          The ID of the mod to provide data for.
+	 * @param output         A {@link PackOutput} instance to use.
+	 * @param lookupProvider A completable future {@link HolderLookup.Provider} for registry access.
 	 */
-	protected ModdedBiomeSliceProvider(DataGenerator dataGenerator, String modid, DynamicOps<JsonElement> ops) {
-		this.dataGenerator = dataGenerator;
+	protected ModdedBiomeSliceProvider(String modid, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		this.modid = modid;
-		this.ops = () -> ops;
+		this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "modded_biome_slices");
+		this.lookupProvider = lookupProvider;
 	}
 
-	/**
-	 * Constructs a new {@link ModdedBiomeSliceProvider} instance where the {@link #ops} is {@link RegistryAccess#BUILTIN}.
-	 *
-	 * @param dataGenerator A {@link DataGenerator} instance to use.
-	 * @param modid         The ID of the mod to provide data for.
-	 * @see #ModdedBiomeSliceProvider(DataGenerator, String, DynamicOps)
-	 */
-	protected ModdedBiomeSliceProvider(DataGenerator dataGenerator, String modid) {
-		this.dataGenerator = dataGenerator;
-		this.modid = modid;
-		this.ops = () -> RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.BUILTIN.get());
-	}
-
-	@Override
-	public void run(CachedOutput cachedOutput) {
-		HashSet<ResourceLocation> names = new HashSet<>();
-		Path outputFolder = this.dataGenerator.getOutputFolder();
-		String basePath = "data/" + this.modid + "/modded_biome_slices/";
-		DynamicOps<JsonElement> ops = this.ops.get();
-		var slices = this.slices;
-		slices.clear();
-		this.registerSlices();
-		slices.forEach(pair -> {
-			var slice = pair.getSecond();
-			ResourceLocation name = slice.name();
-			if (!names.add(name)) {
-				throw new IllegalStateException("Duplicate modded biome slice: " + name);
-			} else {
-				Path path = outputFolder.resolve(basePath + name.getPath() + ".json");
+	public CompletableFuture<?> run(CachedOutput cachedOutput) {
+		return this.lookupProvider.thenCompose(provider -> {
+			var slices = this.slices;
+			slices.clear();
+			this.registerSlices(provider);
+			PackOutput.PathProvider pathProvider = this.pathProvider;
+			DynamicOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, provider);
+			return CompletableFuture.completedFuture(slices.stream().map(pair -> {
+				var slice = pair.getSecond();
+				ResourceLocation name = slice.name();
+				Path path = pathProvider.json(name);
 				try {
-					DataProvider.saveStable(cachedOutput, slice.serializeWithSelector(pair.getFirst(), ops), path);
-				} catch (JsonParseException | IOException exception) {
+					return DataProvider.saveStable(cachedOutput, slice.serializeWithSelector(pair.getFirst(), ops), path);
+				} catch (JsonParseException exception) {
 					LOGGER.error("Couldn't save modded biome slice {}", path, exception);
+					return CompletableFuture.completedFuture(null);
 				}
-			}
+			}).toArray(CompletableFuture[]::new));
 		});
 	}
 
 	/**
 	 * Override this method to register your slices.
+	 *
+	 * @param provider A {@link HolderLookup.Provider} instance for registry access.
 	 */
-	protected abstract void registerSlices();
+	protected abstract void registerSlices(HolderLookup.Provider provider);
 
 	/**
 	 * Registers a {@link ModdedBiomeSlice} instance to get generated.

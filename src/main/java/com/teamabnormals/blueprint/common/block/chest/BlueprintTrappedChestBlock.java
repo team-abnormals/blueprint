@@ -28,7 +28,7 @@ public class BlueprintTrappedChestBlock extends ChestBlock implements IChestBloc
 	}
 
 	@Override
-	public String getChestType() {
+	public String getChestMaterialsName() {
 		return this.type;
 	}
 

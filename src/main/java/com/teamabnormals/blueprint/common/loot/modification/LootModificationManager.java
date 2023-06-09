@@ -11,8 +11,8 @@ import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModificationManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.storage.loot.Deserializers;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -34,17 +34,17 @@ import java.lang.reflect.Type;
  * @author SmellyModder (Luke Tonon)
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
-public final class LootModificationManager extends ObjectModificationManager<LootTableLoadEvent, Gson, Pair<Gson, PredicateManager>> {
+public final class LootModificationManager extends ObjectModificationManager<LootTableLoadEvent, Gson, Pair<Gson, LootDataManager>> {
 	public static final String TARGET_DIRECTORY = "loot_tables";
 	private static final Gson GSON = Deserializers.createLootTableSerializer().registerTypeAdapter(LootPool.class, new LootPoolSerializer()).create();
 	private static LootModificationManager INSTANCE = null;
 
-	private LootModificationManager(PredicateManager lootPredicateManager) {
-		super(GSON, TARGET_DIRECTORY, TARGET_DIRECTORY, "Loot", LootModifierSerializers.REGISTRY, Pair.of(GSON, lootPredicateManager), true, true);
+	private LootModificationManager(LootDataManager lootDataManager) {
+		super(GSON, TARGET_DIRECTORY, TARGET_DIRECTORY, "Loot", LootModifierSerializers.REGISTRY, Pair.of(GSON, lootDataManager), true, true);
 	}
 
 	static {
-		registerInitializer("LootTables", (registryAccess, commandSelection, reloadableServerResources) -> INSTANCE = new LootModificationManager(reloadableServerResources.getPredicateManager()));
+		registerInitializer("LootTables", (registryAccess, commandSelection, reloadableServerResources) -> INSTANCE = new LootModificationManager(reloadableServerResources.getLootData()));
 		for (EventPriority priority : EventPriority.values()) {
 			MinecraftForge.EVENT_BUS.addListener(priority, (LootTableLoadEvent event) -> {
 				//Should not happen, but it's possible that this event will get fired before the manager is initialized
@@ -65,12 +65,13 @@ public final class LootModificationManager extends ObjectModificationManager<Loo
 	}
 
 	//Thanks forge...
+	//TODO: Ummm, forge removed the loot pool names???
 	static class LootPoolSerializer extends LootPool.Serializer {
 		private static Constructor<LootPool> LOOT_POOL_CONSTRUCTOR;
 
 		static {
 			try {
-				LOOT_POOL_CONSTRUCTOR = LootPool.class.getDeclaredConstructor(LootPoolEntryContainer[].class, LootItemCondition[].class, LootItemFunction[].class, NumberProvider.class, NumberProvider.class, String.class);
+				LOOT_POOL_CONSTRUCTOR = LootPool.class.getDeclaredConstructor(LootPoolEntryContainer[].class, LootItemCondition[].class, LootItemFunction[].class, NumberProvider.class, NumberProvider.class);
 				LOOT_POOL_CONSTRUCTOR.setAccessible(true);
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();
@@ -87,7 +88,7 @@ public final class LootModificationManager extends ObjectModificationManager<Loo
 			NumberProvider bonusRolls = GsonHelper.getAsObject(jsonobject, "bonus_rolls", ConstantValue.exactly(0.0F), context, NumberProvider.class);
 			if (jsonobject.has("name")) {
 				try {
-					return LOOT_POOL_CONSTRUCTOR.newInstance(alootentry, ailootcondition, ailootfunction, rolls, bonusRolls, GsonHelper.getAsString(jsonobject, "name"));
+					return LOOT_POOL_CONSTRUCTOR.newInstance(alootentry, ailootcondition, ailootfunction, rolls, bonusRolls);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					e.printStackTrace();
 					throw new JsonParseException("Could not initialize a new loot pool: " + e);

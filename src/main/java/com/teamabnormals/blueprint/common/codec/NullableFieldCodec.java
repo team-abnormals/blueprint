@@ -19,17 +19,17 @@ import java.util.stream.Stream;
  * @author SmellyModder (Luke Tonon)
  * @see com.mojang.serialization.codecs.OptionalFieldCodec
  */
-public class ErrorableOptionalFieldCodec<A> extends MapCodec<Optional<A>> {
+public class NullableFieldCodec<A> extends MapCodec<Optional<A>> {
 	private final String name;
 	private final Codec<A> elementCodec;
 
-	public ErrorableOptionalFieldCodec(String name, Codec<A> elementCodec) {
+	public NullableFieldCodec(String name, Codec<A> elementCodec) {
 		this.name = name;
 		this.elementCodec = elementCodec;
 	}
 
-	public static <A> MapCodec<A> errorableOptional(String name, Codec<A> codec, A defaultValue) {
-		return new ErrorableOptionalFieldCodec<>(name, codec).xmap(
+	public static <A> MapCodec<A> nullable(String name, Codec<A> codec, A defaultValue) {
+		return new NullableFieldCodec<>(name, codec).xmap(
 				o -> o.orElse(defaultValue),
 				a -> Objects.equals(a, defaultValue) ? Optional.empty() : Optional.of(a)
 		);
@@ -45,7 +45,7 @@ public class ErrorableOptionalFieldCodec<A> extends MapCodec<Optional<A>> {
 		if (parsed.result().isPresent()) {
 			return parsed.map(Optional::of);
 		}
-		return DataResult.error(parsed.error().get().message());
+		return DataResult.error(() -> () -> parsed.error().get().message());
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class ErrorableOptionalFieldCodec<A> extends MapCodec<Optional<A>> {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		ErrorableOptionalFieldCodec<?> that = (ErrorableOptionalFieldCodec<?>) o;
+		NullableFieldCodec<?> that = (NullableFieldCodec<?>) o;
 		return Objects.equals(this.name, that.name) && Objects.equals(elementCodec, that.elementCodec);
 	}
 

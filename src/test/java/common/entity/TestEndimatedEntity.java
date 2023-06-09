@@ -37,7 +37,7 @@ public class TestEndimatedEntity extends PathfinderMob implements Endimatable {
 		if (this.isNoEndimationPlaying()) {
 			NetworkUtil.setPlayingAnimation(this, this.random.nextBoolean() ? TestEndimations.HOVER : this.random.nextBoolean() ? TestEndimations.SINK : TestEndimations.COMPLEX);
 		}
-		if (this.level.isClientSide) {
+		if (this.level().isClientSide) {
 			TimedEndimation hurt = this.hurt;
 			hurt.tick();
 			if (hurt.isMaxed()) {
@@ -49,7 +49,7 @@ public class TestEndimatedEntity extends PathfinderMob implements Endimatable {
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		if (super.hurt(source, amount)) {
-			this.level.broadcastEntityEvent(this, (byte) 8);
+			this.level().broadcastEntityEvent(this, (byte) 8);
 			return true;
 		}
 		return false;

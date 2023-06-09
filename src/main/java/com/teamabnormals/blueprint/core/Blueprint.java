@@ -16,11 +16,12 @@ import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource;
 import com.teamabnormals.blueprint.common.world.storage.tracking.DataProcessors;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
-import com.teamabnormals.blueprint.core.api.SignManager;
+import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.conditions.BlueprintAndCondition;
 import com.teamabnormals.blueprint.core.api.conditions.QuarkFlagRecipeCondition.Serializer;
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
 import com.teamabnormals.blueprint.core.api.model.FullbrightModel;
+import com.teamabnormals.blueprint.core.data.server.BlueprintDatapackBuiltinEntriesProvider;
 import com.teamabnormals.blueprint.core.data.server.modifiers.BlueprintModdedBiomeSliceProvider;
 import com.teamabnormals.blueprint.core.data.server.tags.*;
 import com.teamabnormals.blueprint.core.endimator.EndimationLoader;
@@ -33,8 +34,10 @@ import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.FallingBlockRenderer;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -71,6 +74,8 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Mod class for the Blueprint mod.
@@ -141,6 +146,7 @@ public final class Blueprint {
 			});
 			bus.addListener(this::clientSetup);
 			bus.addListener(this::modelSetup);
+			bus.addListener(this::registerLayerDefinitions);
 			bus.addListener(this::rendererSetup);
 			bus.addListener(BlueprintSplashManager::onRegisterClientReloadListeners);
 			bus.addListener(RewardHandler::clientSetup);
@@ -159,35 +165,43 @@ public final class Blueprint {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "slabfish_head"), SLABFISH_SETTINGS);
+		event.enqueueWork(WoodTypeRegistryHelper::registerWoodTypes);
 	}
 
 	private void clientSetup(FMLClientSetupEvent event) {
-		event.enqueueWork(SignManager::setupAtlas);
+		event.enqueueWork(WoodTypeRegistryHelper::setupAtlas);
 	}
 
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
+		PackOutput packOutput = generator.getPackOutput();
+		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 		ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
 		boolean includeServer = event.includeServer();
-		BlueprintBlockTagsProvider blockTags = new BlueprintBlockTagsProvider(MOD_ID, generator, fileHelper);
+		BlueprintBlockTagsProvider blockTags = new BlueprintBlockTagsProvider(MOD_ID, packOutput, lookupProvider, fileHelper);
 		generator.addProvider(includeServer, blockTags);
-		generator.addProvider(includeServer, new BlueprintItemTagsProvider(MOD_ID, generator, blockTags, fileHelper));
-		generator.addProvider(includeServer, new BlueprintEntityTypeTagsProvider(MOD_ID, generator, fileHelper));
-		generator.addProvider(includeServer, new BlueprintBiomeTagsProvider(MOD_ID, generator, fileHelper));
-		generator.addProvider(includeServer, new BlueprintPoiTypeTagsProvider(generator, fileHelper));
-		generator.addProvider(includeServer, new BlueprintModdedBiomeSliceProvider(generator));
+		generator.addProvider(includeServer, new BlueprintItemTagsProvider(MOD_ID, packOutput, lookupProvider, blockTags.contentsGetter(), fileHelper));
+		generator.addProvider(includeServer, new BlueprintEntityTypeTagsProvider(MOD_ID, packOutput, lookupProvider, fileHelper));
+		generator.addProvider(includeServer, new BlueprintBiomeTagsProvider(MOD_ID, packOutput, lookupProvider, fileHelper));
+		generator.addProvider(includeServer, new BlueprintPoiTypeTagsProvider(MOD_ID, packOutput, lookupProvider, fileHelper));
+		generator.addProvider(includeServer, new BlueprintDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
+		generator.addProvider(includeServer, new BlueprintModdedBiomeSliceProvider(packOutput, lookupProvider));
 	}
 
 	private void registerOnEvent(RegisterEvent event) {
-		event.register(Registry.BIOME_SOURCE_REGISTRY, (helper) -> {
+		event.register(Registries.BIOME_SOURCE, (helper) -> {
 			helper.register("modded", ModdedBiomeSource.CODEC);
 		});
 	}
 
+	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+		BlueprintBoatTypes.registerLayerDefinitions(event);
+	}
+
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
-		event.registerEntityRenderer(BlueprintEntityTypes.BOAT.get(), BlueprintBoatRenderer::simple);
-		event.registerEntityRenderer(BlueprintEntityTypes.CHEST_BOAT.get(), BlueprintBoatRenderer::chest);
+		event.registerEntityRenderer(BlueprintEntityTypes.BOAT.get(), context -> new BlueprintBoatRenderer(context, false));
+		event.registerEntityRenderer(BlueprintEntityTypes.CHEST_BOAT.get(), context -> new BlueprintBoatRenderer(context, true));
 		event.registerEntityRenderer(BlueprintEntityTypes.FALLING_BLOCK.get(), FallingBlockRenderer::new);
 
 		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.CHEST.get(), BlueprintChestBlockEntityRenderer::new);

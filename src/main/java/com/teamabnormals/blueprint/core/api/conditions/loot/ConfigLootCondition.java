@@ -9,7 +9,7 @@ import com.google.gson.JsonSyntaxException;
 import com.teamabnormals.blueprint.core.api.conditions.ConfigValueCondition;
 import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicate;
 import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicateSerializer;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -43,7 +43,7 @@ public class ConfigLootCondition implements LootItemCondition {
 
 	@Override
 	public LootItemConditionType getType() {
-		return Registry.LOOT_CONDITION_TYPE.get(this.location);
+		return BuiltInRegistries.LOOT_CONDITION_TYPE.get(this.location);
 	}
 
 	@Override

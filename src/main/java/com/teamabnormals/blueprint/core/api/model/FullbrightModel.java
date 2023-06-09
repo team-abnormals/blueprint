@@ -2,10 +2,7 @@ package com.teamabnormals.blueprint.core.api.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gson.*;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.BlockElementFace;
@@ -13,10 +10,7 @@ import net.minecraft.client.renderer.block.model.BlockElementRotation;
 import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -27,14 +21,13 @@ import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -55,7 +48,7 @@ public class FullbrightModel extends SimpleUnbakedGeometry<FullbrightModel> {
 	}
 
 	@Override
-	public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
+	protected void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
 		for (FullbrightBlockPart part : this.elements) {
 			for (Map.Entry<Direction, BlockElementFace> entry : part.faces.entrySet()) {
 				FullbrightBlockPartFace face = (FullbrightBlockPartFace) entry.getValue();
@@ -70,18 +63,6 @@ public class FullbrightModel extends SimpleUnbakedGeometry<FullbrightModel> {
 				}
 			}
 		}
-	}
-
-	@Override
-	public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-		Set<Material> textures = Sets.newHashSet();
-		for (FullbrightBlockPart part : this.elements) {
-			for (BlockElementFace face : part.faces.values()) {
-				textures.add(owner.getMaterial(face.texture));
-			}
-		}
-
-		return textures;
 	}
 
 	/**

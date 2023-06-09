@@ -5,7 +5,7 @@ license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 
 [[mods]]
     modId = "blueprint"
-    version = "6.2.0"
+    version = "7.0.0"
     logoFile = "logo.png"
     itemIcon = "minecraft:creeper_head"
     configBackground = "blueprint:textures/blueprint.png"
@@ -21,13 +21,13 @@ license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 [[dependencies.blueprint]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.19.2,1.19.3)"
+    versionRange = "[1.20,)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.blueprint]]
     modId = "forge"
     mandatory = true
-    versionRange = "[43.1.0,)"
+    versionRange = "[46.0.1,)"
     ordering = "NONE"
     side = "BOTH"

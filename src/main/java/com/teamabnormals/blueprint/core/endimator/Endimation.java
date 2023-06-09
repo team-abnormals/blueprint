@@ -15,7 +15,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-import static com.teamabnormals.blueprint.common.codec.ErrorableOptionalFieldCodec.errorableOptional;
+import static com.teamabnormals.blueprint.common.codec.NullableFieldCodec.nullable;
 
 /**
  * The class that represents a keyframe animation usable by {@link Endimator}.
@@ -36,7 +36,7 @@ public final class Endimation {
 				Codec.FLOAT.optionalFieldOf("length").forGetter(endimation -> Optional.of(endimation.length)),
 				Codec.FLOAT.optionalFieldOf("blend_weight", 1.0F).forGetter(endimation -> endimation.blendWeight),
 				KeyframesCodec.INSTANCE.fieldOf("parts").forGetter(endimation -> endimation.partKeyframes),
-				errorableOptional("effects", ConfiguredEndimationEffect.CODEC.listOf(), NO_EFFECTS).forGetter(endimation -> Arrays.asList(endimation.effects))
+				nullable("effects", ConfiguredEndimationEffect.CODEC.listOf(), NO_EFFECTS).forGetter(endimation -> Arrays.asList(endimation.effects))
 		).apply(instance, ((length, blendWeight, keyframes, effects) -> {
 			ConfiguredEndimationEffect<?, ?>[] effectArray = effects.toArray(new ConfiguredEndimationEffect[0]);
 			Arrays.sort(effectArray);
@@ -138,7 +138,7 @@ public final class Endimation {
 			var mapLikeDataResult = ops.getMap(input);
 			var mapLikeDataResultError = mapLikeDataResult.error();
 			if (mapLikeDataResultError.isPresent()) {
-				return DataResult.error(mapLikeDataResultError.get().message());
+				return DataResult.error(() -> mapLikeDataResultError.get().message());
 			} else {
 				MapLike<T> mapLike = mapLikeDataResult.result().get();
 				Iterator<Pair<T, T>> iterator = mapLike.entries().iterator();
@@ -154,10 +154,10 @@ public final class Endimation {
 						if (partKeyframesError.isEmpty()) {
 							map.put(name, partKeyframesResult.result().get().getFirst());
 						} else {
-							return DataResult.error(partKeyframesError.get().message());
+							return DataResult.error(() -> partKeyframesError.get().message());
 						}
 					} else {
-						return DataResult.error(partResultError.get().message());
+						return DataResult.error(() -> partResultError.get().message());
 					}
 				}
 				return DataResult.success(Pair.of(map, input));
@@ -187,7 +187,7 @@ public final class Endimation {
 			var mapLikeDataResult = ops.getMap(input);
 			var mapLikeDataResultError = mapLikeDataResult.error();
 			if (mapLikeDataResultError.isPresent()) {
-				return DataResult.error(mapLikeDataResultError.get().message());
+				return DataResult.error(() -> mapLikeDataResultError.get().message());
 			} else {
 				MapLike<T> mapLike = mapLikeDataResult.result().get();
 				Int2ObjectOpenHashMap<ConfiguredEndimationEffect<?, ?>[]> effects = new Int2ObjectOpenHashMap<>((int) mapLike.entries().count());
@@ -210,20 +210,20 @@ public final class Endimation {
 									var configuredResult = ConfiguredEndimationEffect.CODEC.decode(ops, effectRaw);
 									var configuredResultError = configuredResult.error();
 									if (configuredResultError.isPresent()) {
-										return DataResult.error(configuredResultError.get().message());
+										return DataResult.error(() -> configuredResultError.get().message());
 									} else {
 										configuredEndimationEffects.add(configuredResult.result().get().getFirst());
 									}
 								}
 								effects.put(tick, configuredEndimationEffects.toArray(new ConfiguredEndimationEffect[0]));
 							} else {
-								return DataResult.error(configuredEffectsResultError.get().message());
+								return DataResult.error(() -> configuredEffectsResultError.get().message());
 							}
 						} catch (NumberFormatException exception) {
-							return DataResult.error("Failed to convert effect tick " + tickString + " to an integer!");
+							return DataResult.error(() -> "Failed to convert effect tick " + tickString + " to an integer!");
 						}
 					} else {
-						return DataResult.error(tickResultError.get().message());
+						return DataResult.error(() -> tickResultError.get().message());
 					}
 				}
 				return DataResult.success(Pair.of(effects, input));
@@ -421,10 +421,10 @@ public final class Endimation {
 		private static final List<EndimationKeyframe> EMPTY = new ArrayList<>(0);
 		public static final Codec<PartKeyframes> CODEC = RecordCodecBuilder.create((instance) -> {
 			return instance.group(
-					errorableOptional("position", EndimationKeyframe.CODEC.listOf(), EMPTY).forGetter(partKeyframes -> Arrays.asList(partKeyframes.position)),
-					errorableOptional("rotation", EndimationKeyframe.CODEC.listOf(), EMPTY).forGetter(partKeyframes -> Arrays.asList(partKeyframes.rotation)),
-					errorableOptional("offset", EndimationKeyframe.CODEC.listOf(), EMPTY).forGetter(partKeyframes -> Arrays.asList(partKeyframes.offset)),
-					errorableOptional("scale", EndimationKeyframe.CODEC.listOf(), EMPTY).forGetter(partKeyframes -> Arrays.asList(partKeyframes.scale))
+					nullable("position", EndimationKeyframe.CODEC.listOf(), EMPTY).forGetter(partKeyframes -> Arrays.asList(partKeyframes.position)),
+					nullable("rotation", EndimationKeyframe.CODEC.listOf(), EMPTY).forGetter(partKeyframes -> Arrays.asList(partKeyframes.rotation)),
+					nullable("offset", EndimationKeyframe.CODEC.listOf(), EMPTY).forGetter(partKeyframes -> Arrays.asList(partKeyframes.offset)),
+					nullable("scale", EndimationKeyframe.CODEC.listOf(), EMPTY).forGetter(partKeyframes -> Arrays.asList(partKeyframes.scale))
 			).apply(instance, (move, rotate, offset, scale) -> new PartKeyframes(convertAndSort(move), convertAndSort(rotate), convertAndSort(offset), convertAndSort(scale)));
 		});
 		private final EndimationKeyframe[] position;

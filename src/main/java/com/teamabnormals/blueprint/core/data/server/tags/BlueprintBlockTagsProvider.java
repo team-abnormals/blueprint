@@ -1,22 +1,26 @@
 package com.teamabnormals.blueprint.core.data.server.tags;
 
 import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
+import java.util.concurrent.CompletableFuture;
 
 public class BlueprintBlockTagsProvider extends BlockTagsProvider {
 
-	public BlueprintBlockTagsProvider(String modid, DataGenerator generator, ExistingFileHelper fileHelper) {
-		super(generator, modid, fileHelper);
+	public BlueprintBlockTagsProvider(String modid, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+		super(output, lookupProvider, modid, fileHelper);
 	}
 
 	@Override
-	protected void addTags() {
+	protected void addTags(HolderLookup.Provider provider) {
 		this.tag(BlueprintBlockTags.LEAF_PILES);
 		this.tag(BlueprintBlockTags.HEDGES);
 		this.tag(BlueprintBlockTags.LADDERS);
 		this.tag(BlueprintBlockTags.VERTICAL_SLABS).addTag(BlueprintBlockTags.WOODEN_VERTICAL_SLABS);
 		this.tag(BlueprintBlockTags.WOODEN_VERTICAL_SLABS);
 	}
+
 }

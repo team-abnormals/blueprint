@@ -2,20 +2,24 @@ package com.teamabnormals.blueprint.core.data.server.tags;
 
 import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;
 import com.teamabnormals.blueprint.core.other.tags.BlueprintItemTags;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
+import java.util.concurrent.CompletableFuture;
 
 public class BlueprintItemTagsProvider extends ItemTagsProvider {
 
-	public BlueprintItemTagsProvider(String modid, DataGenerator generator, BlockTagsProvider blockTags, ExistingFileHelper fileHelper) {
-		super(generator, blockTags, modid, fileHelper);
+	public BlueprintItemTagsProvider(String modid, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> tagLookup, ExistingFileHelper fileHelper) {
+		super(output, lookupProvider, tagLookup, modid, fileHelper);
 	}
 
 	@Override
-	protected void addTags() {
+	protected void addTags(HolderLookup.Provider p_256380_) {
 		this.tag(BlueprintItemTags.CHICKEN_FOOD);
 		this.tag(BlueprintItemTags.PIG_FOOD);
 		this.tag(BlueprintItemTags.STRIDER_FOOD);
@@ -51,4 +55,5 @@ public class BlueprintItemTagsProvider extends ItemTagsProvider {
 		this.copy(BlueprintBlockTags.VERTICAL_SLABS, BlueprintItemTags.VERTICAL_SLABS);
 		this.copy(BlueprintBlockTags.WOODEN_VERTICAL_SLABS, BlueprintItemTags.WOODEN_VERTICAL_SLABS);
 	}
+
 }

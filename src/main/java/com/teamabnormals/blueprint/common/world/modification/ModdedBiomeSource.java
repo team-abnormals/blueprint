@@ -18,9 +18,7 @@ import net.minecraft.world.level.biome.Climate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -51,24 +49,15 @@ public final class ModdedBiomeSource extends BiomeSource {
 	}
 
 	public ModdedBiomeSource(Registry<Biome> biomes, BiomeSource originalSource, ArrayList<ModdedBiomeSlice> slices, int size, long seed, long slicesSeed, long slicesZoomSeed) {
-		super(new ArrayList<>(combinePossibleBiomes(originalSource.possibleBiomes(), slices, biomes)));
 		this.biomes = biomes;
 		this.originalSource = originalSource;
 		this.slices = slices.toArray(new ModdedBiomeSlice[0]);
 		this.totalWeight = Stream.of(this.slices).map(ModdedBiomeSlice::weight).reduce(0, Integer::sum);
 		this.size = size;
-		this.originalSourceMarker = biomes.getOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER.getKey());
+		this.originalSourceMarker = biomes.getOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER);
 		this.slicesSeed = slicesSeed;
 		this.slicesZoomSeed = slicesZoomSeed;
 		this.obfuscatedSeed = BiomeManager.obfuscateSeed(seed);
-	}
-
-	private static Set<Holder<Biome>> combinePossibleBiomes(Set<Holder<Biome>> possibleBiomes, ArrayList<ModdedBiomeSlice> slices, Registry<Biome> registry) {
-		Set<Holder<Biome>> biomes = new HashSet<>(possibleBiomes);
-		for (ModdedBiomeSlice slice : slices) {
-			biomes.addAll(slice.provider().getAdditionalPossibleBiomes(registry));
-		}
-		return biomes;
 	}
 
 	@Override
@@ -82,6 +71,11 @@ public final class ModdedBiomeSource extends BiomeSource {
 	@Override
 	protected Codec<? extends BiomeSource> codec() {
 		return CODEC;
+	}
+
+	@Override
+	protected Stream<Holder<Biome>> collectPossibleBiomes() {
+		return Stream.concat(this.originalSource.possibleBiomes().stream(), Arrays.stream(this.slices).flatMap(slice -> slice.provider().getAdditionalPossibleBiomes(this.biomes).stream()));
 	}
 
 	@Override

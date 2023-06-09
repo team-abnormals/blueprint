@@ -10,7 +10,6 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
@@ -19,6 +18,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
@@ -101,7 +101,7 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 			modifier.description.ifPresent(description -> jsonObject.add("description", Component.Serializer.toJsonTree(description)));
 			modifier.icon.ifPresent(icon -> {
 				JsonObject iconObject = new JsonObject();
-				iconObject.addProperty("item", Registry.ITEM.getKey(icon.getItem()).toString());
+				iconObject.addProperty("item", ForgeRegistries.ITEMS.getKey(icon.getItem()).toString());
 				if (icon.hasTag()) {
 					iconObject.addProperty("nbt", icon.getTag().toString());
 				}

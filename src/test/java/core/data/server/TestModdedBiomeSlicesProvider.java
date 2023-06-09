@@ -8,9 +8,9 @@ import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
 import core.BlueprintTest;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
@@ -19,18 +19,18 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public final class TestModdedBiomeSlicesProvider extends ModdedBiomeSliceProvider {
 
-	public TestModdedBiomeSlicesProvider(DataGenerator dataGenerator) {
-		super(dataGenerator, BlueprintTest.MOD_ID);
+	public TestModdedBiomeSlicesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		super(BlueprintTest.MOD_ID, output, lookupProvider);
 	}
 
 	@Override
-	protected void registerSlices() {
+	protected void registerSlices(HolderLookup.Provider provider) {
 		Climate.Parameter zero = Climate.Parameter.point(0.0F);
-		RegistryAccess.Frozen registryAccess = RegistryAccess.BUILTIN.get();
-		var biomes = registryAccess.registryOrThrow(Registry.BIOME_REGISTRY);
+		var biomes = provider.lookup(Registries.BIOME).orElseThrow();
 		this.registerSlice(
 				"end_checkerboard",
 				new ConditionedResourceSelector(new NamesResourceSelector("minecraft:the_end"), new ModLoadedCondition(Blueprint.MOD_ID)),

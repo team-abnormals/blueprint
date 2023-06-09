@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 
 import javax.annotation.Nullable;
@@ -23,11 +23,11 @@ public final class BlueprintShaders {
 
 	public static void registerShaders(RegisterShadersEvent event) {
 		try {
-			ResourceManager resourceManager = event.getResourceManager();
-			event.registerShader(new ShaderInstance(resourceManager, new ResourceLocation(Blueprint.MOD_ID, "rendertype_entity_unshaded_cutout"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
+			ResourceProvider resourceProvider = event.getResourceProvider();
+			event.registerShader(new ShaderInstance(resourceProvider, new ResourceLocation(Blueprint.MOD_ID, "rendertype_entity_unshaded_cutout"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
 				rendertypeEntityUnshadedCutout = shaderInstance;
 			});
-			event.registerShader(new ShaderInstance(resourceManager, new ResourceLocation(Blueprint.MOD_ID, "rendertype_entity_unshaded_translucent"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
+			event.registerShader(new ShaderInstance(resourceProvider, new ResourceLocation(Blueprint.MOD_ID, "rendertype_entity_unshaded_translucent"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
 				rendertypeEntityUnshadedTranslucent = shaderInstance;
 			});
 		} catch (IOException e) {

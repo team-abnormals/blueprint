@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import core.BlueprintTest;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.fml.common.Mod;
@@ -15,9 +14,8 @@ public final class TestItems {
 	private static final Helper HELPER = BlueprintTest.REGISTRY_HELPER.getItemSubHelper();
 
 	public static final RegistryObject<Item> ITEM = HELPER.createTest();
-	public static final RegistryObject<ForgeSpawnEggItem> COW_SPAWN_EGG = HELPER.createItem("test_spawn_egg", () -> new ForgeSpawnEggItem(TestEntities.COW, 100, 200, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
-	public static final Pair<RegistryObject<Item>, RegistryObject<Item>> BOAT = HELPER.createBoatAndChestBoatItem("test", TestBlocks.BLOCK);
-	public static final RegistryObject<Item> ITEM_THE_SQUEAKQUEL = HELPER.createCompatItem("fortnite", "item_the_squeakquel", new Item.Properties().fireResistant(), CreativeModeTab.TAB_BREWING);
+	public static final RegistryObject<ForgeSpawnEggItem> COW_SPAWN_EGG = HELPER.createItem("test_spawn_egg", () -> new ForgeSpawnEggItem(TestEntities.COW, 100, 200, new Item.Properties()));
+	public static final Pair<RegistryObject<Item>, RegistryObject<Item>> BOAT = HELPER.createBoatAndChestBoatItem("test", TestBlocks.BLOCK, false);
 
 	public static class Helper extends ItemSubRegistryHelper {
 
@@ -26,7 +24,7 @@ public final class TestItems {
 		}
 
 		private RegistryObject<Item> createTest() {
-			return this.deferredRegister.register("test", () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_FOOD)));
+			return this.deferredRegister.register("test", () -> new Item(new Item.Properties()));
 		}
 
 	}

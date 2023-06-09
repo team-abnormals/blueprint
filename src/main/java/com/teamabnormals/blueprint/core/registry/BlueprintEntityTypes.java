@@ -7,7 +7,6 @@ import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.registry.EntitySubRegistryHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.RegistryObject;
 

@@ -1,9 +1,9 @@
 package com.teamabnormals.blueprint.core.endimator.interpolation;
 
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.endimator.EndimationKeyframe;
+import org.joml.Vector3f;
 
 import java.util.function.Function;
 

@@ -8,6 +8,7 @@ import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
@@ -41,9 +42,9 @@ public class BlueprintBoatItem extends Item {
 	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_CHEST_BOAT);
 	private static final Predicate<Entity> COLLISION_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
 	private final boolean hasChest;
-	private final String type;
+	private final ResourceLocation type;
 
-	public BlueprintBoatItem(boolean hasChest, String type, Item.Properties properties) {
+	public BlueprintBoatItem(boolean hasChest, ResourceLocation type, Item.Properties properties) {
 		super(properties);
 		this.hasChest = hasChest;
 		this.type = type;
@@ -101,9 +102,9 @@ public class BlueprintBoatItem extends Item {
 	static class DispenserBoatBehavior extends DefaultDispenseItemBehavior {
 		private final DefaultDispenseItemBehavior defaultDispenseItemBehavior = new DefaultDispenseItemBehavior();
 		private final boolean hasChest;
-		private final String type;
+		private final ResourceLocation type;
 
-		public DispenserBoatBehavior(boolean hasChest, String type) {
+		public DispenserBoatBehavior(boolean hasChest, ResourceLocation type) {
 			this.hasChest = hasChest;
 			this.type = type;
 		}

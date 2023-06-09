@@ -21,7 +21,7 @@ public final class EntityUtil {
 	 * @return The {@link HitResult} of the traced entity.
 	 */
 	public static HitResult rayTrace(Entity entity, double distance, float delta) {
-		return entity.level.clip(new ClipContext(
+		return entity.level().clip(new ClipContext(
 				entity.getEyePosition(delta),
 				entity.getEyePosition(delta).add(entity.getViewVector(delta).scale(distance)),
 				ClipContext.Block.COLLIDER,
@@ -41,7 +41,7 @@ public final class EntityUtil {
 	 * @return The {@link HitResult} of the traced entity.
 	 */
 	public static HitResult rayTraceWithCustomDirection(Entity entity, float pitch, float yaw, double distance, float delta) {
-		return entity.level.clip(new ClipContext(
+		return entity.level().clip(new ClipContext(
 				entity.getEyePosition(delta),
 				entity.getEyePosition(delta).add(getVectorForRotation(pitch, yaw).scale(distance)),
 				ClipContext.Block.COLLIDER,
@@ -61,7 +61,7 @@ public final class EntityUtil {
 	 * @return The {@link HitResult} of the traced entity.
 	 */
 	public static HitResult rayTraceUpWithCustomDirection(Entity entity, float pitch, float yaw, double distance, float delta) {
-		return entity.level.clip(new ClipContext(
+		return entity.level().clip(new ClipContext(
 				entity.getEyePosition(delta),
 				entity.getEyePosition(delta).add(getUpVectorForRotation(pitch, yaw).scale(distance)),
 				ClipContext.Block.COLLIDER,

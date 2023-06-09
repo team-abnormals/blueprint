@@ -2,14 +2,14 @@ package com.teamabnormals.blueprint.core.endimator;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamabnormals.blueprint.common.codec.ErrorableOptionalFieldCodec;
+import com.teamabnormals.blueprint.common.codec.NullableFieldCodec;
 import com.teamabnormals.blueprint.core.endimator.interpolation.EndimationEasers;
 import com.teamabnormals.blueprint.core.endimator.interpolation.EndimationInterpolator;
 import com.teamabnormals.blueprint.core.endimator.interpolation.InterpolationType;
 import net.minecraft.Util;
+import org.joml.Vector3f;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -47,7 +47,7 @@ public final class EndimationKeyframe implements Comparable<EndimationKeyframe> 
 					Transform post = new Transform(keyframe.postX, keyframe.postY, keyframe.postZ);
 					return pre.equals(post) ? Either.left(post) : Either.right(Pair.of(pre, post));
 				}),
-				ErrorableOptionalFieldCodec.errorableOptional("interpolation", EndimationInterpolator.CODEC, LINEAR).forGetter(keyframe -> keyframe.interpolator)
+				NullableFieldCodec.nullable("interpolation", EndimationInterpolator.CODEC, LINEAR).forGetter(keyframe -> keyframe.interpolator)
 		).apply(instance, (time, singleTransformOrPreAndPost, interpolator) -> {
 			Optional<Transform> left = singleTransformOrPreAndPost.left();
 			if (left.isPresent()) {

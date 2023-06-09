@@ -9,6 +9,8 @@ import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModificationManager;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModifier;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModifierGroup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -53,8 +55,8 @@ public final class ChunkGeneratorModificationManager extends SimpleJsonResourceR
 				if (prioritizedModifiers == null) return;
 				var modifierGroups = prioritizedModifiers.get(priority);
 				if (modifierGroups == null) return;
-				//Because dimensions don't exist till the server is ready to start, we must process the selectors right before the server starts
-				var dimensions = event.getServer().getWorldData().worldGenSettings().dimensions();
+				RegistryAccess registryAccess = event.getServer().registryAccess();
+				var dimensions = registryAccess.registryOrThrow(Registries.LEVEL_STEM);
 				var keySet = dimensions.keySet();
 				HashMap<ResourceLocation, LinkedList<ObjectModifier<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>, ?>>> assignedModifiers = new HashMap<>();
 				for (var modifierGroup : modifierGroups) {

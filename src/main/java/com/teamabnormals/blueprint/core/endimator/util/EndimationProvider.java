@@ -111,7 +111,7 @@ public abstract class EndimationProvider implements DataProvider {
 				Path resolvedPath = outputFolder.resolve(directory + entry.name + ".json");
 				try {
 					var dataResult = Endimation.CODEC.encodeStart(JsonOps.INSTANCE, entry.build());
-					var error = dataResult.error();
+					var error = DataResult.error(() -> );
 					if (error.isPresent()) throw new JsonParseException(error.get().message());
 					DataProvider.saveStable(cachedOutput, dataResult.result().get(), resolvedPath);
 				} catch (IOException | JsonParseException e) {

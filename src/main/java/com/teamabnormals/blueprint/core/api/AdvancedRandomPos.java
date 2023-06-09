@@ -14,7 +14,7 @@ import java.util.function.ToDoubleFunction;
 /**
  * This class contains some useful methods for generating random positions.
  *
- * @author SmellyModder(Luke Tonon)
+ * @author SmellyModder (Luke Tonon)
  */
 public final class AdvancedRandomPos {
 	/**
@@ -37,7 +37,7 @@ public final class AdvancedRandomPos {
 		boolean flag = pathfinder.hasRestriction() && pathfinder.getRestrictCenter().closerThan(pathfinder.blockPosition(), (double) (pathfinder.getRestrictRadius() + (float) xz) + 1.0D);
 		boolean flag1 = false;
 		double d0 = Double.NEGATIVE_INFINITY;
-		BlockPos blockpos = new BlockPos(pathfinder.position());
+		BlockPos blockpos = new BlockPos(pathfinder.blockPosition());
 
 		for (int i = 0; i < 10; ++i) {
 			BlockPos blockpos1 = getBlockPos(random, xz, y, p_191379_3_, p_191379_5_, goDeep);
@@ -60,7 +60,7 @@ public final class AdvancedRandomPos {
 					}
 				}
 
-				BlockPos blockpos3 = new BlockPos((double) j + pathfinder.getX(), (double) k + pathfinder.getY(), (double) l + pathfinder.getZ());
+				BlockPos blockpos3 = new BlockPos(Mth.floor((double) j + pathfinder.getX()), Mth.floor((double) k + pathfinder.getY()), Mth.floor((double) l + pathfinder.getZ()));
 				if ((!flag || pathfinder.isWithinRestriction(blockpos3)) && pathnavigator.isStableDestination(blockpos3)) {
 					if (!p_191379_4_) {
 						blockpos3 = moveAboveSolid(blockpos3, pathfinder);
@@ -96,7 +96,7 @@ public final class AdvancedRandomPos {
 			double d2 = d0 * Math.cos(d4);
 			if (!(Math.abs(d1) > (double) xz) && !(Math.abs(d2) > (double) xz)) {
 				double newY = rand.nextInt(2 * y + 1) - y;
-				return new BlockPos(d1, newY, d2);
+				return new BlockPos(Mth.floor(d1), Mth.floor(newY), Mth.floor(d2));
 			} else {
 				return null;
 			}
@@ -112,11 +112,11 @@ public final class AdvancedRandomPos {
 	}
 
 	private static BlockPos moveAboveSolid(BlockPos pos, PathfinderMob pathfinder) {
-		if (!pathfinder.level.getBlockState(pos).getMaterial().isSolid()) {
+		if (!pathfinder.level().getBlockState(pos).isSolid()) {
 			return pos;
 		} else {
 			BlockPos blockpos;
-			for (blockpos = pos.above(); blockpos.getY() < pathfinder.level.getMaxBuildHeight() && pathfinder.level.getBlockState(blockpos).getMaterial().isSolid(); blockpos = blockpos.above()) {
+			for (blockpos = pos.above(); blockpos.getY() < pathfinder.level().getMaxBuildHeight() && pathfinder.level().getBlockState(blockpos).isSolid(); blockpos = blockpos.above()) {
 			}
 
 			return blockpos;
@@ -124,6 +124,6 @@ public final class AdvancedRandomPos {
 	}
 
 	private static boolean isWaterDestination(BlockPos pos, PathfinderMob pathfinder) {
-		return pathfinder.level.getFluidState(pos).is(FluidTags.WATER);
+		return pathfinder.level().getFluidState(pos).is(FluidTags.WATER);
 	}
 }

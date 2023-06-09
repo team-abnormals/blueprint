@@ -204,7 +204,7 @@ public final class MathUtil {
 			double CDenominator = t1 - t0;
 			double CMultiplier1 = (t1 - t) / CDenominator;
 			double CMultiplier2 = (t - t0) / CDenominator;
-			return new BlockPos(multiplyPoints(B1x, B2x, CMultiplier1, CMultiplier2), multiplyPoints(B1y, B2y, CMultiplier1, CMultiplier2), multiplyPoints(B1z, B2z, CMultiplier1, CMultiplier2));
+			return new BlockPos(Mth.floor(multiplyPoints(B1x, B2x, CMultiplier1, CMultiplier2)), Mth.floor(multiplyPoints(B1y, B2y, CMultiplier1, CMultiplier2)), Mth.floor(multiplyPoints(B1z, B2z, CMultiplier1, CMultiplier2)));
 		}
 
 		/**

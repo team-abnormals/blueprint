@@ -3,7 +3,9 @@ package com.teamabnormals.blueprint.core.util.registry;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.item.BlueprintBoatItem;
 import com.teamabnormals.blueprint.common.item.FuelItem;
-import com.teamabnormals.blueprint.core.registry.BoatTypeRegistry;
+import com.teamabnormals.blueprint.core.registry.BlueprintBoatTypes;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.BlockItem;
@@ -13,12 +15,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
@@ -43,57 +43,53 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 *
 	 * @param floorBlock The floor {@link Block}.
 	 * @param wallBlock  The wall {@link Block}.
-	 * @param itemGroup  The {@link CreativeModeTab} for the {@link StandingAndWallBlockItem}.
+	 * @param direction  The attachment {@link Direction}.
 	 * @return The created {@link StandingAndWallBlockItem}.
 	 * @see StandingAndWallBlockItem
 	 */
-	public static BlockItem createStandingAndWallBlockItem(Block floorBlock, Block wallBlock, CreativeModeTab itemGroup) {
-		return new StandingAndWallBlockItem(floorBlock, wallBlock, new Item.Properties().tab(itemGroup));
+	public static BlockItem createStandingAndWallBlockItem(Block floorBlock, Block wallBlock, Direction direction) {
+		return new StandingAndWallBlockItem(floorBlock, wallBlock, new Item.Properties(), direction);
 	}
 
 	/**
 	 * Creates and registers a {@link DoubleHighBlockItem}.
 	 *
 	 * @param blockForInput The {@link Block} for the item.
-	 * @param itemGroup     The {@link CreativeModeTab} for the {@link DoubleHighBlockItem}.
 	 * @return The created {@link DoubleHighBlockItem}.
 	 * @see DoubleHighBlockItem
 	 */
-	public static BlockItem createDoubleHighBlockItem(Block blockForInput, CreativeModeTab itemGroup) {
-		return new DoubleHighBlockItem(blockForInput, new Item.Properties().tab(itemGroup));
+	public static BlockItem createDoubleHighBlockItem(Block blockForInput) {
+		return new DoubleHighBlockItem(blockForInput, new Item.Properties());
 	}
 
 	/**
 	 * Creates a {@link FuelItem}.
 	 *
 	 * @param burnTime  How long the item will burn (measured in ticks).
-	 * @param itemGroup The {@link CreativeModeTab} for the {@link FuelItem}.
 	 * @return The created {@link FuelItem}.
 	 */
-	public static FuelItem createFuelItem(int burnTime, CreativeModeTab itemGroup) {
-		return new FuelItem(burnTime, new Item.Properties().tab(itemGroup));
+	public static FuelItem createFuelItem(int burnTime) {
+		return new FuelItem(burnTime, new Item.Properties());
 	}
 
 	/**
 	 * Creates a {@link BlockItem} with a specified {@link Block} and {@link CreativeModeTab}.
 	 *
 	 * @param blockForInput The {@link Block} for the {@link BlockItem}.
-	 * @param itemGroup     The {@link CreativeModeTab} for the {@link BlockItem}, null to have it be in no group.
 	 * @return The BlockItem.
 	 */
-	public static BlockItem createSimpleBlockItem(Block blockForInput, @Nullable CreativeModeTab itemGroup) {
-		return new BlockItem(blockForInput, new Item.Properties().tab(itemGroup));
+	public static BlockItem createSimpleBlockItem(Block blockForInput) {
+		return new BlockItem(blockForInput, new Item.Properties());
 	}
 
 	/**
 	 * Creates a simple {@link Item.Properties} with a stack size and {@link CreativeModeTab}.
 	 *
 	 * @param stackSize The item's max stack size.
-	 * @param itemGroup The item's CreativeModeTab.
 	 * @return The simple {@link Item.Properties}.
 	 */
-	public static Item.Properties createSimpleItemProperty(int stackSize, CreativeModeTab itemGroup) {
-		return new Item.Properties().tab(itemGroup).stacksTo(stackSize);
+	public static Item.Properties createSimpleItemProperty(int stackSize) {
+		return new Item.Properties().stacksTo(stackSize);
 	}
 
 	/**
@@ -108,32 +104,6 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	}
 
 	/**
-	 * Creates and registers a compat {@link Item}.
-	 *
-	 * @param modId      The mod id of the mod this item is compatible for, set to "indev" for dev tests.
-	 * @param name       The name for the item.
-	 * @param properties The item's properties.
-	 * @param group      The {@link CreativeModeTab} for the {@link Item}.
-	 * @return A {@link RegistryObject} containing the {@link Item}.
-	 */
-	public RegistryObject<Item> createCompatItem(String modId, String name, Item.Properties properties, CreativeModeTab group) {
-		return this.deferredRegister.register(name, () -> new Item(properties.tab(areModsLoaded(modId) ? group : null)));
-	}
-
-	/**
-	 * Creates and registers a compat {@link Item}.
-	 *
-	 * @param name       The name for the item.
-	 * @param properties The item's properties.
-	 * @param group      The {@link CreativeModeTab} for the {@link Item}.
-	 * @param modIds     The mod ids of the mods this block is compatible for.
-	 * @return A {@link RegistryObject} containing the {@link Item}.
-	 */
-	public RegistryObject<Item> createCompatItem(String name, Item.Properties properties, CreativeModeTab group, String... modIds) {
-		return this.deferredRegister.register(name, () -> new Item(properties.tab(areModsLoaded(modIds) ? group : null)));
-	}
-
-	/**
 	 * Creates and registers a {@link ForgeSpawnEggItem}.
 	 *
 	 * @param entityName     The name of the entity this spawn egg spawns.
@@ -144,7 +114,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @see ForgeSpawnEggItem
 	 */
 	public RegistryObject<ForgeSpawnEggItem> createSpawnEggItem(String entityName, Supplier<EntityType<? extends Mob>> supplier, int primaryColor, int secondaryColor) {
-		return this.deferredRegister.register(entityName + "_spawn_egg", () -> new ForgeSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
+		return this.deferredRegister.register(entityName + "_spawn_egg", () -> new ForgeSpawnEggItem(supplier, primaryColor, secondaryColor, new Item.Properties()));
 	}
 
 	/**
@@ -152,13 +122,14 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 *
 	 * @param wood  The name of the wood, e.g. "oak".
 	 * @param block The {@link Block} for the boat to drop.
+	 * @param raft If the boats are rafts.
 	 * @return A {@link Pair} instance containing the boat item and the chest boat item.
 	 */
-	public Pair<RegistryObject<Item>, RegistryObject<Item>> createBoatAndChestBoatItem(String wood, RegistryObject<Block> block) {
-		String type = this.parent.getModId() + ":" + wood;
-		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new BlueprintBoatItem(false, type, createSimpleItemProperty(1, CreativeModeTab.TAB_TRANSPORTATION)));
-		RegistryObject<Item> chestBoat = this.deferredRegister.register(wood + "_chest_boat", () -> new BlueprintBoatItem(true, type, createSimpleItemProperty(1, CreativeModeTab.TAB_TRANSPORTATION)));
-		BoatTypeRegistry.registerBoat(type, boat, chestBoat, block);
+	public Pair<RegistryObject<Item>, RegistryObject<Item>> createBoatAndChestBoatItem(String wood, RegistryObject<Block> block, boolean raft) {
+		ResourceLocation name = new ResourceLocation(this.parent.getModId(), wood);
+		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new BlueprintBoatItem(false, name, createSimpleItemProperty(1)));
+		RegistryObject<Item> chestBoat = this.deferredRegister.register(wood + "_chest_boat", () -> new BlueprintBoatItem(true, name, createSimpleItemProperty(1)));
+		BlueprintBoatTypes.registerType(name, boat, chestBoat, block, raft);
 		return Pair.of(boat, chestBoat);
 	}
 

@@ -120,7 +120,7 @@ public final class BasicRegistry<T> implements Codec<T> {
 		return ResourceLocation.CODEC.decode(ops, input).flatMap((encodedRegistryPair) -> {
 			ResourceLocation name = encodedRegistryPair.getFirst();
 			T value = this.getValue(name);
-			return value == null ? DataResult.error("Unknown registry key: " + name) : DataResult.success(Pair.of(value, encodedRegistryPair.getSecond()), this.lifecycle);
+			return value == null ? DataResult.error(() -> () -> "Unknown registry key: " + name) : DataResult.success(Pair.of(value, encodedRegistryPair.getSecond()), this.lifecycle);
 		});
 	}
 
@@ -128,7 +128,7 @@ public final class BasicRegistry<T> implements Codec<T> {
 	public <U> DataResult<U> encode(T input, DynamicOps<U> ops, U prefix) {
 		ResourceLocation name = this.getKey(input);
 		if (name == null) {
-			return DataResult.error("Unknown registry element: " + prefix);
+			return DataResult.error(() -> () -> "Unknown registry element: " + prefix);
 		}
 		return ops.mergeToPrimitive(prefix, ops.createString(name.toString())).setLifecycle(this.lifecycle);
 	}

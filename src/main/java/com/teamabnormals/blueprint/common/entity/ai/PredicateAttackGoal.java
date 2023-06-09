@@ -56,9 +56,9 @@ public class PredicateAttackGoal<T extends LivingEntity> extends TargetGoal {
 
 	protected void findNearestTarget() {
 		if (this.targetClass != Player.class && this.targetClass != ServerPlayer.class) {
-			this.nearestTarget = this.mob.level.getNearestEntity(this.targetClass, this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ(), this.getTargetableArea(this.getFollowDistance()));
+			this.nearestTarget = this.mob.level().getNearestEntity(this.targetClass, this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ(), this.getTargetableArea(this.getFollowDistance()));
 		} else {
-			this.nearestTarget = this.mob.level.getNearestPlayer(this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+			this.nearestTarget = this.mob.level().getNearestPlayer(this.targetEntitySelector, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
 		}
 	}
 

@@ -3,7 +3,7 @@ package com.teamabnormals.blueprint.core.api;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.LazyLoadedValue;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -35,13 +35,13 @@ public class BlueprintArmorMaterial implements ArmorMaterial {
 	}
 
 	@Override
-	public int getDurabilityForSlot(EquipmentSlot slotIn) {
-		return HEALTH_PER_SLOT[slotIn.getIndex()] * this.durabilityMultiplier;
+	public int getDurabilityForType(ArmorItem.Type type) {
+		return HEALTH_PER_SLOT[type.getSlot().getIndex()] * this.durabilityMultiplier;
 	}
 
 	@Override
-	public int getDefenseForSlot(EquipmentSlot slotIn) {
-		return this.slotProtections[slotIn.getIndex()];
+	public int getDefenseForType(ArmorItem.Type type) {
+		return this.slotProtections[type.getSlot().getIndex()];
 	}
 
 	@Override

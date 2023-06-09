@@ -82,7 +82,7 @@ public final class NetworkUtil {
 	 * @param endimationToPlay The endimation to play.
 	 */
 	public static <E extends Entity & Endimatable> void setPlayingAnimation(E entity, PlayableEndimation endimationToPlay) {
-		if (!entity.level.isClientSide) {
+		if (!entity.level().isClientSide) {
 			Blueprint.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageS2CEndimation(entity.getId(), PlayableEndimationManager.INSTANCE.getID(endimationToPlay)));
 			entity.setPlayingEndimation(endimationToPlay);
 		}

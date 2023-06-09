@@ -19,6 +19,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
 
 import java.util.HashMap;
@@ -80,8 +81,8 @@ public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
 				if (TreeFeature.validTreePos(level, foliagePos)) {
 					BlockState state = this.specialFoliagePositions.getOrDefault(foliagePos, config.foliageProvider.getState(random, foliagePos));
 
-					if (TreeFeature.isBlockWater(level, foliagePos) && state.hasProperty(BlockStateProperties.WATERLOGGED)) {
-						state = state.setValue(BlockStateProperties.WATERLOGGED, true);
+					if (state.hasProperty(BlockStateProperties.WATERLOGGED)) {
+						state = state.setValue(BlockStateProperties.WATERLOGGED, level.isFluidAtPosition(foliagePos, (fluidState) -> fluidState.isSourceOfType(Fluids.WATER)));
 					}
 
 					if (!state.isAir()) {

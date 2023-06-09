@@ -8,8 +8,8 @@ import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -115,7 +115,7 @@ public final class StructureRepalleterManager extends SimpleJsonResourceReloadLi
 		ASSIGNED_REPALLETERS.clear();
 		var registryAccess = this.registryAccess;
 		var registryOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
-		var structureLocations = registryAccess.registry(Registry.STRUCTURE_REGISTRY).orElseThrow().keySet();
+		var structureLocations = registryAccess.registry(Registries.STRUCTURE).orElseThrow().keySet();
 		HashMap<ResourceLocation, ArrayList<StructureRepaletterEntry>> unorderedEntries = new HashMap<>();
 		int count = 0;
 		for (var mapEntry : map.entrySet()) {

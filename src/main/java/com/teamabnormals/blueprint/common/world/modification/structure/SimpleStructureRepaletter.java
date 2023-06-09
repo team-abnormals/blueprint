@@ -2,7 +2,7 @@ package com.teamabnormals.blueprint.common.world.modification.structure;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -20,8 +20,8 @@ public record SimpleStructureRepaletter(Block replacesBlock, Block replacesWith)
 	@SuppressWarnings("deprecation")
 	public static final Codec<SimpleStructureRepaletter> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
-				Registry.BLOCK.byNameCodec().fieldOf("replaces_block").forGetter(repaletter -> repaletter.replacesBlock),
-				Registry.BLOCK.byNameCodec().fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
+				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("replaces_block").forGetter(repaletter -> repaletter.replacesBlock),
+				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
 		).apply(instance, SimpleStructureRepaletter::new);
 	});
 

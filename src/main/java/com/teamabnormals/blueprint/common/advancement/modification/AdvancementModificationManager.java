@@ -8,7 +8,7 @@ import com.teamabnormals.blueprint.core.events.AdvancementBuildingEvent;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModificationManager;
 import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.world.level.storage.loot.PredicateManager;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.common.Mod;
@@ -26,12 +26,12 @@ public final class AdvancementModificationManager extends ObjectModificationMana
 	private static final Gson GSON = (new GsonBuilder()).create();
 	private static AdvancementModificationManager INSTANCE;
 
-	private AdvancementModificationManager(PredicateManager lootPredicateManager) {
-		super(GSON, TARGET_PATH, TARGET_PATH, "Advancement", AdvancementModifierSerializers.REGISTRY, (location) -> new DeserializationContext(location, lootPredicateManager), true, true);
+	private AdvancementModificationManager(LootDataManager lootData) {
+		super(GSON, TARGET_PATH, TARGET_PATH, "Advancement", AdvancementModifierSerializers.REGISTRY, (location) -> new DeserializationContext(location, lootData), true, true);
 	}
 
 	static {
-		registerInitializer("ServerAdvancementManager", (registryAccess, commandSelection, reloadableServerResources) -> INSTANCE = new AdvancementModificationManager(reloadableServerResources.getPredicateManager()));
+		registerInitializer("ServerAdvancementManager", (registryAccess, commandSelection, reloadableServerResources) -> INSTANCE = new AdvancementModificationManager(reloadableServerResources.getLootData()));
 		for (EventPriority priority : EventPriority.values()) {
 			MinecraftForge.EVENT_BUS.addListener(priority, (AdvancementBuildingEvent event) -> {
 				//Should not happen, but it's possible that this event will get fired before the manager is initialized

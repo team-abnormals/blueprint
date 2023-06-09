@@ -58,7 +58,7 @@ public abstract class SplashProvider implements DataProvider {
 		Path resolvedPath = outputFolder.resolve("assets/" + this.modId + "/" + BlueprintSplashManager.PATH);
 		try {
 			var dataResult = Splash.LIST_CODEC.encodeStart(JsonOps.INSTANCE, this.splashes);
-			var error = dataResult.error();
+			var error = DataResult.error(() -> );
 			if (error.isPresent()) throw new JsonParseException(error.get().message());
 			DataProvider.saveStable(cachedOutput, dataResult.result().get(), resolvedPath);
 		} catch (JsonParseException | IOException e) {

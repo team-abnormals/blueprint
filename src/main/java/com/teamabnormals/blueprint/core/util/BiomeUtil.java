@@ -4,21 +4,17 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryCodecs;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,17 +71,6 @@ public final class BiomeUtil {
 	}
 
 	/**
-	 * Get the {@link Biome} id given a {@link Biome} {@link ResourceKey}.
-	 *
-	 * @param biome The {@link Biome} {@link ResourceKey} to get the id of.
-	 * @return The id of the provided {@link Biome} {@link ResourceKey}.
-	 */
-	@SuppressWarnings("deprecation")
-	public static int getId(@Nonnull ResourceKey<Biome> biome) {
-		return BuiltinRegistries.BIOME.getId(BuiltinRegistries.BIOME.get(biome));
-	}
-
-	/**
 	 * The interface used for selecting biomes in {@link com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlice} instances.
 	 * <p>Use {@link #CODEC} for serializing and deserializing instances of this class.</p>
 	 *
@@ -113,7 +98,6 @@ public final class BiomeUtil {
 		 *
 		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return A set of the additional possible biomes that this provider may have.
-		 * @see com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource#combinePossibleBiomes(Set, ArrayList, Registry).
 		 */
 		Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry);
 
@@ -130,7 +114,7 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record OriginalModdedBiomeProvider() implements ModdedBiomeProvider {
+	public record OriginalModdedBiomeProvider() implements ModdedBiomeProvider {
 		public static final Codec<OriginalModdedBiomeProvider> CODEC = Codec.unit(new OriginalModdedBiomeProvider());
 
 		@Override
@@ -154,18 +138,12 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record MultiNoiseModdedBiomeProvider(Climate.ParameterList<ResourceKey<Biome>> biomes) implements ModdedBiomeProvider {
-		public static final Codec<MultiNoiseModdedBiomeProvider> CODEC = RecordCodecBuilder.create((instance) -> {
-			return instance.group(
-					ExtraCodecs.nonEmptyList(RecordCodecBuilder.<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>create((pairInstance) -> {
-						return pairInstance.group(Climate.ParameterPoint.CODEC.fieldOf("parameters").forGetter(Pair::getFirst), ResourceKey.codec(Registry.BIOME_REGISTRY).fieldOf("biome").forGetter(Pair::getSecond)).apply(pairInstance, Pair::of);
-					}).listOf()).xmap(Climate.ParameterList::new, Climate.ParameterList::values).fieldOf("biomes").forGetter(sampler -> sampler.biomes)
-			).apply(instance, MultiNoiseModdedBiomeProvider::new);
-		});
+	public record MultiNoiseModdedBiomeProvider(Climate.ParameterList<Holder<Biome>> biomes) implements ModdedBiomeProvider {
+		public static final Codec<MultiNoiseModdedBiomeProvider> CODEC = MultiNoiseBiomeSource.DIRECT_CODEC.xmap(MultiNoiseModdedBiomeProvider::new, MultiNoiseModdedBiomeProvider::biomes).codec();
 
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
-			return registry.getHolderOrThrow(this.biomes.findValue(sampler.sample(x, y, z)));
+			return this.biomes.findValue(sampler.sample(x, y, z));
 		}
 
 		@Override
@@ -175,7 +153,7 @@ public final class BiomeUtil {
 
 		@Override
 		public Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry) {
-			return this.biomes.values().stream().map(pair -> registry.getHolderOrThrow(pair.getSecond())).collect(Collectors.toSet());
+			return this.biomes.values().stream().map(Pair::getSecond).collect(Collectors.toSet());
 		}
 	}
 
@@ -185,10 +163,10 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record OverlayModdedBiomeProvider(List<Pair<HolderSet<Biome>, BiomeSource>> overlays) implements ModdedBiomeProvider {
+	public record OverlayModdedBiomeProvider(List<Pair<HolderSet<Biome>, BiomeSource>> overlays) implements ModdedBiomeProvider {
 		public static final Codec<OverlayModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
 			return instance.group(
-					Codec.mapPair(RegistryCodecs.homogeneousList(Registry.BIOME_REGISTRY).fieldOf("matches_biomes"), BiomeSource.CODEC.fieldOf("biome_source")).codec().listOf().fieldOf("overlays").forGetter(provider -> provider.overlays)
+					Codec.mapPair(RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("matches_biomes"), BiomeSource.CODEC.fieldOf("biome_source")).codec().listOf().fieldOf("overlays").forGetter(provider -> provider.overlays)
 			).apply(instance, OverlayModdedBiomeProvider::new);
 		});
 
@@ -198,7 +176,7 @@ public final class BiomeUtil {
 			for (var overlay : this.overlays) {
 				if (overlay.getFirst().contains(originalBiome)) return overlay.getSecond().getNoiseBiome(x, y, z, sampler);
 			}
-			return originalBiome;
+			return registry.getHolderOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER.getKey());
 		}
 
 		@Override
@@ -219,7 +197,7 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record BiomeSourceModdedBiomeProvider(BiomeSource biomeSource) implements ModdedBiomeProvider {
+	public record BiomeSourceModdedBiomeProvider(BiomeSource biomeSource) implements ModdedBiomeProvider {
 		public static final Codec<BiomeSourceModdedBiomeProvider> CODEC = RecordCodecBuilder.create(instance -> {
 			return instance.group(
 					BiomeSource.CODEC.fieldOf("biome_source").forGetter(provider -> provider.biomeSource)

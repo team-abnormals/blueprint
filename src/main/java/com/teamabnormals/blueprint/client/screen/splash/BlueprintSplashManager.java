@@ -96,7 +96,7 @@ public final class BlueprintSplashManager extends SimplePreparableReloadListener
 					JsonElement element = GsonHelper.fromJson(GSON, reader, JsonElement.class);
 					if (element != null) {
 						var dataResult = Splash.LIST_CODEC.decode(JsonOps.INSTANCE, element);
-						var error = dataResult.error();
+						var error = DataResult.error(() -> );
 						if (error.isPresent()) throw new JsonParseException(error.get().message());
 						List<Splash> splashList = dataResult.result().get().getFirst();
 						for (Splash splash : splashList) {

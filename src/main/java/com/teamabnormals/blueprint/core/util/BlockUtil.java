@@ -62,7 +62,7 @@ public final class BlockUtil {
 		CollisionContext selectionContext = player == null ? CollisionContext.empty() : CollisionContext.of(player);
 		VoxelShape voxelshape = state.getCollisionShape(level, pos, selectionContext);
 		VoxelShape offsetShape = level.getBlockState(pos).getCollisionShape(level, pos);
-		return (offsetShape.isEmpty() || level.getBlockState(pos).getMaterial().isReplaceable()) && state.canSurvive(level, pos) && level.isUnobstructed(null, voxelshape.move(pos.getX(), pos.getY(), pos.getZ()));
+		return (offsetShape.isEmpty() || level.getBlockState(pos).canBeReplaced()) && state.canSurvive(level, pos) && level.isUnobstructed(null, voxelshape.move(pos.getX(), pos.getY(), pos.getZ()));
 	}
 
 	/**

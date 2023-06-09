@@ -16,7 +16,6 @@ import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

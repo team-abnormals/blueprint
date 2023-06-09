@@ -2,7 +2,8 @@ package com.teamabnormals.blueprint.common.world.modification.structure;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.WeightedEntry;
@@ -23,8 +24,8 @@ public record WeightedStructureRepaletter(TagKey<Block> replacesBlocks, Weighted
 	@SuppressWarnings("deprecation")
 	public static final Codec<WeightedStructureRepaletter> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
-				TagKey.codec(Registry.BLOCK_REGISTRY).fieldOf("replaces_blocks").forGetter(repaletter -> repaletter.replacesBlocks),
-				WeightedRandomList.codec(WeightedEntry.Wrapper.codec(Registry.BLOCK.byNameCodec())).fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
+				TagKey.codec(Registries.BLOCK).fieldOf("replaces_blocks").forGetter(repaletter -> repaletter.replacesBlocks),
+				WeightedRandomList.codec(WeightedEntry.Wrapper.codec(BuiltInRegistries.BLOCK.byNameCodec())).fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
 		).apply(instance, WeightedStructureRepaletter::new);
 	});
 

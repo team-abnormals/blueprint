@@ -132,7 +132,7 @@ public enum TrackedDataManager {
 	@SubscribeEvent
 	public void onStartTracking(PlayerEvent.StartTracking event) {
 		Entity target = event.getTarget();
-		if (!target.level.isClientSide) {
+		if (!target.level().isClientSide) {
 			Set<IDataManager.DataEntry<?>> entries = ((IDataManager) target).getEntries(true);
 			if (!entries.isEmpty()) {
 				NetworkUtil.updateTrackedData((ServerPlayer) event.getEntity(), target.getId(), entries);
@@ -143,7 +143,7 @@ public enum TrackedDataManager {
 	@SubscribeEvent
 		public void onEntityJoinWorld(EntityJoinLevelEvent event) {
 		Entity target = event.getEntity();
-		if (!target.level.isClientSide) {
+		if (!target.level().isClientSide) {
 			Set<IDataManager.DataEntry<?>> entries = ((IDataManager) target).getEntries(false);
 			if (!entries.isEmpty()) {
 				NetworkUtil.updateTrackedData(target, entries);
@@ -154,7 +154,7 @@ public enum TrackedDataManager {
 	@SubscribeEvent
 	public void onPlayerClone(PlayerEvent.Clone event) {
 		Player original = event.getOriginal();
-		if (!original.level.isClientSide) {
+		if (!original.level().isClientSide) {
 			Map<TrackedData<?>, IDataManager.DataEntry<?>> dataMap = ((IDataManager) original).getDataMap();
 			if (event.isWasDeath()) {
 				dataMap.entrySet().removeIf(entry -> !entry.getKey().isPersistent());

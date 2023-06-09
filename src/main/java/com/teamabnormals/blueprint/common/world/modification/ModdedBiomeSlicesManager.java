@@ -11,6 +11,8 @@ import com.teamabnormals.blueprint.core.BlueprintConfig;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +28,6 @@ import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
-import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -63,14 +64,15 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 		}
 	}
 
-	//Called from mixins instead of listening for ServerAboutToStartEvent because Terrablender uses lowest priority for their listener
+	// TODO: Move to high event priority Forge event
 	@SuppressWarnings("deprecation")
 	public static void onServerAboutToStart(MinecraftServer server) {
 		if (INSTANCE == null) return;
 		var unassignedSlices = INSTANCE.unassignedSlices;
 		if (unassignedSlices.isEmpty()) return;
-		WorldGenSettings worldGenSettings = server.getWorldData().worldGenSettings();
-		var dimensions = worldGenSettings.dimensions();
+
+		RegistryAccess registryAccess = server.registryAccess();
+		var dimensions = registryAccess.registryOrThrow(Registries.LEVEL_STEM);
 		var keySet = dimensions.keySet();
 		HashMap<ResourceLocation, ArrayList<ModdedBiomeSlice>> assignedSlices = new HashMap<>();
 		for (var unassignedSlice : unassignedSlices) {
@@ -88,17 +90,16 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 			defaultSize = 9;
 		}
 
-		Registry<Biome> biomeRegistry = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-		long seed = worldGenSettings.seed();
+		Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
+		long seed = server.getWorldData().worldGenOptions().seed();
 		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : dimensions.entrySet()) {
 			ResourceLocation location = entry.getKey().location();
 			var slicesForKey = assignedSlices.get(location);
 			if (slicesForKey != null && !slicesForKey.isEmpty()) {
 				ChunkGenerator chunkGenerator = entry.getValue().generator();
 				BiomeSource source = chunkGenerator.getBiomeSource();
-				//Checking specifically for an instance of MultiNoiseBiomeSource isn't reliable because mods may alter the biome source before we do
-				//If we do replace something we shouldn't then players can remove providers in a datapack
-				//TODO: Mostly experimental! Works with Terralith, Biomes O' Plenty, and more, but still needs more testing!
+				// Checking specifically for an instance of MultiNoiseBiomeSource isn't reliable because mods may alter the biome source before we do
+				// If we do replace something we shouldn't then players can remove providers in a datapack
 				if (!(source instanceof FixedBiomeSource) && !(source instanceof CheckerboardColumnBiomeSource)) {
 					int size = moddedBiomeSliceSizes.getIntOrElse(location.toString(), defaultSize);
 					if (size <= 0) size = defaultSize;

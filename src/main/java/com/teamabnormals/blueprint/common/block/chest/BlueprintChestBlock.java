@@ -32,7 +32,7 @@ public class BlueprintChestBlock extends ChestBlock implements IChestBlock {
 	}
 
 	@Override
-	public String getChestType() {
+	public String getChestMaterialsName() {
 		return type;
 	}
 }

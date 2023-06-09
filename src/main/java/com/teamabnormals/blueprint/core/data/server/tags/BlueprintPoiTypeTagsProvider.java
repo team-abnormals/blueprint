@@ -1,21 +1,23 @@
 package com.teamabnormals.blueprint.core.data.server.tags;
 
-import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.registry.BlueprintPoiTypes;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.PoiTypeTagsProvider;
 import net.minecraft.tags.PoiTypeTags;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
 
 public class BlueprintPoiTypeTagsProvider extends PoiTypeTagsProvider {
 
-	public BlueprintPoiTypeTagsProvider(DataGenerator dataGenerator, @Nullable ExistingFileHelper existingFileHelper) {
-		super(dataGenerator, Blueprint.MOD_ID, existingFileHelper);
+	public BlueprintPoiTypeTagsProvider(String modid, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+		super(output, lookupProvider, modid, fileHelper);
 	}
 
 	@Override
-	protected void addTags() {
-		this.tag(PoiTypeTags.BEE_HOME).add(BlueprintPoiTypes.BEEHIVE.get());
+	protected void addTags(HolderLookup.Provider provider) {
+		this.tag(PoiTypeTags.BEE_HOME).add(BlueprintPoiTypes.BEEHIVE.getKey());
 	}
+
 }

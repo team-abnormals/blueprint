@@ -28,7 +28,7 @@ public class SoundSubRegistryHelper extends AbstractSubRegistryHelper<SoundEvent
 	 * @return A {@link RegistryObject} containing the created {@link SoundEvent}.
 	 */
 	public RegistryObject<SoundEvent> createSoundEvent(String name) {
-		return this.deferredRegister.register(name, () -> new SoundEvent(this.parent.prefix(name)));
+		return this.deferredRegister.register(name, () -> SoundEvent.createVariableRangeEvent(this.parent.prefix(name)));
 	}
 
 }

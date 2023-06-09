@@ -2,9 +2,9 @@ package com.teamabnormals.blueprint.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import com.teamabnormals.blueprint.client.ChestManager;
-import com.teamabnormals.blueprint.client.ChestManager.ChestInfo;
+import com.mojang.math.Axis;
+import com.teamabnormals.blueprint.client.BlueprintChestMaterials;
+import com.teamabnormals.blueprint.client.BlueprintChestMaterials.ChestMaterials;
 import com.teamabnormals.blueprint.core.api.IChestBlock;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
@@ -81,7 +81,7 @@ public class BlueprintChestBlockEntityRenderer<T extends BlockEntity & LidBlockE
 			matrixStackIn.pushPose();
 			float f = blockstate.getValue(ChestBlock.FACING).toYRot();
 			matrixStackIn.translate(0.5D, 0.5D, 0.5D);
-			matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-f));
+			matrixStackIn.mulPose(Axis.YP.rotationDegrees(-f));
 			matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 			DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> icallbackwrapper;
 			if (flag) {
@@ -119,11 +119,11 @@ public class BlueprintChestBlockEntityRenderer<T extends BlockEntity & LidBlockE
 		} else {
 			Block inventoryBlock = itemBlock;
 			if (inventoryBlock == null) inventoryBlock = t.getBlockState().getBlock();
-			ChestInfo chestInfo = ChestManager.getInfoForChest(((IChestBlock) inventoryBlock).getChestType());
+			ChestMaterials chestMaterials = BlueprintChestMaterials.getMaterials(((IChestBlock) inventoryBlock).getChestMaterialsName());
 			return switch (type) {
-				case SINGLE -> chestInfo != null ? chestInfo.getSingleMaterial() : Sheets.CHEST_LOCATION;
-				case LEFT -> chestInfo != null ? chestInfo.getLeftMaterial() : Sheets.CHEST_LOCATION_LEFT;
-				case RIGHT -> chestInfo != null ? chestInfo.getRightMaterial() : Sheets.CHEST_LOCATION_RIGHT;
+				case SINGLE -> chestMaterials != null ? chestMaterials.singleMaterial() : Sheets.CHEST_LOCATION;
+				case LEFT -> chestMaterials != null ? chestMaterials.leftMaterial() : Sheets.CHEST_LOCATION_LEFT;
+				case RIGHT -> chestMaterials != null ? chestMaterials.rightMaterial() : Sheets.CHEST_LOCATION_RIGHT;
 			};
 		}
 	}
