@@ -114,8 +114,10 @@ public final class BiomeUtil {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public record OriginalModdedBiomeProvider() implements ModdedBiomeProvider {
-		public static final Codec<OriginalModdedBiomeProvider> CODEC = Codec.unit(new OriginalModdedBiomeProvider());
+	public enum OriginalModdedBiomeProvider implements ModdedBiomeProvider {
+		INSTANCE;
+
+		public static final Codec<OriginalModdedBiomeProvider> CODEC = Codec.unit(INSTANCE);
 
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
@@ -176,7 +178,7 @@ public final class BiomeUtil {
 			for (var overlay : this.overlays) {
 				if (overlay.getFirst().contains(originalBiome)) return overlay.getSecond().getNoiseBiome(x, y, z, sampler);
 			}
-			return registry.getHolderOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER.getKey());
+			return registry.getHolderOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER);
 		}
 
 		@Override

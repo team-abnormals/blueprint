@@ -1,24 +1,16 @@
 package com.teamabnormals.blueprint.common.world.modification.structure;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.Blueprint;
-import com.teamabnormals.blueprint.core.util.DataUtil;
+import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -33,7 +25,7 @@ import java.util.*;
  * @see StructureRepaletter
  */
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
-public final class StructureRepalleterManager extends SimpleJsonResourceReloadListener {
+public final class StructureRepalleterManager {
 	static final BasicRegistry<Codec<? extends StructureRepaletter>> REPALLETER_SERIALIZERS = new BasicRegistry<>();
 	private static final HashMap<ResourceLocation, StructureRepaletter[]> ASSIGNED_REPALLETERS = new HashMap<>(1);
 	private static final ThreadLocal<ActiveData> ACTIVE_DATA = ThreadLocal.withInitial(ActiveData::new);
@@ -43,20 +35,19 @@ public final class StructureRepalleterManager extends SimpleJsonResourceReloadLi
 		registerSerializer(new ResourceLocation(Blueprint.MOD_ID, "weighted"), WeightedStructureRepaletter.CODEC);
 	}
 
-	private final RegistryAccess registryAccess;
-
-	private StructureRepalleterManager(RegistryAccess registryAccess) {
-		super(new Gson(), "structure_repalleters");
-		this.registryAccess = registryAccess;
-	}
-
 	@SubscribeEvent
-	public static void onReloadListener(AddReloadListenerEvent event) {
-		try {
-			event.addListener(new StructureRepalleterManager((RegistryAccess) DataUtil.REGISTRY_ACCESS.get(DataUtil.TAG_MANAGER.get(event.getServerResources()))));
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+	public static void onServerStarted(ServerAboutToStartEvent event) {
+		ASSIGNED_REPALLETERS.clear();
+		RegistryAccess registryAccess = event.getServer().registryAccess();
+		var entries = registryAccess.registryOrThrow(BlueprintDataPackRegistries.STRUCTURE_REPALETTERS).entrySet();
+		HashMap<ResourceLocation, ArrayList<StructureRepaletterEntry>> assignedUnsortedEntries = new HashMap<>();
+		if (!entries.isEmpty()) {
+			for (var entry : entries) {
+				StructureRepaletterEntry structureRepaletterEntry = entry.getValue();
+				structureRepaletterEntry.structures().stream().forEach(structureHolder -> assignedUnsortedEntries.computeIfAbsent(structureHolder.unwrapKey().orElseThrow().location(), __ -> new ArrayList<>()).add(structureRepaletterEntry));
+			}
 		}
+		assignedUnsortedEntries.forEach((location, structureRepaletterEntries) -> ASSIGNED_REPALLETERS.put(location, structureRepaletterEntries.stream().sorted((Comparator.comparing(StructureRepaletterEntry::priority))).map(StructureRepaletterEntry::repaletter).toArray(StructureRepaletter[]::new)));
 	}
 
 	/**
@@ -108,33 +99,6 @@ public final class StructureRepalleterManager extends SimpleJsonResourceReloadLi
 	 */
 	public static void reset() {
 		ACTIVE_DATA.get().repaletters.clear();
-	}
-
-	@Override
-	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager manager, ProfilerFiller profilerFiller) {
-		ASSIGNED_REPALLETERS.clear();
-		var registryAccess = this.registryAccess;
-		var registryOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
-		var structureLocations = registryAccess.registry(Registries.STRUCTURE).orElseThrow().keySet();
-		HashMap<ResourceLocation, ArrayList<StructureRepaletterEntry>> unorderedEntries = new HashMap<>();
-		int count = 0;
-		for (var mapEntry : map.entrySet()) {
-			ResourceLocation name = mapEntry.getKey();
-			try {
-				StructureRepaletterEntry entry = StructureRepaletterEntry.deserialize(name, mapEntry.getValue(), registryOps);
-				if (entry == null) continue;
-				entry.selector().select(structureLocations::forEach).forEach(location -> {
-					unorderedEntries.computeIfAbsent(location, __ -> new ArrayList<>()).add(entry);
-				});
-				count++;
-			} catch (JsonParseException exception) {
-				Blueprint.LOGGER.error("Parsing error loading Structure Repaletter: {}", name, exception);
-			}
-		}
-		unorderedEntries.forEach((location, repaletters) -> {
-			ASSIGNED_REPALLETERS.put(location, repaletters.stream().sorted((Comparator.comparing(StructureRepaletterEntry::priority))).map(StructureRepaletterEntry::repaletter).toArray(StructureRepaletter[]::new));
-		});
-		Blueprint.LOGGER.info("Structure Repaletter Manager has loaded {} repaletters", count);
 	}
 
 	/**

@@ -42,7 +42,7 @@ public final class SurfaceRulesContextMixin implements ModdednessSliceGetter {
 	private void updateModdedBiomeSlice(int stoneDepthAbove, int stoneDepthBelow, int waterHeight, int x, int y, int z, CallbackInfo info) {
 		ModdedBiomeSource moddedBiomeSource = this.moddedBiomeSource;
 		if (moddedBiomeSource != null) {
-			this.moddedBiomeSlice = Suppliers.memoize(() -> moddedBiomeSource.getSliceWithVanillaZoom(x, y, z).name());
+			this.moddedBiomeSlice = Suppliers.memoize(() -> moddedBiomeSource.getSliceWithVanillaZoom(x, y, z).getFirst());
 		}
 	}
 

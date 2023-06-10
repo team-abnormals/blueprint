@@ -2,11 +2,9 @@ package com.teamabnormals.blueprint.common.item;
 
 import com.teamabnormals.blueprint.common.entity.BlueprintBoat;
 import com.teamabnormals.blueprint.common.entity.BlueprintChestBoat;
-import com.teamabnormals.blueprint.core.util.item.filling.TargetedItemCategoryFiller;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
@@ -18,10 +16,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -39,7 +35,6 @@ import java.util.function.Predicate;
  * @author SmellyModder (Luke Tonon)
  */
 public class BlueprintBoatItem extends Item {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_CHEST_BOAT);
 	private static final Predicate<Entity> COLLISION_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
 	private final boolean hasChest;
 	private final ResourceLocation type;
@@ -49,11 +44,6 @@ public class BlueprintBoatItem extends Item {
 		this.hasChest = hasChest;
 		this.type = type;
 		DispenserBlock.registerBehavior(this, new DispenserBoatBehavior(hasChest, type));
-	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		FILLER.fillItem(this, group, items);
 	}
 
 	@Override

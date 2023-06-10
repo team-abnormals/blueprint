@@ -2,24 +2,16 @@ package com.teamabnormals.blueprint.common.world.modification;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.google.common.base.Suppliers;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.BlueprintConfig;
-import com.teamabnormals.blueprint.core.util.DataUtil;
-import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
+import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.CheckerboardColumnBiomeSource;
@@ -28,59 +20,28 @@ import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * The data manager class for Blueprint's modded biome sources system.
- * <p>This class handles the deserializing and applying of {@link ModdedBiomeSlice} instances.</p>
+ * The manager class for Blueprint's modded biome sources system.
+ * <p>This class handles the applying of {@link ModdedBiomeSlice} instances that were registered by datapacks.</p>
  *
  * @author SmellyModder (Luke Tonon)
  */
-@Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
-public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadListener {
-	private static ModdedBiomeSlicesManager INSTANCE;
-	private final List<Pair<ConditionedResourceSelector, ModdedBiomeSlice>> unassignedSlices = new LinkedList<>();
-	private final RegistryOps<JsonElement> registryOps;
-
-	public ModdedBiomeSlicesManager(RegistryOps<JsonElement> registryOps) {
-		super(new Gson(), "modded_biome_slices");
-		this.registryOps = registryOps;
-	}
-
-	@SubscribeEvent
-	public static void onReloadListener(AddReloadListenerEvent event) {
-		try {
-			event.addListener(INSTANCE = new ModdedBiomeSlicesManager(DataUtil.createRegistryOps(event.getServerResources())));
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-	}
-
+public final class ModdedBiomeSlicesManager {
 	// TODO: Move to high event priority Forge event
 	@SuppressWarnings("deprecation")
 	public static void onServerAboutToStart(MinecraftServer server) {
-		if (INSTANCE == null) return;
-		var unassignedSlices = INSTANCE.unassignedSlices;
-		if (unassignedSlices.isEmpty()) return;
-
 		RegistryAccess registryAccess = server.registryAccess();
-		var dimensions = registryAccess.registryOrThrow(Registries.LEVEL_STEM);
-		var keySet = dimensions.keySet();
-		HashMap<ResourceLocation, ArrayList<ModdedBiomeSlice>> assignedSlices = new HashMap<>();
-		for (var unassignedSlice : unassignedSlices) {
-			ModdedBiomeSlice slice = unassignedSlice.getSecond();
+		var slices = registryAccess.registryOrThrow(BlueprintDataPackRegistries.MODDED_BIOME_SLICES).entrySet();
+		if (slices.isEmpty()) return;
+
+		HashMap<ResourceLocation, ArrayList<Pair<ResourceLocation, ModdedBiomeSlice>>> assignedSlices = new HashMap<>();
+		for (var unassignedSlice : slices) {
+			ModdedBiomeSlice slice = unassignedSlice.getValue();
 			if (slice.weight() <= 0) return;
-			unassignedSlice.getFirst().select(keySet::forEach).forEach(location -> {
-				assignedSlices.computeIfAbsent(location, __ -> new ArrayList<>()).add(slice);
-			});
+			slice.levels().stream().forEach(levelStemHolder -> assignedSlices.computeIfAbsent(levelStemHolder.unwrapKey().orElseThrow().location(), __ -> new ArrayList<>()).add(Pair.of(unassignedSlice.getKey().location(), slice)));
 		}
 
 		CommentedConfig moddedBiomeSliceSizes = BlueprintConfig.COMMON.moddedBiomeSliceSizes.get();
@@ -90,6 +51,7 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 			defaultSize = 9;
 		}
 
+		Registry<LevelStem> dimensions = registryAccess.registryOrThrow(Registries.LEVEL_STEM);
 		Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
 		long seed = server.getWorldData().worldGenOptions().seed();
 		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : dimensions.entrySet()) {
@@ -115,21 +77,5 @@ public final class ModdedBiomeSlicesManager extends SimpleJsonResourceReloadList
 				}
 			}
 		}
-	}
-
-	@Override
-	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-		var unassignedSlices = this.unassignedSlices;
-		unassignedSlices.clear();
-		RegistryOps<JsonElement> registryOps = this.registryOps;
-		for (Map.Entry<ResourceLocation, JsonElement> entry : map.entrySet()) {
-			ResourceLocation name = entry.getKey();
-			try {
-				unassignedSlices.add(ModdedBiomeSlice.deserializeWithSelector(name, entry.getValue(), registryOps));
-			} catch (JsonParseException exception) {
-				Blueprint.LOGGER.error("Parsing error loading Modded Biome Slice: {}", name, exception);
-			}
-		}
-		Blueprint.LOGGER.info("Modded Biome Slice Manager has loaded {} slices", unassignedSlices.size());
 	}
 }

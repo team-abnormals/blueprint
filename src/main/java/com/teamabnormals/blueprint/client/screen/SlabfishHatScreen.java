@@ -1,10 +1,11 @@
 package com.teamabnormals.blueprint.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamabnormals.blueprint.client.RewardHandler;
 import com.teamabnormals.blueprint.client.RewardHandler.SlabfishSetting;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -35,12 +36,13 @@ public class SlabfishHatScreen extends Screen {
 		for (SlabfishSetting setting : RewardHandler.SlabfishSetting.values()) {
 			ForgeConfigSpec.ConfigValue<Boolean> configValue = setting.getConfigValue();
 
-			this.addRenderableWidget(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, this.getOptionName(setting, configValue.get()), (button) -> {
+			Button settingButton = Button.builder(this.getOptionName(setting, configValue.get()), (button) -> {
 				boolean enabled = !configValue.get();
 				configValue.set(enabled);
 				button.setMessage(this.getOptionName(setting, enabled));
 				NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
-			}, (button, stack, mouseX, mouseY) -> this.renderTooltip(stack, this.font.split(Component.translatable("blueprint.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"), 200), mouseX, mouseY)));
+			}).bounds(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20).tooltip(Tooltip.create(Component.translatable("blueprint.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"))).build();
+			this.addRenderableWidget(settingButton);
 			++i;
 		}
 
@@ -48,14 +50,18 @@ public class SlabfishHatScreen extends Screen {
 			++i;
 		}
 
-		this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, CommonComponents.GUI_DONE, (button) -> this.getMinecraft().setScreen(this.parent)));
+		this.addRenderableWidget(
+				Button.builder(CommonComponents.GUI_DONE, (button) -> this.getMinecraft().setScreen(this.parent))
+						.bounds(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20)
+						.build()
+		);
 	}
 
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(stack);
-		drawCenteredString(stack, this.font, this.title, this.width / 2, 20, 16777215);
-		super.render(stack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground(guiGraphics);
+		guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 16777215);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

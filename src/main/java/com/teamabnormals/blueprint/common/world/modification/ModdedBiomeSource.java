@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.common.world.modification;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
@@ -8,6 +9,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LinearCongruentialGenerator;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
@@ -36,7 +38,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 	private final Registry<Biome> biomes;
 	private final BiomeSource originalSource;
 	private final ThreadLocal<SlicesCache> slicesCache = ThreadLocal.withInitial(SlicesCache::new);
-	private final ModdedBiomeSlice[] slices;
+	private final Pair<ResourceLocation, ModdedBiomeSlice>[] slices;
 	private final int totalWeight;
 	private final int size;
 	private final Biome originalSourceMarker;
@@ -44,15 +46,16 @@ public final class ModdedBiomeSource extends BiomeSource {
 	private final long slicesZoomSeed;
 	private final long obfuscatedSeed;
 
-	public ModdedBiomeSource(Registry<Biome> biomes, BiomeSource originalSource, ArrayList<ModdedBiomeSlice> slices, int size, long seed, long dimensionSeedModifier) {
-		this(biomes, originalSource, slices, size + Mth.ceil(Math.log(slices.size()) / Math.log(2)), seed, seed + 1791510900 + dimensionSeedModifier, seed - 771160217 + dimensionSeedModifier);
+	public ModdedBiomeSource(Registry<Biome> biomes, BiomeSource originalSource, ArrayList<Pair<ResourceLocation, ModdedBiomeSlice>> slices, int size, long seed, long dimensionSeedModifier) {
+		this(biomes, originalSource, slices, size + Math.min(Mth.ceil(Math.log(slices.size()) / Math.log(2)), 4), seed, seed + 1791510900 + dimensionSeedModifier, seed - 771160217 + dimensionSeedModifier);
 	}
 
-	public ModdedBiomeSource(Registry<Biome> biomes, BiomeSource originalSource, ArrayList<ModdedBiomeSlice> slices, int size, long seed, long slicesSeed, long slicesZoomSeed) {
+	@SuppressWarnings("unchecked")
+	public ModdedBiomeSource(Registry<Biome> biomes, BiomeSource originalSource, ArrayList<Pair<ResourceLocation, ModdedBiomeSlice>> slices, int size, long seed, long slicesSeed, long slicesZoomSeed) {
 		this.biomes = biomes;
 		this.originalSource = originalSource;
-		this.slices = slices.toArray(new ModdedBiomeSlice[0]);
-		this.totalWeight = Stream.of(this.slices).map(ModdedBiomeSlice::weight).reduce(0, Integer::sum);
+		this.slices = slices.toArray(new Pair[0]);
+		this.totalWeight = Stream.of(this.slices).map(pair -> pair.getSecond().weight()).reduce(0, Integer::sum);
 		this.size = size;
 		this.originalSourceMarker = biomes.getOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER);
 		this.slicesSeed = slicesSeed;
@@ -65,7 +68,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 		BiomeSource original = this.originalSource;
 		original.addDebugInfo(strings, pos, sampler);
 		if (!(original instanceof ModdedBiomeSource))
-			strings.add("Modded Biome Slice: " + this.getSlice(QuartPos.fromBlock(pos.getX()), QuartPos.fromBlock(pos.getZ())).name());
+			strings.add("Modded Biome Slice: " + this.getSlice(QuartPos.fromBlock(pos.getX()), QuartPos.fromBlock(pos.getZ())).getFirst());
 	}
 
 	@Override
@@ -75,20 +78,20 @@ public final class ModdedBiomeSource extends BiomeSource {
 
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		return Stream.concat(this.originalSource.possibleBiomes().stream(), Arrays.stream(this.slices).flatMap(slice -> slice.provider().getAdditionalPossibleBiomes(this.biomes).stream()));
+		return Stream.concat(this.originalSource.possibleBiomes().stream(), Arrays.stream(this.slices).flatMap(slice -> slice.getSecond().provider().getAdditionalPossibleBiomes(this.biomes).stream()));
 	}
 
 	@Override
 	public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
-		Holder<Biome> biome = this.getSlice(x, z).provider().getNoiseBiome(x, y, z, sampler, this.originalSource, this.biomes);
+		Holder<Biome> biome = this.getSlice(x, z).getSecond().provider().getNoiseBiome(x, y, z, sampler, this.originalSource, this.biomes);
 		return biome.value() == this.originalSourceMarker ? this.originalSource.getNoiseBiome(x, y, z, sampler) : biome;
 	}
 
-	private ModdedBiomeSlice getSlice(int x, int z) {
+	private Pair<ResourceLocation, ModdedBiomeSlice> getSlice(int x, int z) {
 		return this.slicesCache.get().getSlice(this, x, z);
 	}
 
-	private ModdedBiomeSlice getSliceUncached(int x, int z) {
+	private Pair<ResourceLocation, ModdedBiomeSlice> getSliceUncached(int x, int z) {
 		int cordX = QuartPos.toBlock(x);
 		int cordZ = QuartPos.toBlock(z);
 		long slicesZoomSeed = this.slicesZoomSeed;
@@ -134,8 +137,8 @@ public final class ModdedBiomeSource extends BiomeSource {
 		}
 		//After transforming the x and z coordinates to be in a randomized cell, we generate the pseudorandom weight associated with the transformed coordinates
 		int randomWeight = nextInt(this.slicesSeed, cordX, cordZ, this.totalWeight);
-		for (ModdedBiomeSlice slice : this.slices) {
-			if ((randomWeight -= slice.weight()) < 0) return slice;
+		for (var slice : this.slices) {
+			if ((randomWeight -= slice.getSecond().weight()) < 0) return slice;
 		}
 		return this.slices[0];
 	}
@@ -150,7 +153,7 @@ public final class ModdedBiomeSource extends BiomeSource {
 	 * @return The {@link ModdedBiomeSlice} instance at given x, y, and z coordinates after it has been zoomed by vanilla's {@link BiomeManager}.
 	 */
 	//Vanilla applies a zoom when getting noise biomes, and we must account for this in ModdednessSliceConditionSource
-	public ModdedBiomeSlice getSliceWithVanillaZoom(int x, int y, int z) {
+	public Pair<ResourceLocation, ModdedBiomeSlice> getSliceWithVanillaZoom(int x, int y, int z) {
 		int i = x - 2;
 		int j = y - 2;
 		int k = z - 2;
@@ -215,14 +218,15 @@ public final class ModdedBiomeSource extends BiomeSource {
 	//The y-axis doesn't matter for selecting slices, so we can cache our slices on the xz plane to greatly boost performance.
 	private static class SlicesCache {
 		private final long[] lastXZHashes;
-		private final ModdedBiomeSlice[] slices;
+		private final Pair<ResourceLocation, ModdedBiomeSlice>[] slices;
 
+		@SuppressWarnings("unchecked")
 		private SlicesCache() {
 			Arrays.fill(this.lastXZHashes = new long[256], -9223372036854775807L);
-			this.slices = new ModdedBiomeSlice[256];
+			this.slices = new Pair[256];
 		}
 
-		private ModdedBiomeSlice getSlice(ModdedBiomeSource biomeSource, int x, int z) {
+		private Pair<ResourceLocation, ModdedBiomeSlice> getSlice(ModdedBiomeSource biomeSource, int x, int z) {
 			int xIndex = SectionPos.sectionRelative(x);
 			int zIndex = SectionPos.sectionRelative(z);
 			int index = 16 * xIndex + zIndex;

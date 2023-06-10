@@ -14,7 +14,8 @@ import net.minecraft.advancements.critereon.FilledBucketTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MobEffectsPredicate;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
@@ -23,18 +24,19 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static java.util.Optional.of;
 import static java.util.Optional.empty;
 
 public final class TestAdvancementModifiersProvider extends AdvancementModifierProvider {
 
-	public TestAdvancementModifiersProvider(DataGenerator dataGenerator) {
-		super(dataGenerator, BlueprintTest.MOD_ID);
+	public TestAdvancementModifiersProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		super(BlueprintTest.MOD_ID, output, lookupProvider);
 	}
 
 	@Override
-	protected void registerEntries() {
+	protected void registerEntries(HolderLookup.Provider provider) {
 		this.entry("all_potions")
 				.selects("nether/all_potions")
 				.addModifier(new EffectsChangedModifier("all_effects", false, MobEffectsPredicate.effects().and(MobEffects.BLINDNESS)));

@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.core.util;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
+import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.annotations.ConfigKey;
 import com.teamabnormals.blueprint.core.api.conditions.ConfigValueCondition;
 import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicate;
@@ -16,6 +17,7 @@ import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +39,9 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -58,12 +63,31 @@ import java.util.function.Predicate;
  * @author SmellyModder (Luke Tonon)
  * @author abigailfails
  */
+@Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class DataUtil {
 	public static final Field TAG_MANAGER = ObfuscationReflectionHelper.findField(ReloadableServerResources.class, "f_206849_");
 	public static final Field REGISTRY_ACCESS = ObfuscationReflectionHelper.findField(TagManager.class, "f_144569_");
 	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "m_43513_", Potion.class, Item.class, Potion.class);
 	private static final Vector<AlternativeDispenseBehavior> ALTERNATIVE_DISPENSE_BEHAVIORS = new Vector<>();
 	private static final Vector<CustomNoteBlockInstrument> CUSTOM_NOTE_BLOCK_INSTRUMENTS = new Vector<>();
+	private static final ArrayList<Pair<ResourceLocation, Pair<StructurePoolElement, Integer>>> TEMPLATE_POOL_ADDITIONS = new ArrayList<>();
+
+	@SubscribeEvent
+	public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+		var structureTemplatePoolRegistry = event.getServer().registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
+		// TODO: Ensure this is safe, and if not, fix it
+		TEMPLATE_POOL_ADDITIONS.forEach(addition -> {
+			StructureTemplatePool structureTemplatePool = structureTemplatePoolRegistry.get(addition.getFirst());
+			if (structureTemplatePool != null) {
+				var elementWithWeight = addition.getSecond();
+				StructurePoolElement element = elementWithWeight.getFirst();
+				int weight = elementWithWeight.getSecond();
+				structureTemplatePool.rawTemplates.add(Pair.of(element, weight));
+				List<StructurePoolElement> jigsawPieces = structureTemplatePool.templates;
+				for (int i = 0; i < weight; i++) jigsawPieces.add(element);
+			}
+		});
+	}
 
 	/**
 	 * Registers a given {@link Block} to be flammable.
@@ -312,15 +336,8 @@ public final class DataUtil {
 	 * @param weight   The probability weight of {@code newPiece}.
 	 * @author abigailfails
 	 */
-	public static void addToJigsawPattern(ResourceLocation toAdd, StructurePoolElement newPiece, int weight) {
-		StructureTemplatePool oldPool = BuiltinRegistries.TEMPLATE_POOL.get(toAdd);
-		if (oldPool != null) {
-			oldPool.rawTemplates.add(Pair.of(newPiece, weight));
-			List<StructurePoolElement> jigsawPieces = oldPool.templates;
-			for (int i = 0; i < weight; i++) {
-				jigsawPieces.add(newPiece);
-			}
-		}
+	public static synchronized void addToJigsawPattern(ResourceLocation toAdd, StructurePoolElement newPiece, int weight) {
+		TEMPLATE_POOL_ADDITIONS.add(Pair.of(toAdd, Pair.of(newPiece, weight)));
 	}
 
 	/**

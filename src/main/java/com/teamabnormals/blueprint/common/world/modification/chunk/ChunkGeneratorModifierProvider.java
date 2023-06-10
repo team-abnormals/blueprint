@@ -1,13 +1,13 @@
 package com.teamabnormals.blueprint.common.world.modification.chunk;
 
 import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModifierProvider;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Subclass of {@link ObjectModifierProvider} to ease creation of data generators for chunk generator modifiers.
@@ -16,12 +16,8 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
  */
 public abstract class ChunkGeneratorModifierProvider extends ObjectModifierProvider<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>> {
 
-	public ChunkGeneratorModifierProvider(DataGenerator dataGenerator, String modId, RegistryOps<JsonElement> registryOps) {
-		super(dataGenerator, modId, true, ChunkGeneratorModificationManager.PATH, ChunkGeneratorModifierSerializers.REGISTRY, registryOps);
-	}
-
-	public ChunkGeneratorModifierProvider(DataGenerator dataGenerator, String modId) {
-		super(dataGenerator, modId, true, ChunkGeneratorModificationManager.PATH, ChunkGeneratorModifierSerializers.REGISTRY, RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(Registry.REGISTRY)));
+	public ChunkGeneratorModifierProvider(String modId, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		super(modId, true, ChunkGeneratorModificationManager.PATH, ChunkGeneratorModifierSerializers.REGISTRY, (ops, group) -> ops, output, lookupProvider);
 	}
 
 }

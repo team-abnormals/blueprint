@@ -12,7 +12,6 @@ import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
 import com.teamabnormals.blueprint.common.item.BEWLRBlockItem;
 import com.teamabnormals.blueprint.common.item.BEWLRFuelBlockItem;
 import com.teamabnormals.blueprint.common.item.FuelBlockItem;
-import com.teamabnormals.blueprint.common.item.InjectedBlockItem;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -124,19 +123,6 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	public <B extends Block> RegistryObject<B> createFuelBlock(String name, Supplier<? extends B> supplier, int burnTime) {
 		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties()));
-		return block;
-	}
-
-	/**
-	 * Creates and registers a {@link Block} with an {@link InjectedBlockItem}.
-	 *
-	 * @param name     The block's name.
-	 * @param supplier The supplied {@link Block}.
-	 * @return A {@link RegistryObject} containing the created {@link Block}.
-	 */
-	public <B extends Block> RegistryObject<B> createInjectedBlock(String name, Item followItem, Supplier<? extends B> supplier) {
-		RegistryObject<B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new InjectedBlockItem(followItem, block.get(), new Item.Properties()));
 		return block;
 	}
 

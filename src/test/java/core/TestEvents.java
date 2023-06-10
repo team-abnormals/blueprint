@@ -49,7 +49,7 @@ public final class TestEvents {
 	public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
 		Entity entity = event.getTarget();
 		if (entity instanceof Cow || entity instanceof Player) {
-			if (!entity.level.isClientSide) {
+			if (!entity.level().isClientSide) {
 				Player player = event.getEntity();
 				if (player instanceof ServerPlayer) {
 					TestTriggers.EMPTY_TEST.trigger((ServerPlayer) player);
@@ -64,10 +64,10 @@ public final class TestEvents {
 	@SubscribeEvent
 	public static void onLivingTick(LivingEvent.LivingTickEvent event) {
 		LivingEntity entity = event.getEntity();
-		if (entity.level.isClientSide && (entity instanceof Cow || entity instanceof Player) && TrackedDataManager.INSTANCE.getValue(entity, BlueprintTest.TEST_TRACKED_DATA)) {
+		if (entity.level().isClientSide && (entity instanceof Cow || entity instanceof Player) && TrackedDataManager.INSTANCE.getValue(entity, BlueprintTest.TEST_TRACKED_DATA)) {
 			RandomSource rand = entity.getRandom();
 			for (int i = 0; i < 2; ++i) {
-				entity.level.addParticle(ParticleTypes.PORTAL, entity.getRandomX(0.5D), entity.getRandomY() - 0.25D, entity.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(), (rand.nextDouble() - 0.5D) * 2.0D);
+				entity.level().addParticle(ParticleTypes.PORTAL, entity.getRandomX(0.5D), entity.getRandomY() - 0.25D, entity.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(), (rand.nextDouble() - 0.5D) * 2.0D);
 			}
 		}
 	}
@@ -109,7 +109,7 @@ public final class TestEvents {
 	@SubscribeEvent
 	public static void onFallingBlockTick(FallingBlockTickEvent event) {
 		FallingBlockEntity entity = event.getEntity();
-		Level level = entity.getLevel();
+		Level level = entity.level();
 
 		if (!level.isClientSide()) {
 			if (entity.getBlockState().is(Blocks.GREEN_CONCRETE_POWDER)) {
@@ -130,7 +130,7 @@ public final class TestEvents {
 					}
 				}
 			} else if (entity.getBlockState().is(Blocks.BLACK_CONCRETE_POWDER)) {
-				Bat bat = EntityType.BAT.create(entity.getLevel());
+				Bat bat = EntityType.BAT.create(entity.level());
 				bat.moveTo(entity.getX(), entity.getY(), entity.getZ(), 0.0F, 0.0F);
 				level.addFreshEntity(bat);
 			}

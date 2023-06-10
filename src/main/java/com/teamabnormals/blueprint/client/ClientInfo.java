@@ -36,6 +36,6 @@ public final class ClientInfo {
 	 * @return The client player's world; equivalent to getting the client world.
 	 */
 	public static Level getClientPlayerLevel() {
-		return ClientInfo.getClientPlayer().level;
+		return ClientInfo.getClientPlayer().level();
 	}
 }

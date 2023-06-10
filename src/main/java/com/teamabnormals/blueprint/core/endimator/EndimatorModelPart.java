@@ -2,11 +2,11 @@ package com.teamabnormals.blueprint.core.endimator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import com.teamabnormals.blueprint.core.endimator.model.EndimatorPartPose;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
 
 import java.util.List;
 import java.util.Map;
@@ -111,16 +111,8 @@ public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 				pose.pushPose();
 
 				pose.translate(this.x / 16.0F, this.y / 16.0F, this.z / 16.0F);
-				if (this.zRot != 0.0F) {
-					pose.mulPose(Vector3f.ZP.rotation(this.zRot));
-				}
-
-				if (this.yRot != 0.0F) {
-					pose.mulPose(Vector3f.YP.rotation(this.yRot));
-				}
-
-				if (this.xRot != 0.0F) {
-					pose.mulPose(Vector3f.XP.rotation(this.xRot));
+				if (this.xRot != 0.0F || this.yRot != 0.0F || this.zRot != 0.0F) {
+					pose.mulPose((new Quaternionf()).rotationZYX(this.zRot, this.yRot, this.xRot));
 				}
 
 				if (this.scaleChildren) {

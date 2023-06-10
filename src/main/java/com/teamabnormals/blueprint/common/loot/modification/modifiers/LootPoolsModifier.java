@@ -7,9 +7,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.loot.modification.LootModifierSerializers;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
@@ -58,7 +58,7 @@ public record LootPoolsModifier(List<LootPool> pools, boolean replace) implement
 		}
 
 		@Override
-		public LootPoolsModifier deserialize(JsonElement element, Pair<Gson, PredicateManager> additional) throws JsonParseException {
+		public LootPoolsModifier deserialize(JsonElement element, Pair<Gson, LootDataManager> additional) throws JsonParseException {
 			JsonObject jsonObject = element.getAsJsonObject();
 			List<LootPool> lootPools = new ArrayList<>();
 			JsonArray poolsArray = jsonObject.getAsJsonArray("pools");

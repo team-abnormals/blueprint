@@ -1,24 +1,15 @@
 package com.teamabnormals.blueprint.common.block.wood;
 
-import com.teamabnormals.blueprint.core.util.item.filling.TargetedItemCategoryFiller;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.WoodButtonBlock;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 /**
- * A {@link WoodButtonBlock} extension that fills its item after the latest vanilla wood button item.
+ * A {@link ButtonBlock} extension that simplifies construction for wooden buttons.
  */
-public class BlueprintWoodButtonBlock extends WoodButtonBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_BUTTON);
+public class BlueprintWoodButtonBlock extends ButtonBlock {
 
-	public BlueprintWoodButtonBlock(Properties properties) {
-		super(properties);
+	public BlueprintWoodButtonBlock(Properties properties, BlockSetType setType) {
+		super(properties, setType, 30, true);
 	}
 
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		FILLER.fillItem(this.asItem(), group, items);
-	}
 }

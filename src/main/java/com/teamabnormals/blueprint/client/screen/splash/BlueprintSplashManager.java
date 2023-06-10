@@ -96,13 +96,13 @@ public final class BlueprintSplashManager extends SimplePreparableReloadListener
 					JsonElement element = GsonHelper.fromJson(GSON, reader, JsonElement.class);
 					if (element != null) {
 						var dataResult = Splash.LIST_CODEC.decode(JsonOps.INSTANCE, element);
-						var error = DataResult.error(() -> );
+						var error = dataResult.error();
 						if (error.isPresent()) throw new JsonParseException(error.get().message());
 						List<Splash> splashList = dataResult.result().get().getFirst();
 						for (Splash splash : splashList) {
 							if (splash.isRandom()) {
-								//A little cursed.
-								//This is the only way to add new random splashes and keep them uniformly distributed even if another mod adds custom splashes.
+								// A little cursed.
+								// This is the only way to add new random splashes and keep them uniformly distributed even if another mod adds custom splashes.
 								identifierToRandomSplash.put(String.valueOf(splash.hashCode()), splash);
 								continue;
 							}

@@ -1,7 +1,7 @@
 package com.teamabnormals.blueprint.core.mixin;
 
 import com.teamabnormals.blueprint.common.world.modification.structure.StructureRepalleterManager;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -25,7 +25,7 @@ public final class StructureStartMixin {
 
 	@Inject(method = "placeInChunk", at = @At("HEAD"))
 	public void updateStructureRepalleterManager(WorldGenLevel level, StructureManager manager, ChunkGenerator generator, RandomSource randomSource, BoundingBox bounds, ChunkPos pos, CallbackInfo callback) {
-		StructureRepalleterManager.update(level.registryAccess().registry(Registry.STRUCTURE_REGISTRY).orElseThrow().getKey(this.structure), randomSource);
+		StructureRepalleterManager.update(level.registryAccess().registry(Registries.STRUCTURE).orElseThrow().getKey(this.structure), randomSource);
 	}
 
 	@Inject(method = "placeInChunk", at = @At("RETURN"))

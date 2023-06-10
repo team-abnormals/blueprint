@@ -1,15 +1,17 @@
 package com.teamabnormals.blueprint.core.registry;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamabnormals.blueprint.common.world.modification.ModdednessSliceGetter;
 import com.teamabnormals.blueprint.core.Blueprint;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.KeyDispatchDataCodec;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * The class for Blueprint's surface rule types.
@@ -17,44 +19,48 @@ import net.minecraftforge.registries.RegistryObject;
  * @author SmellyModder (Luke Tonon)
  */
 public final class BlueprintSurfaceRules extends SurfaceRules {
-	public static final DeferredRegister<Codec<? extends ConditionSource>> CONDITIONS = DeferredRegister.create(Registry.CONDITION_REGISTRY, Blueprint.MOD_ID);
+	public static final DeferredRegister<Codec<? extends RuleSource>> RULE_SOURCES = DeferredRegister.create(Registries.MATERIAL_RULE, Blueprint.MOD_ID);
 
-	public static final RegistryObject<Codec<? extends ConditionSource>> MODDED_SLICE = CONDITIONS.register("modded_slice", ModdednessSliceConditionSource.CODEC::codec);
+	public static final RegistryObject<Codec<? extends RuleSource>> TRANSIENT_MERGED = RULE_SOURCES.register("transient_merged", TransientMergedRuleSource.CODEC::codec);
+
+	private record SequenceRule(List<SurfaceRules.SurfaceRule> rules) implements SurfaceRules.SurfaceRule {
+		@Nullable
+		@Override
+		public BlockState tryApply(int x, int y, int z) {
+			for (SurfaceRules.SurfaceRule surfaceRule : this.rules) {
+				BlockState blockstate = surfaceRule.tryApply(x, y, z);
+				if (blockstate != null) {
+					return blockstate;
+				}
+			}
+			return null;
+		}
+	}
 
 	/**
-	 * A {@link SurfaceRules.ConditionSource} implementation that checks for a named moddedness slice.
+	 * The {@link RuleSource} type responsible for merging new surface rules with original surface rules.
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public record ModdednessSliceConditionSource(ResourceLocation sliceName) implements SurfaceRules.ConditionSource {
-		public static final KeyDispatchDataCodec<ModdednessSliceConditionSource> CODEC = KeyDispatchDataCodec.of(RecordCodecBuilder.create(instance -> {
-			return instance.group(
-					ResourceLocation.CODEC.fieldOf("slice_name").forGetter(condition -> condition.sliceName)
-			).apply(instance, ModdednessSliceConditionSource::new);
-		}));
+	public record TransientMergedRuleSource(List<RuleSource> sequence, RuleSource original) implements SurfaceRules.RuleSource {
+		public static final KeyDispatchDataCodec<SurfaceRules.RuleSource> CODEC = KeyDispatchDataCodec.of(RuleSource.CODEC.xmap(source -> source, source -> source instanceof TransientMergedRuleSource transientMergedRuleSource ? transientMergedRuleSource.original : source).fieldOf("original_source"));
 
 		@Override
-		public KeyDispatchDataCodec<? extends ConditionSource> codec() {
+		public KeyDispatchDataCodec<? extends SurfaceRules.RuleSource> codec() {
 			return CODEC;
 		}
 
 		@Override
-		public SurfaceRules.Condition apply(Context surfaceRulesContext) {
-			ModdednessSliceGetter moddednessSliceGetter = ModdednessSliceGetter.class.cast(surfaceRulesContext);
-			if (moddednessSliceGetter.cannotGetSlices()) return () -> false;
-
-			class ModdednessSliceCondition extends SurfaceRules.LazyYCondition {
-				ModdednessSliceCondition() {
-					super(surfaceRulesContext);
+		public SurfaceRules.SurfaceRule apply(SurfaceRules.Context context) {
+			if (this.sequence.size() == 1) {
+				return this.sequence.get(0).apply(context);
+			} else {
+				ImmutableList.Builder<SurfaceRules.SurfaceRule> builder = ImmutableList.builder();
+				for (SurfaceRules.RuleSource ruleSource : this.sequence) {
+					builder.add(ruleSource.apply(context));
 				}
-
-				@Override
-				protected boolean compute() {
-					return moddednessSliceGetter.getSliceName().equals(ModdednessSliceConditionSource.this.sliceName);
-				}
+				return new SequenceRule(builder.build());
 			}
-
-			return new ModdednessSliceCondition();
 		}
 	}
 }

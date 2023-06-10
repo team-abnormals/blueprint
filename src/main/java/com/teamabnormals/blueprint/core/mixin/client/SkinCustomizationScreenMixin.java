@@ -4,6 +4,7 @@ import com.teamabnormals.blueprint.client.screen.SlabfishHatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.SkinCustomizationScreen;
@@ -24,7 +25,11 @@ public final class SkinCustomizationScreenMixin extends OptionsSubScreen {
 	public int init(int i) {
 		Minecraft minecraft = this.getMinecraft();
 		++i;
-		this.addRenderableWidget(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, Component.translatable(SlabfishHatScreen.SLABFISH_SCREEN_KEY), (button) -> minecraft.setScreen(new SlabfishHatScreen(this)), (button, stack, mouseX, mouseY) -> this.renderTooltip(stack, minecraft.font.split(Component.translatable(SlabfishHatScreen.SLABFISH_SCREEN_KEY + ".tooltip", Component.literal("patreon.com/teamabnormals").withStyle(style -> style.withColor(TextColor.parseColor("#FF424D")))), 200), mouseX, mouseY)));
+		Button slabfishScreenButton = Button.builder(Component.translatable(SlabfishHatScreen.SLABFISH_SCREEN_KEY), (button) -> minecraft.setScreen(new SlabfishHatScreen(this)))
+				.bounds(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20)
+				.tooltip(Tooltip.create(Component.translatable(SlabfishHatScreen.SLABFISH_SCREEN_KEY + ".tooltip", Component.literal("patreon.com/teamabnormals").withStyle(style -> style.withColor(TextColor.parseColor("#FF424D"))))))
+				.build();
+		this.addRenderableWidget(slabfishScreenButton);
 		return i;
 	}
 

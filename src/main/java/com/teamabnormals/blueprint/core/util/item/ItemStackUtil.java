@@ -1,12 +1,8 @@
 package com.teamabnormals.blueprint.core.util.item;
 
-import com.teamabnormals.blueprint.core.mixin.ItemInvokerMixin;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author SmellyModder (Luke Tonon)
@@ -34,25 +30,6 @@ public final class ItemStackUtil {
 	}
 
 	/**
-	 * Used in {@link Item#fillItemCategory(CreativeModeTab, NonNullList)} and {@link (CreativeModeTab, NonNullList)} to fill an item after a specific item for a group.
-	 *
-	 * @param item       The item to fill.
-	 * @param targetItem The item to fill after.
-	 * @param tab        The tab to fill it in.
-	 * @param items      The {@link NonNullList} of item stacks to search for the target item and inject the item in.
-	 */
-	public static void fillAfterItemForCategory(Item item, Item targetItem, CreativeModeTab tab, NonNullList<ItemStack> items) {
-		if (isAllowedInTab(item, tab)) {
-			int targetIndex = findIndexOfItem(targetItem, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(item));
-			} else {
-				items.add(new ItemStack(item));
-			}
-		}
-	}
-
-	/**
 	 * Converts an Integer to a String of Roman Numerals; useful for levels.
 	 *
 	 * @param number The integer to convert.
@@ -64,16 +41,5 @@ public final class ItemStackUtil {
 		String tens = X_NUMERALS[(number % 100) / 10];
 		String ones = I_NUMERALS[number % 10];
 		return thousands + hundreds + tens + ones;
-	}
-
-	/**
-	 * Checks if an {@link Item} is in an {@link CreativeModeTab}.
-	 *
-	 * @param item The {@link Item} to check.
-	 * @param tab  The {@link CreativeModeTab} to check.
-	 * @return Whether the item is in the {@link CreativeModeTab}.
-	 */
-	public static boolean isAllowedInTab(Item item, @Nonnull CreativeModeTab tab) {
-		return ((ItemInvokerMixin) item).callAllowedIn(tab);
 	}
 }

@@ -3,12 +3,12 @@ package core.data.client;
 import client.TestCustomSplash;
 import com.teamabnormals.blueprint.client.screen.splash.SplashProvider;
 import core.BlueprintTest;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 
 public final class TestSplashProvider extends SplashProvider {
 
-	public TestSplashProvider(DataGenerator dataGenerator) {
-		super(BlueprintTest.MOD_ID, dataGenerator);
+	public TestSplashProvider(PackOutput packOutput) {
+		super(BlueprintTest.MOD_ID, packOutput);
 	}
 
 	@Override

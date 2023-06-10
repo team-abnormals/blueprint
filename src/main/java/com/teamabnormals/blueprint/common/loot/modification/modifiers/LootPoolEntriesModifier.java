@@ -9,8 +9,8 @@ import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.loot.modification.LootModifierSerializers;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -68,7 +68,7 @@ public record LootPoolEntriesModifier(boolean replace, int index, List<LootPoolE
 		}
 
 		@Override
-		public LootPoolEntriesModifier deserialize(JsonElement element, Pair<Gson, PredicateManager> additional) throws JsonParseException {
+		public LootPoolEntriesModifier deserialize(JsonElement element, Pair<Gson, LootDataManager> additional) throws JsonParseException {
 			JsonObject jsonObject = element.getAsJsonObject();
 			int index = GsonHelper.getAsInt(jsonObject, "index");
 			if (index < 0) throw new JsonParseException("'index' must be 0 or greater!");

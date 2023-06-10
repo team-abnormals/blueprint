@@ -1,25 +1,28 @@
 package com.teamabnormals.blueprint.core.util.modification;
 
-import com.google.common.collect.Sets;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 
 /**
  * A generic {@link DataProvider} implementation for {@link ObjectModifierGroup} instances.
@@ -34,54 +37,53 @@ import java.util.function.Function;
 public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
 	protected final String modId;
-	private final DataGenerator dataGenerator;
 	private final String name;
-	private final String directory;
+	private final PackOutput.PathProvider pathProvider;
+	private final CompletableFuture<HolderLookup.Provider> lookupProvider;
 	private final ObjectModifierSerializerRegistry<T, S, D> serializerRegistry;
-	private final Function<ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter;
+	private final BiFunction<RegistryOps<JsonElement>, ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter;
 	private final List<EntryBuilder<T, S, D>> entries = new ArrayList<>();
 
-	public ObjectModifierProvider(DataGenerator dataGenerator, String modId, boolean data, String subDirectory, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, Function<ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter) {
-		this.dataGenerator = dataGenerator;
+	public ObjectModifierProvider(String modId, boolean data, String subDirectory, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, BiFunction<RegistryOps<JsonElement>, ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		this.modId = modId;
 		this.name = "Object Modifiers (" + subDirectory + "): " + modId;
-		this.directory = (data ? "data/" : "assets/") + modId + "/" + ObjectModificationManager.MAIN_PATH + "/" + subDirectory + "/";
+		this.pathProvider = output.createPathProvider(data ? PackOutput.Target.DATA_PACK : PackOutput.Target.RESOURCE_PACK, ObjectModificationManager.MAIN_PATH + "/" + subDirectory);
+		this.lookupProvider = lookupProvider;
 		this.serializerRegistry = serializerRegistry;
 		this.additionalSerializationGetter = additionalSerializationGetter;
 	}
 
-	public ObjectModifierProvider(DataGenerator dataGenerator, String modId, boolean data, String subDirectory, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, S additionalSerializationObject) {
-		this(dataGenerator, modId, data, subDirectory, serializerRegistry, group -> additionalSerializationObject);
+	public ObjectModifierProvider(String modId, boolean data, String subDirectory, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, S additionalSerializationObject, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		this(modId, data, subDirectory, serializerRegistry, (ops, group) -> additionalSerializationObject, output, lookupProvider);
 	}
 
 	@Override
-	public void run(CachedOutput cachedOutput) {
-		Set<String> entryNames = Sets.newHashSet();
-		Path outputFolder = this.dataGenerator.getOutputFolder();
-		Function<ObjectModifierGroup<T, S, D>, S> additionalSerializationGetter = this.additionalSerializationGetter;
-		ObjectModifierSerializerRegistry<T, S, D> serializerRegistry = this.serializerRegistry;
-		var entries = this.entries;
-		entries.clear();
-		this.registerEntries();
-		entries.forEach(entry -> {
-			if (!entryNames.add(entry.name)) {
-				throw new IllegalStateException("Duplicate modifier group: " + entry.name);
-			} else {
-				Path resolvedPath = outputFolder.resolve(this.directory + entry.name + ".json");
+	public CompletableFuture<?> run(CachedOutput cachedOutput) {
+		return this.lookupProvider.thenCompose(provider -> {
+			var entries = this.entries;
+			entries.clear();
+			this.registerEntries(provider);
+			PackOutput.PathProvider pathProvider = this.pathProvider;
+			var additionalSerializationGetter = this.additionalSerializationGetter;
+			RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, provider);
+			ObjectModifierSerializerRegistry<T, S, D> serializerRegistry = this.serializerRegistry;
+			return CompletableFuture.allOf(entries.stream().map(entry -> {
+				Path resolvedPath = pathProvider.json(new ResourceLocation(this.modId, entry.name));
+				ObjectModifierGroup<T, S, D> group = new ObjectModifierGroup<>(entry.selector, entry.modifiers, entry.priority);
 				try {
-					ObjectModifierGroup<T, S, D> group = new ObjectModifierGroup<>(entry.selector, entry.modifiers, entry.priority);
-					DataProvider.saveStable(cachedOutput, group.serialize(additionalSerializationGetter.apply(group), serializerRegistry, entry.conditions.toArray(new ICondition[0][])), resolvedPath);
-				} catch (IOException e) {
-					LOGGER.error("Couldn't save modifier group {}", resolvedPath, e);
+					return DataProvider.saveStable(cachedOutput, group.serialize(additionalSerializationGetter.apply(registryOps, group), serializerRegistry, entry.conditions.toArray(new ICondition[0][])), resolvedPath);
+				} catch (JsonParseException exception) {
+					LOGGER.error("Couldn't save modifier group {}", resolvedPath, exception);
+					return CompletableFuture.completedFuture(null);
 				}
-			}
+			}).toArray(CompletableFuture[]::new));
 		});
 	}
 
 	/**
 	 * Override this to register your entries.
 	 */
-	protected abstract void registerEntries();
+	protected abstract void registerEntries(HolderLookup.Provider provider);
 
 	/**
 	 * Creates and registers an {@link EntryBuilder} instance.

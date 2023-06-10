@@ -7,8 +7,8 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.loot.modification.LootModifierSerializers;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.PredicateManager;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -48,7 +48,7 @@ public record LootTypeModifier(LootContextParamSet lootContextParamSet) implemen
 		}
 
 		@Override
-		public LootTypeModifier deserialize(JsonElement element, Pair<Gson, PredicateManager> additional) throws JsonParseException {
+		public LootTypeModifier deserialize(JsonElement element, Pair<Gson, LootDataManager> additional) throws JsonParseException {
 			String type = element.getAsString();
 			LootContextParamSet lootParameterSet = LootContextParamSets.get(new ResourceLocation(type));
 			if (lootParameterSet != null) return new LootTypeModifier(lootParameterSet);

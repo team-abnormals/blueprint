@@ -4,12 +4,12 @@ import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.LinkedList;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * The {@link DataProvider} implementation for Blueprint's splash system.
@@ -19,12 +19,12 @@ import java.util.LinkedList;
  */
 public abstract class SplashProvider implements DataProvider {
 	private final String modId;
-	private final DataGenerator dataGenerator;
+	private final PackOutput packOutput;
 	private final LinkedList<Splash> splashes = new LinkedList<>();
 
-	protected SplashProvider(String modId, DataGenerator dataGenerator) {
+	protected SplashProvider(String modId, PackOutput packOutput) {
 		this.modId = modId;
-		this.dataGenerator = dataGenerator;
+		this.packOutput = packOutput;
 	}
 
 	/**
@@ -51,18 +51,18 @@ public abstract class SplashProvider implements DataProvider {
 	protected abstract void registerSplashes();
 
 	@Override
-	public void run(CachedOutput cachedOutput) throws IOException {
+	public CompletableFuture<?> run(CachedOutput cachedOutput) {
 		this.splashes.clear();
 		this.registerSplashes();
-		Path outputFolder = this.dataGenerator.getOutputFolder();
-		Path resolvedPath = outputFolder.resolve("assets/" + this.modId + "/" + BlueprintSplashManager.PATH);
+		var dataResult = Splash.LIST_CODEC.encodeStart(JsonOps.INSTANCE, this.splashes);
+		Path resolvedPath = this.packOutput.getOutputFolder(PackOutput.Target.DATA_PACK).resolve(this.modId).resolve(BlueprintSplashManager.PATH);
 		try {
-			var dataResult = Splash.LIST_CODEC.encodeStart(JsonOps.INSTANCE, this.splashes);
-			var error = DataResult.error(() -> );
+			var error = dataResult.error();
 			if (error.isPresent()) throw new JsonParseException(error.get().message());
-			DataProvider.saveStable(cachedOutput, dataResult.result().get(), resolvedPath);
-		} catch (JsonParseException | IOException e) {
+			return DataProvider.saveStable(cachedOutput, dataResult.result().get(), resolvedPath);
+		} catch (JsonParseException e) {
 			Blueprint.LOGGER.error("Couldn't save splashes {}", resolvedPath, e);
+			return CompletableFuture.completedFuture(null);
 		}
 	}
 

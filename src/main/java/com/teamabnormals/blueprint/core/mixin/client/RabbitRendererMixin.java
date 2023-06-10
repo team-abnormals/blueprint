@@ -22,7 +22,7 @@ public abstract class RabbitRendererMixin {
 	private void getTextureLocation(Rabbit rabbit, CallbackInfoReturnable<ResourceLocation> cir) {
 		if (!cir.getReturnValue().equals(RABBIT_TOAST_LOCATION)) {
 			for (BlueprintRabbitType rabbitType : BlueprintRabbitTypes.values()) {
-				if (rabbit.getRabbitType() == rabbitType.id()) {
+				if (rabbit.getVariant().id() == rabbitType.id()) {
 					cir.setReturnValue(rabbitType.textureLocation());
 					break;
 				}

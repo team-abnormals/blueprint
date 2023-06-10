@@ -4,6 +4,7 @@ import com.teamabnormals.blueprint.client.screen.splash.BlueprintSplashManager;
 import com.teamabnormals.blueprint.client.screen.splash.Splash;
 import com.teamabnormals.blueprint.client.screen.splash.SplashManagerAccessor;
 import net.minecraft.client.User;
+import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.util.RandomSource;
 import org.spongepowered.asm.mixin.Final;
@@ -30,25 +31,26 @@ public final class SplashManagerMixin implements SplashManagerAccessor {
 
 	@Nullable
 	@Shadow
-	public String getSplash() {
+	public SplashRenderer getSplash() {
 		return null;
 	}
 
 	@Inject(method = "getSplash", at = @At(value = "FIELD", target = "Lnet/minecraft/client/resources/SplashManager;user:Lnet/minecraft/client/User;", shift = At.Shift.AFTER), cancellable = true)
-	private void handleBlueprintEventSplashes(CallbackInfoReturnable<String> info) {
+	private void handleBlueprintEventSplashes(CallbackInfoReturnable<SplashRenderer> info) {
 		String randomEventSplash = BlueprintSplashManager.getRandomEventSplash(this.user, RANDOM);
-		if (randomEventSplash != null) info.setReturnValue(randomEventSplash);
+		if (randomEventSplash != null) info.setReturnValue(new SplashRenderer(randomEventSplash));
 	}
 
 	@Inject(method = "getSplash", at = @At(value = "RETURN", ordinal = 4), cancellable = true)
-	private void handleBlueprintRandomSplashes(CallbackInfoReturnable<String> info) {
-		String splash = info.getReturnValue();
+	private void handleBlueprintRandomSplashes(CallbackInfoReturnable<SplashRenderer> info) {
+		SplashRenderer splashRenderer = info.getReturnValue();
+		String splash = splashRenderer.splash;
 		Splash identifiedSplash = BlueprintSplashManager.getSplashForIdentifier(splash);
 		if (identifiedSplash != null) {
 			splash = identifiedSplash.getText(this.user, RANDOM);
-			//If the identified splash wants to get skipped then we rerun the method.
-			//Not an amazing solution, but needed in case other mods add custom splashes.
-			info.setReturnValue(splash != null ? splash : this.getSplash());
+			// If the identified splash wants to get skipped then we rerun the method.
+			// Not an amazing solution, but needed in case other mods add custom splashes.
+			info.setReturnValue(splash != null ? new SplashRenderer(splash) : this.getSplash());
 		}
 	}
 

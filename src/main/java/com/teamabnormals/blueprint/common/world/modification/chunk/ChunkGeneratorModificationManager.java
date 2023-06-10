@@ -34,7 +34,6 @@ import java.util.Map;
  *
  * @author SmellyModder (Luke Tonon)
  */
-//TODO: Possibly rework this class in the future
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class ChunkGeneratorModificationManager extends SimpleJsonResourceReloadListener {
 	public static final String PATH = "dimension/chunk_generator";

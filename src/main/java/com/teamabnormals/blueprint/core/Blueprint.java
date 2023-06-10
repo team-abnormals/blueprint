@@ -22,7 +22,6 @@ import com.teamabnormals.blueprint.core.api.conditions.QuarkFlagRecipeCondition.
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
 import com.teamabnormals.blueprint.core.api.model.FullbrightModel;
 import com.teamabnormals.blueprint.core.data.server.BlueprintDatapackBuiltinEntriesProvider;
-import com.teamabnormals.blueprint.core.data.server.modifiers.BlueprintModdedBiomeSliceProvider;
 import com.teamabnormals.blueprint.core.data.server.tags.*;
 import com.teamabnormals.blueprint.core.endimator.EndimationLoader;
 import com.teamabnormals.blueprint.core.other.BlueprintEvents;
@@ -123,7 +122,7 @@ public final class Blueprint {
 		REGISTRY_HELPER.getBlockEntitySubHelper().register(bus);
 		REGISTRY_HELPER.getBiomeSubHelper().register(bus);
 		BlueprintPoiTypes.POI_TYPES.register(bus);
-		BlueprintSurfaceRules.CONDITIONS.register(bus);
+		BlueprintSurfaceRules.RULE_SOURCES.register(bus);
 		BlueprintLootConditions.LOOT_CONDITION_TYPES.register(bus);
 
 		bus.addListener((ModConfigEvent event) -> {
@@ -154,6 +153,7 @@ public final class Blueprint {
 			bus.addListener(BlueprintShaders::registerShaders);
 		});
 
+		bus.addListener(BlueprintDataPackRegistries::registerRegistries);
 		bus.addListener(this::registerOnEvent);
 		bus.addListener(EventPriority.LOWEST, this::commonSetup);
 		bus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
@@ -186,7 +186,6 @@ public final class Blueprint {
 		generator.addProvider(includeServer, new BlueprintBiomeTagsProvider(MOD_ID, packOutput, lookupProvider, fileHelper));
 		generator.addProvider(includeServer, new BlueprintPoiTypeTagsProvider(MOD_ID, packOutput, lookupProvider, fileHelper));
 		generator.addProvider(includeServer, new BlueprintDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
-		generator.addProvider(includeServer, new BlueprintModdedBiomeSliceProvider(packOutput, lookupProvider));
 	}
 
 	private void registerOnEvent(RegisterEvent event) {

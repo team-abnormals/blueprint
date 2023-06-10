@@ -21,7 +21,9 @@ import core.data.client.TestSplashProvider;
 import core.data.server.*;
 import core.registry.*;
 import net.minecraft.client.renderer.entity.CowRenderer;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -44,6 +46,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.concurrent.CompletableFuture;
 
 @Mod(BlueprintTest.MOD_ID)
 @Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -91,19 +95,22 @@ public final class BlueprintTest {
 
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
+		PackOutput packOutput = generator.getPackOutput();
+		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 		ExistingFileHelper helper = event.getExistingFileHelper();
 
 		boolean includeServer = event.includeServer();
-		generator.addProvider(includeServer, new TestItemTagsProvider(generator, helper));
-		generator.addProvider(includeServer, new TestAdvancementModifiersProvider(generator));
-		generator.addProvider(includeServer, new TestLootModifiersProvider(generator));
-		generator.addProvider(includeServer, new TestChunkGeneratorModifiersProvider(generator));
-		generator.addProvider(includeServer, new TestModdedBiomeSlicesProvider(generator.getPackOutput(), event.getLookupProvider()));
-		generator.addProvider(includeServer, new TestStructureRepaletterProvider(generator));
+		TestBlockTagsProvider testBlockTagsProvider = new TestBlockTagsProvider(packOutput, lookupProvider, helper);
+		generator.addProvider(includeServer, testBlockTagsProvider);
+		generator.addProvider(includeServer, new TestItemTagsProvider(packOutput, lookupProvider, testBlockTagsProvider.contentsGetter(), helper));
+		generator.addProvider(includeServer, new TestAdvancementModifiersProvider(packOutput, lookupProvider));
+		generator.addProvider(includeServer, new TestLootModifiersProvider(packOutput, lookupProvider));
+		generator.addProvider(includeServer, new TestChunkGeneratorModifiersProvider(packOutput, lookupProvider));
+		generator.addProvider(includeServer, new TestDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
 
 		boolean includeClient = event.includeClient();
-		generator.addProvider(includeClient, new TestEndimationProvider(generator));
-		generator.addProvider(includeClient, new TestSplashProvider(generator));
+		generator.addProvider(includeClient, new TestEndimationProvider(packOutput));
+		generator.addProvider(includeClient, new TestSplashProvider(packOutput));
 	}
 
 	@OnlyIn(Dist.CLIENT)

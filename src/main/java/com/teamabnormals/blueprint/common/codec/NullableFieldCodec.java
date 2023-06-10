@@ -45,7 +45,7 @@ public class NullableFieldCodec<A> extends MapCodec<Optional<A>> {
 		if (parsed.result().isPresent()) {
 			return parsed.map(Optional::of);
 		}
-		return DataResult.error(() -> () -> parsed.error().get().message());
+		return DataResult.error(() -> parsed.error().get().message());
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.core.util;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
@@ -27,35 +27,35 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class TagUtil {
 
 	public static TagKey<Block> blockTag(String modid, String name) {
-		return TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.BLOCK, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<Item> itemTag(String modid, String name) {
-		return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.ITEM, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<EntityType<?>> entityTypeTag(String modid, String name) {
-		return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<Enchantment> enchantmentTag(String modid, String name) {
-		return TagKey.create(Registry.ENCHANTMENT_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.ENCHANTMENT, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<Potion> potionTag(String modid, String name) {
-		return TagKey.create(Registry.POTION_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.POTION, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<BlockEntityType<?>> blockEntityTypeTag(String modid, String name) {
-		return TagKey.create(Registry.BLOCK_ENTITY_TYPE_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.BLOCK_ENTITY_TYPE, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<MobEffect> mobEffectTag(String modid, String name) {
-		return TagKey.create(Registry.MOB_EFFECT_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.MOB_EFFECT, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<Biome> biomeTag(String modid, String name) {
-		return TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.BIOME, new ResourceLocation(modid, name));
 	}
 
 	public static boolean isTagged(Biome biome, TagKey<Biome> tagKey) {
@@ -63,26 +63,26 @@ public final class TagUtil {
 	}
 
 	public static TagKey<Level> dimensionTag(String modid, String name) {
-		return TagKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.DIMENSION, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<DimensionType> dimensionTypeTag(String modid, String name) {
-		return TagKey.create(Registry.DIMENSION_TYPE_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<ConfiguredFeature<?, ?>> configuredFeatureTag(String modid, String name) {
-		return TagKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<PlacedFeature> placedFeatureTag(String modid, String name) {
-		return TagKey.create(Registry.PLACED_FEATURE_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.PLACED_FEATURE, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<Structure> structureTag(String modid, String name) {
-		return TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.STRUCTURE, new ResourceLocation(modid, name));
 	}
 
 	public static TagKey<ConfiguredWorldCarver<?>> configuredCarverTag(String modid, String name) {
-		return TagKey.create(Registry.CONFIGURED_CARVER_REGISTRY, new ResourceLocation(modid, name));
+		return TagKey.create(Registries.CONFIGURED_CARVER, new ResourceLocation(modid, name));
 	}
 }

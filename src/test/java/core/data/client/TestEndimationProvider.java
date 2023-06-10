@@ -2,15 +2,15 @@ package core.data.client;
 
 import com.teamabnormals.blueprint.core.endimator.util.EndimationProvider;
 import core.BlueprintTest;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 
 import static com.teamabnormals.blueprint.core.endimator.Endimation.Builder.Keyframes.*;
 import static com.teamabnormals.blueprint.core.endimator.Endimation.PartKeyframes.Builder.*;
 
 public final class TestEndimationProvider extends EndimationProvider {
 
-	public TestEndimationProvider(DataGenerator dataGenerator) {
-		super(dataGenerator, BlueprintTest.MOD_ID);
+	public TestEndimationProvider(PackOutput packOutput) {
+		super(BlueprintTest.MOD_ID, packOutput);
 	}
 
 	@Override

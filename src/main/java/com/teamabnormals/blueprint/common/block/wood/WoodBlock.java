@@ -1,11 +1,6 @@
 package com.teamabnormals.blueprint.common.block.wood;
 
 import com.teamabnormals.blueprint.core.util.BlockUtil;
-import com.teamabnormals.blueprint.core.util.item.filling.TargetedItemCategoryFiller;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -20,7 +15,6 @@ import java.util.function.Supplier;
  * A {@link RotatedPillarBlock} extension that fills its item after the latest vanilla wood item.
  */
 public class WoodBlock extends RotatedPillarBlock {
-	private static final TargetedItemCategoryFiller FILLER = new TargetedItemCategoryFiller(() -> Items.MANGROVE_WOOD);
 	private final Supplier<Block> block;
 
 	public WoodBlock(Supplier<Block> strippedBlock, Properties properties) {
@@ -34,10 +28,5 @@ public class WoodBlock extends RotatedPillarBlock {
 		if (action == ToolActions.AXE_STRIP)
 			return this.block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().defaultBlockState()) : null;
 		return super.getToolModifiedState(state, context, action, simulate);
-	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		FILLER.fillItem(this.asItem(), group, items);
 	}
 }
