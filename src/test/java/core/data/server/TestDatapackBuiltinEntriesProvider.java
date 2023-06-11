@@ -88,7 +88,6 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 		context.register(
 				sliceKey("end_checkerboard"),
 				new ModdedBiomeSlice(
-						HolderSet.direct(levels.getOrThrow(LevelStem.END)),
 						50,
 						new BiomeUtil.OverlayModdedBiomeProvider(
 								List.of(
@@ -97,24 +96,25 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 												new CheckerboardColumnBiomeSource(biomes.getOrThrow(BiomeTags.HAS_STRONGHOLD), 2)
 										)
 								)
-						)
+						),
+						LevelStem.END
 				)
 		);
 		context.register(
 				sliceKey("nether_test"),
 				new ModdedBiomeSlice(
-						HolderSet.direct(levels.getOrThrow(LevelStem.NETHER)),
 						40,
-						new BiomeUtil.MultiNoiseModdedBiomeProvider(new Climate.ParameterList<>(List.of(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), biomes.getOrThrow(Biomes.FOREST)))))
+						new BiomeUtil.MultiNoiseModdedBiomeProvider(new Climate.ParameterList<>(List.of(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), biomes.getOrThrow(Biomes.FOREST))))),
+						LevelStem.NETHER
 				)
 		);
 		Climate.Parameter zero = Climate.Parameter.point(0.0F);
 		context.register(
 				sliceKey("overworld_crimson_forest_caves"),
 				new ModdedBiomeSlice(
-						HolderSet.direct(levels.getOrThrow(LevelStem.OVERWORLD)),
 						40,
-						new BiomeUtil.MultiNoiseModdedBiomeProvider(new Climate.ParameterList<>(List.of(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), biomes.getOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER)), Pair.of(Climate.parameters(zero, zero, zero, zero, Climate.Parameter.span(0.3F, 1.0F), zero, 0.0F), biomes.getOrThrow(Biomes.CRIMSON_FOREST)))))
+						new BiomeUtil.MultiNoiseModdedBiomeProvider(new Climate.ParameterList<>(List.of(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), biomes.getOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER)), Pair.of(Climate.parameters(zero, zero, zero, zero, Climate.Parameter.span(0.3F, 1.0F), zero, 0.0F), biomes.getOrThrow(Biomes.CRIMSON_FOREST))))),
+						LevelStem.OVERWORLD
 				)
 		);
 	}

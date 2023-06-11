@@ -120,7 +120,6 @@ public final class Blueprint {
 
 		REGISTRY_HELPER.getEntitySubHelper().register(bus);
 		REGISTRY_HELPER.getBlockEntitySubHelper().register(bus);
-		REGISTRY_HELPER.getBiomeSubHelper().register(bus);
 		BlueprintPoiTypes.POI_TYPES.register(bus);
 		BlueprintSurfaceRules.RULE_SOURCES.register(bus);
 		BlueprintLootConditions.LOOT_CONDITION_TYPES.register(bus);

@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -120,11 +119,6 @@ public class RegistryHelper {
 	@Nonnull
 	public <T extends AbstractSubRegistryHelper<EntityType<?>>> T getEntitySubHelper() {
 		return this.getSubHelper(ForgeRegistries.ENTITY_TYPES);
-	}
-
-	@Nonnull
-	public <T extends AbstractSubRegistryHelper<Biome>> T getBiomeSubHelper() {
-		return this.getSubHelper(ForgeRegistries.BIOMES);
 	}
 
 	/**

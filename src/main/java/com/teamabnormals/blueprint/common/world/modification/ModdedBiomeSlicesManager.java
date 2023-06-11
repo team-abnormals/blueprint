@@ -41,7 +41,7 @@ public final class ModdedBiomeSlicesManager {
 		for (var unassignedSlice : slices) {
 			ModdedBiomeSlice slice = unassignedSlice.getValue();
 			if (slice.weight() <= 0) return;
-			slice.levels().stream().forEach(levelStemHolder -> assignedSlices.computeIfAbsent(levelStemHolder.unwrapKey().orElseThrow().location(), __ -> new ArrayList<>()).add(Pair.of(unassignedSlice.getKey().location(), slice)));
+			slice.levels().forEach(levelStemResourceKey -> assignedSlices.computeIfAbsent(levelStemResourceKey.location(), __ -> new ArrayList<>()).add(Pair.of(unassignedSlice.getKey().location(), slice)));
 		}
 
 		CommentedConfig moddedBiomeSliceSizes = BlueprintConfig.COMMON.moddedBiomeSliceSizes.get();

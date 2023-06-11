@@ -65,10 +65,11 @@ public final class BlueprintBoatTypes {
 		LayerDefinition chestBoatModel = ChestBoatModel.createBodyModel();
 		LayerDefinition raftModel = RaftModel.createBodyModel();
 		LayerDefinition chestRaftModel = ChestRaftModel.createBodyModel();
-		BOATS.values().forEach(type -> {
+		BOATS.forEach((name, type) -> {
+			if (name == UNDEFINED_BOAT_LOCATION) return;
 			boolean isRaft = type.isRaft();
-			event.registerLayerDefinition(type.boatModelLayerLocation, isRaft ? () -> boatModel : () -> raftModel);
-			event.registerLayerDefinition(type.chestBoatModelLayerLocation, isRaft ? () -> chestBoatModel : () -> chestRaftModel);
+			event.registerLayerDefinition(type.boatModelLayerLocation, isRaft ? () -> raftModel : () -> boatModel);
+			event.registerLayerDefinition(type.chestBoatModelLayerLocation, isRaft ? () -> chestRaftModel : () -> chestBoatModel);
 		});
 	}
 
@@ -79,10 +80,7 @@ public final class BlueprintBoatTypes {
 	}
 
 	private static ListModel<Boat> createBoatModel(EntityRendererProvider.Context context, BlueprintBoatType type, boolean chest) {
-		ResourceLocation name = type.getName();
-		String prefix = chest ? "chest_boat/" : "boat/";
-		ModelLayerLocation modelLayerLocation = new ModelLayerLocation(new ResourceLocation(name.getPath(), prefix + name.getPath()), "main");
-		ModelPart modelpart = context.bakeLayer(modelLayerLocation);
+		ModelPart modelpart = context.bakeLayer(chest ? type.chestBoatModelLayerLocation : type.boatModelLayerLocation);
 		if (type.isRaft()) {
 			return chest ? new ChestRaftModel(modelpart) : new RaftModel(modelpart);
 		} else {

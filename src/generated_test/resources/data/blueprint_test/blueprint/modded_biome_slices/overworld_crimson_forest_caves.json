@@ -1,5 +1,7 @@
 {
-  "name": "blueprint_test:overworld_crimson_forest_caves",
+  "levels": [
+    "minecraft:overworld"
+  ],
   "provider": {
     "type": "blueprint:multi_noise",
     "biomes": [
@@ -32,6 +34,5 @@
       }
     ]
   },
-  "selector": "minecraft:overworld",
-  "weight": 4
+  "weight": 40
 }

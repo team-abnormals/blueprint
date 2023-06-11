@@ -55,7 +55,7 @@ public abstract class SplashProvider implements DataProvider {
 		this.splashes.clear();
 		this.registerSplashes();
 		var dataResult = Splash.LIST_CODEC.encodeStart(JsonOps.INSTANCE, this.splashes);
-		Path resolvedPath = this.packOutput.getOutputFolder(PackOutput.Target.DATA_PACK).resolve(this.modId).resolve(BlueprintSplashManager.PATH);
+		Path resolvedPath = this.packOutput.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(this.modId).resolve(BlueprintSplashManager.PATH);
 		try {
 			var error = dataResult.error();
 			if (error.isPresent()) throw new JsonParseException(error.get().message());

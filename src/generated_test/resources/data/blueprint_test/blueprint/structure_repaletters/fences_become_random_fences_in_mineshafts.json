@@ -1,0 +1,18 @@
+{
+  "priority": 50,
+  "repaletter": {
+    "type": "blueprint:weighted",
+    "replaces_blocks": "minecraft:wooden_fences",
+    "replaces_with": [
+      {
+        "data": "minecraft:crimson_fence",
+        "weight": 1
+      },
+      {
+        "data": "minecraft:warped_fence",
+        "weight": 1
+      }
+    ]
+  },
+  "structures": "minecraft:mineshaft"
+}

@@ -7,7 +7,6 @@ import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -27,8 +26,8 @@ import java.util.concurrent.CompletableFuture;
 public final class BlueprintDatapackBuiltinEntriesProvider extends DatapackBuiltinEntriesProvider {
 	private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder().add(Registries.BIOME, BlueprintDatapackBuiltinEntriesProvider::bootstrapBiomes).add(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, BlueprintDatapackBuiltinEntriesProvider::bootstrapSlices);
 
-	public BlueprintDatapackBuiltinEntriesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-		super(output, registries, BUILDER, Set.of(Blueprint.MOD_ID));
+	public BlueprintDatapackBuiltinEntriesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		super(output, lookupProvider, BUILDER, Set.of(Blueprint.MOD_ID));
 	}
 
 	public static void bootstrapBiomes(BootstapContext<Biome> context) {
@@ -39,7 +38,6 @@ public final class BlueprintDatapackBuiltinEntriesProvider extends DatapackBuilt
 
 	private static void bootstrapSlices(BootstapContext<ModdedBiomeSlice> context) {
 		var originalsKey = ResourceKey.create(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, new ResourceLocation(Blueprint.MOD_ID, "originals"));
-		var levels = context.lookup(Registries.LEVEL_STEM);
-		context.register(originalsKey, new ModdedBiomeSlice(HolderSet.direct(levels.getOrThrow(LevelStem.OVERWORLD), levels.getOrThrow(LevelStem.NETHER), levels.getOrThrow(LevelStem.END)), 100, BiomeUtil.OriginalModdedBiomeProvider.INSTANCE));
+		context.register(originalsKey, new ModdedBiomeSlice(100, BiomeUtil.OriginalModdedBiomeProvider.INSTANCE, LevelStem.OVERWORLD, LevelStem.NETHER, LevelStem.END));
 	}
 }

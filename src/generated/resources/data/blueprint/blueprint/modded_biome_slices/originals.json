@@ -1,0 +1,11 @@
+{
+  "levels": [
+    "minecraft:the_nether",
+    "minecraft:the_end",
+    "minecraft:overworld"
+  ],
+  "provider": {
+    "type": "blueprint:original"
+  },
+  "weight": 100
+}

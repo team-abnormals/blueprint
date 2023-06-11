@@ -6,8 +6,6 @@
   "refmap": "blueprint.refmap.json",
   "mixins": [
     "AdvancementBuilderMixin",
-    "BiomeSpecialEffectsInvokerMixin",
-    "ConfiguredWorldCarverAccessorMixin",
     "DedicatedServerMixin",
     "EntityMixin",
     "FallingBlockEntityMixin",

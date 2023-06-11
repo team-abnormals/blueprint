@@ -27,6 +27,7 @@ public final class WoodTypeRegistryHelper {
      * <p>This method is safe to call during parallel mod loading.</p>
 	 */
 	public static synchronized WoodType registerWoodType(WoodType woodType) {
-		return WOOD_TYPES.put(woodType.name(), woodType);
+		WOOD_TYPES.put(woodType.name(), woodType);
+		return woodType;
 	}
 }

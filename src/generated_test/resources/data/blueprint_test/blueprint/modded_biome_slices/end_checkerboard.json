@@ -1,5 +1,7 @@
 {
-  "name": "blueprint_test:end_checkerboard",
+  "levels": [
+    "minecraft:the_end"
+  ],
   "provider": {
     "type": "blueprint:overlay",
     "overlays": [
@@ -13,17 +15,5 @@
       }
     ]
   },
-  "selector": {
-    "type": "names",
-    "conditions": [
-      {
-        "type": "forge:mod_loaded",
-        "modid": "blueprint"
-      }
-    ],
-    "config": [
-      "minecraft:the_end"
-    ]
-  },
-  "weight": 5
+  "weight": 50
 }
