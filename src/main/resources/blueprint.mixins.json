@@ -12,16 +12,14 @@
     "FluidInvokerMixin",
     "GameTestServerMixin",
     "LanternBlockMixin",
-    "NoiseBasedChunkGeneratorMixin",
+    "LootDataManagerMixin",
     "ReloadableServerResourcesMixin",
     "ServerEntityMixin",
     "ServerLevelMixin",
     "SimpleJsonResourceReloadListenerMixin",
     "StructurePieceMixin",
     "StructureStartMixin",
-    "StructureTemplateMixin",
-    "SurfaceRulesContextMixin",
-    "SurfaceSystemMixin"
+    "StructureTemplateMixin"
   ],
   "client": [
     "client.CameraInvokerMixin",

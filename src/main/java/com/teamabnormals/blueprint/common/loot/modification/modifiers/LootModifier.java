@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModifier;
 import net.minecraft.world.level.storage.loot.LootDataManager;
-import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 /**
  * An interface extending the {@link ObjectModifier} interface, typed to be used on loot tables.
@@ -12,7 +12,7 @@ import net.minecraftforge.event.LootTableLoadEvent;
  * @author SmellyModder (Luke Tonon)
  * @see ObjectModifier
  */
-public interface LootModifier<M extends LootModifier<M>> extends ObjectModifier<LootTableLoadEvent, Gson, Pair<Gson, LootDataManager>, M> {
+public interface LootModifier<M extends LootModifier<M>> extends ObjectModifier<LootTable, Gson, Pair<Gson, LootDataManager>, M> {
 	/**
 	 * A {@link ObjectModifier.Serializer} extension, typed to be used for {@link LootModifier} types.
 	 *

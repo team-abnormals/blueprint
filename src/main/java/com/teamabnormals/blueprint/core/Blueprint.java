@@ -31,6 +31,7 @@ import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.FallingBlockRenderer;
 import net.minecraft.core.HolderLookup;
@@ -47,6 +48,7 @@ import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.monster.Strider;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -193,10 +195,12 @@ public final class Blueprint {
 		});
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
 		BlueprintBoatTypes.registerLayerDefinitions(event);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	private void rendererSetup(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(BlueprintEntityTypes.BOAT.get(), context -> new BlueprintBoatRenderer(context, false));
 		event.registerEntityRenderer(BlueprintEntityTypes.CHEST_BOAT.get(), context -> new BlueprintBoatRenderer(context, true));
@@ -205,6 +209,7 @@ public final class Blueprint {
 		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.CHEST.get(), BlueprintChestBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.TRAPPED_CHEST.get(), BlueprintChestBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.SIGN.get(), SignRenderer::new);
+		event.registerBlockEntityRenderer(BlueprintBlockEntityTypes.HANGING_SIGN.get(), HangingSignRenderer::new);
 	}
 
 	private void postLoadingSetup(FMLLoadCompleteEvent event) {

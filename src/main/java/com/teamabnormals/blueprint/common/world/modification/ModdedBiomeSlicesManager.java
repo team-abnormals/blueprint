@@ -19,7 +19,6 @@ import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 
 import java.util.*;
 
@@ -30,7 +29,6 @@ import java.util.*;
  * @author SmellyModder (Luke Tonon)
  */
 public final class ModdedBiomeSlicesManager {
-	// TODO: Move to high event priority Forge event
 	@SuppressWarnings("deprecation")
 	public static void onServerAboutToStart(MinecraftServer server) {
 		RegistryAccess registryAccess = server.registryAccess();
@@ -72,8 +70,6 @@ public final class ModdedBiomeSlicesManager {
 							return chunkGenerator.getBiomeGenerationSettings(biomeHolder).features();
 						}, true);
 					});
-					if (chunkGenerator instanceof NoiseBasedChunkGenerator)
-						((HasModdedBiomeSource) chunkGenerator).setModdedBiomeSource(moddedBiomeSource);
 				}
 			}
 		}

@@ -10,7 +10,6 @@ import com.teamabnormals.blueprint.common.loot.modification.LootModifierSerializ
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
@@ -27,12 +26,12 @@ public record LootPoolsModifier(List<LootPool> pools, boolean replace) implement
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void modify(LootTableLoadEvent event) {
+	public void modify(LootTable table) {
 		try {
 			if (this.replace) {
-				POOLS.set(event.getTable(), this.pools);
+				POOLS.set(table, this.pools);
 			} else {
-				((List<LootPool>) POOLS.get(event.getTable())).addAll(this.pools);
+				((List<LootPool>) POOLS.get(table)).addAll(this.pools);
 			}
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();

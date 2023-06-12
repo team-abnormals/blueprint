@@ -11,8 +11,8 @@ import com.teamabnormals.blueprint.core.util.DataUtil;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
@@ -33,9 +33,9 @@ public record LootPoolEntriesModifier(boolean replace, int index, List<LootPoolE
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void modify(LootTableLoadEvent object) {
+	public void modify(LootTable object) {
 		try {
-			LootPool pool = ((List<LootPool>) LootPoolsModifier.POOLS.get(object.getTable())).get(this.index);
+			LootPool pool = ((List<LootPool>) LootPoolsModifier.POOLS.get(object)).get(this.index);
 			LootPoolEntryContainer[] lootEntries = (LootPoolEntryContainer[]) ENTRIES.get(pool);
 			if (this.replace) {
 				lootEntries = this.entries.toArray(LootPoolEntryContainer[]::new);

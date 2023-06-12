@@ -11,7 +11,6 @@ import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
@@ -25,9 +24,9 @@ public record LootTypeModifier(LootContextParamSet lootContextParamSet) implemen
 	private static final Field PARAMETER_SET = ObfuscationReflectionHelper.findField(LootTable.class, "f_79108_");
 
 	@Override
-	public void modify(LootTableLoadEvent event) {
+	public void modify(LootTable table) {
 		try {
-			PARAMETER_SET.set(event.getTable(), this.lootContextParamSet);
+			PARAMETER_SET.set(table, this.lootContextParamSet);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}

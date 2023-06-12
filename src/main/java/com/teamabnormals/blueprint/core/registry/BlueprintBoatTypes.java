@@ -60,6 +60,7 @@ public final class BlueprintBoatTypes {
 		return BOATS.get(name);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
 		LayerDefinition boatModel = BoatModel.createBodyModel();
 		LayerDefinition chestBoatModel = ChestBoatModel.createBodyModel();
@@ -68,19 +69,21 @@ public final class BlueprintBoatTypes {
 		BOATS.forEach((name, type) -> {
 			if (name == UNDEFINED_BOAT_LOCATION) return;
 			boolean isRaft = type.isRaft();
-			event.registerLayerDefinition(type.boatModelLayerLocation, isRaft ? () -> raftModel : () -> boatModel);
-			event.registerLayerDefinition(type.chestBoatModelLayerLocation, isRaft ? () -> chestRaftModel : () -> chestBoatModel);
+			event.registerLayerDefinition(type.getBoatModelLayerLocation(), isRaft ? () -> raftModel : () -> boatModel);
+			event.registerLayerDefinition(type.getChestBoatModelLayerLocation(), isRaft ? () -> chestRaftModel : () -> chestBoatModel);
 		});
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	public static IdentityHashMap<BlueprintBoatType, Pair<ResourceLocation, ListModel<Boat>>> createBoatResources(EntityRendererProvider.Context context, boolean chest) {
 		IdentityHashMap<BlueprintBoatType, Pair<ResourceLocation, ListModel<Boat>>> boatTypeToModel = new IdentityHashMap<>();
-		BOATS.values().forEach(type -> boatTypeToModel.put(type, Pair.of(type.getName(), createBoatModel(context, type, chest))));
+		BOATS.values().forEach(type -> boatTypeToModel.put(type, Pair.of(chest ? type.getChestVariantTexture() : type.getTexture(), createBoatModel(context, type, chest))));
 		return boatTypeToModel;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	private static ListModel<Boat> createBoatModel(EntityRendererProvider.Context context, BlueprintBoatType type, boolean chest) {
-		ModelPart modelpart = context.bakeLayer(chest ? type.chestBoatModelLayerLocation : type.boatModelLayerLocation);
+		ModelPart modelpart = context.bakeLayer(chest ? type.getChestBoatModelLayerLocation() : type.getBoatModelLayerLocation());
 		if (type.isRaft()) {
 			return chest ? new ChestRaftModel(modelpart) : new RaftModel(modelpart);
 		} else {
@@ -101,10 +104,6 @@ public final class BlueprintBoatTypes {
 		private final boolean raft;
 		private final ResourceLocation texture;
 		private final ResourceLocation chestVariantTexture;
-		@OnlyIn(Dist.CLIENT)
-		private final ModelLayerLocation boatModelLayerLocation;
-		@OnlyIn(Dist.CLIENT)
-		private final ModelLayerLocation chestBoatModelLayerLocation;
 
 		public BlueprintBoatType(ResourceLocation name, Supplier<Item> boat, Supplier<Item> chestBoat, Supplier<Block> plank, boolean raft) {
 			this.name = name;
@@ -116,8 +115,6 @@ public final class BlueprintBoatTypes {
 			String path = name.getPath();
 			this.texture = new ResourceLocation(namespace, "textures/entity/boat/" + path + ".png");
 			this.chestVariantTexture = new ResourceLocation(namespace, "textures/entity/chest_boat/" + path + ".png");
-			this.boatModelLayerLocation = new ModelLayerLocation(new ResourceLocation(namespace, "boat/" + path), "main");
-			this.chestBoatModelLayerLocation = new ModelLayerLocation(new ResourceLocation(namespace, "chest_boat/" + path), "main");
 		}
 
 		/**
@@ -190,7 +187,10 @@ public final class BlueprintBoatTypes {
 		 */
 		@OnlyIn(Dist.CLIENT)
 		public ModelLayerLocation getBoatModelLayerLocation() {
-			return this.boatModelLayerLocation;
+			ResourceLocation name = this.getName();
+			String namespace = name.getNamespace();
+			String path = name.getPath();
+			return new ModelLayerLocation(new ResourceLocation(namespace, "boat/" + path), "main");
 		}
 
 		/**
@@ -200,7 +200,10 @@ public final class BlueprintBoatTypes {
 		 */
 		@OnlyIn(Dist.CLIENT)
 		public ModelLayerLocation getChestBoatModelLayerLocation() {
-			return this.chestBoatModelLayerLocation;
+			ResourceLocation name = this.getName();
+			String namespace = name.getNamespace();
+			String path = name.getPath();
+			return new ModelLayerLocation(new ResourceLocation(namespace, "chest_boat/" + path), "main");
 		}
 	}
 }

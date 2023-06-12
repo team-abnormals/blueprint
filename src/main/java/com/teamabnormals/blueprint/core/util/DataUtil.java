@@ -37,6 +37,8 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
@@ -133,6 +135,7 @@ public final class DataUtil {
 	 * @param color       A {@link BlockColor} to use.
 	 * @param blocksIn    A list of blocks to register.
 	 */
+	@OnlyIn(Dist.CLIENT)
 	public static void registerBlockColor(BlockColors blockColors, BlockColor color, List<RegistryObject<Block>> blocksIn) {
 		blocksIn.removeIf(block -> !block.isPresent());
 		if (blocksIn.size() > 0) {
@@ -151,6 +154,7 @@ public final class DataUtil {
 	 * @param color      An {@link ItemColor} to use.
 	 * @param blocksIn   A list of blocks to register.
 	 */
+	@OnlyIn(Dist.CLIENT)
 	public static void registerBlockItemColor(ItemColors itemColors, ItemColor color, List<RegistryObject<Block>> blocksIn) {
 		blocksIn.removeIf(block -> !block.isPresent());
 		if (blocksIn.size() > 0) {

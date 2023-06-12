@@ -9,6 +9,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -46,8 +47,8 @@ public class BlockEntitySubRegistryHelper extends AbstractSubRegistryHelper<Bloc
 	 * @param validBlocks The valid blocks for this {@link BlockEntityType}.
 	 * @return A {@link RegistryObject} containing the customized {@link BlockEntityType}.
 	 */
-	public <T extends BlockEntity> RegistryObject<BlockEntityType<T>> createBlockEntity(String name, BlockEntitySupplier<? extends T> blockEntity, Supplier<Block[]> validBlocks) {
-		return this.deferredRegister.register(name, () -> new BlockEntityType<>(blockEntity, Sets.newHashSet(validBlocks.get()), null));
+	public <T extends BlockEntity> RegistryObject<BlockEntityType<T>> createBlockEntity(String name, BlockEntitySupplier<? extends T> blockEntity, Supplier<Set<Block>> validBlocks) {
+		return this.deferredRegister.register(name, () -> new BlockEntityType<>(blockEntity, validBlocks.get(), null));
 	}
 
 	/**
