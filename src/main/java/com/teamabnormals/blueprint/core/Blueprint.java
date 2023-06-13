@@ -29,6 +29,7 @@ import com.teamabnormals.blueprint.core.other.tags.BlueprintItemTags;
 import com.teamabnormals.blueprint.core.registry.*;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import com.teamabnormals.blueprint.core.util.item.CreativeModeTabContentsPopulator;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
@@ -148,6 +149,7 @@ public final class Blueprint {
 			bus.addListener(this::modelSetup);
 			bus.addListener(this::registerLayerDefinitions);
 			bus.addListener(this::rendererSetup);
+			bus.addListener(CreativeModeTabContentsPopulator::onBuildCreativeModeTabContents);
 			bus.addListener(BlueprintSplashManager::onRegisterClientReloadListeners);
 			bus.addListener(RewardHandler::clientSetup);
 			bus.addListener(RewardHandler::addLayers);

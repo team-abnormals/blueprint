@@ -68,6 +68,7 @@ public final class BlueprintTest {
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			SplashSerializers.register(new ResourceLocation(MOD_ID, "custom"), TestCustomSplash.CODEC);
+			TestItems.setupTabEditors();
 
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(this::rendererSetup);

@@ -4,6 +4,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.Predicate;
+
 /**
  * @author SmellyModder (Luke Tonon)
  */
@@ -41,5 +43,15 @@ public final class ItemStackUtil {
 		String tens = X_NUMERALS[(number % 100) / 10];
 		String ones = I_NUMERALS[number % 10];
 		return thousands + hundreds + tens + ones;
+	}
+
+	/**
+	 * Returns a predicate that checks if an item stack's item is an instance of a class.
+	 *
+	 * @param clazz The class to check for.
+	 * @return A predicate that checks if an item stack's item is an instance of a class.
+	 */
+	public static Predicate<ItemStack> is(Class<? extends Item> clazz) {
+		return stack -> clazz.isInstance(stack.getItem());
 	}
 }
