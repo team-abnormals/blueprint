@@ -1,0 +1,13 @@
+{
+  "levels": [
+    "minecraft:overworld"
+  ],
+  "provider": {
+    "type": "blueprint:multi_noise",
+    "areas": {
+      "minecraft:ocean": "minecraft:small_end_islands"
+    },
+    "biomes": "minecraft:overworld"
+  },
+  "weight": 100
+}

@@ -22,9 +22,7 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandomList;
-import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.biome.CheckerboardColumnBiomeSource;
-import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
@@ -100,11 +98,15 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 						LevelStem.END
 				)
 		);
+		var parameterLists = context.lookup(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST);
 		context.register(
 				sliceKey("nether_test"),
 				new ModdedBiomeSlice(
 						40,
-						new BiomeUtil.MultiNoiseModdedBiomeProvider(new Climate.ParameterList<>(List.of(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), biomes.getOrThrow(Biomes.FOREST))))),
+						BiomeUtil.MultiNoiseModdedBiomeProvider.builder()
+								.area(Biomes.CRIMSON_FOREST, Biomes.FOREST)
+								.biomes(parameterLists.getOrThrow(MultiNoiseBiomeSourceParameterLists.NETHER))
+								.build(),
 						LevelStem.NETHER
 				)
 		);
@@ -113,10 +115,46 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 				sliceKey("overworld_crimson_forest_caves"),
 				new ModdedBiomeSlice(
 						40,
-						new BiomeUtil.MultiNoiseModdedBiomeProvider(new Climate.ParameterList<>(List.of(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), biomes.getOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER)), Pair.of(Climate.parameters(zero, zero, zero, zero, Climate.Parameter.span(0.3F, 1.0F), zero, 0.0F), biomes.getOrThrow(Biomes.CRIMSON_FOREST))))),
+						BiomeUtil.MultiNoiseModdedBiomeProvider.builder()
+								.biomes(consumer -> {
+									consumer.accept(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), BlueprintBiomes.ORIGINAL_SOURCE_MARKER));
+									consumer.accept(Pair.of(Climate.parameters(zero, zero, zero, zero, Climate.Parameter.span(0.3F, 1.0F), zero, 0.0F), Biomes.CRIMSON_FOREST));
+								})
+								.onlyMapFromAreas(false)
+								.build(),
 						LevelStem.OVERWORLD
 				)
 		);
+		context.register(
+				sliceKey("ocean_small_end_islands"),
+				new ModdedBiomeSlice(
+						100,
+						BiomeUtil.MultiNoiseModdedBiomeProvider.builder()
+								.area(Biomes.OCEAN, Biomes.SMALL_END_ISLANDS)
+								.biomes(parameterLists.getOrThrow(MultiNoiseBiomeSourceParameterLists.OVERWORLD))
+								.build(),
+						LevelStem.OVERWORLD
+				)
+		);
+		// How well does the system perform having to cycle through 1000 invalid slices in areas that are not cold?
+		// Answer: Decently! Slices go zoom zoom
+		/*ResourceKey<Biome> coldStressTestAreaKey = ResourceKey.create(Registries.BIOME, new ResourceLocation(BlueprintTest.MOD_ID, "cold_stress_test"));
+		for (int i = 0; i < 1000; i++) {
+			context.register(
+					sliceKey("cold_stress_test_" + i),
+					new ModdedBiomeSlice(
+							10,
+							BiomeUtil.MultiNoiseModdedBiomeProvider.builder()
+									.area(coldStressTestAreaKey, i % 2 == 0 ? Biomes.WARPED_FOREST : Biomes.BASALT_DELTAS)
+									.biomes(consumer -> {
+										consumer.accept(Pair.of(Climate.parameters(0, 0, 0, 0, 0, 0, 0), BlueprintBiomes.ORIGINAL_SOURCE_MARKER));
+										consumer.accept(Pair.of(Climate.parameters(Climate.Parameter.span(-1.0F, -0.45F), zero, zero, zero, zero, zero, 0.0F), coldStressTestAreaKey));
+									})
+									.build(),
+							LevelStem.OVERWORLD
+					)
+			);
+		}*/
 	}
 
 	private static ResourceKey<StructureRepaletterEntry> repaletterKey(String name) {

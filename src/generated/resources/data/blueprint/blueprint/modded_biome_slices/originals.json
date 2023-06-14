@@ -1,8 +1,8 @@
 {
   "levels": [
-    "minecraft:the_nether",
     "minecraft:the_end",
-    "minecraft:overworld"
+    "minecraft:overworld",
+    "minecraft:the_nether"
   ],
   "provider": {
     "type": "blueprint:original"

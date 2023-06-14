@@ -4,20 +4,10 @@
   ],
   "provider": {
     "type": "blueprint:multi_noise",
-    "biomes": [
-      {
-        "biome": "minecraft:forest",
-        "parameters": {
-          "continentalness": 0.0,
-          "depth": 0.0,
-          "erosion": 0.0,
-          "humidity": 0.0,
-          "offset": 0.0,
-          "temperature": 0.0,
-          "weirdness": 0.0
-        }
-      }
-    ]
+    "areas": {
+      "minecraft:crimson_forest": "minecraft:forest"
+    },
+    "biomes": "minecraft:nether"
   },
   "weight": 40
 }

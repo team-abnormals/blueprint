@@ -5,7 +5,10 @@ import com.google.common.base.Suppliers;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.BlueprintConfig;
+import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
+import com.teamabnormals.blueprint.core.util.BiomeUtil;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -35,10 +38,17 @@ public final class ModdedBiomeSlicesManager {
 		var slices = registryAccess.registryOrThrow(BlueprintDataPackRegistries.MODDED_BIOME_SLICES).entrySet();
 		if (slices.isEmpty()) return;
 
+		Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
+		Holder<Biome> originalSourceMarker = biomeRegistry.getHolderOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER);
 		HashMap<ResourceLocation, ArrayList<Pair<ResourceLocation, ModdedBiomeSlice>>> assignedSlices = new HashMap<>();
 		for (var unassignedSlice : slices) {
 			ModdedBiomeSlice slice = unassignedSlice.getValue();
-			if (slice.weight() <= 0) return;
+			if (slice.weight() <= 0) continue;
+			BiomeUtil.ModdedBiomeProvider provider = slice.provider();
+			if (provider != BiomeUtil.OriginalModdedBiomeProvider.INSTANCE) {
+				var additionalPossibleBiomes = provider.getAdditionalPossibleBiomes(biomeRegistry);
+				if (additionalPossibleBiomes.isEmpty() || (additionalPossibleBiomes.size() == 1 && additionalPossibleBiomes.contains(originalSourceMarker))) continue;
+			}
 			slice.levels().forEach(levelStemResourceKey -> assignedSlices.computeIfAbsent(levelStemResourceKey.location(), __ -> new ArrayList<>()).add(Pair.of(unassignedSlice.getKey().location(), slice)));
 		}
 
@@ -50,7 +60,6 @@ public final class ModdedBiomeSlicesManager {
 		}
 
 		Registry<LevelStem> dimensions = registryAccess.registryOrThrow(Registries.LEVEL_STEM);
-		Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
 		long seed = server.getWorldData().worldGenOptions().seed();
 		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : dimensions.entrySet()) {
 			ResourceLocation location = entry.getKey().location();
