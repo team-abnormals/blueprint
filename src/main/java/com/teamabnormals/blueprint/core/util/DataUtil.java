@@ -79,7 +79,6 @@ public final class DataUtil {
 	public static void onServerAboutToStart(ServerAboutToStartEvent event) {
 		var registryAccess = event.getServer().registryAccess();
 		var structureTemplatePoolRegistry = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);
-		// TODO: Ensure this is safe, and if not, fix it
 		TEMPLATE_POOL_ADDITIONS.forEach(addition -> {
 			StructureTemplatePool structureTemplatePool = structureTemplatePoolRegistry.get(addition.getFirst());
 			if (structureTemplatePool != null) {
