@@ -56,6 +56,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -474,6 +475,34 @@ public final class DataUtil {
 
 	public static RegistryOps<JsonElement> createRegistryOps(ReloadableServerResources serverResources) throws IllegalAccessException {
 		return RegistryOps.create(JsonOps.INSTANCE, (RegistryAccess) REGISTRY_ACCESS.get(TAG_MANAGER.get(serverResources)));
+	}
+
+	/**
+	 * Memoizes a {@link Function} instance.
+	 *
+	 * @param function A {@link Function} instance to memoize the result of.
+	 * @param <T>      The input type for the function.
+	 * @param <R>      The outpout type for the function.
+	 * @return A new {@link Function} instance that memoizes the result the given function.
+	 */
+	public static <T, R> Function<T, R> memoize(Function<T, R> function) {
+		return new Function<>() {
+			private volatile boolean initialized;
+			private R value;
+
+			@Override
+			public R apply(T t) {
+				if (!this.initialized) {
+					synchronized (this) {
+						if (!this.initialized) {
+							this.initialized = true;
+							return this.value = function.apply(t);
+						}
+					}
+				}
+				return this.value;
+			}
+		};
 	}
 
 	/**

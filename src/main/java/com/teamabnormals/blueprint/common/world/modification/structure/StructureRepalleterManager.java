@@ -4,16 +4,20 @@ import com.mojang.serialization.Codec;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -27,7 +31,7 @@ import java.util.*;
 @Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class StructureRepalleterManager {
 	static final BasicRegistry<Codec<? extends StructureRepaletter>> REPALLETER_SERIALIZERS = new BasicRegistry<>();
-	private static final HashMap<ResourceLocation, StructureRepaletter[]> ASSIGNED_REPALLETERS = new HashMap<>(1);
+	private static final IdentityHashMap<ResourceKey<Structure>, StructureRepaletterEntry[]> ASSIGNED_REPALLETERS = new IdentityHashMap<>();
 	private static final ThreadLocal<ActiveData> ACTIVE_DATA = ThreadLocal.withInitial(ActiveData::new);
 
 	static {
@@ -38,16 +42,13 @@ public final class StructureRepalleterManager {
 	@SubscribeEvent
 	public static void onServerStarted(ServerAboutToStartEvent event) {
 		ASSIGNED_REPALLETERS.clear();
-		RegistryAccess registryAccess = event.getServer().registryAccess();
-		var entries = registryAccess.registryOrThrow(BlueprintDataPackRegistries.STRUCTURE_REPALETTERS).entrySet();
-		HashMap<ResourceLocation, ArrayList<StructureRepaletterEntry>> assignedUnsortedEntries = new HashMap<>();
-		if (!entries.isEmpty()) {
-			for (var entry : entries) {
-				StructureRepaletterEntry structureRepaletterEntry = entry.getValue();
-				structureRepaletterEntry.structures().stream().forEach(structureHolder -> assignedUnsortedEntries.computeIfAbsent(structureHolder.unwrapKey().orElseThrow().location(), __ -> new ArrayList<>()).add(structureRepaletterEntry));
-			}
+		var entries = event.getServer().registryAccess().registryOrThrow(BlueprintDataPackRegistries.STRUCTURE_REPALETTERS).entrySet();
+		IdentityHashMap<ResourceKey<Structure>, ArrayList<StructureRepaletterEntry>> assignedUnsortedEntries = new IdentityHashMap<>();
+		for (var entry : entries) {
+			StructureRepaletterEntry structureRepaletterEntry = entry.getValue();
+			structureRepaletterEntry.structures().stream().forEach(structureHolder -> assignedUnsortedEntries.computeIfAbsent(structureHolder.unwrapKey().orElseThrow(), __ -> new ArrayList<>()).add(structureRepaletterEntry));
 		}
-		assignedUnsortedEntries.forEach((location, structureRepaletterEntries) -> ASSIGNED_REPALLETERS.put(location, structureRepaletterEntries.stream().sorted((Comparator.comparing(StructureRepaletterEntry::priority))).map(StructureRepaletterEntry::repaletter).toArray(StructureRepaletter[]::new)));
+		assignedUnsortedEntries.forEach((location, structureRepaletterEntries) -> ASSIGNED_REPALLETERS.put(location, structureRepaletterEntries.stream().sorted((Comparator.comparing(StructureRepaletterEntry::priority))).toArray(StructureRepaletterEntry[]::new)));
 	}
 
 	/**
@@ -61,18 +62,47 @@ public final class StructureRepalleterManager {
 	}
 
 	/**
-	 * Updates {@link #ACTIVE_DATA} to be prepared for the structure generating on the current thread.
-	 * <p><b>You should only ever call this method for a very good reason!</b></p>
+	 * Gets the array of {@link StructureRepaletterEntry} instances assigned to a given structure key.
 	 *
-	 * @param location The {@link ResourceLocation} instance belonging to the generating structure.
-	 * @param random   A {@link RandomSource} instance to use for the repaletters.
+	 * @param structure The key of the structure to get the entries assigned to the structure.
+	 * @return The array of {@link StructureRepaletterEntry} instances assigned to the given structure key.
 	 */
-	public static void update(ResourceLocation location, RandomSource random) {
-		var repalettersForKey = ASSIGNED_REPALLETERS.get(location);
-		if (repalettersForKey == null) return;
-		ActiveData activeData = ACTIVE_DATA.get();
-		Collections.addAll(activeData.repaletters, repalettersForKey);
-		activeData.random = random;
+	@Nullable
+	public static StructureRepaletterEntry[] getRepalettersForStructure(ResourceKey<Structure> structure) {
+		return ASSIGNED_REPALLETERS.get(structure);
+	}
+
+	/**
+	 * Updates the thread-local random for the repaletters.
+	 *
+	 * @param random A {@link RandomSource} instance to use.
+	 */
+	public static void updateRandomSource(RandomSource random) {
+		ACTIVE_DATA.get().random = random;
+	}
+
+	/**
+	 * Updates the thread-local active repaletters.
+	 *
+	 * @param repaletters An array of repaletters to use.
+	 * @param pieceType   The structure piece currently being generated.
+	 */
+	public static void updateActiveRepaletters(StructureRepaletterEntry[] repaletters, @Nullable Holder<StructurePieceType> pieceType) {
+		var activeRepaletters = ACTIVE_DATA.get().repaletters;
+		activeRepaletters.clear();
+		if (repaletters == null) return;
+		if (pieceType != null) {
+			for (StructureRepaletterEntry entry : repaletters) {
+				var pieces = entry.pieces();
+				if (pieces.isEmpty() || pieces.get().contains(pieceType)) {
+					activeRepaletters.add(entry.repaletter());
+				}
+			}
+		} else {
+			for (StructureRepaletterEntry entry : repaletters) {
+				if (entry.shouldApplyToAfterPlace()) activeRepaletters.add(entry.repaletter());
+			}
+		}
 	}
 
 	/**

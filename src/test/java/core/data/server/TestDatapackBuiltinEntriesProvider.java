@@ -29,6 +29,7 @@ import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,10 +42,13 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 
 	private static void bootstrapStructureRepaletters(BootstapContext<StructureRepaletterEntry> context) {
 		var structures = context.lookup(Registries.STRUCTURE);
+		var pieces = context.lookup(Registries.STRUCTURE_PIECE);
 		context.register(
 				repaletterKey("planks_become_random_planks_in_mineshafts"),
 				new StructureRepaletterEntry(
 						HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)),
+						Optional.empty(),
+						false,
 						new WeightedStructureRepaletter(BlockTags.PLANKS, WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1)))
 				)
 		);
@@ -52,6 +56,8 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 				repaletterKey("fences_become_random_fences_in_mineshafts"),
 				new StructureRepaletterEntry(
 						HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)),
+						Optional.empty(),
+						false,
 						50,
 						new WeightedStructureRepaletter(BlockTags.WOODEN_FENCES, WeightedRandomList.create(WeightedEntry.wrap(Blocks.CRIMSON_FENCE, 1), WeightedEntry.wrap(Blocks.WARPED_FENCE, 1)))
 				)
@@ -60,6 +66,8 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 				repaletterKey("mossy_bricks_become_slime_blocks_in_cold_ocean_ruins"),
 				new StructureRepaletterEntry(
 						HolderSet.direct(structures.getOrThrow(BuiltinStructures.OCEAN_RUIN_COLD)),
+						Optional.empty(),
+						false,
 						0,
 						new SimpleStructureRepaletter(Blocks.MOSSY_STONE_BRICKS, Blocks.SLIME_BLOCK)
 				)
@@ -68,20 +76,23 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 				repaletterKey("cobblestone_becomes_mossy_cobblestone_in_pillager_outposts"),
 				new StructureRepaletterEntry(
 						HolderSet.direct(structures.getOrThrow(BuiltinStructures.PILLAGER_OUTPOST)),
+						Optional.empty(),
+						false,
 						new SimpleStructureRepaletter(Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE)
 				)
 		);
 		context.register(
-				repaletterKey("acacia_planks_become_copper_blocks_in_savanna_villages"),
+				repaletterKey("bookshelves_becomes_chiseled_bookshelves_in_stronghold_libraries"),
 				new StructureRepaletterEntry(
-						HolderSet.direct(structures.getOrThrow(BuiltinStructures.VILLAGE_SAVANNA)),
-						new SimpleStructureRepaletter(Blocks.ACACIA_PLANKS, Blocks.COPPER_BLOCK)
+						HolderSet.direct(structures.getOrThrow(BuiltinStructures.STRONGHOLD)),
+						Optional.of(HolderSet.direct(pieces.getOrThrow(ResourceKey.create(Registries.STRUCTURE_PIECE, new ResourceLocation("shli"))))),
+						false,
+						new SimpleStructureRepaletter(Blocks.BOOKSHELF, Blocks.CHISELED_BOOKSHELF)
 				)
 		);
 	}
 
 	private static void bootstrapSlices(BootstapContext<ModdedBiomeSlice> context) {
-		var levels = context.lookup(Registries.LEVEL_STEM);
 		var biomes = context.lookup(Registries.BIOME);
 		context.register(
 				sliceKey("end_checkerboard"),

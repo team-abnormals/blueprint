@@ -1,8 +1,0 @@
-{
-  "repaletter": {
-    "type": "blueprint:simple",
-    "replaces_block": "minecraft:acacia_planks",
-    "replaces_with": "minecraft:copper_block"
-  },
-  "structures": "minecraft:village_savanna"
-}

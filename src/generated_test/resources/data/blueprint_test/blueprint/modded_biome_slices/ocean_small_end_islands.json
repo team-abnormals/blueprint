@@ -7,7 +7,8 @@
     "areas": {
       "minecraft:ocean": "minecraft:small_end_islands"
     },
-    "biomes": "minecraft:overworld"
+    "biomes": "minecraft:overworld",
+    "only_map_from_areas": true
   },
   "weight": 100
 }

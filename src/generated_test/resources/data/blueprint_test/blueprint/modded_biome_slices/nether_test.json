@@ -7,7 +7,8 @@
     "areas": {
       "minecraft:crimson_forest": "minecraft:forest"
     },
-    "biomes": "minecraft:nether"
+    "biomes": "minecraft:nether",
+    "only_map_from_areas": true
   },
   "weight": 40
 }

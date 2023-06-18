@@ -1,0 +1,9 @@
+{
+  "pieces": "minecraft:shli",
+  "repaletter": {
+    "type": "blueprint:simple",
+    "replaces_block": "minecraft:bookshelf",
+    "replaces_with": "minecraft:chiseled_bookshelf"
+  },
+  "structures": "minecraft:stronghold"
+}
