@@ -73,20 +73,20 @@ public final class DataUtil {
 	private static final Method ADD_MIX_METHOD = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "m_43513_", Potion.class, Item.class, Potion.class);
 	private static final Vector<AlternativeDispenseBehavior> ALTERNATIVE_DISPENSE_BEHAVIORS = new Vector<>();
 	private static final Vector<CustomNoteBlockInstrument> CUSTOM_NOTE_BLOCK_INSTRUMENTS = new Vector<>();
-	private static final ArrayList<Pair<ResourceLocation, Pair<StructurePoolElement, Integer>>> TEMPLATE_POOL_ADDITIONS = new ArrayList<>();
+	private static final ArrayList<Pair<ResourceLocation, Pair<Function<RegistryAccess, StructurePoolElement>, Integer>>> TEMPLATE_POOL_ADDITIONS = new ArrayList<>();
 
 	@SubscribeEvent
 	public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-		var structureTemplatePoolRegistry = event.getServer().registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
+		var registryAccess = event.getServer().registryAccess();
+		var structureTemplatePoolRegistry = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);
 		// TODO: Ensure this is safe, and if not, fix it
 		TEMPLATE_POOL_ADDITIONS.forEach(addition -> {
 			StructureTemplatePool structureTemplatePool = structureTemplatePoolRegistry.get(addition.getFirst());
 			if (structureTemplatePool != null) {
 				var elementWithWeight = addition.getSecond();
-				StructurePoolElement element = elementWithWeight.getFirst();
 				int weight = elementWithWeight.getSecond();
-				structureTemplatePool.rawTemplates.add(Pair.of(element, weight));
 				List<StructurePoolElement> jigsawPieces = structureTemplatePool.templates;
+				StructurePoolElement element = elementWithWeight.getFirst().apply(registryAccess);
 				for (int i = 0; i < weight; i++) jigsawPieces.add(element);
 			}
 		});
@@ -337,12 +337,12 @@ public final class DataUtil {
 	 * Adds a new {@link StructurePoolElement} to a pre-existing {@link StructurePoolElement}.
 	 *
 	 * @param toAdd    The {@link ResourceLocation} of the pattern to insert the new piece into.
-	 * @param newPiece The {@link StructurePoolElement} to insert into {@code toAdd}.
+	 * @param newPieceFactory A function to create a new {@link StructurePoolElement} instance to add.
 	 * @param weight   The probability weight of {@code newPiece}.
 	 * @author abigailfails
 	 */
-	public static synchronized void addToJigsawPattern(ResourceLocation toAdd, StructurePoolElement newPiece, int weight) {
-		TEMPLATE_POOL_ADDITIONS.add(Pair.of(toAdd, Pair.of(newPiece, weight)));
+	public static synchronized void addToJigsawPattern(ResourceLocation toAdd, Function<RegistryAccess, StructurePoolElement> newPieceFactory, int weight) {
+		TEMPLATE_POOL_ADDITIONS.add(Pair.of(toAdd, Pair.of(newPieceFactory, weight)));
 	}
 
 	/**

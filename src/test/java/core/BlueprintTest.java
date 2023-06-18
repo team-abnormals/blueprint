@@ -22,8 +22,10 @@ import core.data.server.*;
 import core.registry.*;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.worldgen.placement.CavePlacements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -33,6 +35,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -85,6 +89,9 @@ public final class BlueprintTest {
 		});
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(Blueprint.MOD_ID, source -> source.getBlockState().is(BlockTags.IRON_ORES), SoundEvents.BELL_BLOCK));
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.getBlockState().is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, (id1, id2) -> id2.equals("blueprint") ? -1 : 0));
+		DataUtil.addToJigsawPattern(new ResourceLocation("village/plains/decor"), registryAccess -> {
+			return StructurePoolElement.feature(registryAccess.registryOrThrow(Registries.PLACED_FEATURE).getHolderOrThrow(CavePlacements.SCULK_PATCH_ANCIENT_CITY)).apply(StructureTemplatePool.Projection.RIGID);
+		}, 100);
 	}
 
 	@OnlyIn(Dist.CLIENT)
