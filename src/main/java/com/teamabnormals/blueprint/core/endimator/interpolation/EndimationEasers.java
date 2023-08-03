@@ -3,7 +3,6 @@ package com.teamabnormals.blueprint.core.endimator.interpolation;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.Climate;
 
 import java.util.function.Function;
 
