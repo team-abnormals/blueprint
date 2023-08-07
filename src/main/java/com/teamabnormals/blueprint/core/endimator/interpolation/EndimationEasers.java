@@ -149,7 +149,7 @@ public final class EndimationEasers {
 			return 1.0F;
 		} else if (progress < 0.5F) {
 			return (float) (-(Math.pow(2, 20 * progress - 10) * Math.sin((20 * progress - 11.125F) * base)) * 0.5F);
-		} else  {
+		} else {
 			return (float) ((Math.pow(2, -20 * progress + 10) * Math.sin((20 * progress - 11.125F) * base)) * 0.5F + 1);
 		}
 	});
@@ -162,6 +162,8 @@ public final class EndimationEasers {
 			return (1.0F + bounce(2 * progress - 1)) * 0.5F;
 		}
 	});
+
+	private EndimationEasers() {}
 
 	private static float bounce(float progress) {
 		float base1 = 7.5625F;
@@ -176,8 +178,6 @@ public final class EndimationEasers {
 			return base1 * (progress -= 2.625F / base2) * progress + 0.984375F;
 		}
 	}
-
-	private EndimationEasers() {}
 
 	private static Function<Float, Float> register(String name, Function<Float, Float> easer) {
 		REGISTRY.register(new ResourceLocation(name), easer);
