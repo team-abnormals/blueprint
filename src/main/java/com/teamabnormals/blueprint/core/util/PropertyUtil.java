@@ -96,7 +96,7 @@ public final class PropertyUtil {
 		}
 
 		public Block.Properties log() {
-			return Block.Properties.of(this.material, state -> state.getValue(BlockStateProperties.AXIS) == Axis.Y ? woodColor : barkColor).strength(2.0F).sound(this.logSound);
+			return Block.Properties.of(this.material, state -> state.hasProperty(BlockStateProperties.AXIS) && state.getValue(BlockStateProperties.AXIS) != Axis.Y ? this.barkColor : this.woodColor).strength(2.0F).sound(this.logSound);
 		}
 
 		public Block.Properties leaves() {
