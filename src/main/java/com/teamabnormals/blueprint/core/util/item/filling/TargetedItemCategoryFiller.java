@@ -8,8 +8,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -30,23 +30,33 @@ public final class TargetedItemCategoryFiller implements IItemCategoryFiller {
 	public void fillItem(Item item, CreativeModeTab tab, NonNullList<ItemStack> items) {
 		if (ItemStackUtil.isAllowedInTab(item, tab)) {
 			OffsetValue offset = this.offsetMap.computeIfAbsent(tab, (key) -> new OffsetValue());
-			Set<Item> itemsProcessed = offset.itemsProcessed;
-			if (itemsProcessed.contains(item)) {
+			HashSet<ItemStack> itemsProcessed = offset.itemsProcessed;
+			boolean missingPreviouslyAddedStack = true;
+			for (ItemStack stack : items) {
+				if (itemsProcessed.contains(stack)) {
+					missingPreviouslyAddedStack = false;
+					break;
+				}
+			}
+			if (missingPreviouslyAddedStack) {
 				offset.reset();
 			}
+
 			int index = ItemStackUtil.findIndexOfItem(this.targetItem.get(), items);
-			if (index != -1) {
-				items.add(index + offset.offset, new ItemStack(item));
-				itemsProcessed.add(item);
+			int offsetIndex = index + offset.offset;
+			ItemStack itemStack = new ItemStack(item);
+			if (index != -1 && offsetIndex < items.size()) {
+				items.add(offsetIndex, itemStack);
+				itemsProcessed.add(itemStack);
 				offset.offset++;
 			} else {
-				items.add(new ItemStack(item));
+				items.add(itemStack);
 			}
 		}
 	}
 
 	static class OffsetValue {
-		private final Set<Item> itemsProcessed = Sets.newHashSet();
+		private final HashSet<ItemStack> itemsProcessed = Sets.newHashSet();
 		private int offset = 1;
 
 		/**
