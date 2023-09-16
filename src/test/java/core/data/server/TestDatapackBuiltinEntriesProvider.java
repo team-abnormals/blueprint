@@ -5,9 +5,11 @@ import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlice;
 import com.teamabnormals.blueprint.common.world.modification.structure.SimpleStructureRepaletter;
 import com.teamabnormals.blueprint.common.world.modification.structure.StructureRepaletterEntry;
 import com.teamabnormals.blueprint.common.world.modification.structure.WeightedStructureRepaletter;
+import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.data.server.BlueprintDatapackBuiltinEntriesProvider;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
+import com.teamabnormals.blueprint.core.registry.BlueprintHolderSets;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import core.BlueprintTest;
 import net.minecraft.core.HolderLookup;
@@ -26,6 +28,7 @@ import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
+import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 
 import java.util.List;
@@ -46,7 +49,7 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 		context.register(
 				repaletterKey("planks_become_random_planks_in_mineshafts"),
 				new StructureRepaletterEntry(
-						HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)),
+						BlueprintHolderSets.conditional(HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)), new ModLoadedCondition(Blueprint.MOD_ID)),
 						Optional.empty(),
 						false,
 						new WeightedStructureRepaletter(BlockTags.PLANKS, WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1)))

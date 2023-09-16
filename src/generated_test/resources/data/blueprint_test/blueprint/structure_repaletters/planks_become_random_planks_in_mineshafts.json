@@ -13,5 +13,14 @@
       }
     ]
   },
-  "structures": "minecraft:mineshaft"
+  "structures": {
+    "type": "blueprint:conditional",
+    "conditions": [
+      {
+        "type": "forge:mod_loaded",
+        "modid": "blueprint"
+      }
+    ],
+    "value": "minecraft:mineshaft"
+  }
 }
