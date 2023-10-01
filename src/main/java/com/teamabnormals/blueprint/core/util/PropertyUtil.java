@@ -164,8 +164,8 @@ public final class PropertyUtil {
 		}
 
 		public static final class Builder {
-			private MapColor woodColor;
-			private MapColor barkColor;
+			private final MapColor woodColor;
+			private final MapColor barkColor;
 			private MapColor leavesColor = MapColor.PLANT;
 			private Consumer<Block.Properties> basePropertiesConsumer = BlockBehaviour.Properties::ignitedByLava;
 			private SoundType sound = SoundType.WOOD;
@@ -182,15 +182,8 @@ public final class PropertyUtil {
 				return this;
 			}
 
-			@Deprecated
-			public Builder woodColor(MapColor woodColor) {
-				this.woodColor = woodColor;
-				return this;
-			}
-
-			@Deprecated
-			public Builder barkColor(MapColor barkColor) {
-				this.barkColor = woodColor;
+			public Builder fireproof() {
+				this.basePropertiesConsumer = block -> BlockBehaviour.Properties.of();
 				return this;
 			}
 

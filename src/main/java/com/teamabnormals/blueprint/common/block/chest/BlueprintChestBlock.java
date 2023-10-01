@@ -22,11 +22,6 @@ public class BlueprintChestBlock extends ChestBlock implements IChestBlock {
 	}
 
 	@Override
-	public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-		return false;
-	}
-
-	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new BlueprintChestBlockEntity(pos, state);
 	}
