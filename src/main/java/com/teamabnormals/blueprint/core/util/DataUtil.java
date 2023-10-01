@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.core.util;
 
+import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -34,6 +35,7 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -198,6 +200,20 @@ public final class DataUtil {
 	}
 
 	/**
+	 * Adds a Decorated Pot Pattern for Decorated Pots
+	 *
+	 * @param entries Pairs of an {@link Item} and a {@link RegistryObject} of a String
+	 */
+	@SafeVarargs
+	public static void registerDecoratedPotPattern(Pair<Item, RegistryObject<String>>... entries) {
+		Map<Item, ResourceKey<String>> itemToPotTextureMap = Maps.newHashMap(DecoratedPotPatterns.ITEM_TO_POT_TEXTURE);
+		for (Pair<Item, RegistryObject<String>> entry : entries) {
+			itemToPotTextureMap.put(entry.getFirst(), entry.getSecond().getKey());
+		}
+		DecoratedPotPatterns.ITEM_TO_POT_TEXTURE = itemToPotTextureMap;
+	}
+
+	/**
 	 * Makes a concatenation of two arrays of the same type.
 	 * <p>Useful for adding onto hardcoded arrays.</p>
 	 *
@@ -335,9 +351,9 @@ public final class DataUtil {
 	/**
 	 * Adds a new {@link StructurePoolElement} to a pre-existing {@link StructurePoolElement}.
 	 *
-	 * @param toAdd    The {@link ResourceLocation} of the pattern to insert the new piece into.
+	 * @param toAdd           The {@link ResourceLocation} of the pattern to insert the new piece into.
 	 * @param newPieceFactory A function to create a new {@link StructurePoolElement} instance to add.
-	 * @param weight   The probability weight of {@code newPiece}.
+	 * @param weight          The probability weight of {@code newPiece}.
 	 * @author abigailfails
 	 */
 	public static synchronized void addToJigsawPattern(ResourceLocation toAdd, Function<RegistryAccess, StructurePoolElement> newPieceFactory, int weight) {

@@ -1,10 +1,7 @@
 package core;
 
-import client.EndimatedWalkingEntityRenderer;
-import client.TestClientEvents;
-import client.TestCustomSplash;
-import client.TestEndimatedBlockEntityRenderer;
-import client.TestEndimatedEntityRenderer;
+import client.*;
+import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.client.screen.splash.SplashSerializers;
 import com.teamabnormals.blueprint.common.world.storage.GlobalStorage;
 import com.teamabnormals.blueprint.common.world.storage.tracking.DataProcessors;
@@ -19,7 +16,10 @@ import common.world.TestGlobalStorage;
 import core.data.client.TestEndimationProvider;
 import core.data.client.TestSplashProvider;
 import core.data.server.*;
-import core.registry.*;
+import core.registry.TestBlockEntities;
+import core.registry.TestEntities;
+import core.registry.TestFeatures;
+import core.registry.TestItems;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -51,6 +51,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(BlueprintTest.MOD_ID)
@@ -69,6 +70,7 @@ public final class BlueprintTest {
 
 		REGISTRY_HELPER.register(modEventBus);
 		TestFeatures.FEATURES.register(modEventBus);
+		TestItems.DECORATED_POT_PATTERNS.register(modEventBus);
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			SplashSerializers.register(new ResourceLocation(MOD_ID, "custom"), TestCustomSplash.CODEC);
@@ -86,6 +88,7 @@ public final class BlueprintTest {
 		event.enqueueWork(() -> {
 			SpawnPlacements.register(TestEntities.COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, Cow::checkAnimalSpawnRules);
 			DataUtil.addParrotFood(Items.ALLIUM, Items.ALLAY_SPAWN_EGG);
+			DataUtil.registerDecoratedPotPattern(Pair.of(TestItems.ITEM.get(), TestItems.TEST_POTTERY_SHERD));
 		});
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(Blueprint.MOD_ID, source -> source.getBlockState().is(BlockTags.IRON_ORES), SoundEvents.BELL_BLOCK));
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.getBlockState().is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, (id1, id2) -> id2.equals("blueprint") ? -1 : 0));
