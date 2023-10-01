@@ -39,8 +39,8 @@ public final class TestBlocks {
 	public static final RegistryObject<Block> BLOCK = HELPER.createBlock("block", () -> new Block(Block.Properties.copy(Blocks.DIRT)));
 	public static final RegistryObject<Block> TEST_LOADER = HELPER.createBlock("test_loader", () -> new ChunkLoadTestBlock(Block.Properties.copy(Blocks.DIRT)));
 	public static final RegistryObject<Block> TEST_ROTATION = HELPER.createBlock("test_rotation", () -> new RotatedVoxelShapeTestBlock(Block.Properties.copy(Blocks.DIRT)));
-	public static final Pair<RegistryObject<BlueprintStandingSignBlock>, RegistryObject<BlueprintWallSignBlock>> SIGNS = HELPER.createSignBlock("test", TEST_WOOD_TYPE, MapColor.COLOR_PINK);
-	public static final Pair<RegistryObject<BlueprintCeilingHangingSignBlock>, RegistryObject<BlueprintWallHangingSignBlock>> HANGING_SIGNS = HELPER.createHangingSignBlock("test", TEST_WOOD_TYPE, MapColor.COLOR_PINK);
+	public static final Pair<RegistryObject<BlueprintStandingSignBlock>, RegistryObject<BlueprintWallSignBlock>> SIGNS = HELPER.createSignBlock("test", TEST_WOOD_TYPE, TEST_WOOD_SET.sign());
+	public static final Pair<RegistryObject<BlueprintCeilingHangingSignBlock>, RegistryObject<BlueprintWallHangingSignBlock>> HANGING_SIGNS = HELPER.createHangingSignBlock("test", TEST_WOOD_TYPE, TEST_WOOD_SET.hangingSign());
 
 	public static final RegistryObject<BlueprintChestBlock> EXAMPLE_CHEST = HELPER.createChestBlock("test", TEST_WOOD_SET.chest());
 	public static final RegistryObject<BlueprintTrappedChestBlock> EXAMPLE_TRAPPED_CHEST = HELPER.createTrappedChestBlock("test", TEST_WOOD_SET.chest());

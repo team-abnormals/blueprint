@@ -19,7 +19,7 @@ import net.minecraft.world.level.material.PushReaction;
 import java.util.function.Consumer;
 
 /**
- * A class containing template {@link Block.Properties} and {@link Item.Properties}
+ * A class containing template {@link BlockBehaviour.Properties} and {@link Item.Properties}
  *
  * @author bageldotjpg
  */
@@ -33,27 +33,27 @@ public final class PropertyUtil {
 		return new Item.Properties().food(food);
 	}
 
-	public static Block.Properties flower() {
-		return Block.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(Block.OffsetType.XZ);
+	public static BlockBehaviour.Properties flower() {
+		return BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(Block.OffsetType.XZ);
 	}
 
-	public static Block.Properties sapling() {
-		return Block.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.GRASS);
+	public static BlockBehaviour.Properties sapling() {
+		return BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.GRASS);
 	}
 
-	public static Block.Properties ladder() {
+	public static BlockBehaviour.Properties ladder() {
 		return BlockBehaviour.Properties.of().forceSolidOff().strength(0.4F).sound(SoundType.LADDER).noOcclusion().pushReaction(PushReaction.DESTROY);
 	}
 
-	public static Block.Properties flowerPot(FeatureFlag... featureFlags) {
+	public static BlockBehaviour.Properties flowerPot(FeatureFlag... featureFlags) {
 		BlockBehaviour.Properties blockbehaviour$properties = BlockBehaviour.Properties.of().instabreak().noOcclusion().pushReaction(PushReaction.DESTROY);
 		if (featureFlags.length > 0)
 			blockbehaviour$properties = blockbehaviour$properties.requiredFeatures(featureFlags);
 		return blockbehaviour$properties;
 	}
 
-	public static Block.Properties thatch(MapColor color, SoundType soundType) {
-		return Block.Properties.of().mapColor(color).strength(0.5F).sound(soundType).noOcclusion();
+	public static BlockBehaviour.Properties thatch(MapColor color, SoundType soundType) {
+		return BlockBehaviour.Properties.of().mapColor(color).strength(0.5F).sound(soundType).noOcclusion();
 	}
 
 	public static boolean never(BlockState state, BlockGetter getter, BlockPos pos) {
@@ -76,7 +76,7 @@ public final class PropertyUtil {
 		return entity == EntityType.OCELOT || entity == EntityType.PARROT;
 	}
 
-	public record WoodSetProperties(MapColor woodColor, MapColor barkColor, MapColor leavesColor, Consumer<Block.Properties> basePropertiesConsumer, SoundType sound, SoundType logSound, SoundType leavesSound, NoteBlockInstrument instrument) {
+	public record WoodSetProperties(MapColor woodColor, MapColor barkColor, MapColor leavesColor, Consumer<BlockBehaviour.Properties> basePropertiesConsumer, SoundType sound, SoundType logSound, SoundType leavesSound, NoteBlockInstrument instrument) {
 
 		public static Builder builder(MapColor woodColor, MapColor barkColor) {
 			return new Builder(woodColor, barkColor);
@@ -86,80 +86,92 @@ public final class PropertyUtil {
 			return new Builder(woodColor, woodColor);
 		}
 
-		public Block.Properties planks() {
-			BlockBehaviour.Properties properties = Block.Properties.of();
+		public BlockBehaviour.Properties planks() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
 			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(2.0F, 3.0F).sound(this.sound);
 		}
 
-		public Block.Properties log() {
-			BlockBehaviour.Properties properties = Block.Properties.of();
+		public BlockBehaviour.Properties log() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
 			return properties.mapColor(state -> state.hasProperty(BlockStateProperties.AXIS) && state.getValue(BlockStateProperties.AXIS) != Axis.Y ? barkColor : woodColor).instrument(this.instrument).strength(2.0F).sound(this.logSound);
 		}
 
-		public Block.Properties leaves() {
+		public BlockBehaviour.Properties leaves() {
 			return BlockBehaviour.Properties.of().mapColor(this.leavesColor).strength(0.2F).randomTicks().sound(this.leavesSound).noOcclusion().isValidSpawn(PropertyUtil::ocelotOrParrot).isSuffocating(PropertyUtil::never).isViewBlocking(PropertyUtil::never).ignitedByLava().pushReaction(PushReaction.DESTROY).isRedstoneConductor(PropertyUtil::never);
 		}
 
-		public Block.Properties pressurePlate() {
-			BlockBehaviour.Properties properties = Block.Properties.of();
+		public BlockBehaviour.Properties pressurePlate() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
 			return properties.mapColor(this.woodColor).forceSolidOn().instrument(this.instrument).noCollission().strength(0.5F).sound(this.sound).pushReaction(PushReaction.DESTROY);
 		}
 
-		public Block.Properties trapdoor() {
-			BlockBehaviour.Properties properties = Block.Properties.of();
+		public BlockBehaviour.Properties trapdoor() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
 			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(3.0F).noOcclusion().isValidSpawn(PropertyUtil::never).sound(this.sound);
 		}
 
-		public Block.Properties button() {
+		public BlockBehaviour.Properties button() {
 			return BlockBehaviour.Properties.of().noCollission().strength(0.5F).pushReaction(PushReaction.DESTROY).sound(this.sound);
 		}
 
-		public Block.Properties door() {
-			BlockBehaviour.Properties properties = Block.Properties.of();
+		public BlockBehaviour.Properties door() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
 			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(3.0F).noOcclusion().sound(this.sound).pushReaction(PushReaction.DESTROY);
 		}
 
-		public Block.Properties beehive() {
-			BlockBehaviour.Properties properties = Block.Properties.of();
+		public BlockBehaviour.Properties beehive() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
 			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(0.6F).sound(this.sound);
 		}
 
-		public Block.Properties bookshelf() {
-			BlockBehaviour.Properties properties = Block.Properties.of();
+		public BlockBehaviour.Properties bookshelf() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
 			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(1.5F).sound(this.sound);
 		}
 
-		public Block.Properties ladder() {
+		public BlockBehaviour.Properties ladder() {
 			return PropertyUtil.ladder();
 		}
 
-		public Block.Properties sapling() {
+		public BlockBehaviour.Properties sapling() {
 			return BlockBehaviour.Properties.of().mapColor(this.leavesColor).noCollission().randomTicks().instabreak().sound(this.leavesSound).pushReaction(PushReaction.DESTROY);
 		}
 
-		public Block.Properties chest() {
-			BlockBehaviour.Properties properties = Block.Properties.of();
+		public BlockBehaviour.Properties chest() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
 			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(2.5F).sound(this.sound);
 		}
 
-		public Block.Properties leafPile() {
-			return Block.Properties.of().mapColor(this.leavesColor).replaceable().noCollission().strength(0.2F).sound(this.leavesSound).ignitedByLava().pushReaction(PushReaction.DESTROY);
+		public BlockBehaviour.Properties sign() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
+			this.basePropertiesConsumer.accept(properties);
+			return BlockBehaviour.Properties.of().mapColor(this.woodColor).forceSolidOn().instrument(this.instrument).noCollission().strength(1.0F);
 		}
 
-		public Block.Properties leafCarpet() {
-			return Block.Properties.of().mapColor(this.leavesColor).noCollission().strength(0.0F).sound(this.leavesSound).noOcclusion().ignitedByLava();
+		public BlockBehaviour.Properties hangingSign() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
+			this.basePropertiesConsumer.accept(properties);
+			return properties.mapColor(this.woodColor).forceSolidOn().instrument(this.instrument).noCollission().strength(1.0F);
 		}
 
-		public Block.Properties post() {
-			BlockBehaviour.Properties properties = Block.Properties.of();
+		public BlockBehaviour.Properties leafPile() {
+			return BlockBehaviour.Properties.of().mapColor(this.leavesColor).replaceable().noCollission().strength(0.2F).sound(this.leavesSound).ignitedByLava().pushReaction(PushReaction.DESTROY);
+		}
+
+		public BlockBehaviour.Properties leafCarpet() {
+			return BlockBehaviour.Properties.of().mapColor(this.leavesColor).noCollission().strength(0.0F).sound(this.leavesSound).noOcclusion().ignitedByLava();
+		}
+
+		public BlockBehaviour.Properties post() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
 			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(2.0F, 3.0F).sound(this.logSound);
 		}
@@ -168,7 +180,7 @@ public final class PropertyUtil {
 			private final MapColor woodColor;
 			private final MapColor barkColor;
 			private MapColor leavesColor = MapColor.PLANT;
-			private Consumer<Block.Properties> basePropertiesConsumer = BlockBehaviour.Properties::ignitedByLava;
+			private Consumer<BlockBehaviour.Properties> basePropertiesConsumer = BlockBehaviour.Properties::ignitedByLava;
 			private SoundType sound = SoundType.WOOD;
 			private SoundType logSound = SoundType.WOOD;
 			private SoundType leavesSound = SoundType.GRASS;
@@ -179,7 +191,7 @@ public final class PropertyUtil {
 				this.barkColor = barkColor;
 			}
 
-			public Builder basePropertiesConsumer(Consumer<Block.Properties> basePropertiesConsumer) {
+			public Builder basePropertiesConsumer(Consumer<BlockBehaviour.Properties> basePropertiesConsumer) {
 				this.basePropertiesConsumer = basePropertiesConsumer;
 				return this;
 			}

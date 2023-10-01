@@ -20,8 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
@@ -219,14 +217,14 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	/**
 	 * Creates and registers a {@link BlueprintStandingSignBlock} and a {@link BlueprintWallSignBlock} with a {@link SignItem}.
 	 *
-	 * @param name  The name for the sign blocks.
+	 * @param name     The name for the sign blocks.
 	 * @param woodType The {@link WoodType} for the sign blocks. <b>Also call {@link com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper#registerWoodType(WoodType)} on this</b>!
-	 * @param color The {@link MapColor} for the sign blocks.
+	 * @param color    The {@link MapColor} for the sign blocks.
 	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link BlueprintStandingSignBlock} and the {@link BlueprintWallSignBlock}.
 	 */
-	public Pair<RegistryObject<BlueprintStandingSignBlock>, RegistryObject<BlueprintWallSignBlock>> createSignBlock(String name, WoodType woodType, MapColor color) {
-		RegistryObject<BlueprintStandingSignBlock> standing = this.deferredRegister.register(name + "_sign", () -> new BlueprintStandingSignBlock(Block.Properties.of().mapColor(color).forceSolidOn().instrument(NoteBlockInstrument.BASS).ignitedByLava().noCollission().strength(1.0F).sound(SoundType.WOOD), woodType));
-		RegistryObject<BlueprintWallSignBlock> wall = this.deferredRegister.register(name + "_wall_sign", () -> new BlueprintWallSignBlock(Block.Properties.of().mapColor(color).forceSolidOn().instrument(NoteBlockInstrument.BASS).ignitedByLava().noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(standing), woodType));
+	public Pair<RegistryObject<BlueprintStandingSignBlock>, RegistryObject<BlueprintWallSignBlock>> createSignBlock(String name, WoodType woodType, Block.Properties properties) {
+		RegistryObject<BlueprintStandingSignBlock> standing = this.deferredRegister.register(name + "_sign", () -> new BlueprintStandingSignBlock(properties, woodType));
+		RegistryObject<BlueprintWallSignBlock> wall = this.deferredRegister.register(name + "_wall_sign", () -> new BlueprintWallSignBlock(properties.lootFrom(standing), woodType));
 		this.itemRegister.register(name + "_sign", () -> new SignItem(new Item.Properties().stacksTo(16), standing.get(), wall.get()));
 		return Pair.of(standing, wall);
 	}
@@ -234,14 +232,14 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	/**
 	 * Creates and registers a {@link BlueprintCeilingHangingSignBlock} and a {@link BlueprintWallHangingSignBlock} with a {@link HangingSignItem}.
 	 *
-	 * @param name  The name for the sign blocks.
+	 * @param name     The name for the sign blocks.
 	 * @param woodType The {@link WoodType} for the sign blocks. <b>Also call {@link com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper#registerWoodType(WoodType)} on this</b>!
-	 * @param color The {@link MapColor} for the sign blocks.
+	 * @param color    The {@link MapColor} for the sign blocks.
 	 * @return A {@link Pair} containing {@link RegistryObject}s of the {@link BlueprintCeilingHangingSignBlock} and the {@link BlueprintWallHangingSignBlock}.
 	 */
-	public Pair<RegistryObject<BlueprintCeilingHangingSignBlock>, RegistryObject<BlueprintWallHangingSignBlock>> createHangingSignBlock(String name, WoodType woodType, MapColor color) {
-		RegistryObject<BlueprintCeilingHangingSignBlock> ceiling = this.deferredRegister.register(name + "_hanging_sign", () -> new BlueprintCeilingHangingSignBlock(Block.Properties.of().mapColor(color).forceSolidOn().instrument(NoteBlockInstrument.BASS).ignitedByLava().noCollission().strength(1.0F).sound(SoundType.WOOD), woodType));
-		RegistryObject<BlueprintWallHangingSignBlock> wall = this.deferredRegister.register(name + "_wall_hanging_sign", () -> new BlueprintWallHangingSignBlock(Block.Properties.of().mapColor(color).forceSolidOn().instrument(NoteBlockInstrument.BASS).ignitedByLava().noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(ceiling), woodType));
+	public Pair<RegistryObject<BlueprintCeilingHangingSignBlock>, RegistryObject<BlueprintWallHangingSignBlock>> createHangingSignBlock(String name, WoodType woodType, Block.Properties properties) {
+		RegistryObject<BlueprintCeilingHangingSignBlock> ceiling = this.deferredRegister.register(name + "_hanging_sign", () -> new BlueprintCeilingHangingSignBlock(properties, woodType));
+		RegistryObject<BlueprintWallHangingSignBlock> wall = this.deferredRegister.register(name + "_wall_hanging_sign", () -> new BlueprintWallHangingSignBlock(properties.lootFrom(ceiling), woodType));
 		this.itemRegister.register(name + "_hanging_sign", () -> new HangingSignItem(ceiling.get(), wall.get(), new Item.Properties().stacksTo(16)));
 		return Pair.of(ceiling, wall);
 	}
