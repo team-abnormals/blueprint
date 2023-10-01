@@ -33,7 +33,7 @@ public final class TestLootModifiersProvider extends LootModifierProvider {
 	protected void registerEntries(HolderLookup.Provider lookupProvider) {
 		this.entry("chicken")
 				.selects("entities/chicken")
-				.addModifier(new LootPoolsModifier(List.of(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(Blocks.DIRT).apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F))).apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))).when(LootItemKilledByPlayerCondition.killedByPlayer()).build()), true));
+				.addModifier(new LootPoolsModifier(List.of(LootPool.lootPool().name("blueprint_test:chicken").setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(Blocks.DIRT).apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F))).apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))).when(LootItemKilledByPlayerCondition.killedByPlayer()).build()), true));
 
 		this.entry("igloo_chest")
 				.selects("chests/igloo_chest")

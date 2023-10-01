@@ -36,6 +36,7 @@
                 "name": "minecraft:dirt"
               }
             ],
+            "name": "blueprint_test:chicken",
             "rolls": 1.0
           }
         ],
