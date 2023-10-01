@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
@@ -75,7 +76,7 @@ public final class PropertyUtil {
 		return entity == EntityType.OCELOT || entity == EntityType.PARROT;
 	}
 
-	public record WoodSetProperties(MapColor woodColor, MapColor barkColor, MapColor leavesColor, Consumer<Block.Properties> basePropertiesConsumer, SoundType sound, SoundType logSound, SoundType leavesSound) {
+	public record WoodSetProperties(MapColor woodColor, MapColor barkColor, MapColor leavesColor, Consumer<Block.Properties> basePropertiesConsumer, SoundType sound, SoundType logSound, SoundType leavesSound, NoteBlockInstrument instrument) {
 
 		public static Builder builder(MapColor woodColor, MapColor barkColor) {
 			return new Builder(woodColor, barkColor);
@@ -88,13 +89,13 @@ public final class PropertyUtil {
 		public Block.Properties planks() {
 			BlockBehaviour.Properties properties = Block.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
-			return properties.mapColor(this.woodColor).strength(2.0F, 3.0F).sound(this.sound);
+			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(2.0F, 3.0F).sound(this.sound);
 		}
 
 		public Block.Properties log() {
 			BlockBehaviour.Properties properties = Block.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
-			return properties.mapColor(state -> state.hasProperty(BlockStateProperties.AXIS) && state.getValue(BlockStateProperties.AXIS) != Axis.Y ? barkColor : woodColor).strength(2.0F).sound(this.logSound);
+			return properties.mapColor(state -> state.hasProperty(BlockStateProperties.AXIS) && state.getValue(BlockStateProperties.AXIS) != Axis.Y ? barkColor : woodColor).instrument(this.instrument).strength(2.0F).sound(this.logSound);
 		}
 
 		public Block.Properties leaves() {
@@ -104,13 +105,13 @@ public final class PropertyUtil {
 		public Block.Properties pressurePlate() {
 			BlockBehaviour.Properties properties = Block.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
-			return properties.mapColor(this.woodColor).noCollission().strength(0.5F).sound(this.sound);
+			return properties.mapColor(this.woodColor).forceSolidOn().instrument(this.instrument).noCollission().strength(0.5F).sound(this.sound).pushReaction(PushReaction.DESTROY);
 		}
 
 		public Block.Properties trapdoor() {
 			BlockBehaviour.Properties properties = Block.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
-			return properties.mapColor(this.woodColor).strength(3.0F).sound(this.sound).noOcclusion().isValidSpawn(PropertyUtil::never);
+			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(3.0F).noOcclusion().isValidSpawn(PropertyUtil::never).sound(this.sound);
 		}
 
 		public Block.Properties button() {
@@ -120,19 +121,19 @@ public final class PropertyUtil {
 		public Block.Properties door() {
 			BlockBehaviour.Properties properties = Block.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
-			return properties.mapColor(this.woodColor).strength(3.0F).sound(this.sound).noOcclusion();
+			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(3.0F).noOcclusion().sound(this.sound).pushReaction(PushReaction.DESTROY);
 		}
 
 		public Block.Properties beehive() {
 			BlockBehaviour.Properties properties = Block.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
-			return properties.mapColor(this.woodColor).strength(0.6F).sound(this.sound);
+			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(0.6F).sound(this.sound);
 		}
 
 		public Block.Properties bookshelf() {
 			BlockBehaviour.Properties properties = Block.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
-			return properties.mapColor(this.woodColor).strength(1.5F).sound(this.sound);
+			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(1.5F).sound(this.sound);
 		}
 
 		public Block.Properties ladder() {
@@ -146,21 +147,21 @@ public final class PropertyUtil {
 		public Block.Properties chest() {
 			BlockBehaviour.Properties properties = Block.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
-			return properties.mapColor(this.woodColor).strength(2.5F).sound(this.sound);
+			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(2.5F).sound(this.sound);
 		}
 
 		public Block.Properties leafPile() {
-			return Block.Properties.of().mapColor(this.leavesColor).replaceable().noCollission().ignitedByLava().pushReaction(PushReaction.DESTROY).strength(0.2F).sound(this.leavesSound);
+			return Block.Properties.of().mapColor(this.leavesColor).replaceable().noCollission().strength(0.2F).sound(this.leavesSound).ignitedByLava().pushReaction(PushReaction.DESTROY);
 		}
 
 		public Block.Properties leafCarpet() {
-			return Block.Properties.of().mapColor(this.leavesColor).noCollission().ignitedByLava().strength(0.0F).sound(this.leavesSound).noOcclusion();
+			return Block.Properties.of().mapColor(this.leavesColor).noCollission().strength(0.0F).sound(this.leavesSound).noOcclusion().ignitedByLava();
 		}
 
 		public Block.Properties post() {
 			BlockBehaviour.Properties properties = Block.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
-			return properties.mapColor(this.woodColor).strength(2.0F, 3.0F).sound(this.logSound);
+			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(2.0F, 3.0F).sound(this.logSound);
 		}
 
 		public static final class Builder {
@@ -171,6 +172,7 @@ public final class PropertyUtil {
 			private SoundType sound = SoundType.WOOD;
 			private SoundType logSound = SoundType.WOOD;
 			private SoundType leavesSound = SoundType.GRASS;
+			private NoteBlockInstrument instrument = NoteBlockInstrument.BASS;
 
 			private Builder(MapColor woodColor, MapColor barkColor) {
 				this.woodColor = woodColor;
@@ -207,8 +209,13 @@ public final class PropertyUtil {
 				return this;
 			}
 
+			public Builder instrument(NoteBlockInstrument instrument) {
+				this.instrument = instrument;
+				return this;
+			}
+
 			public WoodSetProperties build() {
-				return new WoodSetProperties(this.barkColor, this.woodColor, this.leavesColor, this.basePropertiesConsumer, this.sound, this.logSound, this.leavesSound);
+				return new WoodSetProperties(this.barkColor, this.woodColor, this.leavesColor, this.basePropertiesConsumer, this.sound, this.logSound, this.leavesSound, this.instrument);
 			}
 		}
 	}
