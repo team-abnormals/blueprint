@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.block.thatch;
 
-import com.teamabnormals.blueprint.common.block.VerticalSlabBlock;
+import com.teamabnormals.blueprint.common.block.quark.VerticalSlabBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;

@@ -1,4 +1,4 @@
-package com.teamabnormals.blueprint.common.block.wood;
+package com.teamabnormals.blueprint.common.block.quark;
 
 import com.teamabnormals.blueprint.core.util.BlockUtil;
 import net.minecraft.core.BlockPos;

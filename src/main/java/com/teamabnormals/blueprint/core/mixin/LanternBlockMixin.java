@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.core.mixin;
 
-import com.teamabnormals.blueprint.common.block.wood.WoodPostBlock;
+import com.teamabnormals.blueprint.common.block.quark.WoodPostBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LanternBlock;

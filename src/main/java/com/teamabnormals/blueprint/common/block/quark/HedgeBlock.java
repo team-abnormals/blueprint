@@ -1,4 +1,4 @@
-package com.teamabnormals.blueprint.common.block;
+package com.teamabnormals.blueprint.common.block.quark;
 
 import com.google.common.collect.ImmutableList;
 import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;

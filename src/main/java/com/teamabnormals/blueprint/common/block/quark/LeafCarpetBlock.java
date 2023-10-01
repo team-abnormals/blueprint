@@ -1,4 +1,4 @@
-package com.teamabnormals.blueprint.common.block;
+package com.teamabnormals.blueprint.common.block.quark;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;

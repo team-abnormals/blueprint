@@ -27,11 +27,13 @@ public class LeafPileBlock extends MultifaceBlock implements SimpleWaterloggedBl
 		this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
 	}
 
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
 		builder.add(WATERLOGGED);
 	}
 
+	@Override
 	public BlockState updateShape(BlockState state, Direction direction, BlockState facingState, LevelAccessor level, BlockPos pos, BlockPos facingPos) {
 		if (state.getValue(WATERLOGGED)) {
 			level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
