@@ -27,7 +27,6 @@ public class BlueprintItemTagsProvider extends ItemTagsProvider {
 		this.tag(BlueprintItemTags.OCELOT_FOOD);
 		this.tag(BlueprintItemTags.CAT_FOOD);
 
-		this.tag(BlueprintItemTags.EGGS).add(Items.EGG);
 		this.tag(BlueprintItemTags.MILK).addTag(BlueprintItemTags.BUCKETS_MILK);
 		this.tag(BlueprintItemTags.PUMPKINS).add(Items.PUMPKIN);
 

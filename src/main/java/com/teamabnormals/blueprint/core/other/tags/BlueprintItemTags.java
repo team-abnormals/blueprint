@@ -13,7 +13,6 @@ public class BlueprintItemTags {
 	public static final TagKey<Item> OCELOT_FOOD = itemTag("ocelot_food");
 	public static final TagKey<Item> CAT_FOOD = itemTag("cat_food");
 
-	public static final TagKey<Item> EGGS = TagUtil.itemTag("forge", "eggs");
 	public static final TagKey<Item> MILK = TagUtil.itemTag("forge", "milk");
 	public static final TagKey<Item> PUMPKINS = TagUtil.itemTag("forge", "pumpkins");
 
