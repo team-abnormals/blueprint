@@ -1,6 +1,4 @@
 {
-	"blueprint.config.quark_sign_editing": "Schild herausgeben",
-	"blueprint.config.require_empty_hand": "Schild herausgeben braucht einen leeren Hand",
 	"blueprint.config.slabfish_hat.enabled": "Slabfischhut",
 	"blueprint.config.slabfish_hat.enabled.tooltip": "Den Slabfischhut aus/anschalten. Für Patrons mit Level 2+ verfügbar.",
 	"blueprint.config.slabfish_hat.sweater": "Pulli",

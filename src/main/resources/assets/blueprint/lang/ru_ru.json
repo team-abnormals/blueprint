@@ -1,6 +1,4 @@
 {
-	"blueprint.config.quark_sign_editing": "Quark редактирование таблички",
-	"blueprint.config.require_empty_hand": "Quark редактирование таблички требует Пустой рукой",
 	"blueprint.config.slabfish_hat.enabled": "Шляпа плита-рыбы",
 	"blueprint.config.slabfish_hat.enabled.tooltip": "Переключает на плита-рыбу. Доступно для покровителей Уровня 2+.",
 	"blueprint.config.slabfish_hat.sweater": "Свитер",

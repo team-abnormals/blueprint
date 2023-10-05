@@ -2,7 +2,7 @@ package core.registry;
 
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.block.BlueprintBeehiveBlock;
-import com.teamabnormals.blueprint.common.block.quark.HedgeBlock;
+import com.teamabnormals.blueprint.common.block.LogBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintCeilingHangingSignBlock;
@@ -10,8 +10,6 @@ import com.teamabnormals.blueprint.common.block.sign.BlueprintStandingSignBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintWallHangingSignBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
 import com.teamabnormals.blueprint.common.block.thatch.ThatchStairBlock;
-import com.teamabnormals.blueprint.common.block.LogBlock;
-import com.teamabnormals.blueprint.common.block.quark.WoodPostBlock;
 import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.util.PropertyUtil;
 import com.teamabnormals.blueprint.core.util.PropertyUtil.WoodSetProperties;
@@ -47,9 +45,6 @@ public final class TestBlocks {
 
 	public static final RegistryObject<Block> LOG_BLOCK = HELPER.createBlock("log_block", () -> new LogBlock(() -> Blocks.STRIPPED_ACACIA_LOG, Block.Properties.of().ignitedByLava().mapColor(MapColor.COLOR_ORANGE)));
 	public static final RegistryObject<Block> BEEHIVE = HELPER.createBlock("example_beehive", () -> new BlueprintBeehiveBlock(TEST_WOOD_SET.beehive()));
-	public static final RegistryObject<Block> TEST_STRIPPED_POST = HELPER.createBlock("test_stripped_post", () -> new WoodPostBlock(Block.Properties.copy(Blocks.DIRT)));
-	public static final RegistryObject<Block> TEST_POST = HELPER.createBlock("test_post", () -> new WoodPostBlock(TEST_STRIPPED_POST, Block.Properties.copy(Blocks.DIRT)));
-	public static final RegistryObject<Block> TEST_HEDGE = HELPER.createBlock("test_hedge", () -> new HedgeBlock(TEST_WOOD_SET.planks()));
 	public static final RegistryObject<Block> TEST_THATCH_STAIRS = HELPER.createBlock("test_thatch_stairs", () -> new ThatchStairBlock(Blocks.DIRT.defaultBlockState(), PropertyUtil.thatch(MapColor.COLOR_YELLOW, SoundType.AMETHYST)));
 	public static final RegistryObject<Block> TEST_FALLING = HELPER.createBlock("test_falling", () -> new TestFallingBlock(Block.Properties.copy(Blocks.DIRT)));
 
