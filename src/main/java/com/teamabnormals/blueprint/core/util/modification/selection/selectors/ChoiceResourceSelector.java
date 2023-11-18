@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.core.util.modification.selection.selectors;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.datafixers.util.Either;
 import com.teamabnormals.blueprint.core.util.modification.selection.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -10,7 +11,8 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.FalseCondition;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
-import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A {@link ResourceSelector} implementation that picks a {@link ConditionedResourceSelector} if a condition is met or picks another {@link ConditionedResourceSelector} if the condition is not met.
@@ -24,8 +26,8 @@ public record ChoiceResourceSelector(ConditionedResourceSelector first, Conditio
 	}
 
 	@Override
-	public List<ResourceLocation> select(SelectionSpace space) {
-		return this.condition.test(ICondition.IContext.EMPTY) ? this.first.select(space) : this.second.select(space);
+	public Either<Set<ResourceLocation>, Predicate<ResourceLocation>> select() {
+		return this.condition.test(ICondition.IContext.EMPTY) ? this.first.select() : this.second.select();
 	}
 
 	@Override

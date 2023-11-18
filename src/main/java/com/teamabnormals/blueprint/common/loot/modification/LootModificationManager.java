@@ -5,11 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.loot.modification.modifiers.LootModifier;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModificationManager;
-import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.*;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
@@ -22,7 +18,6 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * Data manager class for the {@link LootModifier} system.
@@ -37,19 +32,11 @@ public final class LootModificationManager extends ObjectModificationManager<Loo
 	private static LootModificationManager INSTANCE = null;
 
 	private LootModificationManager(LootDataManager lootDataManager) {
-		super(GSON, TARGET_DIRECTORY, null, "Loot", LootModifierSerializers.REGISTRY, Pair.of(GSON, lootDataManager), true, true);
+		super(GSON, TARGET_DIRECTORY, null, LootModifierSerializers.REGISTRY, Pair.of(GSON, lootDataManager), true, true);
 	}
 
 	static {
 		registerInitializer("LootDataManager", (registryAccess, commandSelection, reloadableServerResources) -> INSTANCE = new LootModificationManager(reloadableServerResources.getLootData()));
-	}
-
-	@Override
-	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-		FileToIdConverter fileToIdConverter = FileToIdConverter.json(LootDataType.TABLE.directory());
-		var locations = fileToIdConverter.listMatchingResources(resourceManager).keySet().stream().map(fileToIdConverter::fileToId);
-		this.selectionSpace = locations::forEach;
-		super.apply(map, resourceManager, profilerFiller);
 	}
 
 	/**

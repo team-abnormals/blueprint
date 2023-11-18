@@ -2,13 +2,15 @@ package com.teamabnormals.blueprint.core.util.modification.selection.selectors;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Either;
 import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelectorSerializers;
-import com.teamabnormals.blueprint.core.util.modification.selection.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -16,19 +18,19 @@ import java.util.stream.Stream;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public record NamesResourceSelector(List<ResourceLocation> names) implements ResourceSelector<NamesResourceSelector> {
+public record NamesResourceSelector(Set<ResourceLocation> names) implements ResourceSelector<NamesResourceSelector> {
 
 	public NamesResourceSelector(ResourceLocation... names) {
-		this(List.of(names));
+		this(Set.of(names));
 	}
 
 	public NamesResourceSelector(String... names) {
-		this(Stream.of(names).map(ResourceLocation::new).toList());
+		this(Stream.of(names).map(ResourceLocation::new).collect(Collectors.toSet()));
 	}
 
 	@Override
-	public List<ResourceLocation> select(SelectionSpace space) {
-		return this.names;
+	public Either<Set<ResourceLocation>, Predicate<ResourceLocation>> select() {
+		return Either.left(this.names);
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public record NamesResourceSelector(List<ResourceLocation> names) implements Res
 		@Override
 		public NamesResourceSelector deserialize(JsonElement element) {
 			JsonArray jsonArray = element.getAsJsonArray();
-			List<ResourceLocation> names = new ArrayList<>();
+			HashSet<ResourceLocation> names = new HashSet<>();
 			jsonArray.forEach(nameElement -> names.add(new ResourceLocation(nameElement.getAsString())));
 			return new NamesResourceSelector(names);
 		}

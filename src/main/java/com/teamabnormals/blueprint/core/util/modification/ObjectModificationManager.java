@@ -6,8 +6,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.Blueprint;
-import com.teamabnormals.blueprint.core.events.SimpleJsonResourceListenerPreparedEvent;
-import com.teamabnormals.blueprint.core.util.modification.selection.SelectionSpace;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +14,6 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 
 import javax.annotation.Nullable;
@@ -27,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * A {@link SimpleJsonResourceReloadListener} subclass that handles the loading of {@link ObjectModifierGroup} instances.
@@ -42,33 +40,24 @@ import java.util.function.Function;
 public class ObjectModificationManager<T, S, D> extends SimpleJsonResourceReloadListener {
 	public static final String MAIN_PATH = "modifiers";
 	private static final HashMultimap<String, Initializer<?>> INITIALIZER_MAP = HashMultimap.create();
-	protected final EnumMap<EventPriority, Map<ResourceLocation, List<ObjectModifier<T, S, D, ?>>>> prioritizedAssignedModifiers = new EnumMap<>(EventPriority.class);
+	protected final EnumMap<EventPriority, Pair<Map<ResourceLocation, List<ObjectModifier<T, S, D, ?>>>, List<Pair<Predicate<ResourceLocation>, List<ObjectModifier<T, S, D, ?>>>>>> prioritizedAssignedModifiers = new EnumMap<>(EventPriority.class);
 	private final String type;
 	private final ObjectModifierSerializerRegistry<T, S, D> serializerRegistry;
 	private final Function<ResourceLocation, D> additionalDeserializationGetter;
 	private final boolean logSkipping;
 	private final boolean allowPriority;
-	protected SelectionSpace selectionSpace = consumer -> {};
 
-	public ObjectModificationManager(Gson gson, String directory, @Nullable String targetDirectory, String type, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, Function<ResourceLocation, D> additionalDeserializationGetter, boolean logSkipping, boolean allowPriority) {
+	public ObjectModificationManager(Gson gson, String directory, String type, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, Function<ResourceLocation, D> additionalDeserializationGetter, boolean logSkipping, boolean allowPriority) {
 		super(gson, MAIN_PATH + "/" + directory);
 		this.type = type;
 		this.serializerRegistry = serializerRegistry;
 		this.additionalDeserializationGetter = additionalDeserializationGetter;
 		this.logSkipping = logSkipping;
 		this.allowPriority = allowPriority;
-		if (targetDirectory != null) {
-			MinecraftForge.EVENT_BUS.addListener((SimpleJsonResourceListenerPreparedEvent event) -> {
-				if (event.getDirectory().equals(targetDirectory)) {
-					var entries = event.getEntries().keySet();
-					this.selectionSpace = entries::forEach;
-				}
-			});
-		}
 	}
 
-	public ObjectModificationManager(Gson gson, String directory, @Nullable String targetDirectory, String type, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, D additionalDeserializationObject, boolean logSkipping, boolean allowPriority) {
-		this(gson, directory, targetDirectory, type, serializerRegistry, (location) -> additionalDeserializationObject, logSkipping, allowPriority);
+	public ObjectModificationManager(Gson gson, String directory, String type, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, D additionalDeserializationObject, boolean logSkipping, boolean allowPriority) {
+		this(gson, directory, type, serializerRegistry, (location) -> additionalDeserializationObject, logSkipping, allowPriority);
 	}
 
 	/**
@@ -107,18 +96,22 @@ public class ObjectModificationManager<T, S, D> extends SimpleJsonResourceReload
 	 * @param value         An object of type {@code <T>} to modify.
 	 */
 	public void applyModifiers(EventPriority eventPriority, ResourceLocation location, T value) {
-		Map<ResourceLocation, List<ObjectModifier<T, S, D, ?>>> assignedModifiers = this.prioritizedAssignedModifiers.get(eventPriority);
+		var assignedModifiers = this.prioritizedAssignedModifiers.get(eventPriority);
 		if (assignedModifiers != null) {
-			var modifiers = assignedModifiers.get(location);
-			if (modifiers != null) {
-				modifiers.forEach(modifier -> modifier.modify(value));
+			var directModifiers = assignedModifiers.getFirst();
+			var modifiers = directModifiers.get(location);
+			if (modifiers != null) modifiers.forEach(modifier -> modifier.modify(value));
+			var dynamicModifiers = assignedModifiers.getSecond();
+			if (!dynamicModifiers.isEmpty()) {
+				for (var dynamicModifier : dynamicModifiers) {
+					if (dynamicModifier.getFirst().test(location)) dynamicModifier.getSecond().forEach(modifier -> modifier.modify(value));
+				}
 			}
 		}
 	}
 
 	@Override
 	protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-		SelectionSpace selectionSpace = this.selectionSpace;
 		String type = this.type;
 		int groupsLoaded = 0;
 		var serializerRegistry = this.serializerRegistry;
@@ -131,19 +124,22 @@ public class ObjectModificationManager<T, S, D> extends SimpleJsonResourceReload
 			ResourceLocation resourcelocation = entry.getKey();
 			try {
 				var group = ObjectModifierGroup.deserialize(resourcelocation.toString(), entry.getValue().getAsJsonObject(), additionalDeserializationGetter.apply(resourcelocation), serializerRegistry, logSkipping, allowPriority);
-				var assignedModifiers = prioritizedAssignedModifiers.computeIfAbsent(group.priority(), __ -> new HashMap<>());
+				var assignedModifiers = prioritizedAssignedModifiers.computeIfAbsent(group.priority(), __ -> Pair.of(new HashMap<>(), new ArrayList<>()));
 				var groupModifiers = group.modifiers();
-				for (ResourceLocation selectedLocation : group.selector().select(selectionSpace)) {
-					assignedModifiers.computeIfAbsent(selectedLocation, __ -> new ArrayList<>()).addAll(groupModifiers);
-				}
+				var either = group.selector().select();
+				var locations = either.left();
+				if (locations.isPresent()) {
+					var directModifiers = assignedModifiers.getFirst();
+					for (ResourceLocation location : locations.get()) {
+						directModifiers.computeIfAbsent(location, __ -> new ArrayList<>()).addAll(groupModifiers);
+					}
+				} else assignedModifiers.getSecond().add(Pair.of(either.right().get(), groupModifiers));
 				groupsLoaded++;
 			} catch (IllegalArgumentException | JsonParseException jsonparseexception) {
 				Blueprint.LOGGER.error("Parsing error loading " + type + " Modifier Group: {}", resourcelocation, jsonparseexception);
 			}
 		}
 		Blueprint.LOGGER.info(type + " Modification Manager has loaded {} modifier groups", groupsLoaded);
-		// Empty Selection Space to prevent memory from lying around until the next reload
-		this.selectionSpace = consumer -> {};
 	}
 
 	/**

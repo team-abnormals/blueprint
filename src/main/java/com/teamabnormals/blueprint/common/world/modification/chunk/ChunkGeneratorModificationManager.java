@@ -59,9 +59,18 @@ public final class ChunkGeneratorModificationManager extends SimpleJsonResourceR
 				var keySet = dimensions.keySet();
 				HashMap<ResourceLocation, LinkedList<ObjectModifier<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>, ?>>> assignedModifiers = new HashMap<>();
 				for (var modifierGroup : modifierGroups) {
-					modifierGroup.selector().select(keySet::forEach).forEach(location -> {
-						assignedModifiers.computeIfAbsent(location, __ -> new LinkedList<>()).addAll(modifierGroup.modifiers());
-					});
+					var either = modifierGroup.selector().select();
+					var locations = either.left();
+					if (locations.isPresent()) {
+						locations.get().forEach(location -> assignedModifiers.computeIfAbsent(location, __ -> new LinkedList<>()).addAll(modifierGroup.modifiers()));
+					} else {
+						var predicate = either.right().get();
+						for (ResourceLocation dimensionKey : keySet) {
+							if (predicate.test(dimensionKey)) {
+								assignedModifiers.computeIfAbsent(dimensionKey, __ -> new LinkedList<>()).addAll(modifierGroup.modifiers());
+							}
+						}
+					}
 				}
 				for (var entry : dimensions.entrySet()) {
 					var modifiers = assignedModifiers.get(entry.getKey().location());

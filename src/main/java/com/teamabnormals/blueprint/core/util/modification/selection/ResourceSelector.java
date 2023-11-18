@@ -1,9 +1,11 @@
 package com.teamabnormals.blueprint.core.util.modification.selection;
 
 import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * The interface that represents a serializable resource selector.
@@ -22,13 +24,7 @@ public interface ResourceSelector<S extends ResourceSelector<S>> {
 		return this.getSerializer().serialize((S) this);
 	}
 
-	/**
-	 * Selects a list of {@link ResourceLocation} instances from a {@link SelectionSpace} instance.
-	 *
-	 * @param space A {@link SelectionSpace} instance to select from.
-	 * @return A selected list of {@link ResourceLocation} instances from a {@link SelectionSpace} instance.
-	 */
-	List<ResourceLocation> select(SelectionSpace space);
+	Either<Set<ResourceLocation>, Predicate<ResourceLocation>> select();
 
 	/**
 	 * Gets the {@link Serializer} instance used for this {@link ResourceSelector} instance.

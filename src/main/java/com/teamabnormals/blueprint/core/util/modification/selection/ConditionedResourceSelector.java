@@ -5,14 +5,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.EmptyResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
-import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * The class that represents a {@link ResourceSelector} with conditions.
@@ -20,7 +25,23 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public final class ConditionedResourceSelector {
-	public static final ConditionedResourceSelector EMPTY = new ConditionedResourceSelector(new EmptyResourceSelector());
+	public static final Codec<ConditionedResourceSelector> DIRECT_CODEC = ExtraCodecs.JSON.flatXmap(element -> {
+		try {
+			return DataResult.success(deserialize("selector", element));
+		} catch (JsonParseException exception) {
+			String message = exception.getMessage();
+			return DataResult.error(() -> message);
+		}
+	}, selector -> {
+		try {
+			return DataResult.success(selector.serialize());
+		} catch (JsonParseException exception) {
+			String message = exception.getMessage();
+			return DataResult.error(() -> message);
+		}
+	});
+	public static final Codec<ConditionedResourceSelector> CODEC = DIRECT_CODEC.fieldOf("selector").codec();
+	public static final ConditionedResourceSelector EMPTY = new ConditionedResourceSelector(EmptyResourceSelector.INSTANCE);
 	private static final ICondition[] NO_CONDITIONS = new ICondition[0];
 	private final ResourceSelector<?> resourceSelector;
 	private final ICondition[] conditions;
@@ -65,11 +86,11 @@ public final class ConditionedResourceSelector {
 	 */
 	public JsonElement serialize() {
 		var conditions = this.conditions;
-		boolean hasConditions = conditions.length > 0;
+		boolean hasConditions = conditions != null && conditions.length > 0;
 		ResourceSelector<?> selector = this.resourceSelector;
 		if (!hasConditions && selector instanceof NamesResourceSelector namesResourceSelector) {
 			var names = namesResourceSelector.names();
-			if (names.size() == 1) return new JsonPrimitive(names.get(0).toString());
+			if (names.size() == 1) return new JsonPrimitive(names.iterator().next().toString());
 		}
 		ResourceSelector.Serializer<?> serializer = selector.getSerializer();
 		String type = ResourceSelectorSerializers.INSTANCE.getSerializerID(serializer);
@@ -87,14 +108,8 @@ public final class ConditionedResourceSelector {
 		return jsonObject;
 	}
 
-	/**
-	 * Selects a list of {@link ResourceLocation} names from a {@link SelectionSpace} instance.
-	 *
-	 * @param space A {@link SelectionSpace} instance to use for selecting the names.
-	 * @return A list of {@link ResourceLocation} names from a {@link SelectionSpace} instance.
-	 */
-	public List<ResourceLocation> select(SelectionSpace space) {
-		return this.resourceSelector.select(space);
+	public Either<Set<ResourceLocation>, Predicate<ResourceLocation>> select() {
+		return this.resourceSelector.select();
 	}
 
 	/**

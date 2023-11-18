@@ -2,13 +2,13 @@ package com.teamabnormals.blueprint.core.util.modification.selection.selectors;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import com.mojang.datafixers.util.Either;
 import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelectorSerializers;
-import com.teamabnormals.blueprint.core.util.modification.selection.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,17 +17,11 @@ import java.util.regex.Pattern;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final record RegexResourceSelector(Pattern pattern) implements ResourceSelector<RegexResourceSelector> {
+public record RegexResourceSelector(Pattern pattern) implements ResourceSelector<RegexResourceSelector> {
 	@Override
-	public List<ResourceLocation> select(SelectionSpace space) {
-		List<ResourceLocation> targetNames = new ArrayList<>();
+	public Either<Set<ResourceLocation>, Predicate<ResourceLocation>> select() {
 		Matcher matcher = this.pattern.matcher("");
-		space.forEach(key -> {
-			if (matcher.reset(key.toString()).matches()) {
-				targetNames.add(key);
-			}
-		});
-		return targetNames;
+		return Either.right(location -> matcher.reset(location.toString()).matches());
 	}
 
 	@Override

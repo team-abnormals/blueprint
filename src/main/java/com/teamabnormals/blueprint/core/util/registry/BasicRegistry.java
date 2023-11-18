@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public final class BasicRegistry<T> implements Codec<T> {
 	private final Lifecycle lifecycle;
-	private final BiMap<ResourceLocation, T> map = HashBiMap.create();
+	private final BiMap<String, T> map = HashBiMap.create();
 
 	public BasicRegistry(Lifecycle lifecycle) {
 		this.lifecycle = lifecycle;
@@ -34,13 +34,23 @@ public final class BasicRegistry<T> implements Codec<T> {
 	}
 
 	/**
+	 * Registers a value for a given {@link String}.
+	 *
+	 * @param name  A {@link String} to register the value with.
+	 * @param value A value to register.
+	 */
+	public void register(String name, T value) {
+		this.map.put(name, value);
+	}
+
+	/**
 	 * Registers a value for a given {@link ResourceLocation}.
 	 *
 	 * @param name  A {@link ResourceLocation} to register the value with.
 	 * @param value A value to register.
 	 */
 	public void register(ResourceLocation name, T value) {
-		this.map.put(name, value);
+		this.register(name.toString(), value);
 	}
 
 	/**
@@ -54,34 +64,34 @@ public final class BasicRegistry<T> implements Codec<T> {
 	}
 
 	/**
-	 * Gets a value for a given {@link ResourceLocation} name.
+	 * Gets a value for a given {@link String} name.
 	 *
-	 * @param name A {@link ResourceLocation} name to lookup the value with.
-	 * @return A value for a given {@link ResourceLocation} name, or null if there's no value for the given {@link ResourceLocation}.
+	 * @param name A {@link String} name to lookup the value with.
+	 * @return A value for a given {@link String} name, or null if there's no value for the given {@link String}.
 	 */
 	@Nullable
-	public T getValue(ResourceLocation name) {
+	public T getValue(String name) {
 		return this.map.get(name);
 	}
 
 	/**
-	 * Gets a {@link ResourceLocation} for a given value.
+	 * Gets a {@link String} for a given value.
 	 *
-	 * @param value A value to get a {@link ResourceLocation} for.
-	 * @return A {@link ResourceLocation} for a given value.
+	 * @param value A value to get a {@link String} for.
+	 * @return A {@link String} for a given value.
 	 */
 	@Nullable
-	public ResourceLocation getKey(T value) {
+	public String getKey(T value) {
 		return this.map.inverse().get(value);
 	}
 
 	/**
-	 * Gets all the {@link ResourceLocation} keys in this registry.
+	 * Gets all the {@link String} keys in this registry.
 	 *
-	 * @return A set of all the {@link ResourceLocation} keys in this registry.
+	 * @return A set of all the {@link String} keys in this registry.
 	 */
 	@Nonnull
-	public Set<ResourceLocation> keySet() {
+	public Set<String> keySet() {
 		return this.map.keySet();
 	}
 
@@ -101,24 +111,24 @@ public final class BasicRegistry<T> implements Codec<T> {
 	 * @return A set of all the entries in this registry.
 	 */
 	@Nonnull
-	public Set<Map.Entry<ResourceLocation, T>> getEntries() {
+	public Set<Map.Entry<String, T>> getEntries() {
 		return this.map.entrySet();
 	}
 
 	/**
-	 * Checks if this registry has an entry with a given {@link ResourceLocation} name.
+	 * Checks if this registry has an entry with a given {@link String} name.
 	 *
-	 * @param name A {@link ResourceLocation} name to check.
-	 * @return If this registry has an entry with a given {@link ResourceLocation} name.
+	 * @param name A {@link String} name to check.
+	 * @return If this registry has an entry with a given {@link String} name.
 	 */
-	public boolean containsKey(ResourceLocation name) {
+	public boolean containsKey(String name) {
 		return this.map.containsKey(name);
 	}
 
 	@Override
 	public <U> DataResult<Pair<T, U>> decode(DynamicOps<U> ops, U input) {
-		return ResourceLocation.CODEC.decode(ops, input).flatMap((encodedRegistryPair) -> {
-			ResourceLocation name = encodedRegistryPair.getFirst();
+		return Codec.STRING.decode(ops, input).flatMap((encodedRegistryPair) -> {
+			String name = encodedRegistryPair.getFirst();
 			T value = this.getValue(name);
 			return value == null ? DataResult.error(() -> "Unknown registry key: " + name) : DataResult.success(Pair.of(value, encodedRegistryPair.getSecond()), this.lifecycle);
 		});
@@ -126,10 +136,10 @@ public final class BasicRegistry<T> implements Codec<T> {
 
 	@Override
 	public <U> DataResult<U> encode(T input, DynamicOps<U> ops, U prefix) {
-		ResourceLocation name = this.getKey(input);
+		String name = this.getKey(input);
 		if (name == null) {
 			return DataResult.error(() -> "Unknown registry element: " + prefix);
 		}
-		return ops.mergeToPrimitive(prefix, ops.createString(name.toString())).setLifecycle(this.lifecycle);
+		return ops.mergeToPrimitive(prefix, ops.createString(name)).setLifecycle(this.lifecycle);
 	}
 }

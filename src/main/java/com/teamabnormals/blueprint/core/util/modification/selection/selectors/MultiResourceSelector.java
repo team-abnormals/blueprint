@@ -2,11 +2,14 @@ package com.teamabnormals.blueprint.core.util.modification.selection.selectors;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Either;
 import com.teamabnormals.blueprint.core.util.modification.selection.*;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -25,10 +28,17 @@ public record MultiResourceSelector(List<ConditionedResourceSelector> selectors)
 	}
 
 	@Override
-	public List<ResourceLocation> select(SelectionSpace space) {
-		List<ResourceLocation> targetNames = new ArrayList<>();
-		this.selectors.forEach(configuredModifierTargetSelector -> targetNames.addAll(configuredModifierTargetSelector.select(space)));
-		return targetNames;
+	public Either<Set<ResourceLocation>, Predicate<ResourceLocation>> select() {
+		var selectors = this.selectors;
+		var either = selectors.get(0).select();
+		var locations = either.left();
+		Predicate<ResourceLocation> combinedPredicate = locations.isPresent() ? locations.get()::contains : either.right().get();
+		for (int i = 1; i < selectors.size(); i++) {
+			either = selectors.get(i).select();
+			locations = either.left();
+			combinedPredicate = combinedPredicate.or(locations.isPresent() ? locations.get()::contains : either.right().get());
+		}
+		return Either.right(combinedPredicate);
 	}
 
 	@Override

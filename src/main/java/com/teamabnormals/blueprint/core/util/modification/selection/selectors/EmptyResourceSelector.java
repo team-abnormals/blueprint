@@ -1,25 +1,28 @@
 package com.teamabnormals.blueprint.core.util.modification.selection.selectors;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Either;
 import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelectorSerializers;
-import com.teamabnormals.blueprint.core.util.modification.selection.SelectionSpace;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A {@link ResourceSelector} implementation that always returns an empty list of target names.
  *
  * @author SmellyModder (Luke Tonon)
  */
-public record EmptyResourceSelector() implements ResourceSelector<EmptyResourceSelector> {
-	private static final ImmutableList<ResourceLocation> EMPTY = ImmutableList.of();
+public enum EmptyResourceSelector implements ResourceSelector<EmptyResourceSelector> {
+	INSTANCE;
+
+	private static final Either<Set<ResourceLocation>, Predicate<ResourceLocation>> EMPTY = Either.left(ImmutableSet.of());
 
 	@Override
-	public List<ResourceLocation> select(SelectionSpace space) {
+	public Either<Set<ResourceLocation>, Predicate<ResourceLocation>> select() {
 		return EMPTY;
 	}
 
@@ -41,7 +44,7 @@ public record EmptyResourceSelector() implements ResourceSelector<EmptyResourceS
 
 		@Override
 		public EmptyResourceSelector deserialize(JsonElement element) {
-			return new EmptyResourceSelector();
+			return INSTANCE;
 		}
 	}
 }
