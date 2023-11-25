@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 /**
  * A simplified version of the {@link net.minecraft.core.Registry} class.
  * <p>This class is not an instance of {@link net.minecraft.core.Registry}</p>
- * <p>Values can be added at any time, independent of {@link net.minecraftforge.registries.RegisterEvent}.</p>
+ * <p>Values can be added at any time, independent of {@link net.minecraftforge.registries.RegisterEvent}</p>
  *
  * @param <T> The type of object for the registry.
  * @author SmellyModder (Luke Tonon)
@@ -138,7 +138,7 @@ public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 	/**
 	 * Gets the id for a given value.
 	 *
-	 * @return The id for a given value, or null if the value isn't registered.
+	 * @return The id for a given value, or -1 if the value isn't registered.
 	 */
 	@Override
 	public int getId(T value) {
