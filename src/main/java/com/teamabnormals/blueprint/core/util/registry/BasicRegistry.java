@@ -7,6 +7,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import net.minecraft.Util;
 import net.minecraft.core.IdMap;
 import net.minecraft.resources.ResourceLocation;
 
@@ -14,14 +19,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * A simplified version of the {@link net.minecraft.core.Registry} class.
- * <p>This class is not an instance of {@link net.minecraft.core.Registry}</p>
- * <p>Values can be added at any time, independent of {@link net.minecraftforge.registries.RegisterEvent}</p>
+ * <p>This class is not an instance of {@link net.minecraft.core.Registry}.</p>
+ * <p>Values can be added anytime, independent of other registry systems.</p>
  *
  * @param <T> The type of object for the registry.
  * @author SmellyModder (Luke Tonon)
@@ -30,15 +33,18 @@ import java.util.stream.Stream;
 public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 	private final Lifecycle lifecycle;
 	private final BiMap<String, T> map = HashBiMap.create();
-	private final BiMap<T, Integer> idMap = HashBiMap.create();
+	private final ObjectList<T> byId = new ObjectArrayList<>();
+	private final Object2IntMap<T> toId;
 	private int nextId;
 
 	public BasicRegistry(Lifecycle lifecycle) {
 		this.lifecycle = lifecycle;
+		this.toId = new Object2IntOpenCustomHashMap<>(Util.identityStrategy());
+		this.toId.defaultReturnValue(IdMap.DEFAULT);
 	}
 
 	public BasicRegistry() {
-		this.lifecycle = Lifecycle.stable();
+		this(Lifecycle.stable());
 	}
 
 	/**
@@ -48,8 +54,11 @@ public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 	 * @param value A value to register.
 	 */
 	public void register(String name, T value) {
+		int id = this.nextId;
 		this.map.put(name, value);
-		this.idMap.put(value, this.nextId);
+		this.byId.size(id + 1);
+		this.byId.set(id, value);
+		this.toId.put(value, id);
 		this.nextId++;
 	}
 
@@ -142,7 +151,7 @@ public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 	 */
 	@Override
 	public int getId(T value) {
-		return Objects.requireNonNullElse(this.idMap.get(value), DEFAULT);
+		return this.toId.getInt(value);
 	}
 
 	/**
@@ -153,7 +162,7 @@ public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 	 */
 	@Override
 	public T byId(int id) {
-		return id >= 0 && id < this.idMap.size() ? this.idMap.inverse().get(id) : null;
+		return id >= 0 && id < this.byId.size() ? this.byId.get(id) : null;
 	}
 
 	/**
@@ -166,13 +175,9 @@ public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 		return this.map.size();
 	}
 
-	/**
-	 * Gets a {@link Stream} of all values added to this registry.
-	 *
-	 * @return A {@link Stream} of all values added to this registry.
-	 */
-	public Stream<T> stream() {
-		return this.map.values().stream();
+	@Override
+	public Iterator<T> iterator() {
+		return this.map.values().iterator();
 	}
 
 	@Override
@@ -191,10 +196,5 @@ public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 			return DataResult.error(() -> "Unknown registry element: " + prefix);
 		}
 		return ops.mergeToPrimitive(prefix, ops.createString(name)).setLifecycle(this.lifecycle);
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		return this.map.values().iterator();
 	}
 }
