@@ -34,12 +34,11 @@ public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 	private final Lifecycle lifecycle;
 	private final BiMap<String, T> map = HashBiMap.create();
 	private final ObjectList<T> byId = new ObjectArrayList<>();
-	private final Object2IntMap<T> toId;
+	private final Object2IntMap<T> toId = new Object2IntOpenCustomHashMap<>(Util.identityStrategy());
 	private int nextId;
 
 	public BasicRegistry(Lifecycle lifecycle) {
 		this.lifecycle = lifecycle;
-		this.toId = new Object2IntOpenCustomHashMap<>(Util.identityStrategy());
 		this.toId.defaultReturnValue(IdMap.DEFAULT);
 	}
 
@@ -54,12 +53,11 @@ public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 	 * @param value A value to register.
 	 */
 	public void register(String name, T value) {
-		int id = this.nextId;
+		int id = this.nextId++;
 		this.map.put(name, value);
 		this.byId.size(id + 1);
 		this.byId.set(id, value);
 		this.toId.put(value, id);
-		this.nextId++;
 	}
 
 	/**
@@ -161,6 +159,7 @@ public final class BasicRegistry<T> implements Codec<T>, IdMap<T> {
 	 * @return A registry value with the given id, or null if the id is out of range or no value is registered under the id.
 	 */
 	@Override
+	@Nullable
 	public T byId(int id) {
 		return id >= 0 && id < this.byId.size() ? this.byId.get(id) : null;
 	}
