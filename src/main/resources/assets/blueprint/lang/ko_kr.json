@@ -1,3 +1,20 @@
 {
-	"entity.blueprint.boat": "보트"
+	"blueprint.config.screen_shake_scale": "화면 흔들림 배율",
+	"blueprint.config.max_screen_shakers": "최대 화면 흔들림",
+	"blueprint.config.disable_experimental_settings_screen": "실험적 기능 화면 비활성화",
+	"blueprint.config.slabfish_hat.enabled": "평판어 모자",
+	"blueprint.config.slabfish_hat.enabled.tooltip": "평판어 모자 여부를 변경합니다. Tier 2+ 후원자부터 이용 가능합니다.",
+	"blueprint.config.slabfish_hat.sweater": "스웨터",
+	"blueprint.config.slabfish_hat.sweater.tooltip": "평판어 모자의 스웨터 여부를 변경합니다. Tier 2+ 후원자부터 이용 가능합니다.",
+	"blueprint.config.slabfish_hat.backpack": "배낭",
+	"blueprint.config.slabfish_hat.backpack.tooltip": "평판어 모자의 배낭 여부를 변경합니다. Tier 3+ 후원자부터 이용 가능합니다.",
+	"blueprint.config.slabfish_hat.type": "종류",
+	"blueprint.config.slabfish_hat.type.tooltip": "평판어 모자의 종류를 변경합니다. Tier 4+ 후원자부터 이용 가능합니다.",
+	"blueprint.screen.slabfish_settings": "평판어 모자 설정...",
+	"blueprint.screen.slabfish_settings.title": "평판어 모자 설정",
+	"blueprint.screen.slabfish_settings.tooltip": "팀 Abnormals 의 후원자를 위한 설정입니다. %s에서 후원자가 되어주세요.",
+	"blueprint.message.redirect": "리다이렉트 중",
+	"biome.blueprint.original_source_marker": "Original Source Marker",
+	"entity.blueprint.boat": "보트",
+	"entity.blueprint.chest_boat": "상자가 실린 보트"
 }
