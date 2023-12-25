@@ -1,0 +1,10 @@
+{
+  "molding": "json",
+  "pack_selector": "minecraft:vanilla",
+  "remolder": {
+    "type": "add",
+    "expressed_value": "data(90)",
+    "target": "variants.get(\"\").x"
+  },
+  "selector": "minecraft:blockstates/acacia_planks"
+}

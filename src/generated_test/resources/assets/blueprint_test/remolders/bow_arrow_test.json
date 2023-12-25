@@ -1,0 +1,9 @@
+{
+  "molding": "json",
+  "remolder": {
+    "type": "replace",
+    "target": "overrides[2].model",
+    "value": "item/diamond"
+  },
+  "selector": "minecraft:models/item/bow"
+}

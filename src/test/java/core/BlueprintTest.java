@@ -13,6 +13,7 @@ import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import common.world.TestGlobalStorage;
+import core.data.client.TestAssetsRemolderProvider;
 import core.data.client.TestEndimationProvider;
 import core.data.client.TestSplashProvider;
 import core.data.server.*;
@@ -51,7 +52,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(BlueprintTest.MOD_ID)
@@ -118,10 +118,12 @@ public final class BlueprintTest {
 		generator.addProvider(includeServer, new TestLootModifiersProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new TestChunkGeneratorModifiersProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new TestDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
+		generator.addProvider(includeServer, new TestDataRemolderProvider(packOutput, lookupProvider));
 
 		boolean includeClient = event.includeClient();
 		generator.addProvider(includeClient, new TestEndimationProvider(packOutput));
 		generator.addProvider(includeClient, new TestSplashProvider(packOutput));
+		generator.addProvider(includeClient, new TestAssetsRemolderProvider(packOutput, lookupProvider));
 	}
 
 	@OnlyIn(Dist.CLIENT)

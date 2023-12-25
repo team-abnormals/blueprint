@@ -12,13 +12,16 @@
     "FluidInvokerMixin",
     "GameTestServerMixin",
     "LootDataManagerMixin",
+    "MinecraftServerMixin",
     "ReloadableServerResourcesMixin",
     "ServerEntityMixin",
     "ServerLevelMixin",
     "SimpleJsonResourceReloadListenerMixin",
+    "SimpleReloadInstanceMixin",
     "StructurePieceMixin",
     "StructureStartMixin",
-    "StructureTemplateMixin"
+    "StructureTemplateMixin",
+    "WorldLoaderPackConfigMixin"
   ],
   "client": [
     "client.CameraInvokerMixin",
@@ -29,6 +32,7 @@
     "client.PlayerRendererMixin",
     "client.PrimaryLevelDataMixin",
     "client.RabbitRendererMixin",
+    "client.ReloadableResourceManagerMixin",
     "client.SkinCustomizationScreenMixin",
     "client.SplashManagerMixin"
   ],

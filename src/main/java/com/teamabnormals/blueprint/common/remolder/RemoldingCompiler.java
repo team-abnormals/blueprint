@@ -17,16 +17,29 @@ public final class RemoldingCompiler extends ClassLoader {
 		super(parent);
 	}
 
-	public <T> Remolding<T> compile(String identifier, Molding<T> molding, Remold... remolds) throws Exception {
+	public <T> Remolding<T> compile(String identifier, Molding<T> molding, Remold... remolds) throws Throwable {
 		return this.compile(remolds[0].type(), identifier, molding, remolds);
 	}
 
+	private static String formatIdentifierForClassName(String string) {
+		StringBuilder result = new StringBuilder();
+		boolean capitalizeNextLetter = true;
+		for (int i = 0; i < string.length(); i++) {
+			char c = string.charAt(i);
+			if (Character.isLetterOrDigit(c)) {
+				result.append(capitalizeNextLetter ? Character.toUpperCase(c) : c);
+				capitalizeNextLetter = false;
+			} else capitalizeNextLetter = true;
+		}
+		return result.toString();
+	}
+
 	@SuppressWarnings("unchecked")
-	public <T> Remolding<T> compile(String type, String identifier, Molding<T> molding, Remold... remolds) throws Exception {
+	public <T> Remolding<T> compile(String type, String identifier, Molding<T> molding, Remold... remolds) throws Throwable {
 		int remoldsLength = remolds.length;
 		if (remoldsLength == 0) throw new IllegalArgumentException("Cannot compile an empty array of Remolds");
 		ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-		String name = type + "Remolding" + System.nanoTime();
+		String name = formatIdentifierForClassName(identifier) + type + "Remolding" + System.nanoTime();
 		Type dataType = molding.getDataType();
 		String typeDescriptor = dataType.getDescriptor();
 		classWriter.visit(
@@ -60,7 +73,7 @@ public final class RemoldingCompiler extends ClassLoader {
 				null,
 				null
 		);
-		toString.visitLdcInsn("'" + identifier + " (" + name + ")'");
+		toString.visitLdcInsn(identifier + " (" + name + ")");
 		toString.visitInsn(Opcodes.ARETURN);
 		toString.visitMaxs(0, 0);
 		toString.visitEnd();

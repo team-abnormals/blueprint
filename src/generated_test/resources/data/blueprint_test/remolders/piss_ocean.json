@@ -1,0 +1,15 @@
+{
+  "molding": "json",
+  "remolder": {
+    "type": "replace",
+    "target": "effects.water_color",
+    "value": 16776960
+  },
+  "selector": {
+    "type": "names",
+    "config": [
+      "minecraft:worldgen/biome/ocean",
+      "minecraft:worldgen/biome/beach"
+    ]
+  }
+}

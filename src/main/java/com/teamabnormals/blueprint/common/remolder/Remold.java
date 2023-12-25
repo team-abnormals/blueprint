@@ -29,8 +29,7 @@ public record Remold(String type, Visitor visitor, Fields fields) {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public record Field(Supplier<?> parameter, String parameterType, String descriptor,
-						BiConsumer<Molding<?>, MethodVisitor> visitor) {}
+	public record Field(Supplier<?> parameter, String parameterType, String descriptor, BiConsumer<Molding<?>, MethodVisitor> visitor) {}
 
 	/**
 	 * The class for handling the setup of {@link Field} instances in {@link Remolding} instances.
