@@ -32,7 +32,7 @@ public final class LootModificationManager extends ObjectModificationManager<Loo
 	private static LootModificationManager INSTANCE = null;
 
 	private LootModificationManager(LootDataManager lootDataManager) {
-		super(GSON, TARGET_DIRECTORY, null, LootModifierSerializers.REGISTRY, Pair.of(GSON, lootDataManager), true, true);
+		super(GSON, TARGET_DIRECTORY, "Loot", LootModifierSerializers.REGISTRY, Pair.of(GSON, lootDataManager), true, true);
 	}
 
 	static {

@@ -27,7 +27,7 @@ public final class AdvancementModificationManager extends ObjectModificationMana
 	private static AdvancementModificationManager INSTANCE;
 
 	private AdvancementModificationManager(LootDataManager lootData) {
-		super(GSON, TARGET_PATH, TARGET_PATH, AdvancementModifierSerializers.REGISTRY, (location) -> new DeserializationContext(location, lootData), true, true);
+		super(GSON, TARGET_PATH, "Advancement", AdvancementModifierSerializers.REGISTRY, (location) -> new DeserializationContext(location, lootData), true, true);
 	}
 
 	static {

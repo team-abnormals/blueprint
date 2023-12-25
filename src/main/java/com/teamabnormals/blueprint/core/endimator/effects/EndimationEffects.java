@@ -20,7 +20,7 @@ public final class EndimationEffects {
 	public static final ShakeEndimationEffect SHAKE = register("shake", new ShakeEndimationEffect());
 
 	private static <E extends EndimationEffect<?>> E register(String name, E effect) {
-		REGISTRY.register(new ResourceLocation(name), effect);
+		REGISTRY.register(name, effect);
 		return effect;
 	}
 
@@ -33,7 +33,6 @@ public final class EndimationEffects {
 	 * @return The given {@link EndimationEffect} instance.
 	 */
 	public static synchronized <E extends EndimationEffect<?>> E register(ResourceLocation name, E effect) {
-		REGISTRY.register(name, effect);
-		return effect;
+		return register(name.toString(), effect);
 	}
 }

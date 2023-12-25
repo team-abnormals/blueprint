@@ -18,11 +18,11 @@ import org.joml.Vector3f;
 public interface InterpolationType {
 	Registry REGISTRY = new Registry();
 
-	InterpolationType LINEAR = REGISTRY.register(new ResourceLocation("linear"), (vec3, keyframes, from, to, index, keyframeCount, progress) -> {
+	InterpolationType LINEAR = REGISTRY.register("linear", (vec3, keyframes, from, to, index, keyframeCount, progress) -> {
 		vec3.set(Mth.lerp(progress, from.postX.get(), to.preX.get()), Mth.lerp(progress, from.postY.get(), to.preY.get()), Mth.lerp(progress, from.postZ.get(), to.preZ.get()));
 	});
 
-	InterpolationType CATMULL_ROM = REGISTRY.register(new ResourceLocation("catmullrom"), (vec3, keyframes, from, to, index, keyframeCount, progress) -> {
+	InterpolationType CATMULL_ROM = REGISTRY.register("catmullrom", (vec3, keyframes, from, to, index, keyframeCount, progress) -> {
 		float fromX = from.postX.get();
 		float fromY = from.postY.get();
 		float fromZ = from.postZ.get();
@@ -92,6 +92,11 @@ public interface InterpolationType {
 	final class Registry {
 		private final BasicRegistry<InterpolationType> registry = new BasicRegistry<>();
 
+		private InterpolationType register(String name, InterpolationType interpolationType) {
+			this.registry.register(name, interpolationType);
+			return interpolationType;
+		}
+
 		/**
 		 * Registers an {@link InterpolationType} with a {@link ResourceLocation} name.
 		 *
@@ -100,8 +105,7 @@ public interface InterpolationType {
 		 * @return The registered {@link InterpolationType} instance.
 		 */
 		public synchronized InterpolationType register(ResourceLocation name, InterpolationType interpolationType) {
-			this.registry.register(name, interpolationType);
-			return interpolationType;
+			return this.register(name.toString(), interpolationType);
 		}
 
 		/**

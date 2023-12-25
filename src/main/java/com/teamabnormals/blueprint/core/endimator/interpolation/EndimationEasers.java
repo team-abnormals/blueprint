@@ -180,7 +180,7 @@ public final class EndimationEasers {
 	}
 
 	private static Function<Float, Float> register(String name, Function<Float, Float> easer) {
-		REGISTRY.register(new ResourceLocation(name), easer);
+		REGISTRY.register(name, easer);
 		return easer;
 	}
 
