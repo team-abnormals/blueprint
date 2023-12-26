@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.remolder.data.MoldingTypes;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.DataUtil;
@@ -27,6 +29,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -36,19 +40,31 @@ import java.util.stream.Stream;
  */
 public final class RemoldedResourceManager implements CloseableResourceManager {
 	private static final Gson GSON = new Gson();
-	private static final RemoldingCompiler REMOLDING_COMPILER = new RemoldingCompiler(RemoldedResourceManager.class.getClassLoader());
 	@Nullable
 	private static RemoldedResourceManager CLIENT;
 	@Nullable
 	private static RemoldedResourceManager SERVER;
 	private final HashMap<String, IdentityHashMap<MoldingTypes.MoldingType<?>, Pair<Map<String, List<Entry>>, ArrayList<Pair<Predicate<ResourceLocation>, Entry>>>>> fileExtensionToEntries = new HashMap<>();
 	private final CloseableResourceManager manager;
+	private final RemoldingCompiler compiler;
 	private final PackType packType;
 	private final boolean needsAutoReload;
 
 	private RemoldedResourceManager(CloseableResourceManager manager, PackType packType, boolean needsAutoReload) {
 		this.manager = manager;
 		this.packType = packType;
+		RemoldingCompiler.ExportEntry[] exports;
+		try (Reader reader = manager.getResourceOrThrow(new ResourceLocation(Blueprint.MOD_ID, "remolder.json")).openAsReader()) {
+			JsonElement element = GsonHelper.fromJson(GSON, reader, JsonElement.class);
+			var dataResult = Settings.CODEC.decode(JsonOps.INSTANCE, element);
+			var dataResultError = dataResult.error();
+			if (dataResultError.isPresent()) throw new JsonParseException(dataResultError.get().message());
+			exports = dataResult.result().get().getFirst().exports;
+		} catch (IOException | JsonParseException exception) {
+			Blueprint.LOGGER.error("Error loading " + packType.getDirectory() + " Remolder settings, using default settings instead!", exception);
+			exports = new RemoldingCompiler.ExportEntry[0];
+		}
+		this.compiler = new RemoldingCompiler(this.getClass().getClassLoader(), exports);
 		this.needsAutoReload = needsAutoReload;
 	}
 
@@ -80,8 +96,8 @@ public final class RemoldedResourceManager implements CloseableResourceManager {
 		FileToIdConverter fileToIdConverter = FileToIdConverter.json("remolders");
 		var resources = fileToIdConverter.listMatchingResources(this.manager);
 		ArrayList<CompletableFuture<Void>> futures = new ArrayList<>(resources.size());
-		AtomicInteger successfulCount = new AtomicInteger();
 		String packTypeDirectory = this.packType.getDirectory() + "/";
+		AtomicInteger successfulCount = new AtomicInteger();
 		for (var entry : resources.entrySet()) {
 			futures.add(CompletableFuture.runAsync(() -> {
 				ResourceLocation entryKey = entry.getKey();
@@ -100,7 +116,7 @@ public final class RemoldedResourceManager implements CloseableResourceManager {
 					MoldingTypes.MoldingType<?> moldingType = remolderEntry.molding();
 					Remolding<?> remolding;
 					try {
-						remolding = REMOLDING_COMPILER.compile(entryKey.toString(), moldingType.molding(), remolderEntry.remolder().remold());
+						remolding = this.compiler.compile(entryKey.toString(), moldingType.molding(), remolderEntry.remolder().remold());
 					} catch (Throwable throwable) {
 						throw new JsonParseException("Error while generating modifications for Remolder '" + entryKey + "': " + throwable);
 					}
@@ -219,6 +235,25 @@ public final class RemoldedResourceManager implements CloseableResourceManager {
 	@Override
 	public void close() {
 		this.manager.close();
+	}
+
+	public record Settings(RemoldingCompiler.ExportEntry[] exports) {
+		private static final Codec<RemoldingCompiler.ExportEntry[]> EXPORTS_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING).xmap(map -> {
+			var entries = map.entrySet();
+			if (entries.isEmpty()) return new RemoldingCompiler.ExportEntry[0];
+			RemoldingCompiler.ExportEntry[] exports = new RemoldingCompiler.ExportEntry[entries.size()];
+			int exportsCount = 0;
+			for (var entry : entries) {
+				Pattern pattern = Pattern.compile(String.valueOf(entry.getValue()));
+				exports[exportsCount++] = new RemoldingCompiler.ExportEntry(entry.getKey(), pattern.pattern(), string -> pattern.matcher(string).matches());
+			}
+			return exports;
+		}, array -> Stream.of(array).collect(Collectors.toMap(RemoldingCompiler.ExportEntry::folder, RemoldingCompiler.ExportEntry::pattern)));
+		public static final Codec<Settings> CODEC = RecordCodecBuilder.create(instance -> {
+			return instance.group(
+					EXPORTS_CODEC.fieldOf("exports").forGetter(Settings::exports)
+			).apply(instance, Settings::new);
+		});
 	}
 
 	/**
