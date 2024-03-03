@@ -4,6 +4,7 @@ import com.teamabnormals.blueprint.client.BlueprintShaders;
 import com.teamabnormals.blueprint.client.RewardHandler;
 import com.teamabnormals.blueprint.client.renderer.BlueprintBoatRenderer;
 import com.teamabnormals.blueprint.client.renderer.block.BlueprintChestBlockEntityRenderer;
+import com.teamabnormals.blueprint.client.renderer.texture.atlas.BlueprintSpriteSources;
 import com.teamabnormals.blueprint.client.screen.splash.BlueprintSplashManager;
 import com.teamabnormals.blueprint.common.capability.chunkloading.ChunkLoaderCapability;
 import com.teamabnormals.blueprint.common.capability.chunkloading.ChunkLoaderEvents;
@@ -153,6 +154,8 @@ public final class Blueprint {
 			bus.addListener(RewardHandler::clientSetup);
 			bus.addListener(RewardHandler::addLayers);
 			bus.addListener(BlueprintShaders::registerShaders);
+
+			BlueprintSpriteSources.register();
 		});
 
 		bus.addListener(BlueprintDataPackRegistries::registerRegistries);
