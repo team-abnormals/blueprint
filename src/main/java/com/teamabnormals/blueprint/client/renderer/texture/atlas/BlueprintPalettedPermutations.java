@@ -50,7 +50,7 @@ public class BlueprintPalettedPermutations implements SpriteSource {
 	private final Map<String, ResourceLocation> permutations;
 	private final ResourceLocation paletteKey;
 
-	private BlueprintPalettedPermutations(List<SpriteSource> sources, ResourceLocation p_266681_, Map<String, ResourceLocation> p_266741_) {
+	public BlueprintPalettedPermutations(List<SpriteSource> sources, ResourceLocation p_266681_, Map<String, ResourceLocation> p_266741_) {
 		this.sources = sources;
 		this.permutations = p_266741_;
 		this.paletteKey = p_266681_;
