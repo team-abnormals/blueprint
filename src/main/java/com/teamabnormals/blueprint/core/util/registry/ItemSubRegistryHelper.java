@@ -65,7 +65,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	/**
 	 * Creates a {@link FuelItem}.
 	 *
-	 * @param burnTime  How long the item will burn (measured in ticks).
+	 * @param burnTime How long the item will burn (measured in ticks).
 	 * @return The created {@link FuelItem}.
 	 */
 	public static FuelItem createFuelItem(int burnTime) {
@@ -122,7 +122,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 *
 	 * @param wood  The name of the wood, e.g. "oak".
 	 * @param block The {@link Block} for the boat to drop.
-	 * @param raft If the boats are rafts.
+	 * @param raft  If the boats are rafts.
 	 * @return A {@link Pair} instance containing the boat item and the chest boat item.
 	 */
 	public Pair<RegistryObject<Item>, RegistryObject<Item>> createBoatAndChestBoatItem(String wood, RegistryObject<Block> block, boolean raft) {
@@ -133,4 +133,14 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 		return Pair.of(boat, chestBoat);
 	}
 
+	/**
+	 * Registers a new boat type and registers two new {@link BlueprintBoatItem} instances for a boat and a chest boat.
+	 *
+	 * @param wood  The name of the wood, e.g. "oak".
+	 * @param block The {@link Block} for the boat to drop.
+	 * @return A {@link Pair} instance containing the boat item and the chest boat item.
+	 */
+	public Pair<RegistryObject<Item>, RegistryObject<Item>> createBoatAndChestBoatItem(String wood, RegistryObject<Block> block) {
+		return createBoatAndChestBoatItem(wood, block, false);
+	}
 }

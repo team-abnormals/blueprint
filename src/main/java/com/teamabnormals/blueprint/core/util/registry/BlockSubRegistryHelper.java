@@ -187,31 +187,68 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	/**
 	 * Creates and registers {@link BlueprintChestBlock} with a {@link BEWLRFuelBlockItem}.
 	 *
-	 * @param name       The name for this {@link BlueprintChestBlock}.
-	 * @param properties The properties for this {@link BlueprintChestBlock}.
+	 * @param name         The name for this {@link BlueprintChestBlock}.
+	 * @param materialName The name of the material used for this {@link BlueprintChestBlock}
+	 * @param properties   The properties for this {@link BlueprintChestBlock}.
 	 * @return A {@link RegistryObject} containing the created {@link BlueprintChestBlock}.
 	 */
-	public RegistryObject<BlueprintChestBlock> createChestBlock(String name, Block.Properties properties) {
+	public RegistryObject<BlueprintChestBlock> createChestBlock(String name, String materialName, Block.Properties properties) {
 		String modId = this.parent.getModId();
-		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, name, false);
-		RegistryObject<BlueprintChestBlock> block = this.deferredRegister.register(name + "_chest", () -> new BlueprintChestBlock(chestMaterialsName, properties));
-		this.itemRegister.register(name + "_chest", () -> new BEWLRFuelBlockItem(block.get(), new Item.Properties(), () -> () -> chestBEWLR(false), 300));
+		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, materialName, false);
+		RegistryObject<BlueprintChestBlock> block = this.deferredRegister.register(name, () -> new BlueprintChestBlock(chestMaterialsName, properties));
+		this.itemRegister.register(name, () -> new BEWLRFuelBlockItem(block.get(), new Item.Properties(), () -> () -> chestBEWLR(false), 300));
 		return block;
+	}
+
+	/**
+	 * Creates and registers {@link BlueprintChestBlock} with a {@link BEWLRFuelBlockItem}.
+	 *
+	 * @param materialName The name of the material used for this {@link BlueprintChestBlock}
+	 * @param properties   The properties for this {@link BlueprintChestBlock}.
+	 * @return A {@link RegistryObject} containing the created {@link BlueprintChestBlock}.
+	 */
+	public RegistryObject<BlueprintChestBlock> createChestBlock(String materialName, Block.Properties properties) {
+		return createChestBlock(materialName + "_chest", materialName, properties);
 	}
 
 	/**
 	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRFuelBlockItem}.
 	 *
-	 * @param name       The name for this {@link BlueprintTrappedChestBlock}.
-	 * @param properties The properties for this {@link BlueprintTrappedChestBlock}.
+	 * @param name         The name for this {@link BlueprintTrappedChestBlock}.
+	 * @param materialName The name of the material used for this {@link BlueprintTrappedChestBlock}
+	 * @param properties   The properties for this {@link BlueprintTrappedChestBlock}.
 	 * @return A {@link RegistryObject} containing the created {@link BlueprintTrappedChestBlock}.
 	 */
-	public RegistryObject<BlueprintTrappedChestBlock> createTrappedChestBlock(String name, Block.Properties properties) {
+	public RegistryObject<BlueprintTrappedChestBlock> createTrappedChestBlock(String name, String materialName, Block.Properties properties) {
 		String modId = this.parent.getModId();
-		RegistryObject<BlueprintTrappedChestBlock> block = this.deferredRegister.register(name + "_trapped_chest", () -> new BlueprintTrappedChestBlock(modId + ":" + name + "_trapped", properties));
-		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, name, true);
-		this.itemRegister.register(name + "_trapped_chest", () -> new BEWLRFuelBlockItem(block.get(), new Item.Properties(), () -> () -> chestBEWLR(true), 300));
+		RegistryObject<BlueprintTrappedChestBlock> block = this.deferredRegister.register(name, () -> new BlueprintTrappedChestBlock(modId + ":" + materialName + "_trapped", properties));
+		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, materialName, true);
+		this.itemRegister.register(name, () -> new BEWLRFuelBlockItem(block.get(), new Item.Properties(), () -> () -> chestBEWLR(true), 300));
 		return block;
+	}
+
+	/**
+	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRFuelBlockItem}.
+	 * Uses an outdated naming scheme and will be removed in next breaking update.
+	 *
+	 * @param materialName The name of the material used for this {@link BlueprintTrappedChestBlock}
+	 * @param properties   The properties for this {@link BlueprintTrappedChestBlock}.
+	 * @return A {@link RegistryObject} containing the created {@link BlueprintTrappedChestBlock}.
+	 */
+	@Deprecated
+	public RegistryObject<BlueprintTrappedChestBlock> createTrappedChestBlock(String materialName, Block.Properties properties) {
+		return createTrappedChestBlock(materialName + "_trapped_chest", materialName, properties);
+	}
+
+	/**
+	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRFuelBlockItem}.
+	 *
+	 * @param materialName The name of the material used for this {@link BlueprintTrappedChestBlock}
+	 * @param properties   The properties for this {@link BlueprintTrappedChestBlock}.
+	 * @return A {@link RegistryObject} containing the created {@link BlueprintTrappedChestBlock}.
+	 */
+	public RegistryObject<BlueprintTrappedChestBlock> createTrappedChestBlockNamed(String materialName, Block.Properties properties) {
+		return createTrappedChestBlock("trapped_" + materialName + "_chest", materialName, properties);
 	}
 
 	/**
