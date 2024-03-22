@@ -1,11 +1,15 @@
 package com.teamabnormals.blueprint.core;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.teamabnormals.blueprint.client.BlueprintShaders;
 import com.teamabnormals.blueprint.client.RewardHandler;
 import com.teamabnormals.blueprint.client.renderer.BlueprintBoatRenderer;
 import com.teamabnormals.blueprint.client.renderer.block.BlueprintChestBlockEntityRenderer;
 import com.teamabnormals.blueprint.client.renderer.texture.atlas.BlueprintSpriteSources;
 import com.teamabnormals.blueprint.client.screen.splash.BlueprintSplashManager;
+import com.teamabnormals.blueprint.common.block.BlueprintChiseledBookShelfBlock;
+import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.common.capability.chunkloading.ChunkLoaderCapability;
 import com.teamabnormals.blueprint.common.capability.chunkloading.ChunkLoaderEvents;
 import com.teamabnormals.blueprint.common.network.MessageC2SUpdateSlabfishHat;
@@ -17,6 +21,7 @@ import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource;
 import com.teamabnormals.blueprint.common.world.storage.tracking.DataProcessors;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
+import com.teamabnormals.blueprint.core.api.BlockSetTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.conditions.BlueprintAndCondition;
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
@@ -30,6 +35,7 @@ import com.teamabnormals.blueprint.core.registry.*;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import com.teamabnormals.blueprint.core.util.item.CreativeModeTabContentsPopulator;
+import com.teamabnormals.blueprint.core.util.registry.BlockEntitySubRegistryHelper;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
@@ -48,6 +54,8 @@ import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.monster.Strider;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -77,6 +85,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -171,6 +180,10 @@ public final class Blueprint {
 	private void commonSetup(FMLCommonSetupEvent event) {
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "slabfish_head"), SLABFISH_SETTINGS);
 		event.enqueueWork(WoodTypeRegistryHelper::registerWoodTypes);
+
+		Set<Block> validBlocks = Sets.newHashSet(BlockEntityType.CHISELED_BOOKSHELF.validBlocks);
+		validBlocks.addAll(Sets.newHashSet(BlockEntitySubRegistryHelper.collectBlocks(BlueprintChiseledBookShelfBlock.class)));
+		BlockEntityType.CHISELED_BOOKSHELF.validBlocks = ImmutableSet.copyOf(validBlocks);
 	}
 
 	private void clientSetup(FMLClientSetupEvent event) {
