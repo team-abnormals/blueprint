@@ -24,7 +24,7 @@ public final class WoodTypeRegistryHelper {
 
 	/**
 	 * Registers a {@link WoodType} to the {@link #WOOD_TYPES} map.
-     * <p>This method is safe to call during parallel mod loading.</p>
+	 * <p>This method is safe to call during parallel mod loading.</p>
 	 */
 	public static synchronized WoodType registerWoodType(WoodType woodType) {
 		WOOD_TYPES.put(woodType.name(), woodType);

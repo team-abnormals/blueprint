@@ -179,11 +179,15 @@ public final class Blueprint {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "slabfish_head"), SLABFISH_SETTINGS);
-		event.enqueueWork(WoodTypeRegistryHelper::registerWoodTypes);
 
 		Set<Block> validBlocks = Sets.newHashSet(BlockEntityType.CHISELED_BOOKSHELF.validBlocks);
 		validBlocks.addAll(Sets.newHashSet(BlockEntitySubRegistryHelper.collectBlocks(BlueprintChiseledBookShelfBlock.class)));
 		BlockEntityType.CHISELED_BOOKSHELF.validBlocks = ImmutableSet.copyOf(validBlocks);
+
+		event.enqueueWork(() -> {
+			WoodTypeRegistryHelper.registerWoodTypes();
+			BlockSetTypeRegistryHelper.registerBlockSetTypes();
+		});
 	}
 
 	private void clientSetup(FMLClientSetupEvent event) {
