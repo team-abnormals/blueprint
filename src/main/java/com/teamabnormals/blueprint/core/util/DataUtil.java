@@ -808,18 +808,35 @@ public final class DataUtil {
 		protected final Comparator<String> modIdComparator;
 		protected final Predicate<BlockSource> condition;
 		private final SoundEvent sound;
+		private final boolean isMobHead;
 
 		/**
 		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
-		 * @param modId     The ID of the mod registering the condition.
-		 * @param condition A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
-		 *                  position under the note block, returning true if {@code sound} should be played.
-		 * @param sound     The {@link SoundEvent} that will be played if {@code condition} is met.
+		 * @param modId           The ID of the mod registering the condition.
+		 * @param condition       A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
+		 *                        position under the note block, or above the note block if {@code isMobHead} is true,
+		 *                        returning true if {@code sound} should be played.
+		 * @param sound           The {@link SoundEvent} that will be played if {@code condition} is met.
+		 * @param isMobHead       If the instrument is for a mob head, meaning that the {@code sound} is unaffected by the tune of the note block
+		 *                        and functions only above the note block
+		 */
+		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound, boolean isMobHead) {
+			this(modId, condition, sound, isMobHead, (id1, id2) -> 0);
+		}
+
+		/**
+		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
+		 * should get played instead of vanilla's when a note block is triggered.
+		 *
+		 * @param modId           The ID of the mod registering the condition.
+		 * @param condition       A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
+		 *                        position under the note block, returning true if {@code sound} should be played.
+		 * @param sound           The {@link SoundEvent} that will be played if {@code condition} is met.
 		 */
 		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound) {
-			this(modId, condition, sound, (id1, id2) -> 0);
+			this(modId, condition, sound, false, (id1, id2) -> 0);
 		}
 
 		/**
@@ -840,17 +857,21 @@ public final class DataUtil {
 		 *
 		 * @param modId           The ID of the mod registering the condition.
 		 * @param condition       A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
-		 *                        position under the note block, returning true if {@code sound} should be played.
+		 *                        position under the note block, or above the note block if {@code isMobHead} is true,
+		 *                        returning true if {@code sound} should be played.
 		 * @param sound           The {@link SoundEvent} that will be played if {@code condition} is met.
+		 * @param isMobHead       If the instrument is for a mob head, meaning that the {@code sound} is unaffected by the tune of the note block
+		 *                        and functions only above the note block
 		 * @param modIdComparator A {@link Comparator} that compares two strings. The first is {@code modId}, and the
 		 *                        second is the mod id for another note block instrument.
 		 *                        It should return 1 if {@code condition} should be tested after the other instrument's,
 		 *                        -1 if it should go before, and 0 in any other case.
 		 */
-		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound, Comparator<String> modIdComparator) {
+		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound, boolean isMobHead, Comparator<String> modIdComparator) {
 			this.modId = modId;
 			this.condition = condition;
 			this.sound = sound;
+			this.isMobHead = isMobHead;
 			this.modIdComparator = modIdComparator;
 		}
 
@@ -865,6 +886,10 @@ public final class DataUtil {
 
 		public SoundEvent getSound() {
 			return this.sound;
+		}
+
+		public boolean isMobHead() {
+			return this.isMobHead;
 		}
 	}
 }

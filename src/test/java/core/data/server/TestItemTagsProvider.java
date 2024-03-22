@@ -1,11 +1,13 @@
 package core.data.server;
 
+import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;
 import com.teamabnormals.blueprint.core.other.tags.BlueprintItemTags;
 import core.BlueprintTest;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -20,6 +22,7 @@ public final class TestItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
+		this.copy(BlueprintBlockTags.NOTE_BLOCK_TOP_INSTRUMENTS, ItemTags.NOTE_BLOCK_TOP_INSTRUMENTS);
 		this.tag(BlueprintItemTags.CHICKEN_FOOD).add(Items.HUSK_SPAWN_EGG);
 		this.tag(BlueprintItemTags.PIG_FOOD).add(Items.CHIPPED_ANVIL);
 		this.tag(BlueprintItemTags.STRIDER_FOOD).add(Items.MINECART);

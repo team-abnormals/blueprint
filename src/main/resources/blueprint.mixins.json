@@ -13,6 +13,7 @@
     "GameTestServerMixin",
     "LootDataManagerMixin",
     "MinecraftServerMixin",
+    "NoteBlockMixin",
     "ReloadableServerResourcesMixin",
     "ServerEntityMixin",
     "ServerLevelMixin",

@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.NoteBlock;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.NoteBlockEvent;
@@ -32,16 +33,19 @@ public final class BlueprintEvents {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onNoteBlockPlay(NoteBlockEvent.Play event) {
 		if (SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS != null) {
-			Level level = (Level) event.getLevel();
-			if (!level.isClientSide()) {
+			if (event.getLevel() instanceof ServerLevel level) {
 				BlockPos pos = event.getPos();
-				BlockSource source = new BlockSourceImpl((ServerLevel) level, pos.relative(Direction.DOWN));
+				BlockSource source = new BlockSourceImpl(level, pos.relative(Direction.DOWN));
+				BlockSource headSource = new BlockSourceImpl(level, pos.relative(Direction.UP));
 				for (CustomNoteBlockInstrument instrument : SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS) {
-					if (instrument.test(source)) {
+					boolean isMobHead = instrument.isMobHead();
+					if (instrument.test(isMobHead ? headSource : source)) {
 						SoundEvent sound = instrument.getSound();
-						double note = event.getVanillaNoteId();
-						level.playSound(null, pos, sound, SoundSource.RECORDS, 3.0F, (float) Math.pow(2.0D, (note - 12) / 12.0D));
-						NetworkUtil.spawnParticle(NOTE_KEY, level.dimension(), pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
+						int note = event.getVanillaNoteId();
+						level.playSound(null, pos, sound, SoundSource.RECORDS, 3.0F, isMobHead ? 1.0F : NoteBlock.getPitchFromNote(note));
+						if (!isMobHead) {
+							NetworkUtil.spawnParticle(NOTE_KEY, level.dimension(), pos.getX() + 0.5D, pos.getY() + 1.2D, pos.getZ() + 0.5D, (double) note / 24.0D, 0.0D, 0.0D);
+						}
 						event.setCanceled(true);
 						break;
 					}
