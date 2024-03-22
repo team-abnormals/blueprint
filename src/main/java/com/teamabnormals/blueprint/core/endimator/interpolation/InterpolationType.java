@@ -49,7 +49,7 @@ public interface InterpolationType {
 			nextToY = nextTo.preY.get();
 			nextToZ = nextTo.preZ.get();
 		}
-		vec3.set(catmullRom(progress, oldFromX, fromX, toX, nextToX), catmullRom(progress, oldFromY, fromY, toY, nextToY), catmullRom(progress, oldFromZ, fromZ, toZ, nextToZ));
+		vec3.set(Mth.catmullrom(progress, oldFromX, fromX, toX, nextToX), catmullRom(progress, oldFromY, fromY, toY, nextToY), catmullRom(progress, oldFromZ, fromZ, toZ, nextToZ));
 	});
 
 	/**

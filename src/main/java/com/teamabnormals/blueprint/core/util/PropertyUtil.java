@@ -76,7 +76,7 @@ public final class PropertyUtil {
 		return entity == EntityType.OCELOT || entity == EntityType.PARROT;
 	}
 
-	public record WoodSetProperties(MapColor woodColor, MapColor barkColor, MapColor leavesColor, Consumer<BlockBehaviour.Properties> basePropertiesConsumer, SoundType sound, SoundType logSound, SoundType leavesSound, NoteBlockInstrument instrument) {
+	public record WoodSetProperties(MapColor woodColor, MapColor barkColor, MapColor leavesColor, Consumer<BlockBehaviour.Properties> basePropertiesConsumer, SoundType sound, SoundType logSound, SoundType leavesSound, SoundType chiseledBookshelfSound, NoteBlockInstrument instrument) {
 
 		public static Builder builder(MapColor woodColor, MapColor barkColor) {
 			return new Builder(woodColor, barkColor);
@@ -136,6 +136,12 @@ public final class PropertyUtil {
 			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(1.5F).sound(this.sound);
 		}
 
+		public BlockBehaviour.Properties chiseledBookshelf() {
+			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
+			this.basePropertiesConsumer.accept(properties);
+			return properties.mapColor(this.woodColor).instrument(this.instrument).strength(1.5F).sound(this.chiseledBookshelfSound);
+		}
+
 		public BlockBehaviour.Properties ladder() {
 			return PropertyUtil.ladder();
 		}
@@ -166,10 +172,12 @@ public final class PropertyUtil {
 			return BlockBehaviour.Properties.of().mapColor(this.leavesColor).replaceable().noCollission().strength(0.2F).sound(this.leavesSound).ignitedByLava().pushReaction(PushReaction.DESTROY);
 		}
 
+		@Deprecated
 		public BlockBehaviour.Properties leafCarpet() {
 			return BlockBehaviour.Properties.of().mapColor(this.leavesColor).noCollission().strength(0.0F).sound(this.leavesSound).noOcclusion().ignitedByLava();
 		}
 
+		@Deprecated
 		public BlockBehaviour.Properties post() {
 			BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
 			this.basePropertiesConsumer.accept(properties);
@@ -184,6 +192,7 @@ public final class PropertyUtil {
 			private SoundType sound = SoundType.WOOD;
 			private SoundType logSound = SoundType.WOOD;
 			private SoundType leavesSound = SoundType.GRASS;
+			private SoundType chiseledBookshelfSound = SoundType.CHISELED_BOOKSHELF;
 			private NoteBlockInstrument instrument = NoteBlockInstrument.BASS;
 
 			private Builder(MapColor woodColor, MapColor barkColor) {
@@ -221,13 +230,18 @@ public final class PropertyUtil {
 				return this;
 			}
 
+			public Builder chiseledBookshelfSound(SoundType soundType) {
+				this.chiseledBookshelfSound = soundType;
+				return this;
+			}
+
 			public Builder instrument(NoteBlockInstrument instrument) {
 				this.instrument = instrument;
 				return this;
 			}
 
 			public WoodSetProperties build() {
-				return new WoodSetProperties(this.barkColor, this.woodColor, this.leavesColor, this.basePropertiesConsumer, this.sound, this.logSound, this.leavesSound, this.instrument);
+				return new WoodSetProperties(this.barkColor, this.woodColor, this.leavesColor, this.basePropertiesConsumer, this.sound, this.logSound, this.leavesSound, this.chiseledBookshelfSound, this.instrument);
 			}
 		}
 	}
