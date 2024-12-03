@@ -1,4 +1,7 @@
 {
+	"blueprint.config.screen_shake_scale": "Шкала дрожания экрана",
+	"blueprint.config.max_screen_shakers": "Максимум дрожателей экрана",
+	"blueprint.config.disable_experimental_settings_screen": "Отключить экран экспериментальных настроек",
 	"blueprint.config.slabfish_hat.enabled": "Шляпа плита-рыбы",
 	"blueprint.config.slabfish_hat.enabled.tooltip": "Переключает на плита-рыбу. Доступно для покровителей Уровня 2+.",
 	"blueprint.config.slabfish_hat.sweater": "Свитер",
@@ -11,5 +14,8 @@
 	"blueprint.screen.slabfish_settings.title": "Настройки для шляпы плита-рыбы",
 	"blueprint.screen.slabfish_settings.tooltip": "Настройки для покровителей Команды Анамалов шляпы плита-рыбы. Стать покровителем на %s.",
 	"blueprint.message.redirect": "Перенаправление",
-	"entity.blueprint.boat": "Лодка"
+	"biome.blueprint.original_source_marker": "Маркер оригинального источника",
+	"entity.blueprint.boat": "Лодка",
+	"entity.blueprint.chest_boat": "Грузовая лодка",
+	"entity.blueprint.falling_block": "Падающий блок"
 }
