@@ -7,31 +7,27 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.world.modification.chunk.ChunkGeneratorModifierSerializers;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.mixin.NoiseGeneratorSettingsMixin;
 import com.teamabnormals.blueprint.core.registry.BlueprintSurfaceRules;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.SurfaceRules;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
- * An {@link UnsafeChunkGeneratorModifier} subclass that modifies the surface rule of a {@link ChunkGenerator} instance.
+ * A {@link ChunkGeneratorModifier} subclass that modifies the surface rule of a {@link ChunkGenerator} instance.
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<SurfaceRuleModifier> {
+public final class SurfaceRuleModifier implements ChunkGeneratorModifier<SurfaceRuleModifier> {
 	public static final Codec<SurfaceRuleModifier> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
 				SurfaceRules.RuleSource.CODEC.fieldOf("surface_rule").forGetter(modifier -> modifier.surfaceRule),
 				Codec.BOOL.optionalFieldOf("replace", false).forGetter(modifier -> modifier.replace)
 		).apply(instance, SurfaceRuleModifier::new);
 	});
-	private static final Field NOISE_GENERATOR_SETTINGS = ObfuscationReflectionHelper.findField(NoiseBasedChunkGenerator.class, "f_64318_");
 	private final SurfaceRules.RuleSource surfaceRule;
 	private final boolean replace;
 
@@ -40,13 +36,11 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 		this.replace = replace;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void modify(ChunkGenerator chunkGenerator) {
-		if (chunkGenerator instanceof NoiseBasedChunkGenerator) {
-			long fieldOffset = UNSAFE.objectFieldOffset(NOISE_GENERATOR_SETTINGS);
+		if (chunkGenerator instanceof NoiseBasedChunkGenerator noiseBasedChunkGenerator) {
 			SurfaceRules.RuleSource newRuleSource;
-			NoiseGeneratorSettings settings = ((Holder<NoiseGeneratorSettings>) UNSAFE.getObject(chunkGenerator, fieldOffset)).value();
+			NoiseGeneratorSettings settings = noiseBasedChunkGenerator.generatorSettings().value();
 			if (this.replace) newRuleSource = this.surfaceRule;
 			else {
 				SurfaceRules.RuleSource ruleSource = settings.surfaceRule();
@@ -61,7 +55,7 @@ public final class SurfaceRuleModifier extends UnsafeChunkGeneratorModifier<Surf
 					newRuleSource = new BlueprintSurfaceRules.TransientMergedRuleSource(newSequence, sequenceRuleSource);
 				} else newRuleSource = new BlueprintSurfaceRules.TransientMergedRuleSource(Lists.newArrayList(this.surfaceRule, ruleSource), ruleSource);
 			}
-			UNSAFE.putObject(chunkGenerator, fieldOffset, Holder.direct(new NoiseGeneratorSettings(settings.noiseSettings(), settings.defaultBlock(), settings.defaultFluid(), settings.noiseRouter(), newRuleSource, settings.spawnTarget(), settings.seaLevel(), settings.disableMobGeneration(), settings.isAquifersEnabled(), settings.oreVeinsEnabled(), settings.useLegacyRandomSource())));
+			((NoiseGeneratorSettingsMixin) (Object) settings).setSurfaceRule(newRuleSource);
 		} else Blueprint.LOGGER.warn("Could not apply surface rule modifier because " + chunkGenerator + " was not an instance of NoiseBasedChunkGenerator");
 	}
 
