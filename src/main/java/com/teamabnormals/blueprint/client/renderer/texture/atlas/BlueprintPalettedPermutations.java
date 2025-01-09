@@ -5,25 +5,24 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.renderer.texture.atlas.SpriteResourceLoader;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSourceType;
 import net.minecraft.client.renderer.texture.atlas.SpriteSources;
 import net.minecraft.client.renderer.texture.atlas.sources.LazyLoadedImage;
-import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceMetadata;
 import net.minecraft.util.FastColor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -38,7 +37,7 @@ import java.util.function.Supplier;
  */
 public class BlueprintPalettedPermutations implements SpriteSource {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	public static final Codec<BlueprintPalettedPermutations> CODEC = RecordCodecBuilder.create((instance) -> {
+	public static final MapCodec<BlueprintPalettedPermutations> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
 		return instance.group(Codec.mapEither(Codec.list(SpriteSources.CODEC).fieldOf("sources"), Codec.list(ResourceLocation.CODEC).fieldOf("textures")).forGetter((permutations) -> {
 			return permutations.sourcesOrTextures;
 		}), ResourceLocation.CODEC.fieldOf("palette_key").forGetter((permutations) -> {
@@ -152,24 +151,22 @@ public class BlueprintPalettedPermutations implements SpriteSource {
 		return BlueprintSpriteSources.PALETTED_PERMUTATIONS;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private record PalettedSpriteSupplier(LazyLoadedImage baseImage, Supplier<IntUnaryOperator> palette, ResourceLocation permutationLocation) implements SpriteSource.SpriteSupplier {
-		@SuppressWarnings("deprecation")
-		@Nullable
-		public SpriteContents get() {
+		public void discard() {
+			this.baseImage.release();
+		}
+
+		@Override
+		public SpriteContents apply(SpriteResourceLoader spriteResourceLoader) {
 			try {
 				NativeImage nativeimage = this.baseImage.get().mappedCopy(this.palette.get());
-				return new SpriteContents(this.permutationLocation, new FrameSize(nativeimage.getWidth(), nativeimage.getHeight()), nativeimage, AnimationMetadataSection.EMPTY);
+				return new SpriteContents(this.permutationLocation, new FrameSize(nativeimage.getWidth(), nativeimage.getHeight()), nativeimage, ResourceMetadata.EMPTY);
 			} catch (IllegalArgumentException | IOException ioexception) {
 				BlueprintPalettedPermutations.LOGGER.error("unable to apply palette to {}", this.permutationLocation, ioexception);
 			} finally {
 				this.baseImage.release();
 			}
 			return null;
-		}
-
-		public void discard() {
-			this.baseImage.release();
 		}
 	}
 }

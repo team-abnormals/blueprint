@@ -7,14 +7,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -29,7 +29,7 @@ import java.util.Random;
  * @author SmellyModder (Luke Tonon)
  * @see ShakeSource
  */
-@Mod.EventBusSubscriber(modid = Blueprint.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Blueprint.MOD_ID, value = Dist.CLIENT)
 public enum ScreenShakeHandler {
 	INSTANCE;
 
@@ -40,10 +40,8 @@ public enum ScreenShakeHandler {
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void onClientTick(TickEvent.ClientTickEvent event) {
-		if (event.phase == TickEvent.Phase.START) {
-			INSTANCE.tick();
-		}
+	public static void onClientTick(ClientTickEvent.Post event) {
+		INSTANCE.tick();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -54,7 +52,7 @@ public enum ScreenShakeHandler {
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void onPlayerLoggedOut(LoggingOut event) {
+	public static void onPlayerLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
 		INSTANCE.clear();
 	}
 

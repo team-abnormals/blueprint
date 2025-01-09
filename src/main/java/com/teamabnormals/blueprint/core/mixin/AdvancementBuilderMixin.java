@@ -3,13 +3,12 @@ package com.teamabnormals.blueprint.core.mixin;
 import com.google.gson.JsonObject;
 import com.teamabnormals.blueprint.core.events.AdvancementBuildingEvent;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+// TODO: Fix: Switch to Mixin for ServerAdvancementManager.apply() to modify immutable map when it is being constructed
 @Mixin(Advancement.Builder.class)
 public final class AdvancementBuilderMixin {
 

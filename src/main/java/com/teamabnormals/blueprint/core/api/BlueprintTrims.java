@@ -14,29 +14,27 @@ import net.minecraft.client.renderer.block.model.ItemOverride;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.item.armortrim.TrimPattern;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 
 import java.util.*;
-import java.util.function.BiFunction;
 
 /**
  * Class for managing Blueprint's Armor Trims API.
@@ -44,44 +42,45 @@ import java.util.function.BiFunction;
  *
  * @author SmellyModder (Luke Tonon)
  */
+// TODO: Test this
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(modid = Blueprint.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Blueprint.MOD_ID, value = Dist.CLIENT)
 public class BlueprintTrims {
-	public static final ResourceLocation ARMOR_TRIMS_ATLAS = new ResourceLocation("armor_trims");
-	private static final ResourceLocation PALETTE_KEY = new ResourceLocation("trims/color_palettes/trim_palette");
+	public static final ResourceLocation ARMOR_TRIMS_ATLAS = ResourceLocation.withDefaultNamespace("armor_trims");
+	private static final ResourceLocation PALETTE_KEY = ResourceLocation.withDefaultNamespace("trims/color_palettes/trim_palette");
 	private static final HashMap<String, ResourceLocation> PERMUTATIONS = Util.make(new HashMap<>(), map -> {
-		map.put("quartz", new ResourceLocation("trims/color_palettes/quartz"));
-		map.put("iron", new ResourceLocation("trims/color_palettes/iron"));
-		map.put("gold", new ResourceLocation("trims/color_palettes/gold"));
-		map.put("diamond", new ResourceLocation("trims/color_palettes/diamond"));
-		map.put("netherite", new ResourceLocation("trims/color_palettes/netherite"));
-		map.put("redstone", new ResourceLocation("trims/color_palettes/redstone"));
-		map.put("copper", new ResourceLocation("trims/color_palettes/copper"));
-		map.put("emerald", new ResourceLocation("trims/color_palettes/emerald"));
-		map.put("lapis", new ResourceLocation("trims/color_palettes/lapis"));
-		map.put("amethyst", new ResourceLocation("trims/color_palettes/amethyst"));
-		map.put("iron_darker", new ResourceLocation("trims/color_palettes/iron_darker"));
-		map.put("gold_darker", new ResourceLocation("trims/color_palettes/gold_darker"));
-		map.put("diamond_darker", new ResourceLocation("trims/color_palettes/diamond_darker"));
-		map.put("netherite_darker", new ResourceLocation("trims/color_palettes/netherite_darker"));
+		map.put("quartz", ResourceLocation.withDefaultNamespace("trims/color_palettes/quartz"));
+		map.put("iron", ResourceLocation.withDefaultNamespace("trims/color_palettes/iron"));
+		map.put("gold", ResourceLocation.withDefaultNamespace("trims/color_palettes/gold"));
+		map.put("diamond", ResourceLocation.withDefaultNamespace("trims/color_palettes/diamond"));
+		map.put("netherite", ResourceLocation.withDefaultNamespace("trims/color_palettes/netherite"));
+		map.put("redstone", ResourceLocation.withDefaultNamespace("trims/color_palettes/redstone"));
+		map.put("copper", ResourceLocation.withDefaultNamespace("trims/color_palettes/copper"));
+		map.put("emerald", ResourceLocation.withDefaultNamespace("trims/color_palettes/emerald"));
+		map.put("lapis", ResourceLocation.withDefaultNamespace("trims/color_palettes/lapis"));
+		map.put("amethyst", ResourceLocation.withDefaultNamespace("trims/color_palettes/amethyst"));
+		map.put("iron_darker", ResourceLocation.withDefaultNamespace("trims/color_palettes/iron_darker"));
+		map.put("gold_darker", ResourceLocation.withDefaultNamespace("trims/color_palettes/gold_darker"));
+		map.put("diamond_darker", ResourceLocation.withDefaultNamespace("trims/color_palettes/diamond_darker"));
+		map.put("netherite_darker", ResourceLocation.withDefaultNamespace("trims/color_palettes/netherite_darker"));
 	});
 	private static final List<ResourceLocation> ITEM_TRIMS = List.of(
-			new ResourceLocation("trims/items/helmet_trim"),
-			new ResourceLocation("trims/items/chestplate_trim"),
-			new ResourceLocation("trims/items/leggings_trim"),
-			new ResourceLocation("trims/items/boots_trim")
+			ResourceLocation.withDefaultNamespace("trims/items/helmet_trim"),
+			ResourceLocation.withDefaultNamespace("trims/items/chestplate_trim"),
+			ResourceLocation.withDefaultNamespace("trims/items/leggings_trim"),
+			ResourceLocation.withDefaultNamespace("trims/items/boots_trim")
 	);
-	public static final ResourceLocation TRIM_TYPE_PREDICATE_ID = new ResourceLocation(Blueprint.MOD_ID, "trim_type");
-	private static final IdentityHashMap<ResourceKey<TrimMaterial>, Map<ArmorMaterial, String>> TRIM_MATERIAL_ARMOR_MATERIAL_OVERRIDES = new IdentityHashMap<>();
+	public static final ResourceLocation TRIM_TYPE_PREDICATE_ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "trim_type");
 	private static final LinkedHashMap<ResourceKey<TrimMaterial>, Pair<TrimMaterial, Float>> GENERATED_OVERRIDE_INDICES = new LinkedHashMap<>();
 	private static final ArrayList<RevertibleOverrides> REVERTIBLE_OVERRIDES = new ArrayList<>();
 
 	public static void init() {
 		ItemProperties.registerGeneric(TRIM_TYPE_PREDICATE_ID, (stack, level, entity, num) -> {
 			if (stack.is(ItemTags.TRIMMABLE_ARMOR) && level != null) {
-				var trimMaterialHolder = ArmorTrim.getTrim(level.registryAccess(), stack).map(ArmorTrim::material);
-				if (trimMaterialHolder.isPresent()) {
-					var key = trimMaterialHolder.get().unwrapKey();
+				ArmorTrim armorTrim = stack.get(DataComponents.TRIM);
+				if (armorTrim != null) {
+					var trimMaterialHolder = armorTrim.material();
+					var key = trimMaterialHolder.unwrapKey();
 					if (key.isPresent()) {
 						var pair = GENERATED_OVERRIDE_INDICES.get(key.get());
 						if (pair != null) return pair.getSecond();
@@ -141,24 +140,9 @@ public class BlueprintTrims {
 		return new BlueprintPalettedPermutations(Either.right(ITEM_TRIMS), PALETTE_KEY, getPermutations(keys));
 	}
 
-	/**
-	 * Registers armor material overrides for a given Trim Material key.
-	 * <p>Vanilla's {@link TrimMaterial#overrideArmorMaterials()} does not support modded materials, but this overcomes that limitation.</p>
-	 *
-	 * @param key                    The {@link TrimMaterial} {@link ResourceKey} to register armor material overrides for.
-	 * @param overrideArmorMaterials The map of armor material overrides.
-	 */
-	public static synchronized void registerArmorMaterialOverrides(ResourceKey<TrimMaterial> key, Map<ArmorMaterial, String> overrideArmorMaterials) {
-		TRIM_MATERIAL_ARMOR_MATERIAL_OVERRIDES.put(key, overrideArmorMaterials);
-	}
-
-	public static Map<ArmorMaterial, String> getOverrideArmorMaterials(ResourceKey<TrimMaterial> key) {
-		return TRIM_MATERIAL_ARMOR_MATERIAL_OVERRIDES.get(key);
-	}
-
-	private static ModelResourceLocation generateModelLocation(String namespace, ResourceLocation itemName, String assetName, ArrayList<ItemOverride.Predicate> predicates) {
+	private static ResourceLocation generateModelOverrideLocation(String namespace, ResourceLocation itemName, String assetName, ArrayList<ItemOverride.Predicate> predicates) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("item/").append(itemName.getNamespace()).append('/').append(itemName.getPath()).append('_').append(assetName).append("_trim");
+		builder.append(itemName.getNamespace()).append('/').append(itemName.getPath()).append('_').append(assetName).append("_trim");
 		for (ItemOverride.Predicate predicate : predicates) {
 			builder.append('_').append(predicate.getProperty().getNamespace()).append('_');
 			String path = predicate.getProperty().getPath();
@@ -168,11 +152,11 @@ public class BlueprintTrims {
 			}
 			builder.append('_').append(predicate.getValue());
 		}
-		return new ModelResourceLocation(Blueprint.MOD_ID, builder.toString(), "inventory");
+		return ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, builder.toString());
 	}
 
-	private static ItemOverrides.BakedOverride createBakedOverride(ItemOverrides.PropertyMatcher[] matchers, ModelBakery bakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> textureGetter, ModelResourceLocation location) {
-		return new ItemOverrides.BakedOverride(matchers, bakery.new ModelBakerImpl(textureGetter, location).bake(location, BlockModelRotation.X0_Y0));
+	private static ItemOverrides.BakedOverride createBakedOverride(ItemOverrides.PropertyMatcher[] matchers, ModelBakery bakery, ModelBakery.TextureGetter textureGetter, ResourceLocation location, ResourceLocation unbakedLocation) {
+		return new ItemOverrides.BakedOverride(matchers, bakery.new ModelBakerImpl(textureGetter, ModelResourceLocation.inventory(location)).bake(unbakedLocation, BlockModelRotation.X0_Y0, textureGetter));
 	}
 
 	@SuppressWarnings({"deprecation", "unchecked"})
@@ -200,23 +184,21 @@ public class BlueprintTrims {
 		ModelManager modelManager = Minecraft.getInstance().getModelManager();
 		ModelBakery modelBakery = modelManager.getModelBakery();
 		var unbakedModels = modelBakery.unbakedCache;
-		BiFunction<ResourceLocation, Material, TextureAtlasSprite> textureGetter = (location, material) -> {
+		ModelBakery.TextureGetter textureGetter = (location, material) -> {
 			return modelManager.getAtlas(material.atlasLocation()).getSprite(material.texture());
 		};
 
 		// Curse technique
 		trimmableArmorTag.get().forEach(itemHolder -> {
-			if (!(itemHolder.get() instanceof ArmorItem armorItem)) return;
+			if (!(itemHolder.value() instanceof ArmorItem armorItem)) return;
 			var itemKeyOptional = itemHolder.unwrapKey();
 			if (itemKeyOptional.isEmpty()) return;
 			ResourceLocation itemName = itemKeyOptional.get().location();
-			ModelResourceLocation inventoryModelLocation = new ModelResourceLocation(itemName, "inventory");
-			BakedModel inventoryModel = modelManager.getModel(inventoryModelLocation);
-			ItemOverrides bakedModelOverrides = inventoryModel.getOverrides();
+			ItemOverrides bakedModelOverrides = modelManager.getModel(ModelResourceLocation.inventory(itemName)).getOverrides();
 			ItemOverrides.BakedOverride[] overrides = bakedModelOverrides.overrides;
 			int overridesLength = overrides.length;
 			if (overridesLength == 0) return;
-			UnbakedModel unbakedInventoryModel = unbakedModels.get(inventoryModelLocation);
+			UnbakedModel unbakedInventoryModel = unbakedModels.get(itemName.withPrefix("item/"));
 			if (!(unbakedInventoryModel instanceof BlockModel unbakedBlockModel)) return;
 			var unbakedOverrides = unbakedBlockModel.getOverrides();
 			if (unbakedOverrides.size() > overridesLength) return;
@@ -269,7 +251,7 @@ public class BlueprintTrims {
 			}
 			newProperties[oldLength] = TRIM_TYPE_PREDICATE_ID;
 			bakedModelOverrides.properties = newProperties;
-			ArmorMaterial armorMaterial = armorItem.getMaterial();
+			var armorMaterial = armorItem.getMaterial();
 			ItemOverrides.BakedOverride[] bakedOverridesToAdd = new ItemOverrides.BakedOverride[GENERATED_OVERRIDE_INDICES.size() * significantOverrides.size()];
 			int i = bakedOverridesToAdd.length;
 			for (var entry : GENERATED_OVERRIDE_INDICES.entrySet()) {
@@ -277,8 +259,7 @@ public class BlueprintTrims {
 				TrimMaterial trimMaterial = value.getFirst();
 				var trimMaterialKey = entry.getKey();
 				String trimMaterialNamespace = trimMaterialKey.location().getNamespace();
-				var armorMaterialOverrides = getOverrideArmorMaterials(trimMaterialKey);
-				String assetName = armorMaterialOverrides != null ? armorMaterialOverrides.getOrDefault(armorMaterial, trimMaterial.assetName()) : trimMaterial.assetName();
+				String assetName = trimMaterial.overrideArmorMaterials().getOrDefault(armorMaterial, trimMaterial.assetName());
 				float overrideIndex = value.getSecond();
 				ResourceLocation textureLocation = armorTrimTypeLocation.withSuffix("_" + assetName);
 				Either<Material, String> texture = Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, textureLocation));
@@ -301,10 +282,11 @@ public class BlueprintTrims {
 
 					var modelAndReplaceableTextures = significantOverride.getValue();
 					BlockModel model = modelAndReplaceableTextures.getFirst();
-					ModelResourceLocation modelResourceLocation = generateModelLocation(trimMaterialNamespace, itemName, assetName, predicates);
-					// If a resource pack wants to replace our generated models
-					if (unbakedModels.containsKey(modelResourceLocation)) {
-						bakedOverridesToAdd[--i] = createBakedOverride(matchers, modelBakery, textureGetter, modelResourceLocation);
+					ResourceLocation overrideLocation = generateModelOverrideLocation(trimMaterialNamespace, itemName, assetName, predicates);
+					ResourceLocation overrideModelLocation = overrideLocation.withPrefix("item/");
+					// When a resource pack wants to replace our generated models, skip the generating
+					if (unbakedModels.containsKey(overrideModelLocation)) {
+						bakedOverridesToAdd[--i] = createBakedOverride(matchers, modelBakery, textureGetter, overrideLocation, overrideModelLocation);
 						continue;
 					}
 
@@ -319,13 +301,13 @@ public class BlueprintTrims {
 						oldValues[j++] = oldValue;
 						textureMap.put(replaceableTexture, texture);
 					}
-					unbakedModels.put(modelResourceLocation, model);
-					bakedOverridesToAdd[--i] = createBakedOverride(matchers, modelBakery, textureGetter, modelResourceLocation);
+					unbakedModels.put(overrideModelLocation, model);
+					bakedOverridesToAdd[--i] = createBakedOverride(matchers, modelBakery, textureGetter, overrideLocation, overrideModelLocation);
 					// Undo texture modifications after we've performed a "permuted bake"
 					for (j = 0; j < replaceableTextures.size(); ) {
 						textureMap.put(replaceableTextures.get(j), oldValues[j++]);
 					}
-					unbakedModels.remove(modelResourceLocation);
+					unbakedModels.remove(overrideModelLocation);
 				}
 			}
 			// Copy bakedOverridesToAdd from its end to i and insert it before the existing bakedModelOverrides.overrides
@@ -372,8 +354,7 @@ public class BlueprintTrims {
 		modifyTrimmableItemModels(level.registryAccess());
 	}
 
-	private record RevertibleOverrides(ItemOverrides itemOverrides, ItemOverrides.BakedOverride[] overrides,
-									   ResourceLocation[] properties) {
+	private record RevertibleOverrides(ItemOverrides itemOverrides, ItemOverrides.BakedOverride[] overrides, ResourceLocation[] properties) {
 		private void revert() {
 			this.itemOverrides.overrides = this.overrides;
 			this.itemOverrides.properties = this.properties;

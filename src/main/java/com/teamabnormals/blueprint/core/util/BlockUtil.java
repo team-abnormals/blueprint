@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;

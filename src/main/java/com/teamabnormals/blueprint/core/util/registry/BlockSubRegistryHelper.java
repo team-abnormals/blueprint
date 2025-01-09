@@ -12,21 +12,21 @@ import com.teamabnormals.blueprint.common.block.sign.BlueprintStandingSignBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintWallHangingSignBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
 import com.teamabnormals.blueprint.common.item.BEWLRBlockItem;
-import com.teamabnormals.blueprint.common.item.BEWLRFuelBlockItem;
 import com.teamabnormals.blueprint.common.item.FuelBlockItem;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.concurrent.Callable;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
@@ -51,13 +51,12 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		this.itemRegister = itemRegister;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private static BEWLRBlockItem.LazyBEWLR chestBEWLR(boolean trapped) {
-		return trapped ? new BEWLRBlockItem.LazyBEWLR((dispatcher, entityModelSet) -> {
+	private static BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> chestBEWLR(boolean trapped) {
+		return trapped ? (dispatcher, entityModelSet) -> {
 			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintTrappedChestBlockEntity(BlockPos.ZERO, Blocks.TRAPPED_CHEST.defaultBlockState()));
-		}) : new BEWLRBlockItem.LazyBEWLR((dispatcher, entityModelSet) -> {
+		} : (dispatcher, entityModelSet) -> {
 			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()));
-		});
+		};
 	}
 
 	/**
@@ -119,6 +118,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @param burnTime How long the item will burn (measured in ticks).
 	 * @return A {@link DeferredHolder} containing the created {@link Block}.
 	 */
+	@Deprecated(forRemoval = true) // Use FURNACE_FUELS Data Map
 	public <B extends Block> DeferredHolder<Block, B> createFuelBlock(String name, Supplier<? extends B> supplier, int burnTime) {
 		DeferredHolder<Block, B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new FuelBlockItem(block.get(), burnTime, new Item.Properties()));
@@ -133,7 +133,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 * @param belwr    A supplier for getting the {@link BlockEntityWithoutLevelRenderer} for the {@link BlockItem}.
 	 * @return A {@link DeferredHolder} containing the created {@link Block}.
 	 */
-	public <B extends Block> DeferredHolder<Block, B> createBlockWithBEWLR(String name, Supplier<? extends B> supplier, Supplier<Callable<BEWLRBlockItem.LazyBEWLR>> belwr) {
+	public <B extends Block> DeferredHolder<Block, B> createBlockWithBEWLR(String name, Supplier<? extends B> supplier, Supplier<BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer>> belwr) {
 		DeferredHolder<Block, B> block = this.deferredRegister.register(name, supplier);
 		this.itemRegister.register(name, () -> new BEWLRBlockItem(block.get(), new Item.Properties(), belwr));
 		return block;
@@ -183,7 +183,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers {@link BlueprintChestBlock} with a {@link BEWLRFuelBlockItem}.
+	 * Creates and registers {@link BlueprintChestBlock} with a {@link BEWLRBlockItem}.
 	 *
 	 * @param name         The name for this {@link BlueprintChestBlock}.
 	 * @param materialName The name of the material used for this {@link BlueprintChestBlock}
@@ -194,12 +194,12 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String modId = this.parent.getModId();
 		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, materialName, false);
 		DeferredHolder<Block, BlueprintChestBlock> block = this.deferredRegister.register(name, () -> new BlueprintChestBlock(chestMaterialsName, properties));
-		this.itemRegister.register(name, () -> new BEWLRFuelBlockItem(block.get(), new Item.Properties(), () -> () -> chestBEWLR(false), 300));
+		this.itemRegister.register(name, () -> new BEWLRBlockItem(block.get(), new Item.Properties(), () -> chestBEWLR(false)));
 		return block;
 	}
 
 	/**
-	 * Creates and registers {@link BlueprintChestBlock} with a {@link BEWLRFuelBlockItem}.
+	 * Creates and registers {@link BlueprintChestBlock} with a {@link BEWLRBlockItem}.
 	 *
 	 * @param materialName The name of the material used for this {@link BlueprintChestBlock}
 	 * @param properties   The properties for this {@link BlueprintChestBlock}.
@@ -210,7 +210,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRFuelBlockItem}.
+	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRBlockItem}.
 	 *
 	 * @param name         The name for this {@link BlueprintTrappedChestBlock}.
 	 * @param materialName The name of the material used for this {@link BlueprintTrappedChestBlock}
@@ -221,12 +221,12 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String modId = this.parent.getModId();
 		DeferredHolder<Block, BlueprintTrappedChestBlock> block = this.deferredRegister.register(name, () -> new BlueprintTrappedChestBlock(modId + ":" + materialName + "_trapped", properties));
 		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, materialName, true);
-		this.itemRegister.register(name, () -> new BEWLRFuelBlockItem(block.get(), new Item.Properties(), () -> () -> chestBEWLR(true), 300));
+		this.itemRegister.register(name, () -> new BEWLRBlockItem(block.get(), new Item.Properties(), () -> chestBEWLR(true)));
 		return block;
 	}
 
 	/**
-	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRFuelBlockItem}.
+	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRBlockItem}.
 	 *
 	 * @param materialName The name of the material used for this {@link BlueprintTrappedChestBlock}
 	 * @param properties   The properties for this {@link BlueprintTrappedChestBlock}.

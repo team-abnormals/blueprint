@@ -1,7 +1,6 @@
 package com.teamabnormals.blueprint.common.world.modification;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
-import com.google.common.base.Suppliers;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.BlueprintConfig;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.*;
 
@@ -74,7 +74,7 @@ public final class ModdedBiomeSlicesManager {
 					if (size <= 0) size = defaultSize;
 					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForKey, size, seed, location.hashCode());
 					chunkGenerator.biomeSource = moddedBiomeSource;
-					chunkGenerator.featuresPerStep = Suppliers.memoize(() -> {
+					chunkGenerator.featuresPerStep = Lazy.of(() -> {
 						return FeatureSorter.buildFeaturesPerStep(List.copyOf(moddedBiomeSource.possibleBiomes()), (biomeHolder) -> {
 							return chunkGenerator.getBiomeGenerationSettings(biomeHolder).features();
 						}, true);

@@ -38,6 +38,7 @@
     "client.RabbitRendererMixin",
     "client.ReloadableResourceManagerMixin",
     "client.SkinCustomizationScreenMixin",
+    "client.SkinManagerMixin",
     "client.SplashManagerMixin"
   ],
   "injectors": {

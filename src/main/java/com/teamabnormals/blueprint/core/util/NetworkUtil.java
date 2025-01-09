@@ -14,8 +14,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
@@ -93,7 +91,6 @@ public final class NetworkUtil {
 	 *
 	 * @param setting The new slabfish hat setting(s).
 	 */
-	@OnlyIn(Dist.CLIENT)
 	public static void updateSlabfish(byte setting) {
 		if (ClientInfo.getClientPlayer() != null) PacketDistributor.sendToServer(new UpdateSlabfishHatPayload(setting));
 	}

@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.teamabnormals.blueprint.core.endimator.model.EndimatorPartPose;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 
 import java.util.List;
@@ -104,7 +104,7 @@ public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 	}
 
 	@Override
-	public void render(PoseStack pose, VertexConsumer consumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void render(PoseStack pose, VertexConsumer consumer, int packedLightIn, int packedOverlayIn, int rgba) {
 		if (this.visible) {
 			Map<String, ModelPart> children = this.children;
 			if (!this.cubes.isEmpty() || !children.isEmpty()) {
@@ -118,25 +118,25 @@ public class EndimatorModelPart extends ModelPart implements EndimatablePart {
 				if (this.scaleChildren) {
 					pose.translate(this.xOffset, this.yOffset, this.zOffset);
 					pose.scale(this.xScale, this.yScale, this.zScale);
-					this.compile(pose.last(), consumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+					this.compile(pose.last(), consumer, packedLightIn, packedOverlayIn, rgba);
 				} else {
 					pose.pushPose();
 					pose.translate(this.xOffset, this.yOffset, this.zOffset);
 					pose.scale(this.xScale, this.yScale, this.zScale);
-					this.compile(pose.last(), consumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+					this.compile(pose.last(), consumer, packedLightIn, packedOverlayIn, rgba);
 					pose.popPose();
 				}
 				for (ModelPart part : children.values()) {
-					part.render(pose, consumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+					part.render(pose, consumer, packedLightIn, packedOverlayIn, rgba);
 				}
 				pose.popPose();
 			}
 		}
 	}
 
-	private void compile(PoseStack.Pose pose, VertexConsumer consumer, int p_104293_, int p_104294_, float p_104295_, float p_104296_, float p_104297_, float p_104298_) {
+	private void compile(PoseStack.Pose pose, VertexConsumer consumer, int p_104293_, int p_104294_, int rgba) {
 		for (Cube cube : this.cubes) {
-			cube.compile(pose, consumer, p_104293_, p_104294_, p_104295_, p_104296_, p_104297_, p_104298_);
+			cube.compile(pose, consumer, p_104293_, p_104294_, rgba);
 		}
 	}
 

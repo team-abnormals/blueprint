@@ -16,7 +16,7 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -43,7 +43,7 @@ public final class BlueprintSplashManager extends SimplePreparableReloadListener
 	private IdentityHashMap<String, Splash> identifierToRandomSplash = new IdentityHashMap<>();
 
 	/**
-	 * Called in {@link Blueprint#Blueprint()} to add a listener for adding instances of {@link BlueprintSplashManager}.
+	 * Called to add a listener for adding instances of {@link BlueprintSplashManager}.
 	 * <p><b>This is for internal use only!</b></p>
 	 *
 	 * @param event A {@link RegisterClientReloadListenersEvent} instance.
@@ -88,12 +88,12 @@ public final class BlueprintSplashManager extends SimplePreparableReloadListener
 		LinkedList<Splash> eventSplashes = new LinkedList<>();
 		IdentityHashMap<String, Splash> identifierToRandomSplash = new IdentityHashMap<>();
 		for (String namespace : manager.getNamespaces()) {
-			ResourceLocation location = new ResourceLocation(namespace, PATH);
+			ResourceLocation location = ResourceLocation.fromNamespaceAndPath(namespace, PATH);
 			for (Resource resource : manager.getResourceStack(location)) {
 				try {
 					InputStream inputstream = resource.open();
 					Reader reader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8));
-					JsonElement element = GsonHelper.fromJson(GSON, reader, JsonElement.class);
+					JsonElement element = GsonHelper.fromNullableJson(GSON, reader, JsonElement.class, false);
 					if (element != null) {
 						var dataResult = Splash.LIST_CODEC.decode(JsonOps.INSTANCE, element);
 						var error = dataResult.error();

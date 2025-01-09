@@ -85,7 +85,7 @@ public class EntitySkinHelper<E extends Entity> {
 	}
 
 	private ResourceLocation createTextureLocation(String skin) {
-		return new ResourceLocation(this.modId, String.format(this.formattablePath, skin));
+		return ResourceLocation.fromNamespaceAndPath(this.modId, String.format(this.formattablePath, skin));
 	}
 
 	/**

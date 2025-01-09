@@ -5,7 +5,7 @@ import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.minecraftforge.client.event.RegisterShadersEvent;
+import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -24,10 +24,10 @@ public final class BlueprintShaders {
 	public static void registerShaders(RegisterShadersEvent event) {
 		try {
 			ResourceProvider resourceProvider = event.getResourceProvider();
-			event.registerShader(new ShaderInstance(resourceProvider, new ResourceLocation(Blueprint.MOD_ID, "rendertype_entity_unshaded_cutout"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
+			event.registerShader(new ShaderInstance(resourceProvider, ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "rendertype_entity_unshaded_cutout"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
 				rendertypeEntityUnshadedCutout = shaderInstance;
 			});
-			event.registerShader(new ShaderInstance(resourceProvider, new ResourceLocation(Blueprint.MOD_ID, "rendertype_entity_unshaded_translucent"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
+			event.registerShader(new ShaderInstance(resourceProvider, ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "rendertype_entity_unshaded_translucent"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
 				rendertypeEntityUnshadedTranslucent = shaderInstance;
 			});
 		} catch (IOException e) {

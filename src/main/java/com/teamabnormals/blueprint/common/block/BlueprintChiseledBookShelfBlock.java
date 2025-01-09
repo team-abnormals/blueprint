@@ -31,7 +31,7 @@ public class BlueprintChiseledBookShelfBlock extends ChiseledBookShelfBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+	public InteractionResult useItemOn(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 		if (blockEntity instanceof ChiseledBookShelfBlockEntity bookShelf) {
 			Optional<Vec2> optional = getRelativeHitCoordinatesForBlockFace(result, state.getValue(HorizontalDirectionalBlock.FACING));

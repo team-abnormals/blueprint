@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.teamabnormals.blueprint.client.renderer.SlabfishHatRenderLayer;
 import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
@@ -13,19 +12,16 @@ import com.teamabnormals.blueprint.core.sonar.OnlineRequest;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,14 +38,14 @@ import java.util.function.Supplier;
  *
  * @author Jackson
  */
-@Mod.EventBusSubscriber(modid = Blueprint.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Blueprint.MOD_ID, value = Dist.CLIENT)
 public final class RewardHandler {
 	public static final Map<UUID, RewardData> REWARDS = new HashMap<>();
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = new Gson();
 	private static final String REWARDS_URL = "https://api.minecraftabnormals.com/rewards.json";
-	private static final ResourceLocation CAPE_TEXTURE = new ResourceLocation(Blueprint.MOD_ID, "textures/abnormals_cape.png");
+	public static final ResourceLocation CAPE_TEXTURE = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "textures/abnormals_cape.png");
 
 	private static RewardProperties rewardProperties;
 
@@ -76,27 +72,13 @@ public final class RewardHandler {
 	public static void addLayers(EntityRenderersEvent.AddLayers event) {
 		event.getSkins().forEach(skin -> {
 			PlayerRenderer renderer = event.getSkin(skin);
-			renderer.addLayer(new SlabfishHatRenderLayer(renderer));
+			if (renderer != null) renderer.addLayer(new SlabfishHatRenderLayer(renderer));
 		});
 	}
 
 	@Nullable
 	public static RewardProperties getRewardProperties() {
 		return rewardProperties;
-	}
-
-	@SubscribeEvent
-	public static void onEvent(RenderPlayerEvent.Post event) {
-		Player player = event.getEntity();
-		UUID uuid = player.getGameProfile().getId();
-		if (REWARDS.containsKey(uuid) && REWARDS.get(uuid).getTier() >= 99) {
-			AbstractClientPlayer clientPlayer = (AbstractClientPlayer) player;
-			if (clientPlayer.isCapeLoaded() && clientPlayer.getCloakTextureLocation() == null) {
-				Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = clientPlayer.playerInfo.textureLocations;
-				playerTextures.put(MinecraftProfileTexture.Type.CAPE, CAPE_TEXTURE);
-				playerTextures.put(MinecraftProfileTexture.Type.ELYTRA, CAPE_TEXTURE);
-			}
-		}
 	}
 	
 	@SubscribeEvent
@@ -110,13 +92,13 @@ public final class RewardHandler {
 		BACKPACK(() -> BlueprintConfig.CLIENT.slabfishSettings.backpackEnabled),
 		TYPE(() -> BlueprintConfig.CLIENT.slabfishSettings.typeEnabled);
 
-		private final Supplier<ForgeConfigSpec.ConfigValue<Boolean>> configValue;
+		private final Supplier<ModConfigSpec.ConfigValue<Boolean>> configValue;
 
-		SlabfishSetting(Supplier<ForgeConfigSpec.ConfigValue<Boolean>> configValue) {
+		SlabfishSetting(Supplier<ModConfigSpec.ConfigValue<Boolean>> configValue) {
 			this.configValue = configValue;
 		}
 
-		public ForgeConfigSpec.ConfigValue<Boolean> getConfigValue() {
+		public ModConfigSpec.ConfigValue<Boolean> getConfigValue() {
 			return this.configValue.get();
 		}
 

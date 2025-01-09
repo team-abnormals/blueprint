@@ -4,6 +4,7 @@ import com.teamabnormals.blueprint.common.block.BlueprintFallingBlock;
 import com.teamabnormals.blueprint.core.events.FallingBlockEvent;
 import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
@@ -128,14 +129,14 @@ public class BlueprintFallingBlockEntity extends FallingBlockEntity implements I
 									if (this.blockData != null && this.blockState.hasBlockEntity()) {
 										BlockEntity blockentity = this.level().getBlockEntity(blockpos);
 										if (blockentity != null) {
-											CompoundTag compoundtag = blockentity.saveWithoutMetadata();
+											CompoundTag compoundtag = blockentity.saveWithoutMetadata(this.level().registryAccess());
 
 											for (String s : this.blockData.getAllKeys()) {
 												compoundtag.put(s, this.blockData.get(s).copy());
 											}
 
 											try {
-												blockentity.load(compoundtag);
+												blockentity.loadWithComponents(compoundtag, this.level().registryAccess());
 											} catch (Exception exception) {
 												LOGGER.error("Failed to load block entity from falling block", exception);
 											}

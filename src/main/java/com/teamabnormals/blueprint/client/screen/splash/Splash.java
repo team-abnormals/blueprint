@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.client.screen.splash;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.client.User;
 import net.minecraft.util.RandomSource;
 
@@ -43,5 +44,5 @@ public interface Splash {
 	 *
 	 * @return The {@link Codec} instance used for serializing this splash.
 	 */
-	Codec<? extends Splash> codec();
+	MapCodec<? extends Splash> codec();
 }

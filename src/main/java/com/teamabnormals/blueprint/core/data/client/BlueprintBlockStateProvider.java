@@ -8,6 +8,7 @@ import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.BlockFamily.Variant;
 import net.minecraft.data.PackOutput;
@@ -16,14 +17,9 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraftforge.client.model.generators.*;
-import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
-import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-
-import java.util.Map;
+import net.neoforged.neoforge.client.model.generators.*;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 
@@ -36,15 +32,15 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		this.blockItem(block);
 	}
 
-	public void block(RegistryObject<Block> block) {
+	public void block(DeferredHolder<Block, ?> block) {
 		this.block(block.get());
 	}
 
 	public void blockItem(Block block) {
-		this.simpleBlockItem(block, new ExistingModelFile(blockTexture(block), this.models().existingFileHelper));
+		this.simpleBlockItem(block, new ModelFile.ExistingModelFile(blockTexture(block), this.models().existingFileHelper));
 	}
 
-	public void blockItem(RegistryObject<Block> block) {
+	public void blockItem(DeferredHolder<Block, ?> block) {
 		this.blockItem(block.get());
 	}
 
@@ -57,64 +53,64 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 	}
 
 	public void generatedItem(ItemLike item, ResourceLocation texture) {
-		this.itemModels().withExistingParent(ForgeRegistries.ITEMS.getKey(item.asItem()).getPath(), "item/generated").texture("layer0", texture);
+		this.itemModels().withExistingParent(BuiltInRegistries.ITEM.getKey(item.asItem()).getPath(), "item/generated").texture("layer0", texture);
 	}
 
-	public void cubeBottomTopBlock(RegistryObject<Block> block) {
-		ResourceLocation name = ForgeRegistries.BLOCKS.getKey(block.get());
+	public void cubeBottomTopBlock(DeferredHolder<Block, ?> block) {
+		ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block.get());
 		this.cubeBottomTopBlock(block, prefix("block/", suffix(name, "_side")), prefix("block/", suffix(name, "_bottom")), prefix("block/", suffix(name, "_top")));
 	}
 
-	public void cubeBottomTopBlock(RegistryObject<Block> block, ResourceLocation sideTexture, ResourceLocation bottomTexture, ResourceLocation topTexture) {
+	public void cubeBottomTopBlock(DeferredHolder<Block, ?> block, ResourceLocation sideTexture, ResourceLocation bottomTexture, ResourceLocation topTexture) {
 		this.simpleBlock(block.get(), this.models().cubeBottomTop(name(block.get()), sideTexture, bottomTexture, topTexture));
 		this.blockItem(block);
 	}
 
-	public void cubeColumnBlock(RegistryObject<Block> block) {
-		ResourceLocation name = ForgeRegistries.BLOCKS.getKey(block.get());
+	public void cubeColumnBlock(DeferredHolder<Block, ?> block) {
+		ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block.get());
 		this.cubeColumnBlock(block, prefix("block/", name), prefix("block/", suffix(name, "_top")));
 	}
 
-	public void cubeColumnBlock(RegistryObject<Block> block, ResourceLocation sideTexture, ResourceLocation topTexture) {
+	public void cubeColumnBlock(DeferredHolder<Block, ?> block, ResourceLocation sideTexture, ResourceLocation topTexture) {
 		this.simpleBlock(block.get(), this.models().cubeColumn(name(block.get()), sideTexture, topTexture));
 		this.blockItem(block);
 	}
 
-	public void directionalBlock(RegistryObject<Block> block, ResourceLocation sideTexture, ResourceLocation bottomTexture, ResourceLocation topTexture) {
+	public void directionalBlock(DeferredHolder<Block, ?> block, ResourceLocation sideTexture, ResourceLocation bottomTexture, ResourceLocation topTexture) {
 		this.directionalBlock(block.get(), models().cubeBottomTop(name(block.get()), sideTexture, bottomTexture, topTexture));
 		this.blockItem(block);
 	}
 
-	public void directionalBlock(RegistryObject<Block> block) {
+	public void directionalBlock(DeferredHolder<Block, ?> block) {
 		ResourceLocation blockTexture = blockTexture(block.get());
 		this.directionalBlock(block, suffix(blockTexture, "_side"), suffix(blockTexture, "_bottom"), suffix(blockTexture, "_top"));
 	}
 
-	public void directionalBlockSharedSide(RegistryObject<Block> block, RegistryObject<Block> parent) {
+	public void directionalBlockSharedSide(DeferredHolder<Block, ?> block, DeferredHolder<Block, ?> parent) {
 		ResourceLocation parentTexture = blockTexture(parent.get());
 		this.directionalBlock(block, suffix(parentTexture, "_side"), suffix(parentTexture, "_bottom"), suffix(blockTexture(block.get()), "_top"));
 	}
 
-	public void directionalBlockSharedBottom(RegistryObject<Block> block, RegistryObject<Block> parent) {
+	public void directionalBlockSharedBottom(DeferredHolder<Block, ?> block, DeferredHolder<Block, ?> parent) {
 		ResourceLocation blockTexture = blockTexture(block.get());
 		this.directionalBlock(block, suffix(blockTexture, "_side"), suffix(blockTexture(parent.get()), "_bottom"), suffix(blockTexture, "_top"));
 	}
 
-	public void crossBlock(RegistryObject<Block> cross) {
+	public void crossBlock(DeferredHolder<Block, ?> cross) {
 		this.simpleBlock(cross.get(), models().cross(name(cross.get()), blockTexture(cross.get())));
 		this.generatedItem(cross.get(), "block");
 	}
 
-	public void crossBlockWithPot(RegistryObject<Block> cross, RegistryObject<Block> flowerPot, ResourceLocation potTexture) {
+	public void crossBlockWithPot(DeferredHolder<Block, ?> cross, DeferredHolder<Block, ?> flowerPot, ResourceLocation potTexture) {
 		this.crossBlock(cross);
-		this.simpleBlock(flowerPot.get(), models().singleTexture(name(flowerPot.get()), new ResourceLocation("block/flower_pot_cross"), "plant", potTexture));
+		this.simpleBlock(flowerPot.get(), models().singleTexture(name(flowerPot.get()), ResourceLocation.withDefaultNamespace("block/flower_pot_cross"), "plant", potTexture));
 	}
 
-	public void crossBlockWithPot(RegistryObject<Block> cross, RegistryObject<Block> flowerPot) {
+	public void crossBlockWithPot(DeferredHolder<Block, ?> cross, DeferredHolder<Block, ?> flowerPot) {
 		this.crossBlockWithPot(cross, flowerPot, blockTexture(cross.get()));
 	}
 
-	public void crossBlockWithCustomPot(RegistryObject<Block> cross, RegistryObject<Block> flowerPot) {
+	public void crossBlockWithCustomPot(DeferredHolder<Block, ?> cross, DeferredHolder<Block, ?> flowerPot) {
 		this.crossBlockWithPot(cross, flowerPot, blockTexture(flowerPot.get()));
 	}
 
@@ -139,11 +135,11 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		}
 	}
 
-	public void baseBlocks(RegistryObject<Block> block, RegistryObject<Block> stairs, RegistryObject<Block> slab) {
+	public void baseBlocks(DeferredHolder<Block, ?> block, DeferredHolder<Block, ?> stairs, DeferredHolder<Block, ?> slab) {
 		this.baseBlocks(block.get(), stairs.get(), slab.get(), null);
 	}
 
-	public void baseBlocks(RegistryObject<Block> block, RegistryObject<Block> stairs, RegistryObject<Block> slab, RegistryObject<Block> wall) {
+	public void baseBlocks(DeferredHolder<Block, ?> block, DeferredHolder<Block, ?> stairs, DeferredHolder<Block, ?> slab, DeferredHolder<Block, ?> wall) {
 		this.baseBlocks(block.get(), stairs.get(), slab.get(), wall.get());
 	}
 
@@ -196,7 +192,7 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		this.trapDoorBlock(trapdoor);
 	}
 
-	public void signBlocks(RegistryObject<Block> planks, Pair<RegistryObject<BlueprintStandingSignBlock>, RegistryObject<BlueprintWallSignBlock>> signs) {
+	public void signBlocks(DeferredHolder<Block, ?> planks, Pair<DeferredHolder<? extends BlueprintStandingSignBlock, ?>, DeferredHolder<? extends BlueprintWallSignBlock, ?>> signs) {
 		this.hangingSignBlocks(planks, signs.getFirst(), signs.getSecond());
 	}
 
@@ -209,11 +205,11 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		}
 	}
 
-	public void hangingSignBlocks(RegistryObject<Block> strippedLog, Pair<RegistryObject<BlueprintCeilingHangingSignBlock>, RegistryObject<BlueprintWallHangingSignBlock>> hangingSigns) {
+	public void hangingSignBlocks(DeferredHolder<Block, ?> strippedLog, Pair<DeferredHolder<? extends BlueprintCeilingHangingSignBlock, ?>, DeferredHolder<? extends BlueprintWallHangingSignBlock, ?>> hangingSigns) {
 		this.hangingSignBlocks(strippedLog, hangingSigns.getFirst(), hangingSigns.getSecond());
 	}
 
-	public void hangingSignBlocks(RegistryObject<Block> strippedLog, RegistryObject<? extends Block> sign, RegistryObject<? extends Block> wallSign) {
+	public void hangingSignBlocks(DeferredHolder<Block, ?> strippedLog, DeferredHolder<? extends Block, ?> sign, DeferredHolder<? extends Block, ?> wallSign) {
 		ModelFile model = particle(sign, blockTexture(strippedLog.get()));
 		this.simpleBlock(sign.get(), model);
 		this.generatedItem(sign.get(), "item");
@@ -248,18 +244,18 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		this.blockItem(block);
 	}
 
-	public void boardsBlock(RegistryObject<Block> boards) {
-		ModelFile boardsModel = models().getBuilder(name(boards.get())).parent(new UncheckedModelFile(new ResourceLocation(Blueprint.MOD_ID, "block/template_boards"))).texture("all", blockTexture(boards.get()));
-		ModelFile boardsHorizontalModel = models().getBuilder(name(boards.get()) + "_horizontal").parent(new UncheckedModelFile(new ResourceLocation(Blueprint.MOD_ID, "block/template_boards_horizontal"))).texture("all", blockTexture(boards.get()));
+	public void boardsBlock(DeferredHolder<Block, ?> boards) {
+		ModelFile boardsModel = models().getBuilder(name(boards.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "block/template_boards"))).texture("all", blockTexture(boards.get()));
+		ModelFile boardsHorizontalModel = models().getBuilder(name(boards.get()) + "_horizontal").parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "block/template_boards_horizontal"))).texture("all", blockTexture(boards.get()));
 		this.getVariantBuilder(boards.get()).partialState().with(RotatedPillarBlock.AXIS, Axis.Y).modelForState().modelFile(boardsModel).addModel().partialState().with(RotatedPillarBlock.AXIS, Axis.Z).modelForState().modelFile(boardsHorizontalModel).addModel().partialState().with(RotatedPillarBlock.AXIS, Axis.X).modelForState().modelFile(boardsHorizontalModel).rotationY(270).addModel();
 		this.blockItem(boards);
 	}
 
-	public void bookshelfBlock(RegistryObject<Block> planks, RegistryObject<Block> bookshelf) {
+	public void bookshelfBlock(DeferredHolder<Block, ?> planks, DeferredHolder<Block, ?> bookshelf) {
 		this.bookshelfBlock(planks.get(), bookshelf);
 	}
 
-	public void bookshelfBlock(Block planks, RegistryObject<Block> bookshelf) {
+	public void bookshelfBlock(Block planks, DeferredHolder<Block, ?> bookshelf) {
 		this.simpleBlock(bookshelf.get(), this.models().cubeColumn(name(bookshelf.get()), blockTexture(bookshelf.get()), blockTexture(planks)));
 		this.blockItem(bookshelf);
 	}
@@ -268,15 +264,15 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 	public static final String[] ALTERNATE_BOOKSHELF_POSITIONS = new String[]{"top_left", "top_right", "mid_left", "mid_right", "bottom_left", "bottom_right"};
 	public static final String[] BOTTOM_BOOKSHELF_POSITIONS = new String[]{"top_left", "top_right", "bottom_left", "bottom_mid_left", "bottom_mid_right", "bottom_right"};
 
-	public void chiseledBookshelfBlock(RegistryObject<Block> registryObject) {
-		chiseledBookshelfBlock(registryObject, DEFAULT_BOOKSHELF_POSITIONS, new ResourceLocation("template_chiseled_bookshelf"));
+	public void chiseledBookshelfBlock(DeferredHolder<Block, ?> registryObject) {
+		chiseledBookshelfBlock(registryObject, DEFAULT_BOOKSHELF_POSITIONS, ResourceLocation.withDefaultNamespace("template_chiseled_bookshelf"));
 	}
 
-	public void chiseledBookshelfBlock(RegistryObject<Block> registryObject, String[] parts) {
+	public void chiseledBookshelfBlock(DeferredHolder<Block, ?> registryObject, String[] parts) {
 		chiseledBookshelfBlock(registryObject, parts, blockTexture(registryObject.get()));
 	}
 
-	public void chiseledBookshelfBlock(RegistryObject<Block> registryObject, String[] parts, ResourceLocation parent) {
+	public void chiseledBookshelfBlock(DeferredHolder<Block, ?> registryObject, String[] parts, ResourceLocation parent) {
 		Block chiseledBookshelf = registryObject.get();
 		String name = name(chiseledBookshelf);
 		ResourceLocation texture = blockTexture(chiseledBookshelf);
@@ -303,24 +299,24 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		this.simpleBlockItem(chiseledBookshelf, this.models().withExistingParent(name + "_inventory", "block/chiseled_bookshelf_inventory").texture("top", texture + "_top").texture("side", texture + "_side").texture("front", texture + "_empty"));
 	}
 
-	public void ladderBlock(RegistryObject<Block> ladder) {
+	public void ladderBlock(DeferredHolder<Block, ?> ladder) {
 		this.horizontalBlock(ladder.get(), models().withExistingParent(name(ladder.get()), "block/ladder").texture("particle", blockTexture(ladder.get())).renderType("cutout").texture("texture", blockTexture(ladder.get())));
 		this.generatedItem(ladder.get(), "block");
 	}
 
-	public void chestBlocks(RegistryObject<Block> planks, RegistryObject<? extends Block> chest, RegistryObject<? extends Block> trappedChest) {
+	public void chestBlocks(DeferredHolder<Block, ?> planks, DeferredHolder<? extends Block, ?> chest, DeferredHolder<? extends Block, ?> trappedChest) {
 		this.chestBlocks(planks.get(), chest, trappedChest);
 	}
 
-	public void chestBlocks(Block planks, RegistryObject<? extends Block> chest, RegistryObject<? extends Block> trappedChest) {
+	public void chestBlocks(Block planks, DeferredHolder<? extends Block, ?> chest, DeferredHolder<? extends Block, ?> trappedChest) {
 		ModelFile model = particle(chest, blockTexture(planks));
 		this.simpleBlock(chest.get(), model);
 		this.simpleBlock(trappedChest.get(), model);
-		this.simpleBlockItem(chest.get(), new UncheckedModelFile(new ResourceLocation(Blueprint.MOD_ID, "item/template_chest")));
-		this.simpleBlockItem(trappedChest.get(), new UncheckedModelFile(new ResourceLocation(Blueprint.MOD_ID, "item/template_chest")));
+		this.simpleBlockItem(chest.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "item/template_chest")));
+		this.simpleBlockItem(trappedChest.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "item/template_chest")));
 	}
 
-	public void beehiveBlock(RegistryObject<Block> registryObject) {
+	public void beehiveBlock(DeferredHolder<Block, ?> registryObject) {
 		Block block = registryObject.get();
 		ModelFile beehive = models().orientableWithBottom(name(block), suffix(blockTexture(block), "_side"), suffix(blockTexture(block), "_front"), suffix(blockTexture(block), "_end"), suffix(blockTexture(block), "_end")).texture("particle", suffix(blockTexture(block), "_side"));
 		ModelFile beehiveHoney = models().orientableWithBottom(name(block) + "_honey", suffix(blockTexture(block), "_side"), suffix(blockTexture(block), "_front_honey"), suffix(blockTexture(block), "_end"), suffix(blockTexture(block), "_end")).texture("particle", suffix(blockTexture(block), "_side"));
@@ -328,49 +324,49 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		this.blockItem(block);
 	}
 
-	public void logBlocks(RegistryObject<Block> log, RegistryObject<Block> wood) {
+	public void logBlocks(DeferredHolder<Block, ?> log, DeferredHolder<Block, ?> wood) {
 		this.logBlock(log);
 		this.woodBlock(wood, log);
 	}
 
-	public void woodBlock(RegistryObject<Block> block, RegistryObject<Block> log) {
+	public void woodBlock(DeferredHolder<Block, ?> block, DeferredHolder<Block, ?> log) {
 		this.logBlock(block, blockTexture(log.get()), blockTexture(log.get()));
 	}
 
-	public void logBlock(RegistryObject<Block> block) {
+	public void logBlock(DeferredHolder<Block, ?> block) {
 		this.logBlock(block, blockTexture(block.get()), suffix(blockTexture(block.get()), "_top"));
 	}
 
-	public void logBlock(RegistryObject<Block> block, ResourceLocation sideTexture, ResourceLocation topTexture) {
+	public void logBlock(DeferredHolder<Block, ?> block, ResourceLocation sideTexture, ResourceLocation topTexture) {
 		if (block.get() instanceof RotatedPillarBlock log) {
 			this.axisBlock(log, sideTexture, topTexture);
 			this.blockItem(block);
 		}
 	}
 
-	public void leavesBlock(RegistryObject<Block> leaves) {
-		this.simpleBlock(leaves.get(), models().getBuilder(name(leaves.get())).parent(new UncheckedModelFile(new ResourceLocation("block/leaves"))).renderType("cutout_mipped").texture("all", blockTexture(leaves.get())));
+	public void leavesBlock(DeferredHolder<Block, ?> leaves) {
+		this.simpleBlock(leaves.get(), models().getBuilder(name(leaves.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.withDefaultNamespace("block/leaves"))).renderType("cutout_mipped").texture("all", blockTexture(leaves.get())));
 		this.blockItem(leaves);
 	}
 
-	public void leafPileBlock(RegistryObject<Block> leaves, RegistryObject<Block> leafPile) {
+	public void leafPileBlock(DeferredHolder<Block, ?> leaves, DeferredHolder<Block, ?> leafPile) {
 		this.leafPileBlock(leaves.get(), leafPile, true);
 	}
 
-	public void leafPileBlock(RegistryObject<Block> leaves, RegistryObject<Block> leafPile, boolean tint) {
+	public void leafPileBlock(DeferredHolder<Block, ?> leaves, DeferredHolder<Block, ?> leafPile, boolean tint) {
 		this.leafPileBlock(leaves.get(), leafPile, tint);
 	}
 
-	public void leafPileBlock(Block leaves, RegistryObject<Block> leafPile) {
+	public void leafPileBlock(Block leaves, DeferredHolder<Block, ?> leafPile) {
 		this.leafPileBlock(leaves, leafPile, true);
 	}
 
-	public void leafPileBlock(Block leaves, RegistryObject<Block> leafPile, boolean tint) {
+	public void leafPileBlock(Block leaves, DeferredHolder<Block, ?> leafPile, boolean tint) {
 		this.leafPileBlock(leafPile, blockTexture(leaves), tint);
 	}
 
-	public void leafPileBlock(RegistryObject<Block> leafPile, ResourceLocation texture, boolean tint) {
-		ModelFile leafPileModel = models().getBuilder(name(leafPile.get())).parent(new UncheckedModelFile(new ResourceLocation(Blueprint.MOD_ID, "block/" + (tint ? "tinted_" : "") + "leaf_pile"))).renderType("cutout").texture("all", texture);
+	public void leafPileBlock(DeferredHolder<Block, ?> leafPile, ResourceLocation texture, boolean tint) {
+		ModelFile leafPileModel = models().getBuilder(name(leafPile.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "block/" + (tint ? "tinted_" : "") + "leaf_pile"))).renderType("cutout").texture("all", texture);
 		MultiPartBlockStateBuilder builder = getMultipartBuilder(leafPile.get());
 		builder.part().modelFile(leafPileModel).rotationX(270).uvLock(true).addModel().condition(BlockStateProperties.UP, true);
 		builder.part().modelFile(leafPileModel).rotationX(270).uvLock(true).addModel().condition(BlockStateProperties.UP, false).condition(BlockStateProperties.NORTH, false).condition(BlockStateProperties.WEST, false).condition(BlockStateProperties.SOUTH, false).condition(BlockStateProperties.EAST, false).condition(BlockStateProperties.DOWN, false);
@@ -387,16 +383,16 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		this.generatedItem(leafPile.get(), texture);
 	}
 
-	public void leavesBlocks(RegistryObject<Block> leaves, RegistryObject<Block> leafPile) {
+	public void leavesBlocks(DeferredHolder<Block, ?> leaves, DeferredHolder<Block, ?> leafPile) {
 		this.leavesBlocks(leaves, leafPile, true);
 	}
 
-	public void leavesBlocks(RegistryObject<Block> leaves, RegistryObject<Block> leafPile, boolean tinted) {
+	public void leavesBlocks(DeferredHolder<Block, ?> leaves, DeferredHolder<Block, ?> leafPile, boolean tinted) {
 		this.leavesBlock(leaves);
 		this.leafPileBlock(leaves, leafPile, tinted);
 	}
 
-	public void ironBarsBlock(RegistryObject<Block> bars) {
+	public void ironBarsBlock(DeferredHolder<Block, ?> bars) {
 		this.ironBarsBlock(bars.get(), blockTexture(bars.get()));
 		this.generatedItem(bars.get(), "block");
 	}
@@ -416,7 +412,7 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 	}
 
 	public BlockModelBuilder ironBarsBlock(String name, String suffix, ResourceLocation barsTexture) {
-		return models().getBuilder(name + "_" + suffix).parent(new UncheckedModelFile(new ResourceLocation("block/iron_bars_" + suffix))).texture("particle", barsTexture);
+		return models().getBuilder(name + "_" + suffix).parent(new ModelFile.UncheckedModelFile(ResourceLocation.withDefaultNamespace("block/iron_bars_" + suffix))).texture("particle", barsTexture);
 	}
 
 	public void paneBlock(Block block, ModelFile post, ModelFile postEnds, ModelFile side, ModelFile sideAlt, ModelFile cap, ModelFile capAlt) {
@@ -440,7 +436,7 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		});
 	}
 
-	public void brushableBlock(RegistryObject<Block> registryObject) {
+	public void brushableBlock(DeferredHolder<Block, ?> registryObject) {
 		Block block = registryObject.get();
 		ModelFile[] models = new ModelFile[4];
 		for (int i = 0; i < 4; i++) {
@@ -454,27 +450,27 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		return this.models().getBuilder(name(block)).texture("particle", texture);
 	}
 
-	public ModelFile particle(RegistryObject<? extends Block> block, ResourceLocation texture) {
+	public ModelFile particle(DeferredHolder<? extends Block, ?> block, ResourceLocation texture) {
 		return this.particle(block.get(), texture);
 	}
 
 	public static String name(Block block) {
-		return ForgeRegistries.BLOCKS.getKey(block).getPath();
+		return BuiltInRegistries.BLOCK.getKey(block).getPath();
 	}
 
 	public static ResourceLocation prefix(String prefix, ResourceLocation rl) {
-		return new ResourceLocation(rl.getNamespace(), prefix + rl.getPath());
+		return ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), prefix + rl.getPath());
 	}
 
 	public static ResourceLocation suffix(ResourceLocation rl, String suffix) {
-		return new ResourceLocation(rl.getNamespace(), rl.getPath() + suffix);
+		return ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath() + suffix);
 	}
 
 	public static ResourceLocation remove(ResourceLocation rl, String remove) {
-		return new ResourceLocation(rl.getNamespace(), rl.getPath().replace(remove, ""));
+		return ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath().replace(remove, ""));
 	}
 
-	public void woodworksBlocks(Block planks, RegistryObject<Block> boards, RegistryObject<Block> ladder, RegistryObject<Block> bookshelf, RegistryObject<Block> beehive, RegistryObject<? extends Block> chest, RegistryObject<? extends Block> trappedChest) {
+	public void woodworksBlocks(Block planks, DeferredHolder<Block, ?> boards, DeferredHolder<Block, ?> ladder, DeferredHolder<Block, ?> bookshelf, DeferredHolder<Block, ?> beehive, DeferredHolder<? extends Block, ?> chest, DeferredHolder<? extends Block, ?> trappedChest) {
 		this.boardsBlock(boards);
 		this.ladderBlock(ladder);
 		this.beehiveBlock(beehive);
@@ -482,7 +478,7 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		this.chestBlocks(planks, chest, trappedChest);
 	}
 
-	public void woodworksBlocks(RegistryObject<Block> planks, RegistryObject<Block> boards, RegistryObject<Block> ladder, RegistryObject<Block> bookshelf, RegistryObject<Block> beehive, RegistryObject<? extends Block> chest, RegistryObject<? extends Block> trappedChest) {
+	public void woodworksBlocks(DeferredHolder<Block, ?> planks, DeferredHolder<Block, ?> boards, DeferredHolder<Block, ?> ladder, DeferredHolder<Block, ?> bookshelf, DeferredHolder<Block, ?> beehive, DeferredHolder<? extends Block, ?> chest, DeferredHolder<? extends Block, ?> trappedChest) {
 		this.woodworksBlocks(planks.get(), boards, ladder, bookshelf, beehive, chest, trappedChest);
 	}
 

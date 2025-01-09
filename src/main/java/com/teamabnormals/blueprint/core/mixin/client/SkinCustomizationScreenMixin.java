@@ -5,17 +5,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.SkinCustomizationScreen;
+import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+import net.minecraft.client.gui.screens.options.SkinCustomizationScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+// TODO: Fix
 @Mixin(SkinCustomizationScreen.class)
-public final class SkinCustomizationScreenMixin extends OptionsSubScreen {
+public abstract class SkinCustomizationScreenMixin extends OptionsSubScreen {
 
 	private SkinCustomizationScreenMixin(Screen previousScreen, Options gameSettingsObj, Component textComponent) {
 		super(previousScreen, gameSettingsObj, textComponent);

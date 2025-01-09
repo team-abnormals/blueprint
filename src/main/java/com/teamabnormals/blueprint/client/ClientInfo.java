@@ -10,15 +10,13 @@ import net.minecraft.world.level.Level;
  * @author SmellyModder(Luke Tonon)
  */
 public final class ClientInfo {
-	public static final Minecraft MINECRAFT = Minecraft.getInstance();
-
 	/**
 	 * Gets the partial ticks of the client.
 	 *
 	 * @return The partial ticks of the client.
 	 */
 	public static float getPartialTicks() {
-		return MINECRAFT.isPaused() ? MINECRAFT.pausePartialTick : MINECRAFT.getFrameTime();
+		return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
 	}
 
 	/**
@@ -27,7 +25,7 @@ public final class ClientInfo {
 	 * @return The {@link LocalPlayer} entity.
 	 */
 	public static LocalPlayer getClientPlayer() {
-		return MINECRAFT.player;
+		return Minecraft.getInstance().player;
 	}
 
 	/**

@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 /**
  * An {@link Item} extension that stores a specified burn time for the item.
  */
+@Deprecated(forRemoval = true) // Use FURNACE_FUELS Data Map
 public class FuelItem extends Item {
 	private final int burnTime;
 

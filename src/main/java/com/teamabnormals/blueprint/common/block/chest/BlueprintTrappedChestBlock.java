@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * A {@link ChestBlock} extension used for Blueprint's trapped chests.
  */
-@SuppressWarnings("deprecation")
 public class BlueprintTrappedChestBlock extends ChestBlock implements IChestBlock {
 	public final String type;
 

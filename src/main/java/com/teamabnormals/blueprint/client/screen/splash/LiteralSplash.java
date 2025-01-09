@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.client.screen.splash;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.User;
 import net.minecraft.util.RandomSource;
@@ -12,7 +13,7 @@ import net.minecraft.util.RandomSource;
  * @author SmellyModder (Luke Tonon)
  */
 public record LiteralSplash(String text) implements Splash {
-	public static final Codec<LiteralSplash> CODEC = RecordCodecBuilder.create(instance -> {
+	public static final MapCodec<LiteralSplash> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
 				Codec.STRING.fieldOf("text").forGetter(splash -> splash.text)
 		).apply(instance, LiteralSplash::new);
@@ -29,7 +30,7 @@ public record LiteralSplash(String text) implements Splash {
 	}
 
 	@Override
-	public Codec<? extends Splash> codec() {
+	public MapCodec<? extends Splash> codec() {
 		return CODEC;
 	}
 }

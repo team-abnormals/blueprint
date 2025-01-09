@@ -9,7 +9,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Locale;
 
@@ -34,7 +34,7 @@ public class SlabfishHatScreen extends Screen {
 		int i = 0;
 
 		for (SlabfishSetting setting : RewardHandler.SlabfishSetting.values()) {
-			ForgeConfigSpec.ConfigValue<Boolean> configValue = setting.getConfigValue();
+			ModConfigSpec.ConfigValue<Boolean> configValue = setting.getConfigValue();
 
 			Button settingButton = Button.builder(this.getOptionName(setting, configValue.get()), (button) -> {
 				boolean enabled = !configValue.get();
@@ -59,7 +59,7 @@ public class SlabfishHatScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(guiGraphics);
+		this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
 		guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 16777215);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}

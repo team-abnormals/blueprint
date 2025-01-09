@@ -10,8 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -41,7 +39,6 @@ import java.util.concurrent.TimeUnit;
  * @author Ocelot
  * @since 3.1.0
  */
-@OnlyIn(Dist.CLIENT)
 public class OnlineImageCache {
 	private static final Logger LOGGER = LogManager.getLogger();
 

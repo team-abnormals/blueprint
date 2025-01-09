@@ -144,8 +144,7 @@ public final class Blueprint {
 			bus.addListener(RewardHandler::clientSetup);
 			bus.addListener(RewardHandler::addLayers);
 			bus.addListener(BlueprintShaders::registerShaders);
-
-			BlueprintSpriteSources.register();
+			bus.addListener(BlueprintSpriteSources::register);
 		}
 
 		bus.addListener(BlueprintDataPackRegistries::registerRegistries);

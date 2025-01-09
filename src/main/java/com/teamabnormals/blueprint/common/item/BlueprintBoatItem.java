@@ -2,18 +2,20 @@ package com.teamabnormals.blueprint.common.item;
 
 import com.teamabnormals.blueprint.common.entity.BlueprintBoat;
 import com.teamabnormals.blueprint.common.entity.BlueprintChestBoat;
+import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.Item;
@@ -34,6 +36,7 @@ import java.util.function.Predicate;
  *
  * @author SmellyModder (Luke Tonon)
  */
+// TODO: Test this
 public class BlueprintBoatItem extends Item {
 	private static final Predicate<Entity> COLLISION_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
 	private final boolean hasChest;
@@ -100,30 +103,36 @@ public class BlueprintBoatItem extends Item {
 		}
 
 		public ItemStack execute(BlockSource source, ItemStack stack) {
-			Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-			Level level = source.getLevel();
-			double x = source.x() + (double) ((float) direction.getStepX() * 1.125f);
-			double y = source.y() + (double) ((float) direction.getStepY() * 1.125f);
-			double z = source.z() + (double) ((float) direction.getStepZ() * 1.125f);
-			BlockPos pos = source.getPos().relative(direction);
-			double adjustY;
-			if (level.getFluidState(pos).is(FluidTags.WATER)) {
-				adjustY = 1d;
+			Direction direction = source.state().getValue(DispenserBlock.FACING);
+			ServerLevel serverlevel = source.level();
+			Vec3 vec3 = source.center();
+			double d0 = 0.5625 + (double) BlueprintEntityTypes.BOAT.get().getWidth() / 2.0;
+			double d1 = vec3.x() + (double)direction.getStepX() * d0;
+			double d2 = vec3.y() + (double)((float)direction.getStepY() * 1.125F);
+			double d3 = vec3.z() + (double)direction.getStepZ() * d0;
+			BlockPos blockpos = source.pos().relative(direction);
+			Boat boat = this.hasChest ? new BlueprintChestBoat(serverlevel, this.type, d1, d2, d3) : new BlueprintBoat(serverlevel, this.type, d1, d2, d3);
+			EntityType.<Boat>createDefaultStackConfig(serverlevel, stack, null).accept(boat);
+			boat.setYRot(direction.toYRot());
+			double d4;
+			if (boat.canBoatInFluid(serverlevel.getFluidState(blockpos))) {
+				d4 = 1.0;
 			} else {
-				if (!level.getBlockState(pos).isAir() || !level.getFluidState(pos.below()).is(FluidTags.WATER)) {
+				if (!serverlevel.getBlockState(blockpos).isAir() || !boat.canBoatInFluid(serverlevel.getFluidState(blockpos.below()))) {
 					return this.defaultDispenseItemBehavior.dispense(source, stack);
 				}
-				adjustY = 0d;
+
+				d4 = 0.0;
 			}
-			Boat boat = this.hasChest ? new BlueprintChestBoat(level, this.type, x, y + adjustY, z) : new BlueprintBoat(level, this.type, x, y + adjustY, z);
-			boat.setYRot(direction.toYRot());
-			level.addFreshEntity(boat);
+
+			boat.setPos(d1, d2 + d4, d3);
+			serverlevel.addFreshEntity(boat);
 			stack.shrink(1);
 			return stack;
 		}
 
 		protected void playSound(BlockSource source) {
-			source.getLevel().levelEvent(1000, source.getPos(), 0);
+			source.level().levelEvent(1000, source.pos(), 0);
 		}
 	}
 }

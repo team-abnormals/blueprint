@@ -7,15 +7,12 @@ import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Map;
 
 /**
  * The entity renderer responsible for the rendering of Blueprint's boat entities.
  */
-@OnlyIn(Dist.CLIENT)
 public class BlueprintBoatRenderer extends BoatRenderer {
 	private final Map<BlueprintBoatTypes.BlueprintBoatType, Pair<ResourceLocation, ListModel<Boat>>> boatResources;
 

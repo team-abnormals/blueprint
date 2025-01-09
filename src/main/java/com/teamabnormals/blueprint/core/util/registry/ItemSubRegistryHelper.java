@@ -63,6 +63,7 @@ public class ItemSubRegistryHelper extends AbstractSubRegistryHelper<Item> {
 	 * @param burnTime How long the item will burn (measured in ticks).
 	 * @return The created {@link FuelItem}.
 	 */
+	@Deprecated(forRemoval = true) // Use FURNACE_FUELS Data Map
 	public static FuelItem createFuelItem(int burnTime) {
 		return new FuelItem(burnTime, new Item.Properties());
 	}
