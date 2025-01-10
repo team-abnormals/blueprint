@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
+public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> implements Cloneable {
 	public Set<BlockPos> logPositions;
 	public Set<BlockPos> foliagePositions;
 
@@ -46,6 +46,10 @@ public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
 
 	@Override
 	public boolean place(FeaturePlaceContext<TreeConfiguration> context) {
+		return this.clone().place0(context);
+	}
+
+	private boolean place0(FeaturePlaceContext<TreeConfiguration> context) {
 		TreeConfiguration config = context.config();
 		WorldGenLevel level = context.level();
 		RandomSource random = context.random();
@@ -164,4 +168,13 @@ public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
 			level.setBlock(pos, config.dirtProvider.getState(random, pos), 19);
 		}
 	}
+
+    @Override
+    public BlueprintTreeFeature clone() {
+        try {
+            return (BlueprintTreeFeature) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }
