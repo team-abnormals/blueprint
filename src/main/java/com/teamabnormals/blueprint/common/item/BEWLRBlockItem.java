@@ -18,6 +18,8 @@ import java.util.function.Supplier;
  *
  * @author SmellyModder (Luke Tonon)
  */
+@Deprecated(forRemoval = true)
+// TODO: Examine during server testing
 public class BEWLRBlockItem extends BlockItem {
 	private final Supplier<BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer>> bewlrFactory;
 

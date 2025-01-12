@@ -2,6 +2,7 @@ package com.teamabnormals.blueprint.core.util.registry;
 
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.client.BlueprintChestMaterials;
+import com.teamabnormals.blueprint.client.MemoizedBEWLR;
 import com.teamabnormals.blueprint.client.renderer.block.ChestBlockEntityWithoutLevelRenderer;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
@@ -23,9 +24,15 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.HashMap;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -37,6 +44,7 @@ import java.util.function.Supplier;
  */
 public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	protected final DeferredRegister<Item> itemRegister;
+	protected final HashMap<DeferredHolder<? extends Item, ?>, IClientItemExtensions> clientItemExtensions = new HashMap<>();
 
 	public BlockSubRegistryHelper(RegistryHelper parent) {
 		this(parent, parent.getSubHelper(Registries.ITEM).getDeferredRegister(), DeferredRegister.create(Registries.BLOCK, parent.getModId()));
@@ -51,12 +59,25 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		this.itemRegister = itemRegister;
 	}
 
-	private static BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> chestBEWLR(boolean trapped) {
-		return trapped ? (dispatcher, entityModelSet) -> {
+	@Override
+	public void register(IEventBus eventBus) {
+		super.register(eventBus);
+		if (FMLEnvironment.dist == Dist.CLIENT) {
+			eventBus.addListener((RegisterClientExtensionsEvent event) -> {
+				this.clientItemExtensions.forEach((holder, extensions) -> {
+					event.registerItem(extensions, holder.get());
+				});
+				this.clientItemExtensions.clear();
+			});
+		}
+	}
+
+	private static IClientItemExtensions chestBEWLRItemExtensions(boolean trapped) {
+		return MemoizedBEWLR.asCustomItemRenderer(trapped ? (dispatcher, entityModelSet) -> {
 			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintTrappedChestBlockEntity(BlockPos.ZERO, Blocks.TRAPPED_CHEST.defaultBlockState()));
 		} : (dispatcher, entityModelSet) -> {
 			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()));
-		};
+		});
 	}
 
 	/**
@@ -135,7 +156,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	 */
 	public <B extends Block> DeferredHolder<Block, B> createBlockWithBEWLR(String name, Supplier<? extends B> supplier, Supplier<BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer>> belwr) {
 		DeferredHolder<Block, B> block = this.deferredRegister.register(name, supplier);
-		this.itemRegister.register(name, () -> new BEWLRBlockItem(block.get(), new Item.Properties(), belwr));
+		var item = this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+		if (FMLEnvironment.dist == Dist.CLIENT) {
+			this.clientItemExtensions.put(item, MemoizedBEWLR.asCustomItemRenderer(belwr.get()));
+		}
 		return block;
 	}
 
@@ -194,7 +218,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String modId = this.parent.getModId();
 		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, materialName, false);
 		DeferredHolder<Block, BlueprintChestBlock> block = this.deferredRegister.register(name, () -> new BlueprintChestBlock(chestMaterialsName, properties));
-		this.itemRegister.register(name, () -> new BEWLRBlockItem(block.get(), new Item.Properties(), () -> chestBEWLR(false)));
+		var item = this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+		if (FMLEnvironment.dist == Dist.CLIENT) {
+			this.clientItemExtensions.put(item, chestBEWLRItemExtensions(false));
+		}
 		return block;
 	}
 
@@ -221,7 +248,10 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		String modId = this.parent.getModId();
 		DeferredHolder<Block, BlueprintTrappedChestBlock> block = this.deferredRegister.register(name, () -> new BlueprintTrappedChestBlock(modId + ":" + materialName + "_trapped", properties));
 		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, materialName, true);
-		this.itemRegister.register(name, () -> new BEWLRBlockItem(block.get(), new Item.Properties(), () -> chestBEWLR(true)));
+		var item = this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+		if (FMLEnvironment.dist == Dist.CLIENT) {
+			this.clientItemExtensions.put(item, chestBEWLRItemExtensions(true));
+		}
 		return block;
 	}
 

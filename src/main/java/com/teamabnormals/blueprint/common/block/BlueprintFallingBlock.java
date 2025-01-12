@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.common.block;
 
+import com.mojang.serialization.MapCodec;
 import com.teamabnormals.blueprint.common.entity.BlueprintFallingBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -12,9 +13,15 @@ import net.minecraft.world.level.block.state.BlockState;
  * The block turns into a {@link BlueprintFallingBlockEntity} when it falls.
  */
 public class BlueprintFallingBlock extends FallingBlock {
+	private static final MapCodec<BlueprintFallingBlock> CODEC = simpleCodec(BlueprintFallingBlock::new);
 
 	public BlueprintFallingBlock(Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<? extends FallingBlock> codec() {
+		return CODEC;
 	}
 
 	@Override

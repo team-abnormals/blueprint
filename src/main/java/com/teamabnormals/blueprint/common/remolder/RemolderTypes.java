@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.remolder;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.teamabnormals.blueprint.common.remolder.data.DynamicReference;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public final class RemolderTypes {
-	static final BasicRegistry<Codec<? extends Remolder>> REGISTRY = new BasicRegistry<>();
+	static final BasicRegistry<MapCodec<? extends Remolder>> REGISTRY = new BasicRegistry<>();
 
 	static {
 		REGISTRY.register("replace", ReplaceRemolder.CODEC);
@@ -23,7 +23,7 @@ public final class RemolderTypes {
 		REGISTRY.register("sequence", SequenceRemolder.CODEC);
 	}
 
-	public static synchronized void register(ResourceLocation name, Codec<? extends Remolder> codec) {
+	public static synchronized void register(ResourceLocation name, MapCodec<? extends Remolder> codec) {
 		REGISTRY.register(name, codec);
 	}
 

@@ -5,28 +5,28 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
  * A {@link RotatedPillarBlock} extension that fills its item after the latest vanilla log item.
  */
 public class LogBlock extends RotatedPillarBlock {
-	private final Supplier<Block> block;
+	private final Supplier<Block> strippedBlock;
 
 	public LogBlock(Supplier<Block> strippedBlock, Properties properties) {
 		super(properties);
-		this.block = strippedBlock;
+		this.strippedBlock = strippedBlock;
 	}
 
 	@Override
 	@Nullable
-	public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction action, boolean simulate) {
-		if (action == ToolActions.AXE_STRIP)
-			return this.block != null ? BlockUtil.transferAllBlockStates(state, this.block.get().defaultBlockState()) : null;
-		return super.getToolModifiedState(state, context, action, simulate);
+	public BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility itemAbility, boolean simulate) {
+		if (ItemAbilities.AXE_STRIP == itemAbility)
+			return this.strippedBlock != null ? BlockUtil.transferAllBlockStates(state, this.strippedBlock.get().defaultBlockState()) : null;
+		return super.getToolModifiedState(state, context, itemAbility, simulate);
 	}
 }

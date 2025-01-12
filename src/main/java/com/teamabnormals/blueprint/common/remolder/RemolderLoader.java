@@ -14,7 +14,6 @@ import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSele
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.EmptyResourceSelector;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.CloseableResourceManager;
 import net.minecraft.server.packs.resources.Resource;
@@ -34,27 +33,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Class used for wrapping {@link CloseableResourceManager} instances to alter their resources using Remolders.
+ * Class used for internal storage, reloading, and applying of remolders from packs.
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class RemoldedResourceManager implements CloseableResourceManager {
+public final class RemolderLoader {
 	private static final Gson GSON = new Gson();
-	@Nullable
-	private static RemoldedResourceManager CLIENT;
-	@Nullable
-	private static RemoldedResourceManager SERVER;
 	private final HashMap<String, IdentityHashMap<MoldingTypes.MoldingType<?>, Pair<Map<String, List<Entry>>, ArrayList<Pair<Predicate<ResourceLocation>, Entry>>>>> fileExtensionToEntries = new HashMap<>();
-	private final CloseableResourceManager manager;
 	private final RemoldingCompiler compiler;
 	private final PackType packType;
 	private final boolean needsAutoReload;
 
-	private RemoldedResourceManager(CloseableResourceManager manager, PackType packType, boolean needsAutoReload) {
-		this.manager = manager;
+	public RemolderLoader(CloseableResourceManager manager, PackType packType, boolean needsAutoReload) {
 		this.packType = packType;
 		RemoldingCompiler.ExportEntry[] exports;
-		try (Reader reader = manager.getResourceOrThrow(new ResourceLocation(Blueprint.MOD_ID, "remolder.json")).openAsReader()) {
+		try (Reader reader = manager.getResourceOrThrow(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "remolder.json")).openAsReader()) {
 			JsonElement element = GsonHelper.fromJson(GSON, reader, JsonElement.class);
 			var dataResult = Settings.CODEC.decode(JsonOps.INSTANCE, element);
 			var dataResultError = dataResult.error();
@@ -68,33 +61,16 @@ public final class RemoldedResourceManager implements CloseableResourceManager {
 		this.needsAutoReload = needsAutoReload;
 	}
 
-	public static RemoldedResourceManager wrapForClient(CloseableResourceManager manager) {
-		return CLIENT = new RemoldedResourceManager(manager, PackType.CLIENT_RESOURCES, true);
-	}
-
-	public static RemoldedResourceManager wrapForServer(CloseableResourceManager manager, boolean shouldAutoReload) {
-		return SERVER = new RemoldedResourceManager(manager, PackType.SERVER_DATA, shouldAutoReload);
-	}
-
-	@Nullable
-	public static RemoldedResourceManager client() {
-		return CLIENT;
-	}
-
-	@Nullable
-	public static RemoldedResourceManager server() {
-		return SERVER;
-	}
-
+	// TODO: Possibly remove after testing
 	public boolean needsAutoReload() {
 		return this.needsAutoReload;
 	}
 
-	public void reloadRemolders(Executor executor) {
+	public void reloadRemolders(CloseableResourceManager manager, Executor executor) {
 		var fileExtensionToEntries = this.fileExtensionToEntries;
 		fileExtensionToEntries.clear();
 		FileToIdConverter fileToIdConverter = FileToIdConverter.json("remolders");
-		var resources = fileToIdConverter.listMatchingResources(this.manager);
+		var resources = fileToIdConverter.listMatchingResources(manager);
 		ArrayList<CompletableFuture<Void>> futures = new ArrayList<>(resources.size());
 		String packTypeDirectory = this.packType.getDirectory() + "/";
 		AtomicInteger successfulCount = new AtomicInteger();
@@ -102,7 +78,7 @@ public final class RemoldedResourceManager implements CloseableResourceManager {
 			futures.add(CompletableFuture.runAsync(() -> {
 				ResourceLocation entryKey = entry.getKey();
 				ResourceLocation entryId = fileToIdConverter.fileToId(entryKey);
-				entryKey = new ResourceLocation(entryKey.getNamespace(), packTypeDirectory + entryKey.getPath());
+				entryKey = ResourceLocation.fromNamespaceAndPath(entryKey.getNamespace(), packTypeDirectory + entryKey.getPath());
 				try (Reader reader = entry.getValue().openAsReader()) {
 					JsonElement element = GsonHelper.fromJson(GSON, reader, JsonElement.class);
 					var remolderEntryDataResult = RemolderEntry.CODEC.decode(JsonOps.INSTANCE, element);
@@ -158,7 +134,7 @@ public final class RemoldedResourceManager implements CloseableResourceManager {
 			var entriesForExtension = this.fileExtensionToEntries.get(extension);
 			if (entriesForExtension != null) {
 				String locationWithoutExtension = locationString.substring(0, lastIndexOfDot);
-				ResourceLocation resourceLocationWithoutExtension = new ResourceLocation(locationWithoutExtension);
+				ResourceLocation resourceLocationWithoutExtension = ResourceLocation.parse(locationWithoutExtension);
 				boolean foundNone = true;
 				Pair<MoldingTypes.MoldingType<?>, List<Entry>>[] typeEntries = new Pair[entriesForExtension.size()];
 				int i = 0;
@@ -191,21 +167,19 @@ public final class RemoldedResourceManager implements CloseableResourceManager {
 		return null;
 	}
 
-	@Override
-	public Set<String> getNamespaces() {
-		return this.manager.getNamespaces();
+	public Optional<Resource> getResource(ResourceLocation location, Optional<Resource> resource) {
+		var function = this.getResourceFunction(location);
+		if (function == null) return resource;
+		return resource.map(function);
 	}
 
-	@Override
-	public List<Resource> getResourceStack(ResourceLocation location) {
+	public List<Resource> getResourceStack(List<Resource> stack, ResourceLocation location) {
 		Function<Resource, Resource> resourceFunction = this.getResourceFunction(location);
-		if (resourceFunction == null) return this.manager.getResourceStack(location);
-		return new DataUtil.ReadMappedList<>(this.manager.getResourceStack(location), resourceFunction);
+		if (resourceFunction == null) return stack;
+		return new DataUtil.ReadMappedList<>(stack, resourceFunction);
 	}
 
-	@Override
-	public Map<ResourceLocation, Resource> listResources(String path, Predicate<ResourceLocation> locationFilter) {
-		var map = this.manager.listResources(path, locationFilter);
+	public Map<ResourceLocation, Resource> listResources(Map<ResourceLocation, Resource> map) {
 		for (var entry : map.entrySet()) {
 			Function<Resource, Resource> resourceFunction = this.getResourceFunction(entry.getKey());
 			if (resourceFunction == null) continue;
@@ -214,32 +188,13 @@ public final class RemoldedResourceManager implements CloseableResourceManager {
 		return map;
 	}
 
-	@Override
-	public Map<ResourceLocation, List<Resource>> listResourceStacks(String path, Predicate<ResourceLocation> locationFilter) {
-		var map = this.manager.listResourceStacks(path, locationFilter);
+	public Map<ResourceLocation, List<Resource>> listResourceStacks(Map<ResourceLocation, List<Resource>> map) {
 		for (var entry : map.entrySet()) {
 			Function<Resource, Resource> resourceFunction = this.getResourceFunction(entry.getKey());
 			if (resourceFunction == null) continue;
 			entry.setValue(new DataUtil.ReadMappedList<>(entry.getValue(), resourceFunction));
 		}
 		return map;
-	}
-
-	@Override
-	public Stream<PackResources> listPacks() {
-		return this.manager.listPacks();
-	}
-
-	@Override
-	public Optional<Resource> getResource(ResourceLocation location) {
-		var function = this.getResourceFunction(location);
-		if (function == null) return this.manager.getResource(location);
-		return this.manager.getResource(location).map(function);
-	}
-
-	@Override
-	public void close() {
-		this.manager.close();
 	}
 
 	public record Settings(RemoldingCompiler.ExportEntry[] exports) {

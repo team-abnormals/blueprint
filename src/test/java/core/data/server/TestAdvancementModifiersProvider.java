@@ -8,10 +8,7 @@ import com.teamabnormals.blueprint.core.util.modification.selection.selectors.Mu
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
 import core.BlueprintTest;
 import core.registry.TestTriggers;
-import net.minecraft.advancements.critereon.FilledBucketTrigger;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MobEffectsPredicate;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
@@ -21,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.Optional.of;
@@ -40,8 +38,8 @@ public final class TestAdvancementModifiersProvider extends AdvancementModifierP
 
 		this.entry("balanced_diet")
 				.selects("husbandry/balanced_diet")
-				.addModifier(new ParentModifier(new ResourceLocation("end/root")))
-				.addModifier(new RewardsModifier(AdvancementModifier.Mode.MODIFY, of(100000), of(List.of(new ResourceLocation("chests/jungle_temple"))), empty(), empty()))
+				.addModifier(new ParentModifier(ResourceLocation.withDefaultNamespace("end/root")))
+				.addModifier(new RewardsModifier(AdvancementModifier.Mode.MODIFY, of(100000), of(List.of(ResourceLocation.withDefaultNamespace("chests/jungle_temple"))), empty(), empty()))
 				.addModifier(DisplayInfoModifier.builder().title(Component.translatable("blueprint_test.advancements.husbandry.balanced_diet.title")).description(Component.literal("Momma.")).frame(FrameType.CHALLENGE).build())
 				.addModifier(CriteriaModifier.builder(this.modId).addCriterion("test", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHERITE_SWORD)).requirements(RequirementsStrategy.AND).build());
 
@@ -55,7 +53,7 @@ public final class TestAdvancementModifiersProvider extends AdvancementModifierP
 
 		this.entry("obtain_netherite_hoe")
 				.selects("husbandry/obtain_netherite_hoe")
-				.addModifier(CriteriaModifier.builder(this.modId).addCriterion("test", TestTriggers.EMPTY_TEST.createInstance()).requirements(RequirementsStrategy.AND).shouldReplaceRequirements(true).build());
+				.addModifier(CriteriaModifier.builder(this.modId).addCriterion("test", TestTriggers.EMPTY_TEST.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()))).requirements(RequirementsStrategy.AND).shouldReplaceRequirements(true).build());
 
 		this.entry("story_stuff")
 				.selector(

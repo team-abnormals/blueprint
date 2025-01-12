@@ -1,18 +1,18 @@
 package com.teamabnormals.blueprint.common.advancement.modification.modifiers;
 
-import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModifierSerializers;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.storage.loot.LootTable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,52 +21,29 @@ import java.util.Optional;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public record RewardsModifier(Mode mode, Optional<Integer> experience, Optional<List<ResourceLocation>> loot, Optional<List<ResourceLocation>> recipes, Optional<ResourceLocation> function) implements AdvancementModifier<RewardsModifier> {
-
-	private static JsonArray serializeResourceList(List<ResourceLocation> resources) {
-		JsonArray array = new JsonArray();
-		resources.forEach(resourceLocation -> array.add(resourceLocation.toString()));
-		return array;
-	}
-
-	private static Optional<List<ResourceLocation>> deserializeResourceList(JsonObject object, String key) {
-		if (GsonHelper.isValidNode(object, key)) {
-			List<ResourceLocation> resourceLocations = Lists.newArrayList();
-			object.getAsJsonArray(key).forEach(element -> resourceLocations.add(new ResourceLocation(element.getAsString())));
-			return Optional.of(resourceLocations);
-		}
-		return Optional.empty();
-	}
-
+public record RewardsModifier(boolean replaces, Optional<Integer> experience, Optional<List<ResourceKey<LootTable>>> loot, Optional<List<ResourceLocation>> recipes, Optional<ResourceLocation> function) implements AdvancementModifier<RewardsModifier> {
 	@Override
 	public void modify(Advancement.Builder builder) {
-		if (this.mode == Mode.MODIFY) {
+		if (!this.replaces) {
 			AdvancementRewards rewards = builder.rewards;
 			AdvancementRewards.Builder rewardsBuilder = new AdvancementRewards.Builder();
-			rewardsBuilder.addExperience(rewards.experience);
-			rewardsBuilder.loot.addAll(Arrays.asList(rewards.loot));
-			for (ResourceLocation recipe : rewards.recipes) {
-				rewardsBuilder.addRecipe(recipe);
+			rewardsBuilder.addExperience(this.experience.orElse(rewards.experience()));
+			rewards.loot().forEach(rewardsBuilder::addLootTable);
+			rewards.recipes().forEach(rewardsBuilder::addRecipe);
+			this.loot.ifPresent(loot -> loot.forEach(rewardsBuilder::addLootTable));
+			this.recipes.ifPresent(recipes -> recipes.forEach(rewardsBuilder::addRecipe));
+			if (this.function.isPresent()) {
+				rewardsBuilder.runs(this.function.get());
+			} else if (rewards.function().isPresent()) {
+				rewardsBuilder.runs(rewards.function().get().getId());
 			}
-			rewardsBuilder.function = rewards.function.getId();
-
-			this.experience.ifPresent(rewardsBuilder::addExperience);
-			this.loot.ifPresent(rewardsBuilder.loot::addAll);
-			this.recipes.ifPresent(rewardsBuilder.recipes::addAll);
-			this.function.ifPresent(function -> rewardsBuilder.function = function);
 			builder.rewards(rewardsBuilder);
 		} else {
 			AdvancementRewards.Builder rewardsBuilder = new AdvancementRewards.Builder();
 			this.experience.ifPresent(rewardsBuilder::addExperience);
-			this.loot.ifPresent(loot -> {
-				rewardsBuilder.loot.clear();
-				rewardsBuilder.loot.addAll(loot);
-			});
-			this.recipes.ifPresent(recipes -> {
-				rewardsBuilder.recipes.clear();
-				rewardsBuilder.recipes.addAll(recipes);
-			});
-			this.function.ifPresent(function -> rewardsBuilder.function = function);
+			this.loot.ifPresent(loot -> loot.forEach(rewardsBuilder::addLootTable));
+			this.recipes.ifPresent(recipes -> recipes.forEach(rewardsBuilder::addRecipe));
+			this.function.ifPresent(rewardsBuilder::runs);
 			builder.rewards(rewardsBuilder);
 		}
 	}
@@ -77,27 +54,30 @@ public record RewardsModifier(Mode mode, Optional<Integer> experience, Optional<
 	}
 
 	public static final class Serializer implements AdvancementModifier.Serializer<RewardsModifier> {
+		private static final Codec<RewardsModifier> CODEC = RecordCodecBuilder.create(
+				instance -> instance.group(
+						Codec.BOOL.optionalFieldOf("replaces", false).forGetter(RewardsModifier::replaces),
+						Codec.INT.optionalFieldOf("experience").forGetter(RewardsModifier::experience),
+						ResourceKey.codec(Registries.LOOT_TABLE).listOf().optionalFieldOf("loot").forGetter(RewardsModifier::loot),
+						ResourceLocation.CODEC.listOf().optionalFieldOf("recipes").forGetter(RewardsModifier::recipes),
+						ResourceLocation.CODEC.optionalFieldOf("function").forGetter(RewardsModifier::function)
+				).apply(instance, RewardsModifier::new)
+		);
+
 		@Override
-		public JsonElement serialize(RewardsModifier modifier, Void additional) throws JsonParseException {
-			JsonObject object = new JsonObject();
-			modifier.mode.serialize(object);
-			modifier.experience.ifPresent(experience -> object.addProperty("experience", experience));
-			modifier.loot.ifPresent(loot -> object.add("loot", serializeResourceList(loot)));
-			modifier.recipes.ifPresent(recipes -> object.add("recipes", serializeResourceList(recipes)));
-			modifier.function.ifPresent(function -> object.addProperty("function", function.toString()));
-			return object;
+		public JsonElement serialize(RewardsModifier modifier, RegistryOps<JsonElement> ops) throws JsonParseException {
+			var result = CODEC.encodeStart(ops, modifier);
+			var error = result.error();
+			if (error.isPresent()) throw new JsonParseException(error.get().message());
+			return result.result().get();
 		}
 
 		@Override
-		public RewardsModifier deserialize(JsonElement element, DeserializationContext additional) throws JsonParseException {
-			JsonObject object = element.getAsJsonObject();
-			Mode mode = Mode.deserialize(object);
-			Optional<Integer> experience = GsonHelper.isValidNode(object, "experience") ? Optional.of(GsonHelper.getAsInt(object, "experience")) : Optional.empty();
-			Optional<List<ResourceLocation>> loot = deserializeResourceList(object, "loot");
-			Optional<List<ResourceLocation>> recipes = deserializeResourceList(object, "recipes");
-			Optional<ResourceLocation> function = GsonHelper.isValidNode(object, "function") ? Optional.of(new ResourceLocation(GsonHelper.getAsString(object, "function"))) : Optional.empty();
-			return new RewardsModifier(mode, experience, loot, recipes, function);
+		public RewardsModifier deserialize(JsonElement element, RegistryOps<JsonElement> ops) throws JsonParseException {
+			var result = CODEC.decode(ops, element);
+			var error = result.error();
+			if (error.isPresent()) throw new JsonParseException(error.get().message());
+			return result.result().get().getFirst();
 		}
 	}
-
 }

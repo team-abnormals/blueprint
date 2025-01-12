@@ -1,16 +1,15 @@
 package core.registry;
 
-import com.teamabnormals.blueprint.common.advancement.EmptyTrigger;
 import core.BlueprintTest;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID)
+@EventBusSubscriber(modid = BlueprintTest.MOD_ID)
 public final class TestTriggers {
-	public static final EmptyTrigger EMPTY_TEST = CriteriaTriggers.register(new EmptyTrigger(prefix("empty_test")));
+	public static final PlayerTrigger EMPTY_TEST = CriteriaTriggers.register(prefix("empty_test"), new PlayerTrigger());
 
-	private static ResourceLocation prefix(String name) {
-		return new ResourceLocation(BlueprintTest.MOD_ID, name);
+	private static String prefix(String name) {
+		return BlueprintTest.MOD_ID + ":" + name;
 	}
 }

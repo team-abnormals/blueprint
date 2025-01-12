@@ -21,7 +21,7 @@ license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 [[dependencies.blueprint]]
     modId = "neoforge"
     type = "required"
-    versionRange = "[21.0.38-beta,)"
+    versionRange = "[21.0.167,)"
     ordering = "NONE"
     side = "BOTH"
 

@@ -5,7 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
-import com.teamabnormals.blueprint.common.remolder.RemoldedResourceManager;
+import com.teamabnormals.blueprint.common.remolder.RemolderLoader;
 import com.teamabnormals.blueprint.common.remolder.Remolding;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
@@ -78,14 +78,14 @@ public final class MoldingTypes {
 		}
 
 		@SuppressWarnings("unchecked")
-		public Resource remold(String location, Resource resource, List<RemoldedResourceManager.Entry> entries) {
+		public Resource remold(String location, Resource resource, List<RemolderLoader.Entry> entries) {
 			T root = this.deserializer().apply(resource);
 			if (root == null) return resource;
 			String pack = resource.sourcePackId();
 			DynamicOps<T> ops = this.ops;
 			T metadata = getMetadata(resource, ops);
 			Pair<T, T> result;
-			for (RemoldedResourceManager.Entry entry : entries) {
+			for (RemolderLoader.Entry entry : entries) {
 				if (!entry.packFilter().test(pack)) continue;
 				try {
 					result = ((Remolding<T>) entry.remolding()).apply(ops, root, metadata, ops.emptyMap());

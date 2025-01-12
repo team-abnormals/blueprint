@@ -1,26 +1,19 @@
 package com.teamabnormals.blueprint.common.advancement.modification.modifiers;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModifierSerializers;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 
 /**
@@ -28,12 +21,7 @@ import java.util.Optional;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional<Component> description, Optional<ItemStack> icon, Optional<ResourceLocation> background, Optional<FrameType> frame, Optional<Boolean> showToast, Optional<Boolean> announceToChat, Optional<Boolean> hidden) implements AdvancementModifier<DisplayInfoModifier> {
-	private static final Field DISPLAY_INFO_FIELD = ObfuscationReflectionHelper.findField(Advancement.Builder.class, "f_138334_");
-	private static final Field ICON_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14960_");
-	private static final Field BACKGROUND_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14961_");
-	private static final Field SHOW_TOAST_FIELD = ObfuscationReflectionHelper.findField(DisplayInfo.class, "f_14963_");
-
+public record DisplayInfoModifier(boolean replaces, Optional<ItemStack> icon, Optional<Component> title, Optional<Component> description, Optional<ResourceLocation> background, Optional<AdvancementType> type, Optional<Boolean> showToast, Optional<Boolean> announceToChat, Optional<Boolean> hidden) implements AdvancementModifier<DisplayInfoModifier> {
 	/**
 	 * Creates a new {@link Builder} instance to simplify creation of {@link DisplayInfoModifier} instances.
 	 *
@@ -43,47 +31,23 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 		return new Builder();
 	}
 
-	private static ItemStack deserializeIcon(JsonObject object) {
-		if (!object.has("item")) {
-			throw new JsonSyntaxException("Unsupported icon type, currently only items are supported (add 'item' key)");
-		} else {
-			Item item = GsonHelper.getAsItem(object, "item");
-			if (object.has("data")) {
-				throw new JsonParseException("Disallowed data tag found");
-			} else {
-				ItemStack stack = new ItemStack(item);
-				if (object.has("nbt")) {
-					try {
-						CompoundTag nbt = TagParser.parseTag(GsonHelper.convertToString(object.get("nbt"), "nbt"));
-						stack.setTag(nbt);
-					} catch (CommandSyntaxException syntax) {
-						throw new JsonSyntaxException("Invalid nbt tag: " + syntax.getMessage());
-					}
-				}
-				return stack;
-			}
-		}
-	}
-
 	@Override
 	public void modify(Advancement.Builder builder) {
-		if (this.mode == Mode.MODIFY) {
-			try {
-				DisplayInfo displayInfo = (DisplayInfo) DISPLAY_INFO_FIELD.get(builder);
-				Component title = this.title.orElse(displayInfo.getTitle());
-				Component description = this.description.orElse(displayInfo.getDescription());
-				ItemStack icon = this.icon.orElse((ItemStack) ICON_FIELD.get(displayInfo));
-				ResourceLocation background = this.background.orElse((ResourceLocation) BACKGROUND_FIELD.get(displayInfo));
-				FrameType frameType = this.frame.orElse(displayInfo.getFrame());
-				boolean showToast = this.showToast.orElse(SHOW_TOAST_FIELD.getBoolean(displayInfo));
-				boolean announceToChat = this.announceToChat.orElse(displayInfo.shouldAnnounceChat());
-				boolean hidden = this.hidden.orElse(displayInfo.isHidden());
-				builder.display(new DisplayInfo(icon, title, description, background, frameType, showToast, announceToChat, hidden));
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
+		var display = builder.display;
+		if (display.isPresent() && !this.replaces) {
+			DisplayInfo displayInfo = display.get();
+			Component title = this.title.orElse(displayInfo.getTitle());
+			Component description = this.description.orElse(displayInfo.getDescription());
+			ItemStack icon = this.icon.orElse(displayInfo.getIcon());
+			var prevBackground = displayInfo.getBackground();
+			Optional<ResourceLocation> background = prevBackground.isPresent() ? Optional.of(this.background.orElse(prevBackground.get())) : this.background;
+			AdvancementType advancementType = this.type.orElse(displayInfo.getType());
+			boolean showToast = this.showToast.orElse(displayInfo.shouldShowToast());
+			boolean announceToChat = this.announceToChat.orElse(displayInfo.shouldAnnounceChat());
+			boolean hidden = this.hidden.orElse(displayInfo.isHidden());
+			builder.display(new DisplayInfo(icon, title, description, background, advancementType, showToast, announceToChat, hidden));
 		} else {
-			builder.display(new DisplayInfo(this.icon.orElse(ItemStack.EMPTY), this.title.orElse(Component.empty()), this.description.orElse(Component.empty()), this.background.orElse(null), this.frame.orElse(FrameType.TASK), this.showToast.orElse(true), this.announceToChat.orElse(true), this.hidden.orElse(false)));
+			builder.display(new DisplayInfo(this.icon.orElse(ItemStack.EMPTY), this.title.orElse(Component.empty()), this.description.orElse(Component.empty()), this.background, this.type.orElse(AdvancementType.TASK), this.showToast.orElse(true), this.announceToChat.orElse(true), this.hidden.orElse(false)));
 		}
 	}
 
@@ -93,41 +57,35 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 	}
 
 	public static final class Serializer implements AdvancementModifier.Serializer<DisplayInfoModifier> {
+		private static final Codec<DisplayInfoModifier> CODEC = RecordCodecBuilder.create(
+				instance -> instance.group(
+								Codec.BOOL.optionalFieldOf("replaces", false).forGetter(DisplayInfoModifier::replaces),
+								ItemStack.STRICT_CODEC.optionalFieldOf("icon").forGetter(DisplayInfoModifier::icon),
+								ComponentSerialization.CODEC.optionalFieldOf("title").forGetter(DisplayInfoModifier::title),
+								ComponentSerialization.CODEC.optionalFieldOf("description").forGetter(DisplayInfoModifier::description),
+								ResourceLocation.CODEC.optionalFieldOf("background").forGetter(DisplayInfoModifier::background),
+								AdvancementType.CODEC.optionalFieldOf("frame").forGetter(DisplayInfoModifier::type),
+								Codec.BOOL.optionalFieldOf("show_toast").forGetter(DisplayInfoModifier::showToast),
+								Codec.BOOL.optionalFieldOf("announce_to_chat").forGetter(DisplayInfoModifier::announceToChat),
+								Codec.BOOL.optionalFieldOf("hidden").forGetter(DisplayInfoModifier::hidden)
+						)
+						.apply(instance, DisplayInfoModifier::new)
+		);
+
 		@Override
-		public JsonElement serialize(DisplayInfoModifier modifier, Void additional) throws JsonParseException {
-			JsonObject jsonObject = new JsonObject();
-			modifier.mode.serialize(jsonObject);
-			modifier.title.ifPresent(title -> jsonObject.add("title", Component.Serializer.toJsonTree(title)));
-			modifier.description.ifPresent(description -> jsonObject.add("description", Component.Serializer.toJsonTree(description)));
-			modifier.icon.ifPresent(icon -> {
-				JsonObject iconObject = new JsonObject();
-				iconObject.addProperty("item", ForgeRegistries.ITEMS.getKey(icon.getItem()).toString());
-				if (icon.hasTag()) {
-					iconObject.addProperty("nbt", icon.getTag().toString());
-				}
-				jsonObject.add("icon", iconObject);
-			});
-			modifier.background.ifPresent(background -> jsonObject.addProperty("background", background.toString()));
-			modifier.frame.ifPresent(frame -> jsonObject.addProperty("frame", frame.getName()));
-			modifier.showToast.ifPresent(showToast -> jsonObject.addProperty("show_toast", showToast));
-			modifier.announceToChat.ifPresent(announceToChat -> jsonObject.addProperty("announce_to_chat", announceToChat));
-			modifier.hidden.ifPresent(hidden -> jsonObject.addProperty("hidden", hidden));
-			return jsonObject;
+		public JsonElement serialize(DisplayInfoModifier modifier, RegistryOps<JsonElement> ops) throws JsonParseException {
+			var result = CODEC.encodeStart(ops, modifier);
+			var error = result.error();
+			if (error.isPresent()) throw new JsonParseException(error.get().message());
+			return result.result().get();
 		}
 
 		@Override
-		public DisplayInfoModifier deserialize(JsonElement element, DeserializationContext additional) throws JsonParseException {
-			JsonObject object = element.getAsJsonObject();
-			Mode mode = Mode.deserialize(object);
-			Optional<Component> title = GsonHelper.isValidNode(object, "title") ? Optional.ofNullable(Component.Serializer.fromJson(object.get("title"))) : Optional.empty();
-			Optional<Component> description = GsonHelper.isValidNode(object, "description") ? Optional.ofNullable(Component.Serializer.fromJson(object.get("description"))) : Optional.empty();
-			Optional<ItemStack> icon = GsonHelper.isValidNode(object, "icon") ? Optional.of(deserializeIcon(GsonHelper.getAsJsonObject(object, "icon"))) : Optional.empty();
-			Optional<ResourceLocation> background = GsonHelper.isValidNode(object, "background") ? Optional.of(new ResourceLocation(GsonHelper.getAsString(object, "background"))) : Optional.empty();
-			Optional<FrameType> frameType = GsonHelper.isValidNode(object, "frame") ? Optional.of(FrameType.byName(GsonHelper.getAsString(object, "frame"))) : Optional.empty();
-			Optional<Boolean> showToast = GsonHelper.isValidNode(object, "show_toast") ? Optional.of(GsonHelper.getAsBoolean(object, "show_toast")) : Optional.empty();
-			Optional<Boolean> announceToChat = GsonHelper.isValidNode(object, "announce_to_chat") ? Optional.of(GsonHelper.getAsBoolean(object, "announce_to_chat")) : Optional.empty();
-			Optional<Boolean> hidden = GsonHelper.isValidNode(object, "hidden") ? Optional.of(GsonHelper.getAsBoolean(object, "hidden")) : Optional.empty();
-			return new DisplayInfoModifier(mode, title, description, icon, background, frameType, showToast, announceToChat, hidden);
+		public DisplayInfoModifier deserialize(JsonElement element, RegistryOps<JsonElement> ops) throws JsonParseException {
+			var result = CODEC.decode(ops, element);
+			var error = result.error();
+			if (error.isPresent()) throw new JsonParseException(error.get().message());
+			return result.result().get().getFirst();
 		}
 	}
 
@@ -138,12 +96,12 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 	 * @author SmellyModder (Luke Tonon)
 	 */
 	public static final class Builder {
-		private Mode mode = Mode.MODIFY;
+		private boolean replace;
 		private Optional<Component> title = Optional.empty();
 		private Optional<Component> description = Optional.empty();
 		private Optional<ItemStack> icon = Optional.empty();
 		private Optional<ResourceLocation> background = Optional.empty();
-		private Optional<FrameType> frame = Optional.empty();
+		private Optional<AdvancementType> type = Optional.empty();
 		private Optional<Boolean> showToast = Optional.empty();
 		private Optional<Boolean> announceToChat = Optional.empty();
 		private Optional<Boolean> hidden = Optional.empty();
@@ -151,13 +109,13 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 		private Builder() {}
 
 		/**
-		 * Updates the {@link #mode}.
+		 * Updates the {@link #replaces}.
 		 *
-		 * @param mode A {@link Mode} value to use.
+		 * @param replace Whether to replace during the modification.
 		 * @return This builder.
 		 */
-		public Builder mode(Mode mode) {
-			this.mode = mode;
+		public Builder replace(boolean replace) {
+			this.replace = replace;
 			return this;
 		}
 
@@ -206,13 +164,13 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 		}
 
 		/**
-		 * Updates the {@link #frame}.
+		 * Updates the {@link #type}.
 		 *
-		 * @param frame A {@link FrameType} value to use as the frame type.
+		 * @param type A {@link AdvancementType} value to use as the type.
 		 * @return This builder.
 		 */
-		public Builder frame(FrameType frame) {
-			this.frame = Optional.of(frame);
+		public Builder type(AdvancementType type) {
+			this.type = Optional.of(type);
 			return this;
 		}
 
@@ -255,7 +213,7 @@ public record DisplayInfoModifier(Mode mode, Optional<Component> title, Optional
 		 * @return A new {@link DisplayInfoModifier} instance.
 		 */
 		public DisplayInfoModifier build() {
-			return new DisplayInfoModifier(this.mode, this.title, this.description, this.icon, this.background, this.frame, this.showToast, this.announceToChat, this.hidden);
+			return new DisplayInfoModifier(this.replace, this.icon, this.title, this.description, this.background, this.type, this.showToast, this.announceToChat, this.hidden);
 		}
 	}
 }

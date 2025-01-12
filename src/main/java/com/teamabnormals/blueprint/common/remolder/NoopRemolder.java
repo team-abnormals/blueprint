@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.remolder;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 /**
  * A {@link Remolder} implementation that creates noop {@link Remold} instances.
@@ -10,7 +10,7 @@ import com.mojang.serialization.Codec;
 public enum NoopRemolder implements Remolder {
 	INSTANCE;
 
-	public static final Codec<NoopRemolder> CODEC = Codec.unit(INSTANCE);
+	public static final MapCodec<NoopRemolder> CODEC = MapCodec.unit(INSTANCE);
 
 	@Override
 	public Remold remold() throws Exception {
@@ -18,7 +18,7 @@ public enum NoopRemolder implements Remolder {
 	}
 
 	@Override
-	public Codec<? extends Remolder> codec() {
+	public MapCodec<? extends Remolder> codec() {
 		return CODEC;
 	}
 

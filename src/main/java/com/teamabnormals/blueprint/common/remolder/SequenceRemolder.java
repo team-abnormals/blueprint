@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.remolder;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.util.ExtraCodecs;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public record SequenceRemolder(List<Remolder> remolders) implements Remolder {
-	public static final Codec<SequenceRemolder> CODEC = ExtraCodecs.nonEmptyList(Remolder.CODEC.listOf()).fieldOf("remolders").codec().xmap(SequenceRemolder::new, SequenceRemolder::remolders);
+	public static final MapCodec<SequenceRemolder> CODEC = ExtraCodecs.nonEmptyList(Remolder.CODEC.listOf()).fieldOf("remolders").xmap(SequenceRemolder::new, SequenceRemolder::remolders);
 
 	@Override
 	public Remold remold() throws Exception {
@@ -31,7 +31,7 @@ public record SequenceRemolder(List<Remolder> remolders) implements Remolder {
 	}
 
 	@Override
-	public Codec<? extends Remolder> codec() {
+	public MapCodec<? extends Remolder> codec() {
 		return CODEC;
 	}
 }

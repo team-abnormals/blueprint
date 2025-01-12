@@ -17,12 +17,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * @author SmellyModder (Luke Tonon)
  */
-@Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
+@EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class ChunkGeneratorModificationManager extends SimpleJsonResourceReloadListener {
 	public static final String PATH = "dimension/chunk_generator";
 	private final EnumMap<EventPriority, LinkedList<ObjectModifierGroup<ChunkGenerator, RegistryOps<JsonElement>, RegistryOps<JsonElement>>>> prioritizedModifiers = new EnumMap<>(EventPriority.class);
@@ -48,7 +48,7 @@ public final class ChunkGeneratorModificationManager extends SimpleJsonResourceR
 
 	static {
 		for (EventPriority priority : EventPriority.values()) {
-			MinecraftForge.EVENT_BUS.addListener((ServerAboutToStartEvent event) -> {
+			NeoForge.EVENT_BUS.addListener((ServerAboutToStartEvent event) -> {
 				if (INSTANCE == null) return;
 				var prioritizedModifiers = INSTANCE.prioritizedModifiers;
 				if (prioritizedModifiers == null) return;

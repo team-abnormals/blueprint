@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.common.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -21,10 +22,16 @@ import net.minecraft.world.level.material.Fluids;
  */
 public class LeafPileBlock extends MultifaceBlock implements SimpleWaterloggedBlock {
 	private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+	private static final MapCodec<LeafPileBlock> CODEC = simpleCodec(LeafPileBlock::new);
 
 	public LeafPileBlock(Properties properties) {
 		super(properties);
 		this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
+	}
+
+	@Override
+	protected MapCodec<? extends MultifaceBlock> codec() {
+		return CODEC;
 	}
 
 	@Override

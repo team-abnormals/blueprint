@@ -20,7 +20,7 @@ public class BlueprintChestBlockEntity extends ChestBlockEntity {
 		super(BlueprintBlockEntityTypes.CHEST.get(), pos, state);
 	}
 
-	@Override
+	// TODO: Test this. It's gone now.
 	public AABB getRenderBoundingBox() {
 		BlockPos worldPos = this.worldPosition;
 		int x = worldPos.getX();

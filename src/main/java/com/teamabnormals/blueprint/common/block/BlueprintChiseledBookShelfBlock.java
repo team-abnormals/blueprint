@@ -4,7 +4,7 @@ import com.teamabnormals.blueprint.common.block.entity.BlueprintChiseledBookShel
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -31,29 +31,29 @@ public class BlueprintChiseledBookShelfBlock extends ChiseledBookShelfBlock {
 	}
 
 	@Override
-	public InteractionResult useItemOn(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 		if (blockEntity instanceof ChiseledBookShelfBlockEntity bookShelf) {
 			Optional<Vec2> optional = getRelativeHitCoordinatesForBlockFace(result, state.getValue(HorizontalDirectionalBlock.FACING));
 			if (optional.isEmpty()) {
-				return InteractionResult.PASS;
+				return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 			} else {
 				int i = this.getHitSlot(optional.get());
 				if (state.getValue(SLOT_OCCUPIED_PROPERTIES.get(i))) {
 					removeBook(level, pos, player, bookShelf, i);
-					return InteractionResult.sidedSuccess(level.isClientSide);
+					return ItemInteractionResult.sidedSuccess(level.isClientSide);
 				} else {
 					ItemStack stack = player.getItemInHand(hand);
 					if (stack.is(ItemTags.BOOKSHELF_BOOKS)) {
 						addBook(level, pos, player, bookShelf, stack, i);
-						return InteractionResult.sidedSuccess(level.isClientSide);
+						return ItemInteractionResult.sidedSuccess(level.isClientSide);
 					} else {
-						return InteractionResult.CONSUME;
+						return ItemInteractionResult.CONSUME;
 					}
 				}
 			}
 		} else {
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}
 	}
 

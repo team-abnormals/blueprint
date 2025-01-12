@@ -5,7 +5,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModifierSerializers;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -26,13 +26,13 @@ public record ParentModifier(ResourceLocation parent) implements AdvancementModi
 
 	public static final class Serializer implements AdvancementModifier.Serializer<ParentModifier> {
 		@Override
-		public JsonElement serialize(ParentModifier modifier, Void additional) throws JsonParseException {
+		public JsonElement serialize(ParentModifier modifier, RegistryOps<JsonElement> ops) throws JsonParseException {
 			return new JsonPrimitive(modifier.parent.toString());
 		}
 
 		@Override
-		public ParentModifier deserialize(JsonElement element, DeserializationContext additional) throws JsonParseException {
-			return new ParentModifier(new ResourceLocation(element.getAsString()));
+		public ParentModifier deserialize(JsonElement element, RegistryOps<JsonElement> ops) throws JsonParseException {
+			return new ParentModifier(ResourceLocation.parse(element.getAsString()));
 		}
 	}
 }

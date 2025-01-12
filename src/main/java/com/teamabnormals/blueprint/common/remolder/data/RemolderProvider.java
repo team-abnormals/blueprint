@@ -68,7 +68,7 @@ public abstract class RemolderProvider implements DataProvider {
 	 * @return A new remolder {@link Entry} instance.
 	 */
 	protected Entry entry(String name) {
-		return this.entry(new ResourceLocation(this.modId, name));
+		return this.entry(ResourceLocation.fromNamespaceAndPath(this.modId, name));
 	}
 
 	@Override

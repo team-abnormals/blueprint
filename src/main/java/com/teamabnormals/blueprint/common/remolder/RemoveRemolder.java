@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.remolder;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.teamabnormals.blueprint.common.remolder.data.DynamicReference;
 import org.objectweb.asm.Opcodes;
 
@@ -10,7 +10,7 @@ import org.objectweb.asm.Opcodes;
  * @author SmellyModder (Luke Tonon)
  */
 public record RemoveRemolder(DynamicReference.Expression target) implements Remolder {
-	public static final Codec<RemoveRemolder> CODEC = DynamicReference.EXPRESSION_CODEC.fieldOf("target").xmap(RemoveRemolder::new, RemoveRemolder::target).codec();
+	public static final MapCodec<RemoveRemolder> CODEC = DynamicReference.EXPRESSION_CODEC.fieldOf("target").xmap(RemoveRemolder::new, RemoveRemolder::target);
 
 	@Override
 	public Remold remold() throws Exception {
@@ -24,7 +24,7 @@ public record RemoveRemolder(DynamicReference.Expression target) implements Remo
 	}
 
 	@Override
-	public Codec<? extends Remolder> codec() {
+	public MapCodec<? extends Remolder> codec() {
 		return CODEC;
 	}
 }

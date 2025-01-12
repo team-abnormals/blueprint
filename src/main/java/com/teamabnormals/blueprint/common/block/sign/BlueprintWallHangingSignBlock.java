@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 public class BlueprintWallHangingSignBlock extends WallHangingSignBlock {
 
 	public BlueprintWallHangingSignBlock(Properties properties, WoodType woodType) {
-		super(properties, woodType);
+		super(woodType, properties);
 		BlueprintHangingSignBlockEntity.VALID_BLOCKS.add(this);
 	}
 

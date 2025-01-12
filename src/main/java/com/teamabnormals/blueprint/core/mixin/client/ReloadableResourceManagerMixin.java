@@ -1,8 +1,9 @@
 package com.teamabnormals.blueprint.core.mixin.client;
 
-import com.teamabnormals.blueprint.common.remolder.RemoldedResourceManager;
+import com.teamabnormals.blueprint.common.remolder.RemoldableResourceManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.CloseableResourceManager;
 import net.minecraft.server.packs.resources.ReloadInstance;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -25,6 +26,8 @@ public final class ReloadableResourceManagerMixin {
 
 	@Inject(method = "createReload", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/server/packs/resources/ReloadableResourceManager;resources:Lnet/minecraft/server/packs/resources/CloseableResourceManager;", ordinal = 0, shift = At.Shift.AFTER))
 	private void wrapResources(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> completableFuture, List<PackResources> packResourcesList, CallbackInfoReturnable<ReloadInstance> info) {
-		if (Minecraft.getInstance().getResourceManager() == (Object) this) this.resources = RemoldedResourceManager.wrapForClient(this.resources);
+		if (Minecraft.getInstance().getResourceManager() == (Object) this && this.resources instanceof RemoldableResourceManager remoldableResourceManager) {
+			remoldableResourceManager.updateRemolderLoader(PackType.CLIENT_RESOURCES, true).reloadRemolders(remoldableResourceManager, prepareExecutor);
+		}
 	}
 }

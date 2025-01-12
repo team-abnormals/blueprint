@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 
 import java.util.List;
 import java.util.function.Function;
@@ -17,7 +18,7 @@ public interface Remolder {
 	Codec<Remolder> VERBOSE_CODEC = RemolderTypes.REGISTRY.dispatchStable(Remolder::codec, Function.identity());
 	Codec<Remolder> CODEC = new Codec<>() {
 		private final Codec<Remolder> sequenceCodec = this.listOf().xmap(SequenceRemolder::new, remolder -> {
-			return remolder instanceof SequenceRemolder sequenceRemolder ? sequenceRemolder.remolders() : List.of(remolder);
+			return remolder instanceof SequenceRemolder(List<Remolder> remolders) ? remolders : List.of(remolder);
 		});
 
 		@Override
@@ -33,5 +34,5 @@ public interface Remolder {
 
 	Remold remold() throws Exception;
 
-	Codec<? extends Remolder> codec();
+	MapCodec<? extends Remolder> codec();
 }

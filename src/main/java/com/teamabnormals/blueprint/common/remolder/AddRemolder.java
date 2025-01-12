@@ -1,6 +1,6 @@
 package com.teamabnormals.blueprint.common.remolder;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.remolder.data.DataAccessor;
 import com.teamabnormals.blueprint.common.remolder.data.DynamicReference;
@@ -11,7 +11,7 @@ import com.teamabnormals.blueprint.common.remolder.data.DynamicReference;
  * @author SmellyModder (Luke Tonon)
  */
 public record AddRemolder(DynamicReference.Expression target, DynamicReference value) implements Remolder {
-	public static final Codec<AddRemolder> CODEC = RecordCodecBuilder.create(instance -> {
+	public static final MapCodec<AddRemolder> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
 				DynamicReference.EXPRESSION_CODEC.fieldOf("target").forGetter(AddRemolder::target),
 				DynamicReference.MAP_CODEC.forGetter(AddRemolder::value)
@@ -31,7 +31,7 @@ public record AddRemolder(DynamicReference.Expression target, DynamicReference v
 	}
 
 	@Override
-	public Codec<? extends Remolder> codec() {
+	public MapCodec<? extends Remolder> codec() {
 		return CODEC;
 	}
 }

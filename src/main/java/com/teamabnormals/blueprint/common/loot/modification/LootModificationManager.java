@@ -12,7 +12,10 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.LootTableLoadEvent;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
@@ -25,7 +28,7 @@ import java.lang.reflect.Type;
  * @author SmellyModder (Luke Tonon)
  */
 //TODO: Remove this when Remolder is real!
-@Mod.EventBusSubscriber(modid = Blueprint.MOD_ID)
+@EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class LootModificationManager extends ObjectModificationManager<LootTable, Gson, Pair<Gson, LootDataManager>> {
 	public static final String TARGET_DIRECTORY = "loot_tables";
 	private static final Gson GSON = Deserializers.createLootTableSerializer().registerTypeAdapter(LootPool.class, new LootPoolSerializer()).create();
@@ -37,7 +40,14 @@ public final class LootModificationManager extends ObjectModificationManager<Loo
 
 	static {
 		registerInitializer("LootDataManager", (registryAccess, commandSelection, reloadableServerResources) -> INSTANCE = new LootModificationManager(reloadableServerResources.getLootData()));
+		for (EventPriority priority : EventPriority.values()) {
+			NeoForge.EVENT_BUS.addListener(priority, (LootTableLoadEvent event) -> {
+				//Should not happen, but it's possible that this event will get fired before the manager is initialized
+				if (INSTANCE != null) INSTANCE.applyModifiers(priority, event.getName(), event.getTable());
+			});
+		}
 	}
+
 
 	/**
 	 * Gets the instance of the {@link LootModificationManager}.
