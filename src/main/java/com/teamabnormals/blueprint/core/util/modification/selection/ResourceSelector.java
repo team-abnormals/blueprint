@@ -21,6 +21,7 @@ import java.util.function.Predicate;
  *
  * @author SmellyModder (Luke Tonon)
  */
+// TODO: Refactor when modifiers die for good
 public interface ResourceSelector<S extends ResourceSelector<S>> {
 	Codec<ResourceSelector<?>> CODEC = ExtraCodecs.JSON.flatXmap(element -> {
 		if (element instanceof JsonPrimitive primitive && primitive.isString()) {

@@ -18,7 +18,7 @@ import java.util.UUID;
 public final class PlayerRendererMixin {
 
 	@Inject(method = "renderNameTag", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", shift = At.Shift.AFTER))
-	public void moveName(AbstractClientPlayer entity, Component name, PoseStack stack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
+	public void moveName(AbstractClientPlayer entity, Component name, PoseStack stack, MultiBufferSource buffer, int packedLight, float partialTicks, CallbackInfo ci) {
 		RewardHandler.RewardProperties properties = RewardHandler.getRewardProperties();
 		if (properties == null)
 			return;

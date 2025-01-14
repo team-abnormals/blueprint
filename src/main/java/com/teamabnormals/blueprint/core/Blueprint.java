@@ -21,7 +21,6 @@ import com.teamabnormals.blueprint.core.api.BlockSetTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.BlueprintTrims;
 import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
-import com.teamabnormals.blueprint.core.api.model.FullbrightModel;
 import com.teamabnormals.blueprint.core.data.server.BlueprintDatapackBuiltinEntriesProvider;
 import com.teamabnormals.blueprint.core.data.server.BlueprintRecipeProvider;
 import com.teamabnormals.blueprint.core.data.server.tags.*;
@@ -52,8 +51,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
@@ -62,9 +59,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -85,7 +80,6 @@ import java.util.concurrent.CompletableFuture;
  * @author abigailfails
  */
 @Mod(Blueprint.MOD_ID)
-@EventBusSubscriber(modid = Blueprint.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class Blueprint {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MOD_ID = "blueprint";
@@ -95,9 +89,6 @@ public final class Blueprint {
 	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(ByteBufCodecs.BYTE, () -> (byte) 8).enablePersistence().build();
 
 	public Blueprint(IEventBus bus, ModContainer modContainer) {
-		ModLoadingContext context = ModLoadingContext.get();
-		NeoForge.EVENT_BUS.register(this);
-
 		bus.addListener(this::registerPayloadHandlers);
 
 		DataUtil.registerConfigPredicate(new EqualsPredicate.Serializer());
@@ -134,7 +125,6 @@ public final class Blueprint {
 					NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
 			});
 			bus.addListener(this::clientSetup);
-			bus.addListener(this::modelSetup);
 			bus.addListener(this::registerLayerDefinitions);
 			bus.addListener(this::rendererSetup);
 			bus.addListener(BlueprintTrims::onModelsBaked);
@@ -221,10 +211,6 @@ public final class Blueprint {
 			DataUtil.getSortedAlternativeDispenseBehaviors().forEach(DataUtil.AlternativeDispenseBehavior::register);
 			BlueprintEvents.SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS = DataUtil.getSortedCustomNoteBlockInstruments();
 		});
-	}
-
-	private void modelSetup(ModelEvent.RegisterGeometryLoaders event) {
-		event.register(ResourceLocation.fromNamespaceAndPath(MOD_ID, "fullbright"), FullbrightModel.Loader.INSTANCE);
 	}
 
 	private void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {

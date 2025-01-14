@@ -4,9 +4,11 @@ import com.teamabnormals.blueprint.common.entity.BlueprintBoat;
 import com.teamabnormals.blueprint.common.entity.BlueprintChestBoat;
 import com.teamabnormals.blueprint.common.entity.BlueprintFallingBlockEntity;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.events.LoadThisClassEvent;
 import com.teamabnormals.blueprint.core.util.registry.EntitySubRegistryHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -15,6 +17,9 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  */
 @EventBusSubscriber(modid = Blueprint.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class BlueprintEntityTypes {
+	@SubscribeEvent
+	public static void $(LoadThisClassEvent event) {}
+
 	private static final EntitySubRegistryHelper HELPER = Blueprint.REGISTRY_HELPER.getEntitySubHelper();
 
 	public static final DeferredHolder<EntityType<?>, EntityType<BlueprintBoat>> BOAT = HELPER.createEntity("boat", BlueprintBoat::new, MobCategory.MISC, builder -> {

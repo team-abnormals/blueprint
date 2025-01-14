@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 public final class TestEndimatedBlockEntityRenderer implements BlockEntityRenderer<TestEndimatedBlockEntity> {
-	private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(new ResourceLocation(BlueprintTest.MOD_ID, "textures/entity/endimated_statue.png"));
+	private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(BlueprintTest.MOD_ID, "textures/entity/endimated_statue.png"));
 	private final Endimator endimator;
 	private final ModelPart root;
 

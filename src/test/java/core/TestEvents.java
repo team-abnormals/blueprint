@@ -16,10 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -30,21 +27,21 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.neoforge.event.village.WandererTradesEvent;
 
 import java.util.Optional;
 
-@Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID)
+@EventBusSubscriber(modid = BlueprintTest.MOD_ID)
 public final class TestEvents {
-
 	@SubscribeEvent
 	public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
 		Entity entity = event.getTarget();
@@ -62,7 +59,7 @@ public final class TestEvents {
 	}
 
 	@SubscribeEvent
-	public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+	public static void onLivingDamage(LivingDamageEvent.Post event) {
 		LivingEntity entity = event.getEntity();
 		if (entity.level().isClientSide && (entity instanceof Cow || entity instanceof Player) && TrackedDataManager.INSTANCE.getValue(entity, BlueprintTest.TEST_TRACKED_DATA)) {
 			RandomSource rand = entity.getRandom();
@@ -116,14 +113,12 @@ public final class TestEvents {
 				AABB aabb = entity.getBoundingBox().expandTowards(entity.getDeltaMovement()).inflate(1.0D);
 				Vec3 vec3 = entity.position();
 				Vec3 vec31 = vec3.add(entity.getDeltaMovement());
-
-				for (Entity entity1 : level.getEntities(entity, aabb, (entity1) -> {
-					return entity1.getType() == EntityType.PLAYER && ((Player) entity1).getItemBySlot(EquipmentSlot.HEAD).isEmpty();
-				})) {
-					AABB aabb1 = entity1.getBoundingBox().inflate(0.3D);
+				var players = level.getEntities(EntityTypeTest.forClass(Player.class), aabb, player -> player.getItemBySlot(EquipmentSlot.HEAD).isEmpty());
+				for (Player player : players) {
+					AABB aabb1 = player.getBoundingBox().inflate(0.3D);
 					Optional<Vec3> optional = aabb1.clip(vec3, vec31);
 					if (optional.isPresent()) {
-						entity1.setItemSlot(EquipmentSlot.HEAD, new ItemStack(entity.getBlockState().getBlock().asItem()));
+						player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(entity.getBlockState().getBlock().asItem()));
 						entity.discard();
 						event.setCanceled(true);
 						break;
@@ -144,5 +139,4 @@ public final class TestEvents {
 	public static boolean onFluidAnimateTick(FluidState state, Level level, BlockPos pos, RandomSource randomSource) {
 		return !state.is(FluidTags.LAVA);
 	}
-
 }

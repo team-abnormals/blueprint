@@ -1,12 +1,14 @@
 package com.teamabnormals.blueprint.core.util.modification.selection.selectors;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.util.modification.selection.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.neoforged.neoforge.common.conditions.FalseCondition;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import java.util.Set;
@@ -44,7 +46,7 @@ public record ChoiceResourceSelector(ConditionedResourceSelector first, Conditio
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.add("first", selector.first.serialize());
 			jsonObject.add("second", selector.second.serialize());
-			jsonObject.add("condition", CraftingHelper.serialize(selector.condition));
+			jsonObject.add("condition", ICondition.CODEC.encodeStart(JsonOps.INSTANCE, selector.condition).mapOrElse(element -> element, error -> JsonNull.INSTANCE));
 			return jsonObject;
 		}
 
@@ -52,14 +54,9 @@ public record ChoiceResourceSelector(ConditionedResourceSelector first, Conditio
 		public ChoiceResourceSelector deserialize(JsonElement element) {
 			JsonObject jsonObject = element.getAsJsonObject();
 			JsonObject conditionObject = GsonHelper.convertToJsonObject(jsonObject.get("condition"), "condition");
-			ICondition condition;
-			try {
-				condition = CraftingHelper.getCondition(conditionObject);
-			} catch (JsonSyntaxException e) {
-				//Support for conditions that may not exist under certain circumstances
-				return new ChoiceResourceSelector(ConditionedResourceSelector.EMPTY, ConditionedResourceSelector.deserialize("second", GsonHelper.convertToJsonObject(jsonObject.get("second"), "second")), FalseCondition.INSTANCE);
-			}
-			return new ChoiceResourceSelector(ConditionedResourceSelector.deserialize("first", jsonObject.get("first")), ConditionedResourceSelector.deserialize("second", jsonObject.get("second")), condition);
+			var result = ICondition.CODEC.decode(JsonOps.INSTANCE, conditionObject);
+			if (result.isError()) return new ChoiceResourceSelector(ConditionedResourceSelector.EMPTY, ConditionedResourceSelector.deserialize("second", GsonHelper.convertToJsonObject(jsonObject.get("second"), "second")), FalseCondition.INSTANCE);
+			return new ChoiceResourceSelector(ConditionedResourceSelector.deserialize("first", jsonObject.get("first")), ConditionedResourceSelector.deserialize("second", jsonObject.get("second")), result.result().get().getFirst());
 		}
 	}
 }

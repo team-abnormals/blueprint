@@ -20,25 +20,25 @@ import java.util.function.Predicate;
 public abstract class MultiPackResourceManagerMixin implements RemoldableResourceManager {
     private RemolderLoader remolderLoader;
 
-    @Inject(method = "getResource", at = @At("RETURN"))
+    @Inject(method = "getResource", at = @At("RETURN"), cancellable = true)
     private void getRemoldedResource(ResourceLocation location, CallbackInfoReturnable<Optional<Resource>> info) {
         if (remolderLoader == null) return;
         info.setReturnValue(this.remolderLoader.getResource(location, info.getReturnValue()));
     }
 
-    @Inject(method = "getResourceStack", at = @At("RETURN"))
+    @Inject(method = "getResourceStack", at = @At("RETURN"), cancellable = true)
     private void getRemoldedResourceStack(ResourceLocation location, CallbackInfoReturnable<List<Resource>> info) {
         if (remolderLoader == null) return;
         info.setReturnValue(this.remolderLoader.getResourceStack(info.getReturnValue(), location));
     }
 
-    @Inject(method = "listResources", at = @At("RETURN"))
+    @Inject(method = "listResources", at = @At("RETURN"), cancellable = true)
     private void listRemoldedResources(String path, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Map<ResourceLocation, Resource>> info) {
         if (remolderLoader == null) return;
         info.setReturnValue(this.remolderLoader.listResources(info.getReturnValue()));
     }
 
-    @Inject(method = "listResourceStacks", at = @At("RETURN"))
+    @Inject(method = "listResourceStacks", at = @At("RETURN"), cancellable = true)
     private void listRemoldedResourceStacks(String path, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Map<ResourceLocation, List<Resource>>> info) {
         if (remolderLoader == null) return;
         info.setReturnValue(this.remolderLoader.listResourceStacks(info.getReturnValue()));

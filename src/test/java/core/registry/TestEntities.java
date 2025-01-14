@@ -1,5 +1,6 @@
 package core.registry;
 
+import com.teamabnormals.blueprint.core.events.LoadThisClassEvent;
 import com.teamabnormals.blueprint.core.util.registry.EntitySubRegistryHelper;
 import common.entity.EndimatedWalkingEntity;
 import common.entity.TestEndimatedEntity;
@@ -8,18 +9,21 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.animal.Cow;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
-@Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = BlueprintTest.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class TestEntities {
+	@SubscribeEvent
+	public static void $(LoadThisClassEvent event) {}
+
 	private static final EntitySubRegistryHelper HELPER = BlueprintTest.REGISTRY_HELPER.getEntitySubHelper();
 
-	public static final RegistryObject<EntityType<Cow>> COW = HELPER.createLivingEntity("example", Cow::new, MobCategory.CREATURE, 1.0F, 1.0F);
-	public static final RegistryObject<EntityType<TestEndimatedEntity>> ENDIMATED_TEST = HELPER.createLivingEntity("endimated_test", TestEndimatedEntity::new, MobCategory.CREATURE, 1.0F, 1.0F);
-	public static final RegistryObject<EntityType<EndimatedWalkingEntity>> ENDIMATED_WALKING = HELPER.createLivingEntity("endimated_walking", EndimatedWalkingEntity::new, MobCategory.CREATURE, 1.0F, 1.0F);
+	public static final DeferredHolder<? super EntityType<Cow>, EntityType<Cow>> COW = HELPER.createEntity("example", Cow::new, MobCategory.CREATURE, 1.0F, 1.0F);
+	public static final DeferredHolder<? super EntityType<TestEndimatedEntity>, EntityType<TestEndimatedEntity>> ENDIMATED_TEST = HELPER.createEntity("endimated_test", TestEndimatedEntity::new, MobCategory.CREATURE, 1.0F, 1.0F);
+	public static final DeferredHolder<? super EntityType<EndimatedWalkingEntity>, EntityType<EndimatedWalkingEntity>> ENDIMATED_WALKING = HELPER.createEntity("endimated_walking", EndimatedWalkingEntity::new, MobCategory.CREATURE, 1.0F, 1.0F);
 
 	@SubscribeEvent
 	public static void registerAttributes(EntityAttributeCreationEvent event) {

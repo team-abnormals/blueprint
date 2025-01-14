@@ -17,17 +17,16 @@
     "NoteBlockMixin",
     "RabbitMixin",
     "ReloadableServerResourcesMixin",
+    "ServerAdvancementManagerMixin",
     "ServerEntityMixin",
     "ServerLevelMixin",
     "SimpleJsonResourceReloadListenerMixin",
-    "SimpleReloadInstanceMixin",
     "StructurePieceMixin",
     "StructureStartMixin",
     "StructureTemplateMixin",
     "WorldLoaderPackConfigMixin"
   ],
   "client": [
-    "client.ArmorTrimMixin",
     "client.CameraInvokerMixin",
     "client.ClientLevelMixin",
     "client.IntegratedServerMixin",

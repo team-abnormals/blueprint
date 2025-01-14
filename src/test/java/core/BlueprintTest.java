@@ -8,7 +8,6 @@ import com.teamabnormals.blueprint.common.world.storage.GlobalStorage;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
-import com.teamabnormals.blueprint.core.api.BlueprintTrims;
 import com.teamabnormals.blueprint.core.events.AnimateTickEvents;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.DataUtil;
@@ -30,61 +29,64 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.entity.animal.Cow;
-import net.minecraft.world.item.ArmorMaterials;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(BlueprintTest.MOD_ID)
-@EventBusSubscriber(modid = BlueprintTest.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class BlueprintTest {
 	public static final String MOD_ID = "blueprint_test";
 	public static final RegistryHelper REGISTRY_HELPER = RegistryHelper.create(MOD_ID, helper -> {
-		helper.putSubHelper(ForgeRegistries.ITEMS, new TestItems.Helper(helper));
+		helper.putSubHelper(Registries.ITEM, new TestItems.Helper(helper));
 	});
 	public static final TestGlobalStorage TEST_GLOBAL_STORAGE = GlobalStorage.createStorage(ResourceLocation.fromNamespaceAndPath(MOD_ID, "test_storage"), new TestGlobalStorage());
 	public static final TrackedData<Boolean> TEST_TRACKED_DATA = TrackedData.Builder.create(ByteBufCodecs.BOOL, () -> false).enableSaving(Codec.BOOL.fieldOf("Boolean")).enablePersistence().build();
 
-	public BlueprintTest() {
-		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+	public BlueprintTest(IEventBus modEventBus, ModContainer modContainer) {
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
+		System.out.println("Cringe alert!");
 
 		REGISTRY_HELPER.register(modEventBus);
 		TestFeatures.FEATURES.register(modEventBus);
 		TestItems.DECORATED_POT_PATTERNS.register(modEventBus);
+		TestEndimations.register();
+		TestRabbitVariants.register();
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			SplashSerializers.register(new ResourceLocation(MOD_ID, "custom"), TestCustomSplash.CODEC);
+		if (FMLEnvironment.dist == Dist.CLIENT) {
+			SplashSerializers.register(ResourceLocation.fromNamespaceAndPath(MOD_ID, "custom"), TestCustomSplash.CODEC);
 			TestItems.setupTabEditors();
 
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(this::rendererSetup);
 			modEventBus.register(TestClientEvents.HUMANOID_ENDIMATORS);
-		});
+		}
 		modEventBus.addListener(this::dataSetup);
-		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(MOD_ID, "tracked_data"), TEST_TRACKED_DATA);
+		TrackedDataManager.INSTANCE.registerData(ResourceLocation.fromNamespaceAndPath(MOD_ID, "tracked_data"), TEST_TRACKED_DATA);
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
-			SpawnPlacements.register(TestEntities.COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, Cow::checkAnimalSpawnRules);
-			DataUtil.addParrotFood(Items.ALLIUM, Items.ALLAY_SPAWN_EGG);
 			DataUtil.registerDecoratedPotPattern(Pair.of(TestItems.ITEM.get(), TestItems.TEST_POTTERY_SHERD));
 		});
-		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(Blueprint.MOD_ID, source -> source.getBlockState().is(BlockTags.IRON_ORES), SoundEvents.BELL_BLOCK));
-		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.getBlockState().is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, false, (id1, id2) -> id2.equals("blueprint") ? -1 : 0));
-		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.getBlockState().is(Blocks.FLOWER_POT), SoundEvents.WOLF_AMBIENT, true));
-		DataUtil.addToJigsawPattern(new ResourceLocation("village/plains/decor"), registryAccess -> {
+		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(Blueprint.MOD_ID, source -> source.state().is(BlockTags.IRON_ORES), SoundEvents.BELL_BLOCK));
+		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.state().is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, false, (id1, id2) -> id2.equals("blueprint") ? -1 : 0));
+		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.state().is(Blocks.FLOWER_POT), SoundEvents.WOLF_AMBIENT, true));
+		DataUtil.addToJigsawPattern(ResourceLocation.withDefaultNamespace("village/plains/decor"), registryAccess -> {
 			return StructurePoolElement.feature(registryAccess.registryOrThrow(Registries.PLACED_FEATURE).getHolderOrThrow(CavePlacements.SCULK_PATCH_ANCIENT_CITY)).apply(StructureTemplatePool.Projection.RIGID);
 		}, 100);
 	}
@@ -94,7 +96,6 @@ public final class BlueprintTest {
 		BiomeUtil.markEndBiomeCustomMusic(Biomes.ICE_SPIKES);
 		AnimateTickEvents.BLOCK.registerListener(TestEvents::onAnimateTick);
 		AnimateTickEvents.FLUID.registerListener(TestEvents::onFluidAnimateTick);
-		BlueprintTrims.registerArmorMaterialOverrides(TestTrimMaterials.TEST, Map.of(ArmorMaterials.IRON, "iron_darker"));
 	}
 
 	private void dataSetup(GatherDataEvent event) {
@@ -108,13 +109,12 @@ public final class BlueprintTest {
 		generator.addProvider(includeServer, testBlockTagsProvider);
 		generator.addProvider(includeServer, new TestItemTagsProvider(packOutput, lookupProvider, testBlockTagsProvider.contentsGetter(), helper));
 		generator.addProvider(includeServer, new TestAdvancementModifiersProvider(packOutput, lookupProvider));
-		generator.addProvider(includeServer, new TestLootModifiersProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new TestChunkGeneratorModifiersProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new TestDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new TestDataRemolderProvider(packOutput, lookupProvider));
 
 		boolean includeClient = event.includeClient();
-		generator.addProvider(includeClient, new TestSpriteSourceProvider(packOutput, helper));
+		generator.addProvider(includeClient, new TestSpriteSourceProvider(packOutput, lookupProvider, helper));
 		generator.addProvider(includeClient, new TestEndimationProvider(packOutput));
 		generator.addProvider(includeClient, new TestSplashProvider(packOutput));
 		generator.addProvider(includeClient, new TestAssetsRemolderProvider(packOutput, lookupProvider));

@@ -18,7 +18,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -29,8 +29,8 @@ import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
-import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,17 +45,21 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 			.add(Registries.TRIM_MATERIAL, TestTrimMaterials::bootstrap)
 			.add(Registries.TRIM_PATTERN, TestTrimPatterns::bootstrap);
 
+	private static final ResourceKey<StructureRepaletterEntry> PLANKS_BECOME_RANDOM_PLANKS_IN_MINESHAFTS = repaletterKey("planks_become_random_planks_in_mineshafts");
+
 	public TestDatapackBuiltinEntriesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-		super(output, registries, BUILDER, Set.of(BlueprintTest.MOD_ID));
+		super(output, registries, BUILDER, conditionsConsumer -> {
+			conditionsConsumer.accept(PLANKS_BECOME_RANDOM_PLANKS_IN_MINESHAFTS, new ModLoadedCondition(Blueprint.MOD_ID));
+		}, Set.of(BlueprintTest.MOD_ID));
 	}
 
-	private static void bootstrapStructureRepaletters(BootstapContext<StructureRepaletterEntry> context) {
+	private static void bootstrapStructureRepaletters(BootstrapContext<StructureRepaletterEntry> context) {
 		var structures = context.lookup(Registries.STRUCTURE);
 		var pieces = context.lookup(Registries.STRUCTURE_PIECE);
 		context.register(
-				repaletterKey("planks_become_random_planks_in_mineshafts"),
+				PLANKS_BECOME_RANDOM_PLANKS_IN_MINESHAFTS,
 				new StructureRepaletterEntry(
-						BlueprintHolderSets.conditional(HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)), new ModLoadedCondition(Blueprint.MOD_ID)),
+						HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)),
 						Optional.empty(),
 						false,
 						new WeightedStructureRepaletter(BlockTags.PLANKS, WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1)))
@@ -94,14 +98,14 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 				repaletterKey("bookshelves_becomes_chiseled_bookshelves_in_stronghold_libraries"),
 				new StructureRepaletterEntry(
 						HolderSet.direct(structures.getOrThrow(BuiltinStructures.STRONGHOLD)),
-						Optional.of(HolderSet.direct(pieces.getOrThrow(ResourceKey.create(Registries.STRUCTURE_PIECE, new ResourceLocation("shli"))))),
+						Optional.of(HolderSet.direct(pieces.getOrThrow(ResourceKey.create(Registries.STRUCTURE_PIECE, ResourceLocation.withDefaultNamespace("shli"))))),
 						false,
 						new SimpleStructureRepaletter(Blocks.BOOKSHELF, Blocks.CHISELED_BOOKSHELF)
 				)
 		);
 	}
 
-	private static void bootstrapSlices(BootstapContext<ModdedBiomeSlice> context) {
+	private static void bootstrapSlices(BootstrapContext<ModdedBiomeSlice> context) {
 		var biomes = context.lookup(Registries.BIOME);
 		context.register(
 				sliceKey("end_checkerboard"),
@@ -178,10 +182,10 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 	}
 
 	private static ResourceKey<StructureRepaletterEntry> repaletterKey(String name) {
-		return ResourceKey.create(BlueprintDataPackRegistries.STRUCTURE_REPALETTERS, new ResourceLocation(BlueprintTest.MOD_ID, name));
+		return ResourceKey.create(BlueprintDataPackRegistries.STRUCTURE_REPALETTERS, ResourceLocation.fromNamespaceAndPath(BlueprintTest.MOD_ID, name));
 	}
 
 	private static ResourceKey<ModdedBiomeSlice> sliceKey(String name) {
-		return ResourceKey.create(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, new ResourceLocation(BlueprintTest.MOD_ID, name));
+		return ResourceKey.create(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, ResourceLocation.fromNamespaceAndPath(BlueprintTest.MOD_ID, name));
 	}
 }

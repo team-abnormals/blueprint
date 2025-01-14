@@ -1,28 +1,42 @@
 package com.teamabnormals.blueprint.core.mixin;
 
-import com.teamabnormals.blueprint.core.util.modification.ObjectModificationManager;
+import com.mojang.serialization.JsonOps;
+import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModificationManager;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.flag.FeatureFlagSet;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 @Mixin(ReloadableServerResources.class)
 public final class ReloadableServerResourcesMixin {
+	@Shadow
+	@Final
+	private ServerAdvancementManager advancements;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/SimpleReloadInstance;create(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/server/packs/resources/ReloadInstance;"), method = "loadResources", locals = LocalCapture.CAPTURE_FAILHARD)
-	private static void processModificationManagerInitializers(ResourceManager p_206862_, RegistryAccess.Frozen registryAccess, FeatureFlagSet featureFlagSet, Commands.CommandSelection commandSelection, int p_206865_, Executor p_206866_, Executor p_206867_, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> info, ReloadableServerResources reloadableServerResources, List<PreparableReloadListener> listeners) {
-		ObjectModificationManager.processInitializers(registryAccess, commandSelection, reloadableServerResources, listeners);
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void initModificationManagers(RegistryAccess.Frozen frozen, FeatureFlagSet featureFlagSet, Commands.CommandSelection selection, int functionCompilationLevel, CallbackInfo info) {
+		AdvancementModificationManager.INSTANCE = new AdvancementModificationManager(frozen.createSerializationContext(JsonOps.INSTANCE));
 	}
 
+	@Inject(method = "listeners", at = @At("RETURN"), cancellable = true)
+	private void insertListeners(CallbackInfoReturnable<List<PreparableReloadListener>> info) {
+		if (AdvancementModificationManager.INSTANCE == null) return;
+		int indexOfAdvancements = info.getReturnValue().indexOf(this.advancements);
+		if (indexOfAdvancements == -1) return;
+		ArrayList<PreparableReloadListener> listeners = new ArrayList<>(info.getReturnValue());
+		listeners.add(indexOfAdvancements, AdvancementModificationManager.INSTANCE);
+		info.setReturnValue(listeners);
+	}
 }

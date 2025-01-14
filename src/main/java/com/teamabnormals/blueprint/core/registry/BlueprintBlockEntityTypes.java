@@ -6,8 +6,10 @@ import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
 import com.teamabnormals.blueprint.common.block.entity.*;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.events.LoadThisClassEvent;
 import com.teamabnormals.blueprint.core.util.registry.BlockEntitySubRegistryHelper;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -16,6 +18,9 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  */
 @EventBusSubscriber(modid = Blueprint.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class BlueprintBlockEntityTypes {
+	@SubscribeEvent
+	public static void $(LoadThisClassEvent event) {}
+
 	public static final BlockEntitySubRegistryHelper HELPER = Blueprint.REGISTRY_HELPER.getBlockEntitySubHelper();
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlueprintSignBlockEntity>> SIGN = HELPER.createBlockEntity("sign", BlueprintSignBlockEntity::new, () -> BlueprintSignBlockEntity.VALID_BLOCKS);

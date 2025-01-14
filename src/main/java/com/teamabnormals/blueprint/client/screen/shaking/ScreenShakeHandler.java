@@ -138,7 +138,7 @@ public enum ScreenShakeHandler {
 			double partialTicks = event.getPartialTick();
 			double x = Mth.lerp(partialTicks, this.prevIntensityX, this.intensityX), y = Mth.lerp(partialTicks, this.prevIntensityY, this.intensityY), z = Mth.lerp(partialTicks, this.prevIntensityZ, this.intensityZ);
 			if (x != 0.0F || y != 0.0F || z != 0.0F) {
-				((CameraInvokerMixin) event.getCamera()).callMove(z * screenShakeScale, y * screenShakeScale, x * screenShakeScale);
+				((CameraInvokerMixin) event.getCamera()).callMove((float) (z * screenShakeScale), (float) (y * screenShakeScale), (float) (x * screenShakeScale));
 			}
 		}
 	}

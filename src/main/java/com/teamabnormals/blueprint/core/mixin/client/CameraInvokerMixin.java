@@ -7,5 +7,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(Camera.class)
 public interface CameraInvokerMixin {
 	@Invoker
-	void callMove(double z, double y, double x);
+	void callMove(float z, float y, float x);
 }

@@ -7,18 +7,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.Map;
 import java.util.Set;
 
-public record BlueprintCauldronInteraction(ResourceLocation name, Map<Item, CauldronInteraction> map) {
+public record BlueprintCauldronInteraction(ResourceLocation name, CauldronInteraction.InteractionMap map) {
 	private static final Set<BlueprintCauldronInteraction> CAULDRON_INTERACTIONS = new ObjectArraySet<>();
 
 	public static final BlueprintCauldronInteraction EMPTY = register(ResourceLocation.withDefaultNamespace("empty"), CauldronInteraction.EMPTY);
-	public static final BlueprintCauldronInteraction WATER = register(new ResourceLocation("water"), CauldronInteraction.WATER);
-	public static final BlueprintCauldronInteraction LAVA = register(new ResourceLocation("lava"), CauldronInteraction.LAVA);
-	public static final BlueprintCauldronInteraction POWDER_SNOW = register(new ResourceLocation("powder_snow"), CauldronInteraction.POWDER_SNOW);
+	public static final BlueprintCauldronInteraction WATER = register(ResourceLocation.withDefaultNamespace("water"), CauldronInteraction.WATER);
+	public static final BlueprintCauldronInteraction LAVA = register(ResourceLocation.withDefaultNamespace("lava"), CauldronInteraction.LAVA);
+	public static final BlueprintCauldronInteraction POWDER_SNOW = register(ResourceLocation.withDefaultNamespace("powder_snow"), CauldronInteraction.POWDER_SNOW);
 
-	public static BlueprintCauldronInteraction create(ResourceLocation name, Map<Item, CauldronInteraction> map) {
+	public static BlueprintCauldronInteraction create(ResourceLocation name, CauldronInteraction.InteractionMap map) {
 		return new BlueprintCauldronInteraction(name, map);
 	}
 
@@ -27,12 +26,12 @@ public record BlueprintCauldronInteraction(ResourceLocation name, Map<Item, Caul
 		return map;
 	}
 
-	public static BlueprintCauldronInteraction register(ResourceLocation name, Map<Item, CauldronInteraction> map) {
+	public static BlueprintCauldronInteraction register(ResourceLocation name, CauldronInteraction.InteractionMap map) {
 		return register(create(name, map));
 	}
 
 	public static void addMoreDefaultInteractions(Item item, CauldronInteraction interaction) {
-		values().forEach(blueprintInteraction -> blueprintInteraction.map.put(item, interaction));
+		values().forEach(blueprintInteraction -> blueprintInteraction.map.map().put(item, interaction));
 	}
 
 	public static ImmutableList<BlueprintCauldronInteraction> values() {

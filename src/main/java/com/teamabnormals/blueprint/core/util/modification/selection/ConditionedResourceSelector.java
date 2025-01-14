@@ -8,6 +8,7 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.EmptyResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
 import net.minecraft.resources.ResourceLocation;
@@ -66,7 +67,7 @@ public final class ConditionedResourceSelector {
 		if (element instanceof JsonPrimitive primitive && primitive.isString()) {
 			return new ConditionedResourceSelector(new NamesResourceSelector(ResourceLocation.parse(primitive.getAsString())));
 		} else if (element instanceof JsonObject jsonObject) {
-			if (!GsonHelper.isValidNode(jsonObject, "conditions") || CraftingHelper.processConditions(GsonHelper.getAsJsonArray(jsonObject, "conditions"), ICondition.IContext.EMPTY)) {
+			if (!GsonHelper.isValidNode(jsonObject, "conditions") || ICondition.conditionsMatched(JsonOps.INSTANCE, GsonHelper.getAsJsonArray(jsonObject, "conditions"))) {
 				String type = GsonHelper.getAsString(jsonObject, "type");
 				ResourceSelector.Serializer<?> serializer = ResourceSelectorSerializers.INSTANCE.getSerializer(type);
 				if (serializer != null)
@@ -87,8 +88,7 @@ public final class ConditionedResourceSelector {
 		var conditions = this.conditions;
 		boolean hasConditions = conditions != null && conditions.length > 0;
 		ResourceSelector<?> selector = this.resourceSelector;
-		if (!hasConditions && selector instanceof NamesResourceSelector namesResourceSelector) {
-			var names = namesResourceSelector.names();
+		if (!hasConditions && selector instanceof NamesResourceSelector(Set<ResourceLocation> names)) {
 			if (names.size() == 1) return new JsonPrimitive(names.iterator().next().toString());
 		}
 		ResourceSelector.Serializer<?> serializer = selector.getSerializer();
@@ -100,7 +100,7 @@ public final class ConditionedResourceSelector {
 		if (hasConditions) {
 			JsonArray conditionsArray = new JsonArray();
 			for (ICondition condition : conditions) {
-				conditionsArray.add(CraftingHelper.serialize(condition));
+				conditionsArray.add(ICondition.CODEC.encodeStart(JsonOps.INSTANCE, condition).getOrThrow(JsonParseException::new));
 			}
 			jsonObject.add("conditions", conditionsArray);
 		}

@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.core.mixin.client;
 import com.teamabnormals.blueprint.client.screen.SlabfishHatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -12,9 +13,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-// TODO: Fix
+import java.util.List;
+
 @Mixin(SkinCustomizationScreen.class)
 public abstract class SkinCustomizationScreenMixin extends OptionsSubScreen {
 
@@ -22,16 +26,14 @@ public abstract class SkinCustomizationScreenMixin extends OptionsSubScreen {
 		super(previousScreen, gameSettingsObj, textComponent);
 	}
 
-	@ModifyVariable(method = "init", ordinal = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/SkinCustomizationScreen;addRenderableWidget(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;", ordinal = 1, shift = At.Shift.AFTER))
-	public int init(int i) {
+	@Inject(method = "addOptions", at = @At(value = "RETURN", shift = At.Shift.BY, by = -3), locals = LocalCapture.CAPTURE_FAILSOFT)
+	public void addSlabfishOptions(CallbackInfo info, List<AbstractWidget> list) {
 		Minecraft minecraft = this.getMinecraft();
-		++i;
 		Button slabfishScreenButton = Button.builder(Component.translatable(SlabfishHatScreen.SLABFISH_SCREEN_KEY), (button) -> minecraft.setScreen(new SlabfishHatScreen(this)))
-				.bounds(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20)
-				.tooltip(Tooltip.create(Component.translatable(SlabfishHatScreen.SLABFISH_SCREEN_KEY + ".tooltip", Component.literal("patreon.com/teamabnormals").withStyle(style -> style.withColor(TextColor.parseColor("#FF424D"))))))
+				.bounds(0, 0, 150, 20)
+				.tooltip(Tooltip.create(Component.translatable(SlabfishHatScreen.SLABFISH_SCREEN_KEY + ".tooltip", Component.literal("patreon.com/teamabnormals").withStyle(style -> style.withColor(TextColor.fromRgb(16728653))))))
 				.build();
-		this.addRenderableWidget(slabfishScreenButton);
-		return i;
+		list.add(slabfishScreenButton);
 	}
 
 }

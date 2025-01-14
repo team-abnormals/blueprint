@@ -18,7 +18,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 
 public final class TestEndimatedEntityModel<E extends TestEndimatedEntity> extends EndimatorEntityModel<E> {
-	private static final Endimation IDLE = Blueprint.ENDIMATION_LOADER.getEndimation(new ResourceLocation(BlueprintTest.MOD_ID, "idle"));
+	private static final Endimation IDLE = Blueprint.ENDIMATION_LOADER.getEndimation(ResourceLocation.fromNamespaceAndPath(BlueprintTest.MOD_ID, "idle"));
 	private final EndimatorModelPart cube;
 
 	public TestEndimatedEntityModel() {
@@ -48,7 +48,7 @@ public final class TestEndimatedEntityModel<E extends TestEndimatedEntity> exten
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		this.cube.render(matrixStack, buffer, 240, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack stack, VertexConsumer buffer, int packedLight, int packedOverlay, int rgba) {
+		this.cube.render(stack, buffer, 240, packedOverlay, rgba);
 	}
 }

@@ -3,7 +3,6 @@ package com.teamabnormals.blueprint.common.advancement.modification;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.common.advancement.modification.modifiers.AdvancementModifier;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModificationManager;
 import net.minecraft.advancements.Advancement.Builder;
@@ -21,12 +20,8 @@ public final class AdvancementModificationManager extends ObjectModificationMana
 	private static final Gson GSON = (new GsonBuilder()).create();
 	public static AdvancementModificationManager INSTANCE;
 
-	private AdvancementModificationManager(RegistryOps<JsonElement> registryOps) {
+	public AdvancementModificationManager(RegistryOps<JsonElement> registryOps) {
 		super(GSON, TARGET_PATH, "Advancement", AdvancementModifierSerializers.REGISTRY, (location) -> registryOps, true, true);
-	}
-
-	static {
-		registerInitializer("ServerAdvancementManager", (registryAccess, commandSelection, reloadableServerResources) -> INSTANCE = new AdvancementModificationManager(reloadableServerResources.getRegistryLookup().createSerializationContext(JsonOps.INSTANCE)));
 	}
 
 	/**

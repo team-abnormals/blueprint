@@ -10,19 +10,16 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.bus.api.EventPriority;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -58,34 +55,6 @@ public class ObjectModificationManager<T, S, D> extends SimpleJsonResourceReload
 
 	public ObjectModificationManager(Gson gson, String directory, String type, ObjectModifierSerializerRegistry<T, S, D> serializerRegistry, D additionalDeserializationObject, boolean logSkipping, boolean allowPriority) {
 		this(gson, directory, type, serializerRegistry, (location) -> additionalDeserializationObject, logSkipping, allowPriority);
-	}
-
-	/**
-	 * Registers a {@link Initializer} instance to handle the initialization of a {@link ObjectModificationManager} instance.
-	 *
-	 * @param targetListener The name of the {@link PreparableReloadListener} to inject before. Leave null to inject at the end.
-	 * @param initializer    A {@link Initializer} instance for handling the initialization of a {@link ObjectModificationManager} instance.
-	 * @param <OM>           The type of {@link ObjectModificationManager} to initialize.
-	 */
-	public static synchronized <OM extends ObjectModificationManager<?, ?, ?>> void registerInitializer(@Nullable String targetListener, Initializer<OM> initializer) {
-		INITIALIZER_MAP.put(targetListener, initializer);
-	}
-
-	/**
-	 * Processes the {@link #INITIALIZER_MAP}.
-	 *
-	 * <p><b>For internal use only!</b></p>
-	 */
-	public static void processInitializers(RegistryAccess.Frozen registryAccess, Commands.CommandSelection commandSelection, ReloadableServerResources reloadableServerResources, List<PreparableReloadListener> listeners) {
-		List<Pair<Integer, ObjectModificationManager<?, ?, ?>>> initialized = new ArrayList<>();
-		for (int i = 0; i < listeners.size(); i++) {
-			Set<Initializer<?>> initializers = INITIALIZER_MAP.get(listeners.get(i).getName());
-			for (Initializer<?> initializer : initializers) {
-				initialized.add(Pair.of(i, initializer.init(registryAccess, commandSelection, reloadableServerResources)));
-			}
-		}
-		initialized.forEach(pair -> listeners.add(pair.getFirst(), pair.getSecond()));
-		INITIALIZER_MAP.get(null).forEach(initializer -> listeners.add(initializer.init(registryAccess, commandSelection, reloadableServerResources)));
 	}
 
 	/**

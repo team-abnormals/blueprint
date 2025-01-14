@@ -20,7 +20,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -31,7 +30,6 @@ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -54,8 +52,6 @@ import java.util.function.Predicate;
  */
 @EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class DataUtil {
-	public static final Field TAG_MANAGER = ObfuscationReflectionHelper.findField(ReloadableServerResources.class, "f_206849_");
-	public static final Field REGISTRY_ACCESS = ObfuscationReflectionHelper.findField(TagManager.class, "f_144569_");
 	private static final Vector<AlternativeDispenseBehavior> ALTERNATIVE_DISPENSE_BEHAVIORS = new Vector<>();
 	private static final Vector<CustomNoteBlockInstrument> CUSTOM_NOTE_BLOCK_INSTRUMENTS = new Vector<>();
 	private static final ArrayList<Pair<ResourceLocation, Pair<Function<RegistryAccess, StructurePoolElement>, Integer>>> TEMPLATE_POOL_ADDITIONS = new ArrayList<>();
@@ -320,7 +316,7 @@ public final class DataUtil {
 	}
 
 	public static RegistryOps<JsonElement> createRegistryOps(ReloadableServerResources serverResources) throws IllegalAccessException {
-		return RegistryOps.create(JsonOps.INSTANCE, (RegistryAccess) REGISTRY_ACCESS.get(TAG_MANAGER.get(serverResources)));
+		return serverResources.getRegistryLookup().createSerializationContext(JsonOps.INSTANCE);
 	}
 
 	/**

@@ -6,13 +6,13 @@ import core.BlueprintTest;
 import core.registry.TestEndimations;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-@Mod.EventBusSubscriber(modid = BlueprintTest.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = BlueprintTest.MOD_ID, value = Dist.CLIENT)
 public final class TestClientEvents {
 	@OnlyIn(Dist.CLIENT)
 	public static final ModelEndimatorCache<HumanoidModel<?>> HUMANOID_ENDIMATORS = ModelEndimatorCache.forType(humanoidModel -> {
@@ -22,8 +22,8 @@ public final class TestClientEvents {
 	});
 
 	@SubscribeEvent
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		Player player = event.player;
+	public static void onPlayerTick(PlayerTickEvent.Pre event) {
+		Player player = event.getEntity();
 		if (player.isInWater()) {
 			Endimatable endimatable = (Endimatable) player;
 			if (endimatable.isNoEndimationPlaying()) {

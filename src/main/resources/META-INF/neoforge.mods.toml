@@ -1,7 +1,10 @@
 modLoader = "javafml"
-loaderVersion = "[1,)"
+loaderVersion = "[4,)"
 issueTrackerURL = "https://github.com/team-abnormals/blueprint/issues"
 license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
+
+[[mixins]]
+    config = "blueprint.mixins.json"
 
 [[mods]]
     modId = "blueprint"

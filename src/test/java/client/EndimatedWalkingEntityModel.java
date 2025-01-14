@@ -15,7 +15,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.resources.ResourceLocation;
 
 public final class EndimatedWalkingEntityModel<T extends EndimatedWalkingEntity> extends HierarchicalModel<T> {
-	private static final Endimation WALKING = Blueprint.ENDIMATION_LOADER.getEndimation(new ResourceLocation(BlueprintTest.MOD_ID, "walking"));
+	private static final Endimation WALKING = Blueprint.ENDIMATION_LOADER.getEndimation(ResourceLocation.fromNamespaceAndPath(BlueprintTest.MOD_ID, "walking"));
 	private final EndimatorModelPart root;
 	private final Endimator endimator;
 

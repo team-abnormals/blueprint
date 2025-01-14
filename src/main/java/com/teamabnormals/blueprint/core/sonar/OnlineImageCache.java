@@ -62,7 +62,7 @@ public class OnlineImageCache {
 
 		if (Files.exists(this.cacheFile)) {
 			try (InputStreamReader is = new InputStreamReader(new FileInputStream(this.cacheFile.toFile()))) {
-				this.cacheFileData = new JsonParser().parse(is).getAsJsonObject();
+				this.cacheFileData = JsonParser.parseReader(is).getAsJsonObject();
 			} catch (Exception e) {
 				LOGGER.error("Failed to load cache from '" + this.cacheFile + "'", e);
 				this.cacheFileData = new JsonObject();
@@ -187,7 +187,7 @@ public class OnlineImageCache {
 	}
 
 	@SubscribeEvent
-	public void onEvent(ClientTickEvent event) {
+	public void onEvent(ClientTickEvent.Pre event) {
 		this.locationCache.entrySet().removeIf(entry -> Minecraft.getInstance().getTextureManager().getTexture(entry.getValue(), null) == null);
 		this.locationCache.forEach((hash, location) -> {
 			if (this.hasTextureExpired(hash)) {
