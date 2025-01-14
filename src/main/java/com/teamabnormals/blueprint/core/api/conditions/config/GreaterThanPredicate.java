@@ -4,16 +4,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
- * A config predicate that checks whether the number got from a {@link ForgeConfigSpec.ConfigValue} instance is greater than a stored number.
+ * A config predicate that checks whether the number got from a {@link ModConfigSpec.ConfigValue} instance is greater than a stored number.
  * <p>Throws an exception if the config value type is not an instance of {@code Number}.</p>
  *
  * @author abigailfails
  */
 public class GreaterThanPredicate implements IConfigPredicate {
-	private static final ResourceLocation ID = new ResourceLocation(Blueprint.MOD_ID, "greater_than");
+	private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "greater_than");
 	private final double value;
 
 	public GreaterThanPredicate(double value) {
@@ -26,7 +26,7 @@ public class GreaterThanPredicate implements IConfigPredicate {
 	}
 
 	@Override
-	public boolean test(ForgeConfigSpec.ConfigValue<?> toCompare) {
+	public boolean test(ModConfigSpec.ConfigValue<?> toCompare) {
 		try {
 			return ((Number) toCompare.get()).doubleValue() > value;
 		} catch (ClassCastException e) {
@@ -35,7 +35,7 @@ public class GreaterThanPredicate implements IConfigPredicate {
 	}
 
 	public static class Serializer implements IConfigPredicateSerializer<GreaterThanPredicate> {
-		private static final ResourceLocation ID = new ResourceLocation(Blueprint.MOD_ID, "greater_than");
+		private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "greater_than");
 
 		@Override
 		public void write(JsonObject json, IConfigPredicate value) {

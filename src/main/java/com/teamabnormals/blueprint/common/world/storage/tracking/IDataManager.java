@@ -1,6 +1,9 @@
 package com.teamabnormals.blueprint.common.world.storage.tracking;
 
+import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -108,6 +111,21 @@ public interface IDataManager {
 		}
 
 		/**
+		 * Saves this data to a tag.
+		 *
+		 * @param tag A {@link CompoundTag} instance to start saving from.
+		 * @return A {@link CompoundTag} instance containing the saved data.
+		 */
+		public CompoundTag encode(CompoundTag tag) {
+			var result = this.getTrackedData().getCodec().codec().encode(this.value, NbtOps.INSTANCE, tag);
+			var error = result.error();
+			if (error.isPresent()) throw new RuntimeException("Error encoding tracked data: " + error.get());
+			if (!(result.result().get() instanceof CompoundTag compoundTag))
+				throw new RuntimeException("Tracked data was not encoded as a compound tag");
+			return compoundTag;
+		}
+
+		/**
 		 * Gets this entry's {@link #trackedData}.
 		 *
 		 * @return This entry's {@link #trackedData}.
@@ -170,7 +188,7 @@ public interface IDataManager {
 		}
 
 		/**
-		 * Reads a new {@link #value} for this entry from a {@link CompoundTag}.
+		 * Reads a new {@link #value} for this entry from a {@link RegistryFriendlyByteBuf}.
 		 *
 		 * @param buffer A {@link RegistryFriendlyByteBuf} to read from.
 		 * @param dirty  If this entry should now be marked dirty.
@@ -178,6 +196,21 @@ public interface IDataManager {
 		public void readValue(RegistryFriendlyByteBuf buffer, boolean dirty) {
 			this.value = this.getTrackedData().getStreamCodec().decode(buffer);
 			this.dirty = dirty;
+		}
+
+		/**
+		 * Reads a new {@link #value} for this entry from a {@link CompoundTag}.
+		 *
+		 * @param tag   A {@link CompoundTag} to read from.
+		 * @param dirty If this entry should now be marked dirty.
+		 */
+		public void readValue(CompoundTag tag, boolean dirty) {
+			this.dirty = dirty;
+			this.value = this.getTrackedData().getCodec().codec().decode(NbtOps.INSTANCE, tag).mapOrElse(Pair::getFirst, error -> {
+				Blueprint.LOGGER.error("Error while decoding tracked data {}:\n{}", tag, error.message());
+				Blueprint.LOGGER.warn("Using default value instead");
+				return this.getTrackedData().getDefaultValue();
+			});
 		}
 	}
 }

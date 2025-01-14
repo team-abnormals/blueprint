@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,6 +28,6 @@ public final class SimpleJsonResourceReloadListenerMixin {
 
 	@Inject(at = @At("RETURN"), method = "prepare")
 	private void onPrepared(ResourceManager manager, ProfilerFiller profiler, CallbackInfoReturnable<Map<ResourceLocation, JsonElement>> info) {
-		MinecraftForge.EVENT_BUS.post(new SimpleJsonResourceListenerPreparedEvent(this.gson, this.directory, info.getReturnValue()));
+		NeoForge.EVENT_BUS.post(new SimpleJsonResourceListenerPreparedEvent(this.gson, this.directory, info.getReturnValue()));
 	}
 }

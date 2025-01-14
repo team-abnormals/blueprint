@@ -7,18 +7,18 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Objects;
 
 /**
- * A config predicate that checks whether the value got from a {@link ForgeConfigSpec.ConfigValue} instance is equal to a stored value.
+ * A config predicate that checks whether the value got from a {@link ModConfigSpec.ConfigValue} instance is equal to a stored value.
  * <p>Can deserialize numbers, booleans, strings, and JSON nulls (although this is stored as a non-JSON null).</p>
  *
  * @author abigailfails
  */
 public class EqualsPredicate implements IConfigPredicate {
-	private static final ResourceLocation ID = new ResourceLocation(Blueprint.MOD_ID, "equals");
+	private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "equals");
 	private final Object value;
 
 	public EqualsPredicate(Object value) {
@@ -31,12 +31,12 @@ public class EqualsPredicate implements IConfigPredicate {
 	}
 
 	@Override
-	public boolean test(ForgeConfigSpec.ConfigValue<?> toCompare) {
+	public boolean test(ModConfigSpec.ConfigValue<?> toCompare) {
 		return Objects.equals(toCompare.get(), value);
 	}
 
 	public static class Serializer implements IConfigPredicateSerializer<EqualsPredicate> {
-		private static final ResourceLocation ID = new ResourceLocation(Blueprint.MOD_ID, "equals");
+		private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "equals");
 
 		@Override
 		public void write(JsonObject json, IConfigPredicate value) {

@@ -13,7 +13,7 @@ import java.util.Set;
 public record BlueprintCauldronInteraction(ResourceLocation name, Map<Item, CauldronInteraction> map) {
 	private static final Set<BlueprintCauldronInteraction> CAULDRON_INTERACTIONS = new ObjectArraySet<>();
 
-	public static final BlueprintCauldronInteraction EMPTY = register(new ResourceLocation("empty"), CauldronInteraction.EMPTY);
+	public static final BlueprintCauldronInteraction EMPTY = register(ResourceLocation.withDefaultNamespace("empty"), CauldronInteraction.EMPTY);
 	public static final BlueprintCauldronInteraction WATER = register(new ResourceLocation("water"), CauldronInteraction.WATER);
 	public static final BlueprintCauldronInteraction LAVA = register(new ResourceLocation("lava"), CauldronInteraction.LAVA);
 	public static final BlueprintCauldronInteraction POWDER_SNOW = register(new ResourceLocation("powder_snow"), CauldronInteraction.POWDER_SNOW);

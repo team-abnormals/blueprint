@@ -5,16 +5,16 @@ import com.google.gson.JsonSyntaxException;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
- * A config predicate that checks whether the string got from a {@link ForgeConfigSpec.ConfigValue} instance contains a stored string.
+ * A config predicate that checks whether the string got from a {@link ModConfigSpec.ConfigValue} instance contains a stored string.
  * <p>Throws an exception if the config value type is not {@code String}.</p>
  *
  * @author abigailfails
  */
 public class ContainsPredicate implements IConfigPredicate {
-	private static final ResourceLocation ID = new ResourceLocation(Blueprint.MOD_ID, "contains");
+	private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "contains");
 	private final String value;
 
 	public ContainsPredicate(String value) {
@@ -27,7 +27,7 @@ public class ContainsPredicate implements IConfigPredicate {
 	}
 
 	@Override
-	public boolean test(ForgeConfigSpec.ConfigValue<?> toCompare) {
+	public boolean test(ModConfigSpec.ConfigValue<?> toCompare) {
 		if (toCompare.get() instanceof String) {
 			return ((String) toCompare.get()).matches(value);
 		}
@@ -35,7 +35,7 @@ public class ContainsPredicate implements IConfigPredicate {
 	}
 
 	public static class Serializer implements IConfigPredicateSerializer<ContainsPredicate> {
-		private static final ResourceLocation ID = new ResourceLocation(Blueprint.MOD_ID, "contains");
+		private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "contains");
 
 		@Override
 		public void write(JsonObject json, IConfigPredicate value) {

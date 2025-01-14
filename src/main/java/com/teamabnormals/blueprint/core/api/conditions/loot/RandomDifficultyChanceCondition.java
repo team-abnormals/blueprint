@@ -1,11 +1,9 @@
 package com.teamabnormals.blueprint.core.api.conditions.loot;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.registry.BlueprintLootConditions;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -27,6 +25,13 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
  * @author abigailfails
  */
 public class RandomDifficultyChanceCondition implements LootItemCondition {
+	public static final MapCodec<RandomDifficultyChanceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+		Codec.FLOAT.fieldOf("default_chance").forGetter(condition -> condition.defaultChance),
+		Codec.FLOAT.optionalFieldOf("peaceful", -1.0F).forGetter(condition -> condition.peacefulChance),
+		Codec.FLOAT.optionalFieldOf("easy", -1.0F).forGetter(condition -> condition.peacefulChance),
+		Codec.FLOAT.optionalFieldOf("normal", -1.0F).forGetter(condition -> condition.peacefulChance),
+		Codec.FLOAT.optionalFieldOf("hard", -1.0F).forGetter(condition -> condition.peacefulChance)
+	).apply(instance, RandomDifficultyChanceCondition::new));
 	private final float defaultChance;
 	private final float peacefulChance;
 	private final float easyChance;
@@ -61,35 +66,7 @@ public class RandomDifficultyChanceCondition implements LootItemCondition {
 				break;
 			case HARD:
 				if (this.hardChance >= 0) chance = this.hardChance;
-
 		}
 		return lootContext.getRandom().nextFloat() < chance;
-	}
-
-	public static class RandomDifficultyChanceSerializer implements Serializer<RandomDifficultyChanceCondition> {
-
-		private static float getFloatOrMinus1(JsonObject json, String fieldName) {
-			return json.has(fieldName) ? GsonHelper.getAsFloat(json, fieldName) : -1.0F;
-		}
-
-		public void serialize(JsonObject json, RandomDifficultyChanceCondition condition, JsonSerializationContext context) {
-			json.addProperty("default_chance", condition.defaultChance);
-			if (condition.peacefulChance >= 0)
-				json.addProperty("peaceful", condition.peacefulChance);
-			if (condition.easyChance >= 0)
-				json.addProperty("easy", condition.easyChance);
-			if (condition.normalChance >= 0)
-				json.addProperty("normal", condition.normalChance);
-			if (condition.hardChance >= 0)
-				json.addProperty("hard", condition.hardChance);
-		}
-
-		public RandomDifficultyChanceCondition deserialize(JsonObject json, JsonDeserializationContext context) {
-			if (json.has("default_chance")) {
-				return new RandomDifficultyChanceCondition(GsonHelper.getAsFloat(json, "default_chance"), getFloatOrMinus1(json, "peaceful"), getFloatOrMinus1(json, "easy"), getFloatOrMinus1(json, "normal"), getFloatOrMinus1(json, "hard"));
-			}
-			throw new JsonSyntaxException("Missing 'default_chance', expected to find a float");
-		}
-
 	}
 }

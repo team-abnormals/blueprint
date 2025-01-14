@@ -133,8 +133,10 @@ public abstract class EntityMixin implements IDataManager, Endimatable {
 		if (!this.dataMap.isEmpty()) {
 			ListTag dataListTag = new ListTag();
 			this.dataMap.forEach((trackedData, dataEntry) -> {
-				if (trackedData.shouldSave()) {
-					CompoundTag dataTag = dataEntry.writeValue();
+				var codec = trackedData.getCodec();
+				if (codec != null) {
+					CompoundTag dataTag = new CompoundTag();
+					dataEntry.encode(dataTag);
 					dataTag.putString("Id", TrackedDataManager.INSTANCE.getKey(trackedData).toString());
 					dataListTag.add(dataTag);
 				}
@@ -149,9 +151,9 @@ public abstract class EntityMixin implements IDataManager, Endimatable {
 			ListTag dataListTag = compound.getList("BlueprintTrackedData", Tag.TAG_COMPOUND);
 			dataListTag.forEach(nbt -> {
 				CompoundTag dataTag = (CompoundTag) nbt;
-				ResourceLocation id = new ResourceLocation(dataTag.getString("Id"));
+				ResourceLocation id = ResourceLocation.parse(dataTag.getString("Id"));
 				TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(id);
-				if (trackedData != null && trackedData.shouldSave()) {
+				if (trackedData != null && trackedData.getCodec() != null) {
 					IDataManager.DataEntry<?> dataEntry = new DataEntry<>(trackedData);
 					dataEntry.readValue(dataTag, true);
 					this.dataMap.put(trackedData, dataEntry);

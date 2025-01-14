@@ -63,7 +63,7 @@ public final class EndimationLoader implements PreparableReloadListener {
 					} else {
 						ResourceLocation location = entry.getKey();
 						String path = location.getPath();
-						ResourceLocation adjustedLocation = new ResourceLocation(location.getNamespace(), path.substring(12, path.length() - 5));
+						ResourceLocation adjustedLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), path.substring(12, path.length() - 5));
 						if (endimations.put(adjustedLocation, dataResult.result().get().getFirst()) != null) {
 							Blueprint.LOGGER.warn("Loaded Duplicate Endimation: {}", adjustedLocation);
 						}

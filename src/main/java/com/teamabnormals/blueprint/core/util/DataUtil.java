@@ -9,7 +9,6 @@ import com.teamabnormals.blueprint.core.annotations.ConfigKey;
 import com.teamabnormals.blueprint.core.api.conditions.ConfigValueCondition;
 import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicate;
 import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicateSerializer;
-import com.teamabnormals.blueprint.core.api.conditions.loot.ConfigLootCondition;
 import net.minecraft.Util;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.dispenser.BlockSource;
@@ -26,10 +25,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
@@ -95,6 +94,8 @@ public final class DataUtil {
 	 * @param item   An {@link ItemLike} to be compostable.
 	 * @param chance The compost chance for the item.
 	 */
+	// TODO: Remove?
+	@Deprecated
 	public static void registerCompostable(ItemLike item, float chance) {
 		ComposterBlock.COMPOSTABLES.put(item.asItem(), chance);
 	}
@@ -105,9 +106,9 @@ public final class DataUtil {
 	 * @param entries Pairs of an {@link Item} and a {@link net.minecraft.core.Holder} of a String
 	 */
 	@SafeVarargs
-	public static void registerDecoratedPotPattern(Pair<Item, DeferredHolder<String, ?>>... entries) {
-		Map<Item, ResourceKey<String>> itemToPotTextureMap = Maps.newHashMap(DecoratedPotPatterns.ITEM_TO_POT_TEXTURE);
-		for (Pair<Item, DeferredHolder<String, ?>> entry : entries) {
+	public static void registerDecoratedPotPattern(Pair<Item, DeferredHolder<DecoratedPotPattern, ?>>... entries) {
+		Map<Item, ResourceKey<DecoratedPotPattern>> itemToPotTextureMap = Maps.newHashMap(DecoratedPotPatterns.ITEM_TO_POT_TEXTURE);
+		for (Pair<Item, DeferredHolder<DecoratedPotPattern, ?>> entry : entries) {
 			itemToPotTextureMap.put(entry.getFirst(), entry.getSecond().getKey());
 		}
 		DecoratedPotPatterns.ITEM_TO_POT_TEXTURE = itemToPotTextureMap;
@@ -259,78 +260,12 @@ public final class DataUtil {
 	}
 
 	/**
-	 * Registers a {@link ConfigValueCondition.Serializer} under the name {@code "[modId]:config"}
-	 * that accepts the values of {@link ConfigKey} annotations for {@link net.neoforged.neoforge.common.ModConfigSpec.ConfigValue}
-	 * fields in the passed-in collection of objects, checking against the annotation's corresponding
-	 * {@link net.neoforged.neoforge.common.ModConfigSpec.ConfigValue} to determine whether the condition should pass.<br><br>
-	 * <h2>Function</h2>
-	 * <p>This method allows you to make crafting recipes, modifiers, loot tables, etc. check whether a specific config
-	 * field is true/whether it meets specific predicates before loading without having to hardcode new condition classes
-	 * for certain config values. It's essentially a wrapper for the condition and loot condition registry methods and
-	 * should be called during common setup accordingly.</p><br><br>
+	 * Maps out config value names to value accessors from fields annotated with {@link ConfigKey} in config objects.
 	 *
-	 * <h2>Implementation</h2>
-	 * <p>All the {@link net.neoforged.neoforge.common.ModConfigSpec.ConfigValue}s in the objects in
-	 * {@code configObjects} with a {@link ConfigKey} annotation are mapped to the string values
-	 * of their field's annotation.
-	 *
-	 * <p>The stored names are used to target config fields from JSON files. When defining a condition with<br>
-	 * {@code "type": "[modId]:config"}<br>
-	 * you use the {@code "value"} argument to specify the config value to target.
-	 *
-	 * <p>For example, in a config condition created under the id {@code blueprint}
-	 * that checks whether {@code "sign_editing_requires_empty_hand"} (the annotated value for the
-	 * {@code signEditingRequiresEmptyHand} field) is true, the syntax would be like this:</p>
-	 *
-	 * <pre>{@code
-	 * "conditions": [
-	 *   {
-	 *     "type": "blueprint:config"
-	 *     "value": "sign_editing_requires_empty_hand"
-	 *   }
-	 * ]
-	 * }</pre>
-	 *
-	 * <p>Config conditions also accept a {@code predicates} array, which defines
-	 * {@link IConfigPredicate IConfigPredicate}s that the
-	 * config value must match before the condition returns true, and a boolean {@code inverted} argument which makes
-	 * the condition pass if it evaluates to false instead of true. If the config value is non-boolean,
-	 * {@code predicates} are required. Each individual predicate also accepts an {@code inverted} argument (as
-	 * {@code !(A.B) != !A.!B}).</p>
-	 *
-	 * <p>For example, you could check whether a the float config value {@code "potato_poison_chance"} is less than
-	 * 0.1 by using the {@code "blueprint:greater_than_or_equal_to"} predicate and inverting it. (Of course,
-	 * in this situation it's easier to just use the {@code "blueprint:less_than"} predicate, but this is just
-	 * an example used to show the syntax of inverting).</p>
-	 *
-	 * <pre>{@code
-	 * "conditions": [
-	 *   {
-	 *     "type": "blueprint:config",
-	 *     "value": "potato_poison_chance",
-	 *     "predicates": [
-	 *       {
-	 *         "type": "blueprint:greater_than_or_equal_to",
-	 *         "value": 0.1,
-	 *         "inverted": true
-	 *       }
-	 *     ]
-	 *   }
-	 * ],
-	 * }</pre>
-	 *
-	 * <p>Blueprint has pre-made predicates for numeric and string comparison as well as checking for equality,
-	 * but you can create custom predicates and register them with
-	 * {@link DataUtil#registerConfigPredicate(IConfigPredicateSerializer)}.</p>
-	 *
-	 * @param modId         The mod ID to register the config condition under. The reason this is required and that you can't just
-	 *                      register your values under {@code "blueprint:config"} is because there could be duplicate keys
-	 *                      between mods.
-	 * @param configObjects The list of objects to get config keys from. The {@link ConfigKey} values must be unique.
-	 * @return The created {@link LootItemConditionType} to register
-	 * @author abigailfails
+	 * @param configObjects The config objects to scan.
+	 * @return A map of (config value names -> config values) from the config objects.
 	 */
-	public static LootItemConditionType registerConfigCondition(String modId, Object... configObjects) {
+	public static HashMap<String, ModConfigSpec.ConfigValue<?>> getConfigValues(Object... configObjects) {
 		HashMap<String, ModConfigSpec.ConfigValue<?>> configValues = new HashMap<>();
 		for (Object object : configObjects) {
 			for (Field field : object.getClass().getDeclaredFields()) {
@@ -338,13 +273,11 @@ public final class DataUtil {
 					field.setAccessible(true);
 					try {
 						configValues.put(field.getAnnotation(ConfigKey.class).value(), (ModConfigSpec.ConfigValue<?>) field.get(object));
-					} catch (IllegalAccessException ignored) {
-					}
+					} catch (IllegalAccessException ignored) {}
 				}
 			}
 		}
-		CraftingHelper.register(new ConfigValueCondition.Serializer(modId, configValues));
-		return new LootItemConditionType(new ConfigLootCondition.ConfigSerializer(modId, configValues));
+		return configValues;
 	}
 
 	/**
@@ -355,7 +288,7 @@ public final class DataUtil {
 	 *
 	 * @param serializer The serializer to register.
 	 */
-	public static void registerConfigPredicate(IConfigPredicateSerializer<?> serializer) {
+	public static synchronized void registerConfigPredicate(IConfigPredicateSerializer<?> serializer) {
 		ResourceLocation key = serializer.getID();
 		if (ConfigValueCondition.Serializer.CONFIG_PREDICATE_SERIALIZERS.containsKey(key))
 			throw new IllegalStateException("Duplicate config predicate serializer: " + key);

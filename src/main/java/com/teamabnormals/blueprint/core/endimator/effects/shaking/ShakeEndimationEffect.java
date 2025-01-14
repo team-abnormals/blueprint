@@ -24,7 +24,7 @@ public final class ShakeEndimationEffect extends EndimationEffect<ShakeEndimatio
 		ScreenShakeHandler.INSTANCE.addShakeSource(new EmanatingShakeSource(source::getPos, source::isActive, config.duration(), config.intensityX(), config.intensityY(), config.intensityZ(), config.maxBuildupX(), config.maxBuildupY(), config.maxBuildupZ(), config.decayX(), config.decayY(), config.decayZ()));
 	}
 
-	public static record Config(int duration, double intensityX, double intensityY, double intensityZ, double maxBuildupX, double maxBuildupY, double maxBuildupZ, double decayX, double decayY, double decayZ) {
+	public record Config(int duration, double intensityX, double intensityY, double intensityZ, double maxBuildupX, double maxBuildupY, double maxBuildupZ, double decayX, double decayY, double decayZ) {
 		public static final Codec<Config> CODEC = RecordCodecBuilder.create((instance) -> {
 			return instance.group(
 					Codec.INT.fieldOf("duration").forGetter(config -> config.duration),

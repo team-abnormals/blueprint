@@ -101,7 +101,7 @@ public abstract class EndimationProvider implements DataProvider {
 		entries.clear();
 		this.addEndimations();
 		return CompletableFuture.allOf(this.entries.stream().map(entry -> {
-			Path resolvedPath = this.pathProvider.json(new ResourceLocation(this.modId, entry.name));
+			Path resolvedPath = this.pathProvider.json(ResourceLocation.fromNamespaceAndPath(this.modId, entry.name));
 			try {
 				var dataResult = Endimation.CODEC.encodeStart(JsonOps.INSTANCE, entry.build());
 				var error = dataResult.error();

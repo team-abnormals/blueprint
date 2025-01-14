@@ -2,10 +2,10 @@ package com.teamabnormals.blueprint.core.api.conditions.config;
 
 import com.teamabnormals.blueprint.core.api.conditions.ConfigValueCondition;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
- * A predicate for a {@link ConfigValueCondition}, takes in a {@link net.minecraftforge.common.ForgeConfigSpec.ConfigValue} and returns a boolean for whether it matches the condition.
+ * A predicate for a {@link ConfigValueCondition}, takes in a {@link ModConfigSpec.ConfigValue} and returns a boolean for whether it matches the condition.
  *
  * @author abigailfails
  */
@@ -18,7 +18,7 @@ public interface IConfigPredicate {
 	ResourceLocation getID();
 
 	/**
-	 * Takes in a {@link ForgeConfigSpec.ConfigValue} and returns true if it matches the predicate's condition.
+	 * Takes in a {@link ModConfigSpec.ConfigValue} and returns true if it matches the predicate's condition.
 	 *
 	 * <p>As {@code value} can be of any type, if the predicate only works on a specific type it should throw an exception.
 	 * if {@code value} is the wrong type. However, if the serializer is written correctly it should detect this error first.</p>
@@ -27,5 +27,5 @@ public interface IConfigPredicate {
 	 * @return Whether {@code value} meets the predicate.
 	 * @throws IllegalArgumentException If {@code value} is of an invalid type.
 	 */
-	boolean test(ForgeConfigSpec.ConfigValue<?> value) throws IllegalArgumentException;
+	boolean test(ModConfigSpec.ConfigValue<?> value) throws IllegalArgumentException;
 }

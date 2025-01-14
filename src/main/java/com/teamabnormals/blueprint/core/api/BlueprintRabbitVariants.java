@@ -23,7 +23,7 @@ public class BlueprintRabbitVariants {
 	}
 
 	public static synchronized BlueprintRabbitVariant register(int id, ResourceLocation name, Predicate<Pair<ServerLevelAccessor, BlockPos>> predicate) {
-		return register(id, name, new ResourceLocation(name.getNamespace(), "textures/entity/rabbit/" + name.getPath() + ".png"), predicate);
+		return register(id, name, ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "textures/entity/rabbit/" + name.getPath() + ".png"), predicate);
 	}
 
 	public static Holder<Biome> getBiome(Pair<ServerLevelAccessor, BlockPos> pair) {
@@ -31,7 +31,6 @@ public class BlueprintRabbitVariants {
 	}
 
 	public record BlueprintRabbitVariant(int id, ResourceLocation name, ResourceLocation textureLocation, Predicate<Pair<ServerLevelAccessor, BlockPos>> predicate) {
-
 		public boolean test(ServerLevelAccessor level, BlockPos pos) {
 			return this.predicate.test(Pair.of(level, pos));
 		}

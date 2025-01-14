@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
  * @author SmellyModder (Luke Tonon)
  */
 public record PlayableEndimation(ResourceLocation location, int duration, LoopType loopType) {
-	public static final PlayableEndimation BLANK = new PlayableEndimation(new ResourceLocation(Blueprint.MOD_ID, "blank"), 0, LoopType.NONE);
+	public static final PlayableEndimation BLANK = new PlayableEndimation(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "blank"), 0, LoopType.NONE);
 
 	/**
 	 * Looks up the {@link #location} in {@link Blueprint#ENDIMATION_LOADER} to get its corresponding {@link Endimation}.

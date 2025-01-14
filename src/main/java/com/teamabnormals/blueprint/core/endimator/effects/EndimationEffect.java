@@ -1,6 +1,7 @@
 package com.teamabnormals.blueprint.core.endimator.effects;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 /**
@@ -11,10 +12,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
  * @see EndimationEffectSource
  */
 public abstract class EndimationEffect<C> {
-	private final Codec<ConfiguredEndimationEffect<C, EndimationEffect<C>>> codec;
+	private final MapCodec<ConfiguredEndimationEffect<C, EndimationEffect<C>>> codec;
 
 	protected EndimationEffect(Codec<C> codec) {
-		this.codec = RecordCodecBuilder.create((instance) -> {
+		this.codec = RecordCodecBuilder.mapCodec((instance) -> {
 			return instance.group(
 					codec.fieldOf("config").forGetter(ConfiguredEndimationEffect::getConfig),
 					Codec.FLOAT.fieldOf("time").forGetter(ConfiguredEndimationEffect::getTime)
@@ -36,7 +37,7 @@ public abstract class EndimationEffect<C> {
 	 *
 	 * @return The {@link #codec}.
 	 */
-	public Codec<ConfiguredEndimationEffect<C, EndimationEffect<C>>> getCodec() {
+	public MapCodec<ConfiguredEndimationEffect<C, EndimationEffect<C>>> getCodec() {
 		return this.codec;
 	}
 }

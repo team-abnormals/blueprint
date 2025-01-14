@@ -20,7 +20,6 @@ import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataMana
 import com.teamabnormals.blueprint.core.api.BlockSetTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.BlueprintTrims;
 import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
-import com.teamabnormals.blueprint.core.api.conditions.BlueprintAndCondition;
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
 import com.teamabnormals.blueprint.core.api.model.FullbrightModel;
 import com.teamabnormals.blueprint.core.data.server.BlueprintDatapackBuiltinEntriesProvider;
@@ -101,7 +100,6 @@ public final class Blueprint {
 
 		bus.addListener(this::registerPayloadHandlers);
 
-		CraftingHelper.register(new BlueprintAndCondition.Serializer());
 		DataUtil.registerConfigPredicate(new EqualsPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new GreaterThanOrEqualPredicate.Serializer());
 		DataUtil.registerConfigPredicate(new GreaterThanPredicate.Serializer());
@@ -114,6 +112,7 @@ public final class Blueprint {
 		REGISTRY_HELPER.getBlockEntitySubHelper().register(bus);
 		BlueprintPoiTypes.POI_TYPES.register(bus);
 		BlueprintSurfaceRules.RULE_SOURCES.register(bus);
+		BlueprintConditionCodecs.CONDITION_CODECS.register(bus);
 		BlueprintLootConditions.LOOT_CONDITION_TYPES.register(bus);
 
 		bus.addListener((ModConfigEvent event) -> {
@@ -190,7 +189,7 @@ public final class Blueprint {
 		generator.addProvider(server, new BlueprintBiomeTagsProvider(MOD_ID, output, provider, helper));
 		generator.addProvider(server, new BlueprintDamageTypeTagsProvider(MOD_ID, output, provider, helper));
 		generator.addProvider(server, new BlueprintPoiTypeTagsProvider(MOD_ID, output, provider, helper));
-		generator.addProvider(server, new BlueprintRecipeProvider(MOD_ID, output));
+		generator.addProvider(server, new BlueprintRecipeProvider(MOD_ID, output, provider));
 		generator.addProvider(server, new BlueprintDatapackBuiltinEntriesProvider(output, provider));
 	}
 

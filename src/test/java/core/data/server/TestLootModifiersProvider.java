@@ -1,9 +1,9 @@
 package core.data.server;
 
-import com.teamabnormals.blueprint.common.loot.modification.LootModifierProvider;
-import com.teamabnormals.blueprint.common.loot.modification.modifiers.LootPoolEntriesModifier;
-import com.teamabnormals.blueprint.common.loot.modification.modifiers.LootPoolsModifier;
+import com.google.gson.Gson;
+import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.util.modification.ObjectModifierProvider;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.RegexResourceSelector;
 import core.BlueprintTest;
 import net.minecraft.core.HolderLookup;
@@ -11,6 +11,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
-public final class TestLootModifiersProvider extends LootModifierProvider {
+public final class TestLootModifiersProvider extends ObjectModifierProvider<LootTable, Gson, Pair<Gson, LootDataManager>> {
 
 	public TestLootModifiersProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(BlueprintTest.MOD_ID, output, lookupProvider);

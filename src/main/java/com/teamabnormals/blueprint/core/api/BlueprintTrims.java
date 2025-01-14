@@ -156,7 +156,7 @@ public class BlueprintTrims {
 	}
 
 	private static ItemOverrides.BakedOverride createBakedOverride(ItemOverrides.PropertyMatcher[] matchers, ModelBakery bakery, ModelBakery.TextureGetter textureGetter, ResourceLocation location, ResourceLocation unbakedLocation) {
-		return new ItemOverrides.BakedOverride(matchers, bakery.new ModelBakerImpl(textureGetter, ModelResourceLocation.inventory(location)).bake(unbakedLocation, BlockModelRotation.X0_Y0, textureGetter));
+		return new ItemOverrides.BakedOverride(matchers, bakery.new ModelBakerImpl(textureGetter, ModelResourceLocation.inventory(location)).bake(unbakedLocation, BlockModelRotation.X0_Y0));
 	}
 
 	@SuppressWarnings({"deprecation", "unchecked"})

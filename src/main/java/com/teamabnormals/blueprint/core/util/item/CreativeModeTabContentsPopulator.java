@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.core.util.item;
 
+import it.unimi.dsi.fastutil.objects.ObjectSortedSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
@@ -135,7 +136,7 @@ public final class CreativeModeTabContentsPopulator {
 		 */
 		@SafeVarargs
 		public final Entry addStacks(Supplier<ItemStack>... items) {
-			return this.editor(CreativeModeTabContentsEditor.forAllStacks(items, (event, stack) -> event.getEntries().put(stack, this.visibility)));
+			return this.editor(CreativeModeTabContentsEditor.forAllStacks(items, (event, stack) -> event.accept(stack, this.visibility)));
 		}
 
 		/**
@@ -157,7 +158,7 @@ public final class CreativeModeTabContentsPopulator {
 		 */
 		@SafeVarargs
 		public final Entry addStacksFirst(Supplier<ItemStack>... items) {
-			return this.editor(CreativeModeTabContentsEditor.forAllStacks(items, (event, stack) -> event.getEntries().putFirst(stack, this.visibility)));
+			return this.editor(CreativeModeTabContentsEditor.forAllStacks(items, (event, stack) -> event.insertFirst(stack, this.visibility)));
 		}
 
 		/**
@@ -171,6 +172,20 @@ public final class CreativeModeTabContentsPopulator {
 			return this.addStacksFirst(convertItemLikesToStacks(items));
 		}
 
+		@SafeVarargs
+		private static void addStacksAfter(BuildCreativeModeTabContentsEvent event, CreativeModeTab.TabVisibility visibility, ObjectSortedSet<ItemStack> entries, Predicate<ItemStack> predicate, Supplier<ItemStack>... items) {
+			for (var stack : entries) {
+				if (predicate.test(stack)) {
+					for (Supplier<ItemStack> item : items) {
+						ItemStack itemValue = item.get();
+						event.insertAfter(stack, itemValue, visibility);
+						stack = itemValue;
+					}
+					return;
+				}
+			}
+		}
+
 		/**
 		 * Adds an editor that will add multiple item stacks after the first valid item stack.
 		 *
@@ -181,18 +196,12 @@ public final class CreativeModeTabContentsPopulator {
 		@SafeVarargs
 		public final Entry addStacksAfter(Predicate<ItemStack> predicate, Supplier<ItemStack>... items) {
 			return this.editor(event -> {
-				MutableHashedLinkedMap<ItemStack, CreativeModeTab.TabVisibility> entries = event.getEntries();
-				for (var entry : entries) {
-					ItemStack stack = entry.getKey();
-					if (predicate.test(stack)) {
-						CreativeModeTab.TabVisibility visibility = this.visibility;
-						for (Supplier<ItemStack> item : items) {
-							ItemStack itemValue = item.get();
-							entries.putAfter(stack, itemValue, visibility);
-							stack = itemValue;
-						}
-						return;
-					}
+				var visibility = this.visibility;
+				if (visibility == CreativeModeTab.TabVisibility.PARENT_TAB_ONLY || visibility == CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS) {
+					addStacksAfter(event, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY, event.getParentEntries(), predicate, items);
+				}
+				if (visibility == CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY || visibility == CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS) {
+					addStacksAfter(event, CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY, event.getSearchEntries(), predicate, items);
 				}
 			});
 		}
@@ -209,6 +218,18 @@ public final class CreativeModeTabContentsPopulator {
 			return this.addStacksAfter(predicate, convertItemLikesToStacks(items));
 		}
 
+		@SafeVarargs
+		private static void addStacksBefore(BuildCreativeModeTabContentsEvent event, CreativeModeTab.TabVisibility visibility, ObjectSortedSet<ItemStack> entries, Predicate<ItemStack> predicate, Supplier<ItemStack>... items) {
+			for (var stack : entries) {
+				if (predicate.test(stack)) {
+					for (Supplier<ItemStack> item : items) {
+						event.insertBefore(stack, item.get(), visibility);
+					}
+					return;
+				}
+			}
+		}
+
 		/**
 		 * Adds an editor that will add multiple item stacks before the first valid item stack.
 		 *
@@ -219,16 +240,12 @@ public final class CreativeModeTabContentsPopulator {
 		@SafeVarargs
 		public final Entry addStacksBefore(Predicate<ItemStack> predicate, Supplier<ItemStack>... items) {
 			return this.editor(event -> {
-				MutableHashedLinkedMap<ItemStack, CreativeModeTab.TabVisibility> entries = event.getEntries();
-				for (var entry : entries) {
-					ItemStack stack = entry.getKey();
-					if (predicate.test(stack)) {
-						CreativeModeTab.TabVisibility visibility = this.visibility;
-						for (Supplier<ItemStack> item : items) {
-							entries.putBefore(stack, item.get(), visibility);
-						}
-						return;
-					}
+				var visibility = this.visibility;
+				if (visibility == CreativeModeTab.TabVisibility.PARENT_TAB_ONLY || visibility == CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS) {
+					addStacksBefore(event, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY, event.getParentEntries(), predicate, items);
+				}
+				if (visibility == CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY || visibility == CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS) {
+					addStacksBefore(event, CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY, event.getSearchEntries(), predicate, items);
 				}
 			});
 		}
@@ -245,6 +262,29 @@ public final class CreativeModeTabContentsPopulator {
 			return this.addStacksBefore(predicate, convertItemLikesToStacks(items));
 		}
 
+		@SafeVarargs
+		private static void addStacksAlphabetically(BuildCreativeModeTabContentsEvent event, CreativeModeTab.TabVisibility visibility, ObjectSortedSet<ItemStack> entries, Predicate<ItemStack> shouldCompareToStack, Supplier<ItemStack>... items) {
+			TreeMap<String, ItemStack> treeMap = new TreeMap<>();
+			entries.forEach(stack -> {
+				var key = BuiltInRegistries.ITEM.getResourceKey(stack.getItem());
+				if (key.isPresent() && shouldCompareToStack.test(stack))
+					treeMap.putIfAbsent(key.get().location().getPath(), stack);
+			});
+			for (Supplier<ItemStack> supplier : items) {
+				ItemStack stack = supplier.get();
+				var key = BuiltInRegistries.ITEM.getResourceKey(stack.getItem());
+				if (key.isEmpty()) continue;
+				String path = key.get().location().getPath();
+				var entry = treeMap.floorEntry(path);
+				if (entry != null) {
+					event.insertAfter(entry.getValue(), stack, visibility);
+				} else {
+					event.accept(stack, visibility);
+				}
+				treeMap.put(path, stack);
+			}
+		}
+
 		/**
 		 * Adds an editor that will add multiple item stacks in alphabetical order.
 		 *
@@ -255,27 +295,12 @@ public final class CreativeModeTabContentsPopulator {
 		@SafeVarargs
 		public final Entry addStacksAlphabetically(Predicate<ItemStack> shouldCompareToStack, Supplier<ItemStack>... items) {
 			return this.editor(event -> {
-				MutableHashedLinkedMap<ItemStack, CreativeModeTab.TabVisibility> entries = event.getEntries();
-				TreeMap<String, ItemStack> treeMap = new TreeMap<>();
-				entries.forEach(entry -> {
-					ItemStack stack = entry.getKey();
-					var key = BuiltInRegistries.ITEM.getResourceKey(stack.getItem());
-					if (key.isPresent() && shouldCompareToStack.test(stack))
-						treeMap.putIfAbsent(key.get().location().getPath(), stack);
-				});
-				CreativeModeTab.TabVisibility visibility = this.visibility;
-				for (Supplier<ItemStack> supplier : items) {
-					ItemStack stack = supplier.get();
-					var key = BuiltInRegistries.ITEM.getResourceKey(stack.getItem());
-					if (key.isEmpty()) continue;
-					String path = key.get().location().getPath();
-					var entry = treeMap.floorEntry(path);
-					if (entry != null) {
-						entries.putAfter(entry.getValue(), stack, visibility);
-					} else {
-						entries.put(stack, visibility);
-					}
-					treeMap.put(path, stack);
+				var visibility = this.visibility;
+				if (visibility == CreativeModeTab.TabVisibility.PARENT_TAB_ONLY || visibility == CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS) {
+					addStacksAlphabetically(event, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY, event.getParentEntries(), shouldCompareToStack, items);
+				}
+				if (visibility == CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY || visibility == CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS) {
+					addStacksAlphabetically(event, CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY, event.getSearchEntries(), shouldCompareToStack, items);
 				}
 			});
 		}

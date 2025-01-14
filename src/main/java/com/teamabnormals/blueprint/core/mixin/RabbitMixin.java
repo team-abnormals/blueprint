@@ -66,7 +66,7 @@ public abstract class RabbitMixin extends Animal implements VariantHolder<Rabbit
 
 
 	@Inject(at = @At("RETURN"), method = "finalizeSpawn", cancellable = true)
-	private void finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData spawnData, CompoundTag tag, CallbackInfoReturnable<SpawnGroupData> cir) {
+	private void finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData spawnData, CallbackInfoReturnable<SpawnGroupData> cir) {
 		int id = this.getVariant().id();
 
 		for (BlueprintRabbitVariant newVariant : BlueprintRabbitVariants.values()) {
@@ -83,6 +83,6 @@ public abstract class RabbitMixin extends Animal implements VariantHolder<Rabbit
 		}
 
 		this.getEntityData().set(Rabbit.DATA_TYPE_ID, id);
-		cir.setReturnValue(super.finalizeSpawn(level, difficulty, spawnType, spawnData, tag));
+		cir.setReturnValue(super.finalizeSpawn(level, difficulty, spawnType, spawnData));
 	}
 }
