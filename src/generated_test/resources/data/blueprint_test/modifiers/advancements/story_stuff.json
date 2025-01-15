@@ -3,10 +3,7 @@
     {
       "type": "display",
       "config": {
-        "description": {
-          "text": "Get modified!"
-        },
-        "mode": "modify"
+        "description": "Get modified!"
       }
     }
   ],
@@ -18,7 +15,7 @@
         "type": "choice",
         "config": {
           "condition": {
-            "type": "forge:mod_loaded",
+            "type": "neoforge:mod_loaded",
             "modid": "blueprint"
           },
           "first": "minecraft:story/mine_diamond",

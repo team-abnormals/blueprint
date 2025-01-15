@@ -4,15 +4,12 @@
       "type": "display",
       "conditions": [
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "environmental"
         }
       ],
       "config": {
-        "description": {
-          "text": "Erm, yeah, environmental is loaded"
-        },
-        "mode": "modify",
+        "description": "Erm, yeah, environmental is loaded",
         "title": {
           "translate": "blueprint_test.advancements.husbandry.obtain_armor.title"
         }

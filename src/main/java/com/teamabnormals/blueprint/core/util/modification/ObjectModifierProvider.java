@@ -65,7 +65,7 @@ public abstract class ObjectModifierProvider<T, S, D> implements DataProvider {
 			this.registerEntries(provider);
 			PackOutput.PathProvider pathProvider = this.pathProvider;
 			var additionalSerializationGetter = this.additionalSerializationGetter;
-			RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, provider);
+			RegistryOps<JsonElement> registryOps = provider.createSerializationContext(JsonOps.INSTANCE);
 			ObjectModifierSerializerRegistry<T, S, D> serializerRegistry = this.serializerRegistry;
 			return CompletableFuture.allOf(entries.stream().map(entry -> {
 				Path resolvedPath = pathProvider.json(ResourceLocation.fromNamespaceAndPath(this.modId, entry.name));

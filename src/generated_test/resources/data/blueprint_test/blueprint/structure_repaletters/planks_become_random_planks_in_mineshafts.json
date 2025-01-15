@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "blueprint"
+    }
+  ],
   "repaletter": {
     "type": "blueprint:weighted",
     "replaces_blocks": "minecraft:planks",
@@ -13,14 +19,5 @@
       }
     ]
   },
-  "structures": {
-    "type": "blueprint:conditional",
-    "conditions": [
-      {
-        "type": "forge:mod_loaded",
-        "modid": "blueprint"
-      }
-    ],
-    "value": "minecraft:mineshaft"
-  }
+  "structures": "minecraft:mineshaft"
 }

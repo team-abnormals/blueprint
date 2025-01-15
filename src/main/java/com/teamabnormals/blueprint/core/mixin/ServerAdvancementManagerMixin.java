@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ServerAdvancementManager.class)
 public final class ServerAdvancementManagerMixin {
-	@WrapOperation(method = "*(Lnet/minecraft/resources/RegistryOps;Lcom/google/common/collect/ImmutableMap$Builder;Lnet/minecraft/resources/ResourceLocation;Lcom/google/gson/JsonElement;)V", at = @At(value = "INVOKE", target = "net/minecraft/advancements/AdvancementHolder;<init>(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/advancements/Advancement;)V"))
+	@WrapOperation(method = "*(Lnet/minecraft/resources/RegistryOps;Lcom/google/common/collect/ImmutableMap$Builder;Lnet/minecraft/resources/ResourceLocation;Lcom/google/gson/JsonElement;)V", at = @At(value = "NEW", target = "(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/advancements/Advancement;)Lnet/minecraft/advancements/AdvancementHolder;"))
 	private static AdvancementHolder modifyAdvancement(ResourceLocation id, Advancement advancement, Operation<AdvancementHolder> operation) {
 		var holder = operation.call(id, advancement);
 		if (AdvancementModificationManager.INSTANCE != null) {

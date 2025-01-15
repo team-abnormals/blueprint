@@ -10,18 +10,14 @@
         "experience": 100000,
         "loot": [
           "minecraft:chests/jungle_temple"
-        ],
-        "mode": "modify"
+        ]
       }
     },
     {
       "type": "display",
       "config": {
-        "description": {
-          "text": "Momma."
-        },
+        "description": "Momma.",
         "frame": "challenge",
-        "mode": "modify",
         "title": {
           "translate": "blueprint_test.advancements.husbandry.balanced_diet.title"
         }
@@ -35,15 +31,14 @@
             "conditions": {
               "items": [
                 {
-                  "items": [
-                    "minecraft:netherite_sword"
-                  ]
+                  "items": "minecraft:netherite_sword"
                 }
               ]
             },
             "trigger": "minecraft:inventory_changed"
           }
         },
+        "indexed_requirements": [],
         "requirements": [
           [
             "blueprint_test:test"

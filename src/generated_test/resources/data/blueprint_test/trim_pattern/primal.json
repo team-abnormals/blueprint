@@ -1,5 +1,6 @@
 {
   "asset_id": "blueprint_test:primal",
+  "decal": false,
   "description": {
     "translate": "trim_pattern.blueprint_test.primal"
   },

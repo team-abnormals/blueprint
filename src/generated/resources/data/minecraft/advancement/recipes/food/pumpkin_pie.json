@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:carved_pumpkin"
-            ]
+            "items": "minecraft:carved_pumpkin"
           }
         ]
       },
@@ -17,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:pumpkins"
+            "items": "#forge:pumpkins"
           }
         ]
       },
@@ -32,15 +30,14 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_carved_pumpkin",
-      "has_pumpkin",
-      "has_the_recipe"
+      "has_pumpkin"
     ]
   ],
   "rewards": {
     "recipes": [
       "minecraft:pumpkin_pie"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

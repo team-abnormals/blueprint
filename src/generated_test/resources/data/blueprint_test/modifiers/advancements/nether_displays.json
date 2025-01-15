@@ -4,9 +4,9 @@
       "type": "display",
       "config": {
         "icon": {
-          "item": "minecraft:nether_star"
-        },
-        "mode": "modify"
+          "count": 1,
+          "id": "minecraft:nether_star"
+        }
       }
     }
   ],

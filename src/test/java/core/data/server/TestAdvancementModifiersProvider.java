@@ -7,7 +7,6 @@ import com.teamabnormals.blueprint.core.util.modification.selection.selectors.Ch
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.MultiResourceSelector;
 import com.teamabnormals.blueprint.core.util.modification.selection.selectors.NamesResourceSelector;
 import core.BlueprintTest;
-import core.registry.TestTriggers;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.*;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.Optional.of;
@@ -54,10 +52,6 @@ public final class TestAdvancementModifiersProvider extends AdvancementModifierP
 		this.entry("obtain_armor")
 				.selects("story/obtain_armor")
 				.addModifier(DisplayInfoModifier.builder().title(Component.translatable("blueprint_test.advancements.husbandry.obtain_armor.title")).description(Component.literal("Erm, yeah, environmental is loaded")).build(), new ModLoadedCondition("environmental"));
-
-		this.entry("obtain_netherite_hoe")
-				.selects("husbandry/obtain_netherite_hoe")
-				.addModifier(CriteriaModifier.builder(this.modId).addCriterion("test", TestTriggers.EMPTY_TEST.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()))).requirements(AdvancementRequirements.Strategy.AND).shouldReplaceRequirements(true).build());
 
 		this.entry("story_stuff")
 				.selector(

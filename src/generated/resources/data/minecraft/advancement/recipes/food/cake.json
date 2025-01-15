@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_pumpkin": {
+    "has_egg": {
       "conditions": {
         "items": [
           {
-            "tag": "forge:pumpkins"
+            "items": "#c:eggs"
           }
         ]
       },
@@ -13,21 +13,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:pumpkin_seeds"
+        "recipe": "minecraft:cake"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_pumpkin",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_egg"
     ]
   ],
   "rewards": {
     "recipes": [
-      "minecraft:pumpkin_seeds"
+      "minecraft:cake"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

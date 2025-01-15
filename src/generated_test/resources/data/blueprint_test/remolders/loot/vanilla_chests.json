@@ -1,0 +1,27 @@
+{
+  "molding": "json",
+  "remolder": {
+    "type": "add",
+    "target": "pools[0].entries[]",
+    "value": {
+      "type": "minecraft:item",
+      "functions": [
+        {
+          "add": false,
+          "count": {
+            "type": "minecraft:uniform",
+            "max": 2.0,
+            "min": 1.0
+          },
+          "function": "minecraft:set_count"
+        }
+      ],
+      "name": "minecraft:netherite_ingot",
+      "weight": 5
+    }
+  },
+  "selector": {
+    "type": "regex",
+    "config": "minecraft:chests\\/.+"
+  }
+}

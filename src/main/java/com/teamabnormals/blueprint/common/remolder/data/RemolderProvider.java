@@ -78,7 +78,7 @@ public abstract class RemolderProvider implements DataProvider {
 			entries.clear();
 			this.registerEntries(provider);
 			PackOutput.PathProvider pathProvider = this.pathProvider;
-			RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, provider);
+			RegistryOps<JsonElement> registryOps = provider.createSerializationContext(JsonOps.INSTANCE);
 			return CompletableFuture.allOf(entries.stream().map(entry -> {
 				Path resolvedPath = pathProvider.json(entry.name);
 				try {

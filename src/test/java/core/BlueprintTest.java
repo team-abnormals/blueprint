@@ -59,7 +59,6 @@ public final class BlueprintTest {
 
 	public BlueprintTest(IEventBus modEventBus, ModContainer modContainer) {
 		modEventBus.addListener(EventPriority.LOWEST, this::commonSetup);
-		System.out.println("Cringe alert!");
 
 		REGISTRY_HELPER.register(modEventBus);
 		TestFeatures.FEATURES.register(modEventBus);

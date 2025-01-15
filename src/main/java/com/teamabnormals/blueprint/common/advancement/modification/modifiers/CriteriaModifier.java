@@ -22,9 +22,7 @@ import java.util.*;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public record CriteriaModifier(Map<String, Criterion<?>> criteria, Optional<AdvancementRequirements> requirements,
-							   boolean shouldReplaceRequirements,
-							   Optional<List<IndexedRequirementsEntry>> indexedRequirements) implements AdvancementModifier<CriteriaModifier> {
+public record CriteriaModifier(Map<String, Criterion<?>> criteria, Optional<AdvancementRequirements> requirements, boolean shouldReplaceRequirements, Optional<List<IndexedRequirementsEntry>> indexedRequirements) implements AdvancementModifier<CriteriaModifier> {
 	/**
 	 * Creates a new {@link Builder} instance to simplify creation of {@link CriteriaModifier} instances.
 	 *

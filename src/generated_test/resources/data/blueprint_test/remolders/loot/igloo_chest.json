@@ -1,0 +1,24 @@
+{
+  "molding": "json",
+  "remolder": {
+    "type": "add",
+    "target": "pools[1].entries[]",
+    "value": {
+      "type": "minecraft:item",
+      "functions": [
+        {
+          "add": false,
+          "count": {
+            "type": "minecraft:uniform",
+            "max": 2.0,
+            "min": 1.0
+          },
+          "function": "minecraft:set_count"
+        }
+      ],
+      "name": "minecraft:nether_star",
+      "weight": 10
+    }
+  },
+  "selector": "minecraft:loot_table/chests/igloo_chest"
+}

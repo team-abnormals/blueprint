@@ -41,7 +41,7 @@ runs {
             add project.sourceSets.main
             add project.sourceSets.test
         }
-        programArguments.addAll '--mod', project.modId, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        programArguments.addAll '--mod', 'blueprint_test', '--all', '--output', file('src/generated_test/resources/').getAbsolutePath(), '--existing', file('src/test/resources/').getAbsolutePath()
     }
 }
 

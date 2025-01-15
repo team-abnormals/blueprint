@@ -12,7 +12,7 @@
       "item": "minecraft:wheat"
     },
     "E": {
-      "tag": "forge:eggs"
+      "tag": "c:eggs"
     }
   },
   "pattern": [
@@ -21,7 +21,7 @@
     "CCC"
   ],
   "result": {
-    "item": "minecraft:cake"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "minecraft:cake"
+  }
 }

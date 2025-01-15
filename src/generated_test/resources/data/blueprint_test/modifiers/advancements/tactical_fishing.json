@@ -7,9 +7,7 @@
           "blueprint_test:test": {
             "conditions": {
               "item": {
-                "items": [
-                  "minecraft:lava_bucket"
-                ]
+                "items": "minecraft:lava_bucket"
               }
             },
             "trigger": "minecraft:filled_bucket"
@@ -23,7 +21,8 @@
               "blueprint_test:test"
             ]
           }
-        ]
+        ],
+        "should_replace_requirements": false
       }
     }
   ],

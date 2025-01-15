@@ -9,10 +9,11 @@
       "item": "minecraft:sugar"
     },
     {
-      "tag": "forge:eggs"
+      "tag": "c:eggs"
     }
   ],
   "result": {
-    "item": "minecraft:pumpkin_pie"
+    "count": 1,
+    "id": "minecraft:pumpkin_pie"
   }
 }
