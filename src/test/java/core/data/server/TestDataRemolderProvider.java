@@ -49,7 +49,7 @@ public final class TestDataRemolderProvider extends RemolderProvider {
 			));
 		container = LootItem.lootTableItem(Items.NETHERITE_INGOT).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))).setWeight(5).build();
 		this.entry("loot/vanilla_chests")
-			.path(new RegexResourceSelector(Pattern.compile("minecraft:chests\\/.+")))
+			.path(new RegexResourceSelector(Pattern.compile("minecraft:loot_table\\/chests\\/.+")))
 			.remolder(add(
 				target("pools[0].entries[]"),
 				value(container, LootPoolEntries.CODEC)

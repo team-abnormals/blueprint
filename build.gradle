@@ -25,23 +25,24 @@ runs {
     client {
         modSources {
             add project.sourceSets.main
-            add project.sourceSets.test
+            add "blueprint_test", project.sourceSets.test
         }
     }
 
     server {
         modSources {
             add project.sourceSets.main
-            add project.sourceSets.test
+            add "blueprint_test", project.sourceSets.test
         }
     }
 
     data {
         modSources {
             add project.sourceSets.main
-            add project.sourceSets.test
+            add "blueprint_test", project.sourceSets.test
         }
-        programArguments.addAll '--mod', 'blueprint_test', '--all', '--output', file('src/generated_test/resources/').getAbsolutePath(), '--existing', file('src/test/resources/').getAbsolutePath()
+        programArguments.addAll '--mod', 'blueprint', '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        // programArguments.addAll '--mod', 'blueprint_test', '--all', '--output', file('src/generated_test/resources/').getAbsolutePath(), '--existing', file('src/test/resources/').getAbsolutePath()
     }
 }
 

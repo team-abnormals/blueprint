@@ -22,6 +22,6 @@
   },
   "selector": {
     "type": "regex",
-    "config": "minecraft:chests\\/.+"
+    "config": "minecraft:loot_table\\/chests\\/.+"
   }
 }
