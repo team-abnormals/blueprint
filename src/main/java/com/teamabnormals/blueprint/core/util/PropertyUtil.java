@@ -37,6 +37,10 @@ public final class PropertyUtil {
 		return BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(Block.OffsetType.XZ).pushReaction(PushReaction.DESTROY);
 	}
 
+	public static BlockBehaviour.Properties tallFlower() {
+		return flower().ignitedByLava();
+	}
+
 	public static BlockBehaviour.Properties sapling() {
 		return BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.GRASS).pushReaction(PushReaction.DESTROY);
 	}
@@ -46,10 +50,10 @@ public final class PropertyUtil {
 	}
 
 	public static BlockBehaviour.Properties flowerPot(FeatureFlag... featureFlags) {
-		BlockBehaviour.Properties blockbehaviour$properties = BlockBehaviour.Properties.of().instabreak().noOcclusion().pushReaction(PushReaction.DESTROY);
+		BlockBehaviour.Properties properties = BlockBehaviour.Properties.of().instabreak().noOcclusion().pushReaction(PushReaction.DESTROY);
 		if (featureFlags.length > 0)
-			blockbehaviour$properties = blockbehaviour$properties.requiredFeatures(featureFlags);
-		return blockbehaviour$properties;
+			properties = properties.requiredFeatures(featureFlags);
+		return properties;
 	}
 
 	public static BlockBehaviour.Properties thatch(MapColor color, SoundType soundType) {
