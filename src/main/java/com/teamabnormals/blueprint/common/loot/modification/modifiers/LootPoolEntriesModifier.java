@@ -35,14 +35,17 @@ public record LootPoolEntriesModifier(boolean replace, int index, List<LootPoolE
 	@Override
 	public void modify(LootTable object) {
 		try {
-			LootPool pool = ((List<LootPool>) LootPoolsModifier.POOLS.get(object)).get(this.index);
-			LootPoolEntryContainer[] lootEntries = (LootPoolEntryContainer[]) ENTRIES.get(pool);
-			if (this.replace) {
-				lootEntries = this.entries.toArray(LootPoolEntryContainer[]::new);
-			} else {
-				lootEntries = DataUtil.concatArrays(lootEntries, this.entries.toArray(LootPoolEntryContainer[]::new));
+			List<LootPool> pools = (List<LootPool>) LootPoolsModifier.POOLS.get(object);
+			if (this.index < pools.size()) {
+				LootPool pool = pools.get(this.index);
+				LootPoolEntryContainer[] lootEntries = (LootPoolEntryContainer[]) ENTRIES.get(pool);
+				if (this.replace) {
+					lootEntries = this.entries.toArray(LootPoolEntryContainer[]::new);
+				} else {
+					lootEntries = DataUtil.concatArrays(lootEntries, this.entries.toArray(LootPoolEntryContainer[]::new));
+				}
+				ENTRIES.set(pool, lootEntries);
 			}
-			ENTRIES.set(pool, lootEntries);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
