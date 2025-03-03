@@ -32,6 +32,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -75,6 +76,7 @@ public class BlueprintTrims {
 	private static final IdentityHashMap<ResourceKey<TrimMaterial>, Map<ArmorMaterial, String>> TRIM_MATERIAL_ARMOR_MATERIAL_OVERRIDES = new IdentityHashMap<>();
 	private static final LinkedHashMap<ResourceKey<TrimMaterial>, Pair<TrimMaterial, Float>> GENERATED_OVERRIDE_INDICES = new LinkedHashMap<>();
 	private static final ArrayList<RevertibleOverrides> REVERTIBLE_OVERRIDES = new ArrayList<>();
+	private static boolean needsRebake;
 
 	public static void init() {
 		ItemProperties.registerGeneric(TRIM_TYPE_PREDICATE_ID, (stack, level, entity, num) -> {
@@ -340,19 +342,24 @@ public class BlueprintTrims {
 	}
 
 	@SubscribeEvent
-	public static void onClientLoggingIntoServer(ClientPlayerNetworkEvent.LoggingIn event) {
-		RegistryAccess registryAccess = event.getPlayer().clientLevel.registryAccess();
+	public static void onTagsSynced(TagsUpdatedEvent event) {
+		if (event.getUpdateCause() != TagsUpdatedEvent.UpdateCause.CLIENT_PACKET_RECEIVED) return;
+		RegistryAccess registryAccess = event.getRegistryAccess();
 		var trimMaterials = registryAccess.registryOrThrow(Registries.TRIM_MATERIAL);
 		var neededTrimMaterialsOptional = trimMaterials.getTag(BlueprintTrimMaterialTags.GENERATES_OVERRIDES);
 		if (neededTrimMaterialsOptional.isEmpty()) return;
 		var neededTrimMaterials = neededTrimMaterialsOptional.get();
 		if (neededTrimMaterials.size() == 0) return;
+		GENERATED_OVERRIDE_INDICES.clear();
 		neededTrimMaterials.forEach(trimMaterialHolder -> {
 			var key = trimMaterialHolder.unwrapKey();
 			if (key.isEmpty()) return;
 			GENERATED_OVERRIDE_INDICES.put(key.get(), Pair.of(trimMaterialHolder.value(), (float) GENERATED_OVERRIDE_INDICES.size()));
 		});
-		modifyTrimmableItemModels(registryAccess);
+		if (!needsRebake) {
+			modifyTrimmableItemModels(registryAccess);
+			needsRebake = true;
+		}
 	}
 
 	@SubscribeEvent
@@ -362,6 +369,7 @@ public class BlueprintTrims {
 			REVERTIBLE_OVERRIDES.remove(i).revert();
 		}
 		GENERATED_OVERRIDE_INDICES.clear();
+		needsRebake = false;
 	}
 
 	public static void onModelsBaked(ModelEvent.BakingCompleted event) {
@@ -372,8 +380,7 @@ public class BlueprintTrims {
 		modifyTrimmableItemModels(level.registryAccess());
 	}
 
-	private record RevertibleOverrides(ItemOverrides itemOverrides, ItemOverrides.BakedOverride[] overrides,
-									   ResourceLocation[] properties) {
+	private record RevertibleOverrides(ItemOverrides itemOverrides, ItemOverrides.BakedOverride[] overrides, ResourceLocation[] properties) {
 		private void revert() {
 			this.itemOverrides.overrides = this.overrides;
 			this.itemOverrides.properties = this.properties;
