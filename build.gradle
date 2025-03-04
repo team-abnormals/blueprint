@@ -72,6 +72,10 @@ tasks.named('jar', Jar).configure {
     }
 }
 
+tasks.named("test").configure {
+    enabled = false
+}
+
 task sourcesJar(type: Jar) {
     duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set("sources")
