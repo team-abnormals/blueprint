@@ -5,7 +5,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModifierSerializers;
-import net.minecraft.advancements.Advancement;
+import com.teamabnormals.blueprint.common.advancement.modification.BlueprintAdvancementBuilder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.network.chat.Component;
@@ -32,7 +32,7 @@ public record DisplayInfoModifier(boolean replaces, Optional<ItemStack> icon, Op
 	}
 
 	@Override
-	public void modify(Advancement.Builder builder) {
+	public void modify(BlueprintAdvancementBuilder builder) {
 		var display = builder.display;
 		if (display.isPresent() && !this.replaces) {
 			DisplayInfo displayInfo = display.get();

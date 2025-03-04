@@ -5,11 +5,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.datafixers.util.Unit;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import java.util.ArrayList;
@@ -72,7 +75,7 @@ public record ObjectModifierGroup<T, S, D>(ConditionedResourceSelector selector,
 		List<ObjectModifier<T, S, D, ?>> objectModifiers = new ArrayList<>();
 		GsonHelper.getAsJsonArray(object, "modifiers").forEach(element -> {
 			JsonObject entry = element.getAsJsonObject();
-			if (!GsonHelper.isValidNode(entry, "conditions") || ICondition.conditionsMatched(JsonOps.INSTANCE, GsonHelper.getAsJsonArray(entry, "conditions"))) {
+			if (!GsonHelper.isValidNode(entry, "conditions") || ICondition.getWithConditionalCodec(ConditionalOps.createConditionalCodec(Codec.unit(Unit.INSTANCE), "conditions"), JsonOps.INSTANCE, entry).isPresent()) {
 				String type = GsonHelper.getAsString(entry, "type");
 				ObjectModifier.Serializer<? extends ObjectModifier<T, S, D, ?>, S, D> serializer = registry.getSerializer(type);
 				if (serializer == null) throw new JsonParseException("Unknown modifier type: " + type);

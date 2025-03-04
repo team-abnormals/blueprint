@@ -27,7 +27,7 @@
     "WorldLoaderPackConfigMixin"
   ],
   "client": [
-    "client.CameraInvokerMixin",
+    "client.CameraMixin",
     "client.ClientLevelMixin",
     "client.IntegratedServerMixin",
     "client.MinecraftMixin",

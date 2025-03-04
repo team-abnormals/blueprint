@@ -10,10 +10,8 @@ import com.teamabnormals.blueprint.core.events.FallingBlockEvent.FallingBlockTic
 import com.teamabnormals.blueprint.core.util.TradeUtil;
 import com.teamabnormals.blueprint.core.util.TradeUtil.BlueprintTrade;
 import core.registry.TestItems;
-import core.registry.TestTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
@@ -47,10 +45,6 @@ public final class TestEvents {
 		Entity entity = event.getTarget();
 		if (entity instanceof Cow || entity instanceof Player) {
 			if (!entity.level().isClientSide) {
-				Player player = event.getEntity();
-				if (player instanceof ServerPlayer) {
-					TestTriggers.EMPTY_TEST.trigger((ServerPlayer) player);
-				}
 				TrackedDataManager.INSTANCE.setValue(entity, BlueprintTest.TEST_TRACKED_DATA, true);
 			} else {
 				ScreenShakeHandler.INSTANCE.addShakeSource(new EmanatingShakeSource(entity, 100, 0.1F, 0.1F, 0.02F, 0.2F, 0.2F, 0.04F, 0.98F, 0.98F, 0.99F));

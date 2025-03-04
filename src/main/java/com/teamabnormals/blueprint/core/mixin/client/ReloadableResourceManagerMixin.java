@@ -27,7 +27,7 @@ public final class ReloadableResourceManagerMixin {
 	@Inject(method = "createReload", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/server/packs/resources/ReloadableResourceManager;resources:Lnet/minecraft/server/packs/resources/CloseableResourceManager;", ordinal = 0, shift = At.Shift.AFTER))
 	private void wrapResources(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> completableFuture, List<PackResources> packResourcesList, CallbackInfoReturnable<ReloadInstance> info) {
 		if (Minecraft.getInstance().getResourceManager() == (Object) this && this.resources instanceof RemoldableResourceManager remoldableResourceManager) {
-			remoldableResourceManager.updateRemolderLoader(PackType.CLIENT_RESOURCES, true).reloadRemolders(remoldableResourceManager, prepareExecutor);
+			remoldableResourceManager.updateRemolderLoader(PackType.CLIENT_RESOURCES).reloadRemolders(remoldableResourceManager, prepareExecutor);
 		}
 	}
 }

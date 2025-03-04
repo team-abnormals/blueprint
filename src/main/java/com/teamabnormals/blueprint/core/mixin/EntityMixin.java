@@ -135,8 +135,7 @@ public abstract class EntityMixin implements IDataManager, Endimatable {
 			this.dataMap.forEach((trackedData, dataEntry) -> {
 				var codec = trackedData.getCodec();
 				if (codec != null) {
-					CompoundTag dataTag = new CompoundTag();
-					dataEntry.encode(dataTag);
+					CompoundTag dataTag = dataEntry.encode(new CompoundTag());
 					dataTag.putString("Id", TrackedDataManager.INSTANCE.getKey(trackedData).toString());
 					dataListTag.add(dataTag);
 				}

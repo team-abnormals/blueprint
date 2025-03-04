@@ -12,12 +12,11 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(MinecraftServer.class)
 public final class MinecraftServerMixin {
-	// TODO: Maybe simplify this
 	@Dynamic
 	@ModifyVariable(method = "*(Lcom/google/common/collect/ImmutableList;)Ljava/util/concurrent/CompletionStage;", index = 2, at = @At(value = "STORE", ordinal = 0))
 	private CloseableResourceManager reloadRemolders(CloseableResourceManager manager) {
 		if (manager instanceof RemoldableResourceManager remoldableResourceManager) {
-			remoldableResourceManager.updateRemolderLoader(PackType.SERVER_DATA, false).reloadRemolders(remoldableResourceManager, Util.backgroundExecutor());
+			remoldableResourceManager.updateRemolderLoader(PackType.SERVER_DATA).reloadRemolders(remoldableResourceManager, Util.backgroundExecutor());
 		}
 		return manager;
 	}

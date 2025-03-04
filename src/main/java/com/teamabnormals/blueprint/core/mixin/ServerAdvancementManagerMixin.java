@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.core.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModificationManager;
+import com.teamabnormals.blueprint.common.advancement.modification.BlueprintAdvancementBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
@@ -17,17 +18,17 @@ public final class ServerAdvancementManagerMixin {
 	private static AdvancementHolder modifyAdvancement(ResourceLocation id, Advancement advancement, Operation<AdvancementHolder> operation) {
 		var holder = operation.call(id, advancement);
 		if (AdvancementModificationManager.INSTANCE != null) {
-			Advancement.Builder builder = new Advancement.Builder();
-			advancement.parent().ifPresent(builder::parent);
-			advancement.display().ifPresent(builder::display);
-			builder.rewards(advancement.rewards());
-			advancement.criteria().forEach(builder::addCriterion);
-			builder.requirements(advancement.requirements());
-			if (advancement.sendsTelemetryEvent()) builder.sendsTelemetryEvent();
+			BlueprintAdvancementBuilder mutableAdvancement = new BlueprintAdvancementBuilder();
+			advancement.parent().ifPresent(mutableAdvancement::parent);
+			advancement.display().ifPresent(mutableAdvancement::display);
+			mutableAdvancement.rewards(advancement.rewards());
+			advancement.criteria().forEach(mutableAdvancement::addCriterion);
+			mutableAdvancement.requirements(advancement.requirements());
+			if (advancement.sendsTelemetryEvent()) mutableAdvancement.sendsTelemetryEvent();
 			for (EventPriority priority : EventPriority.values()) {
-				AdvancementModificationManager.INSTANCE.applyModifiers(priority, id, builder);
+				AdvancementModificationManager.INSTANCE.applyModifiers(priority, id, mutableAdvancement);
 			}
-			return builder.build(id);
+			return mutableAdvancement.build(id);
 		}
 		return new AdvancementHolder(holder.id(), holder.value());
 	}

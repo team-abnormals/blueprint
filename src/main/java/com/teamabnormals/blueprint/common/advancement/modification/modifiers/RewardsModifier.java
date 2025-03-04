@@ -5,7 +5,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModifierSerializers;
-import net.minecraft.advancements.Advancement;
+import com.teamabnormals.blueprint.common.advancement.modification.BlueprintAdvancementBuilder;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
@@ -23,7 +23,7 @@ import java.util.Optional;
  */
 public record RewardsModifier(boolean replaces, Optional<Integer> experience, Optional<List<ResourceKey<LootTable>>> loot, Optional<List<ResourceLocation>> recipes, Optional<ResourceLocation> function) implements AdvancementModifier<RewardsModifier> {
 	@Override
-	public void modify(Advancement.Builder builder) {
+	public void modify(BlueprintAdvancementBuilder builder) {
 		if (!this.replaces) {
 			AdvancementRewards rewards = builder.rewards;
 			AdvancementRewards.Builder rewardsBuilder = new AdvancementRewards.Builder();

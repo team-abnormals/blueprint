@@ -3,7 +3,6 @@ package com.teamabnormals.blueprint.common.advancement.modification;
 import com.google.gson.JsonElement;
 import com.teamabnormals.blueprint.common.advancement.modification.modifiers.*;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModifierSerializerRegistry;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.RegistryOps;
 
 /**
@@ -12,7 +11,7 @@ import net.minecraft.resources.RegistryOps;
  * @author SmellyModder (Luke Tonon)
  */
 public final class AdvancementModifierSerializers {
-	public static final ObjectModifierSerializerRegistry<Advancement.Builder, RegistryOps<JsonElement>, RegistryOps<JsonElement>> REGISTRY = new ObjectModifierSerializerRegistry<>();
+	public static final ObjectModifierSerializerRegistry<BlueprintAdvancementBuilder, RegistryOps<JsonElement>, RegistryOps<JsonElement>> REGISTRY = new ObjectModifierSerializerRegistry<>();
 
 	public static final ParentModifier.Serializer PARENT = REGISTRY.register("parent", new ParentModifier.Serializer());
 	public static final RewardsModifier.Serializer REWARDS = REGISTRY.register("rewards", new RewardsModifier.Serializer());

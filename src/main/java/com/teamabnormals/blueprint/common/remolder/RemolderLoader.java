@@ -42,9 +42,8 @@ public final class RemolderLoader {
 	private final HashMap<String, IdentityHashMap<MoldingTypes.MoldingType<?>, Pair<Map<String, List<Entry>>, ArrayList<Pair<Predicate<ResourceLocation>, Entry>>>>> fileExtensionToEntries = new HashMap<>();
 	private final RemoldingCompiler compiler;
 	private final PackType packType;
-	private final boolean needsAutoReload;
 
-	public RemolderLoader(CloseableResourceManager manager, PackType packType, boolean needsAutoReload) {
+	public RemolderLoader(CloseableResourceManager manager, PackType packType) {
 		this.packType = packType;
 		RemoldingCompiler.ExportEntry[] exports;
 		try (Reader reader = manager.getResourceOrThrow(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "remolder.json")).openAsReader()) {
@@ -58,12 +57,6 @@ public final class RemolderLoader {
 			exports = new RemoldingCompiler.ExportEntry[0];
 		}
 		this.compiler = new RemoldingCompiler(this.getClass().getClassLoader(), exports);
-		this.needsAutoReload = needsAutoReload;
-	}
-
-	// TODO: Possibly remove after testing
-	public boolean needsAutoReload() {
-		return this.needsAutoReload;
 	}
 
 	public void reloadRemolders(CloseableResourceManager manager, Executor executor) {

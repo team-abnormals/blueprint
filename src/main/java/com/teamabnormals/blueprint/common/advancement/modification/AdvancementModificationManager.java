@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.teamabnormals.blueprint.common.advancement.modification.modifiers.AdvancementModifier;
 import com.teamabnormals.blueprint.core.util.modification.ObjectModificationManager;
-import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.resources.RegistryOps;
 
 import javax.annotation.Nullable;
@@ -15,7 +14,7 @@ import javax.annotation.Nullable;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public final class AdvancementModificationManager extends ObjectModificationManager<Builder, RegistryOps<JsonElement>, RegistryOps<JsonElement>> {
+public final class AdvancementModificationManager extends ObjectModificationManager<BlueprintAdvancementBuilder, RegistryOps<JsonElement>, RegistryOps<JsonElement>> {
 	public static final String TARGET_PATH = "advancements";
 	private static final Gson GSON = (new GsonBuilder()).create();
 	public static AdvancementModificationManager INSTANCE;

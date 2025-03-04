@@ -90,8 +90,7 @@ public final class DataUtil {
 	 * @param item   An {@link ItemLike} to be compostable.
 	 * @param chance The compost chance for the item.
 	 */
-	// TODO: Remove?
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static void registerCompostable(ItemLike item, float chance) {
 		ComposterBlock.COMPOSTABLES.put(item.asItem(), chance);
 	}

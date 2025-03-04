@@ -5,7 +5,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModifierSerializers;
-import net.minecraft.advancements.Advancement;
+import com.teamabnormals.blueprint.common.advancement.modification.BlueprintAdvancementBuilder;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -25,9 +25,9 @@ import java.util.Optional;
 public record EffectsChangedModifier(String criteria, boolean removes, MobEffectsPredicate mobEffectsPredicate) implements AdvancementModifier<EffectsChangedModifier> {
 	@SuppressWarnings("unchecked")
 	@Override
-	public void modify(Advancement.Builder builder) {
+	public void modify(BlueprintAdvancementBuilder builder) {
 		String criteriaKey = this.criteria;
-		Criterion<?> criterion = builder.criteria.build().get(criteriaKey);
+		Criterion<?> criterion = builder.criteria.get(criteriaKey);
 		if (criterion != null) {
 			CriterionTriggerInstance instance = criterion.triggerInstance();
 			if (instance instanceof EffectsChangedTrigger.TriggerInstance(

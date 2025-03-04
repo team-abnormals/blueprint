@@ -42,7 +42,6 @@ import java.util.*;
  *
  * @author SmellyModder (Luke Tonon)
  */
-// TODO: Test this
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = Blueprint.MOD_ID, value = Dist.CLIENT)
 public class BlueprintTrims {

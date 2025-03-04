@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModifierSerializers;
-import net.minecraft.advancements.Advancement;
+import com.teamabnormals.blueprint.common.advancement.modification.BlueprintAdvancementBuilder;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
  */
 public record ParentModifier(ResourceLocation parent) implements AdvancementModifier<ParentModifier> {
 	@Override
-	public void modify(Advancement.Builder builder) {
+	public void modify(BlueprintAdvancementBuilder builder) {
 		builder.parent(this.parent);
 	}
 

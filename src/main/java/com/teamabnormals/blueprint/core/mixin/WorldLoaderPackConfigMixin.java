@@ -17,7 +17,7 @@ public final class WorldLoaderPackConfigMixin {
 	@Inject(method = "createResourceManager", at = @At("RETURN"), cancellable = true)
 	private void reloadRemolders(CallbackInfoReturnable<Pair<WorldDataConfiguration, CloseableResourceManager>> info) {
 		if (info.getReturnValue().getSecond() instanceof RemoldableResourceManager remoldableResourceManager) {
-			remoldableResourceManager.updateRemolderLoader(PackType.SERVER_DATA, false).reloadRemolders(remoldableResourceManager, Util.backgroundExecutor());
+			remoldableResourceManager.updateRemolderLoader(PackType.SERVER_DATA).reloadRemolders(remoldableResourceManager, Util.backgroundExecutor());
 		}
 	}
 }

@@ -2,7 +2,6 @@ package com.teamabnormals.blueprint.client.screen.shaking;
 
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.BlueprintConfig;
-import com.teamabnormals.blueprint.core.mixin.client.CameraInvokerMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -13,7 +12,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import java.util.Iterator;
@@ -46,12 +44,6 @@ public enum ScreenShakeHandler {
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
-		INSTANCE.shakeCamera(event);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
 	public static void onPlayerLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
 		INSTANCE.clear();
 	}
@@ -79,6 +71,18 @@ public enum ScreenShakeHandler {
 		if (sources.size() >= BlueprintConfig.CLIENT.maxScreenShakers) return false;
 		sources.add(source);
 		return true;
+	}
+
+	public double getIntensityX(float partialTicks) {
+		return Mth.lerp(partialTicks, this.prevIntensityX, this.intensityX);
+	}
+
+	public double getIntensityY(float partialTicks) {
+		return Mth.lerp(partialTicks, this.prevIntensityY, this.intensityY);
+	}
+
+	public double getIntensityZ(float partialTicks) {
+		return Mth.lerp(partialTicks, this.prevIntensityZ, this.intensityZ);
 	}
 
 	private void tick() {
@@ -128,17 +132,6 @@ public enum ScreenShakeHandler {
 				this.intensityX = intensityX != 0.0F ? randomizeIntensity(intensityX) : 0.0F;
 				this.intensityY = intensityY != 0.0F ? randomizeIntensity(intensityY) : 0.0F;
 				this.intensityZ = intensityZ != 0.0F ? randomizeIntensity(intensityZ) : 0.0F;
-			}
-		}
-	}
-
-	private void shakeCamera(ViewportEvent.ComputeCameraAngles event) {
-		double screenShakeScale = BlueprintConfig.CLIENT.screenShakeScale;
-		if (screenShakeScale > 0.0D) {
-			double partialTicks = event.getPartialTick();
-			double x = Mth.lerp(partialTicks, this.prevIntensityX, this.intensityX), y = Mth.lerp(partialTicks, this.prevIntensityY, this.intensityY), z = Mth.lerp(partialTicks, this.prevIntensityZ, this.intensityZ);
-			if (x != 0.0F || y != 0.0F || z != 0.0F) {
-				((CameraInvokerMixin) event.getCamera()).callMove((float) (z * screenShakeScale), (float) (y * screenShakeScale), (float) (x * screenShakeScale));
 			}
 		}
 	}

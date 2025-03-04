@@ -12,11 +12,7 @@ import com.teamabnormals.blueprint.common.block.sign.BlueprintCeilingHangingSign
 import com.teamabnormals.blueprint.common.block.sign.BlueprintStandingSignBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintWallHangingSignBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
-import com.teamabnormals.blueprint.common.item.BEWLRBlockItem;
 import com.teamabnormals.blueprint.common.item.FuelBlockItem;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -33,7 +30,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.HashMap;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
@@ -72,6 +68,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	private static IClientItemExtensions chestBEWLRItemExtensions(boolean trapped) {
 		return MemoizedBEWLR.asCustomItemRenderer(trapped ? (dispatcher, entityModelSet) -> {
 			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintTrappedChestBlockEntity(BlockPos.ZERO, Blocks.TRAPPED_CHEST.defaultBlockState()));
@@ -147,14 +144,14 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers a {@link Block} with a {@link BlockItem} with a {@link BlockEntityWithoutLevelRenderer}.
+	 * Creates and registers a {@link Block} with a {@link BlockItem} with a custom renderer.
 	 *
 	 * @param name     The block's name.
 	 * @param supplier The supplied {@link Block}.
-	 * @param belwr    A supplier for getting the {@link BlockEntityWithoutLevelRenderer} for the {@link BlockItem}.
+	 * @param belwr    A supplier for getting the renderer for the {@link BlockItem}.
 	 * @return A {@link DeferredHolder} containing the created {@link Block}.
 	 */
-	public <B extends Block> DeferredHolder<Block, B> createBlockWithBEWLR(String name, Supplier<? extends B> supplier, Supplier<BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer>> belwr) {
+	public <B extends Block> DeferredHolder<Block, B> createBlockWithBEWLR(String name, Supplier<? extends B> supplier, Supplier<MemoizedBEWLR.Factory> belwr) {
 		DeferredHolder<Block, B> block = this.deferredRegister.register(name, supplier);
 		var item = this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
 		if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -207,7 +204,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers {@link BlueprintChestBlock} with a {@link BEWLRBlockItem}.
+	 * Creates and registers {@link BlueprintChestBlock}.
 	 *
 	 * @param name         The name for this {@link BlueprintChestBlock}.
 	 * @param materialName The name of the material used for this {@link BlueprintChestBlock}
@@ -226,7 +223,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers {@link BlueprintChestBlock} with a {@link BEWLRBlockItem}.
+	 * Creates and registers {@link BlueprintChestBlock}.
 	 *
 	 * @param materialName The name of the material used for this {@link BlueprintChestBlock}
 	 * @param properties   The properties for this {@link BlueprintChestBlock}.
@@ -237,7 +234,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRBlockItem}.
+	 * Creates and registers {@link BlueprintTrappedChestBlock}.
 	 *
 	 * @param name         The name for this {@link BlueprintTrappedChestBlock}.
 	 * @param materialName The name of the material used for this {@link BlueprintTrappedChestBlock}
@@ -256,7 +253,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block> {
 	}
 
 	/**
-	 * Creates and registers {@link BlueprintTrappedChestBlock} with a {@link BEWLRBlockItem}.
+	 * Creates and registers {@link BlueprintTrappedChestBlock}.
 	 *
 	 * @param materialName The name of the material used for this {@link BlueprintTrappedChestBlock}
 	 * @param properties   The properties for this {@link BlueprintTrappedChestBlock}.

@@ -9,7 +9,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModifierSerializers;
-import net.minecraft.advancements.Advancement;
+import com.teamabnormals.blueprint.common.advancement.modification.BlueprintAdvancementBuilder;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.resources.RegistryOps;
@@ -34,7 +34,7 @@ public record CriteriaModifier(Map<String, Criterion<?>> criteria, Optional<Adva
 	}
 
 	@Override
-	public void modify(Advancement.Builder builder) {
+	public void modify(BlueprintAdvancementBuilder builder) {
 		builder.criteria.putAll(this.criteria);
 		var requirementsToAdd = this.requirements;
 		if (requirementsToAdd.isPresent()) {

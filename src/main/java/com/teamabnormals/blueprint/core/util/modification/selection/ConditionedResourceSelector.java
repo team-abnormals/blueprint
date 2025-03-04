@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -14,6 +15,7 @@ import com.teamabnormals.blueprint.core.util.modification.selection.selectors.Na
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import java.util.Set;
@@ -67,7 +69,7 @@ public final class ConditionedResourceSelector {
 		if (element instanceof JsonPrimitive primitive && primitive.isString()) {
 			return new ConditionedResourceSelector(new NamesResourceSelector(ResourceLocation.parse(primitive.getAsString())));
 		} else if (element instanceof JsonObject jsonObject) {
-			if (!GsonHelper.isValidNode(jsonObject, "conditions") || ICondition.conditionsMatched(JsonOps.INSTANCE, GsonHelper.getAsJsonArray(jsonObject, "conditions"))) {
+			if (!GsonHelper.isValidNode(jsonObject, "conditions") || ICondition.getWithConditionalCodec(ConditionalOps.createConditionalCodec(Codec.unit(Unit.INSTANCE), "conditions"), JsonOps.INSTANCE, jsonObject).isPresent()) {
 				String type = GsonHelper.getAsString(jsonObject, "type");
 				ResourceSelector.Serializer<?> serializer = ResourceSelectorSerializers.INSTANCE.getSerializer(type);
 				if (serializer != null)

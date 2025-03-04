@@ -36,7 +36,6 @@ import java.util.function.Predicate;
  *
  * @author SmellyModder (Luke Tonon)
  */
-// TODO: Test this
 public class BlueprintBoatItem extends Item {
 	private static final Predicate<Entity> COLLISION_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
 	private final boolean hasChest;
