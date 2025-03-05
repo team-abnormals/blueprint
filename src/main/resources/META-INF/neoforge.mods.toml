@@ -24,13 +24,13 @@ license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 [[dependencies.blueprint]]
     modId = "neoforge"
     type = "required"
-    versionRange = "[21.0.167,)"
+    versionRange = "[21.0.0,21.2.0)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.blueprint]]
     modId = "minecraft"
     type = "required"
-    versionRange = "[1.21,1.21.1)"
+    versionRange = "[1.21,1.21.2)"
     ordering = "NONE"
     side = "BOTH"

@@ -55,7 +55,14 @@ sourceSets.test.resources {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${project.neoforge}"
+    implementation "net.neoforged:neoforge:${project.neoforgeVersion}"
+}
+
+subsystems {
+    parchment {
+        minecraftVersion = "${project.minecraftVersion}"
+        mappingsVersion = "${project.parchmentVersion}"
+    }
 }
 
 tasks.named('jar', Jar).configure {
@@ -94,14 +101,10 @@ publishing {
         }
     }
     repositories {
-        if (project.hasProperty("jacksonMavenUser") && project.hasProperty("jacksonMavenPass")) {
-            maven {
-                url "https://maven.jaackson.me"
-                credentials {
-                    username = project.properties.jacksonMavenUser
-                    password = project.properties.jacksonMavenPass
-                }
-            }
+        maven {
+            name = "abnormals"
+            url = "https://maven.teamabnormals.com"
+            credentials(PasswordCredentials)
         }
     }
 }
