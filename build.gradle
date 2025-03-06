@@ -1,11 +1,11 @@
 plugins {
-    id 'java-library'
-    id 'idea'
-    id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.145'
+    id "java-library"
+    id "idea"
+    id "maven-publish"
+    id "net.neoforged.gradle.userdev" version "7.0.182"
 }
 
-version = "${project.minecraftVersion}-${project.modVersion}"
+version = "${project.mcVersion}-${project.modVersion}"
 group = "com.teamabnormals"
 
 base {
@@ -13,12 +13,12 @@ base {
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
+minecraft.accessTransformers.file rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
 
 runs {
     configureEach {
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-        systemProperty 'forge.logging.console.level', 'debug'
+        systemProperty "forge.logging.markers", "REGISTRIES"
+        systemProperty "forge.logging.console.level", "debug"
         systemProperty "blueprint.indev", "true"
     }
 
@@ -41,8 +41,8 @@ runs {
             add project.sourceSets.main
             add "blueprint_test", project.sourceSets.test
         }
-        programArguments.addAll '--mod', 'blueprint', '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        // programArguments.addAll '--mod', 'blueprint_test', '--all', '--output', file('src/generated_test/resources/').getAbsolutePath(), '--existing', file('src/test/resources/').getAbsolutePath()
+        programArguments.addAll "--mod", "blueprint", "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath()
+        // programArguments.addAll "--mod", "blueprint_test", "--all", "--output", file("src/generated_test/resources/").getAbsolutePath(), "--existing", file("src/test/resources/").getAbsolutePath()
     }
 }
 
@@ -55,17 +55,17 @@ sourceSets.test.resources {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${project.neoforgeVersion}"
+    implementation "net.neoforged:neoforge:${project.neoforge}"
 }
 
 subsystems {
     parchment {
-        minecraftVersion = "${project.minecraftVersion}"
-        mappingsVersion = "${project.parchmentVersion}"
+        mcVersion = "${project.mcVersion}"
+        mappingsVersion = "${project.parchment}"
     }
 }
 
-tasks.named('jar', Jar).configure {
+tasks.named("jar", Jar).configure {
     manifest {
         attributes([
                 "Specification-Title"     : project.modName,
@@ -106,5 +106,12 @@ publishing {
             url = "https://maven.teamabnormals.com"
             credentials(PasswordCredentials)
         }
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
     }
 }
