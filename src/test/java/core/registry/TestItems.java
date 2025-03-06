@@ -15,6 +15,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import static com.teamabnormals.blueprint.core.util.item.ItemStackUtil.is;
@@ -28,13 +29,13 @@ public final class TestItems {
 
 	private static final Helper HELPER = BlueprintTest.REGISTRY_HELPER.getItemSubHelper();
 
-	public static final DeferredHolder<Item, Item> ITEM = HELPER.createTest();
-	public static final DeferredHolder<Item, DeferredSpawnEggItem> COW_SPAWN_EGG = HELPER.createItem("test_spawn_egg", () -> new DeferredSpawnEggItem(TestEntities.COW, 100, 200, new Item.Properties()));
-	public static final Pair<DeferredHolder<Item, BlueprintBoatItem>, DeferredHolder<Item, BlueprintBoatItem>> BOAT = HELPER.createBoatAndChestBoatItem("test", TestBlocks.BLOCK, false);
+	public static final DeferredItem<Item> ITEM = HELPER.createTest();
+	public static final DeferredItem<DeferredSpawnEggItem> COW_SPAWN_EGG = HELPER.createItem("test_spawn_egg", () -> new DeferredSpawnEggItem(TestEntities.COW, 100, 200, new Item.Properties()));
+	public static final Pair<DeferredItem<BlueprintBoatItem>, DeferredItem<BlueprintBoatItem>> BOAT = HELPER.createBoatAndChestBoatItem("test", TestBlocks.BLOCK, false);
 
 	public static final DeferredRegister<DecoratedPotPattern> DECORATED_POT_PATTERNS = DeferredRegister.create(Registries.DECORATED_POT_PATTERN, BlueprintTest.MOD_ID);
 	public static final DeferredHolder<DecoratedPotPattern, DecoratedPotPattern> TEST_POTTERY_SHERD = DECORATED_POT_PATTERNS.register("test_pottery_pattern", () -> new DecoratedPotPattern(ResourceLocation.fromNamespaceAndPath(BlueprintTest.MOD_ID, "test_pottery_pattern")));
-	public static final DeferredHolder<Item, Item> PRIMAL_ARMOR_TRIM_SMITHING_TEMPLATE = HELPER.createItem("primal_armor_trim_smithing_template", () -> SmithingTemplateItem.createArmorTrimTemplate(TestTrimPatterns.PRIMAL));
+	public static final DeferredItem<Item> PRIMAL_ARMOR_TRIM_SMITHING_TEMPLATE = HELPER.createItem("primal_armor_trim_smithing_template", () -> SmithingTemplateItem.createArmorTrimTemplate(TestTrimPatterns.PRIMAL));
 
 	public static void setupTabEditors() {
 		CreativeModeTabContentsPopulator.mod(BlueprintTest.MOD_ID)
@@ -54,10 +55,10 @@ public final class TestItems {
 	public static class Helper extends ItemSubRegistryHelper {
 
 		public Helper(RegistryHelper parent) {
-			super(parent, parent.getItemSubHelper().getDeferredRegister());
+			super(parent, (DeferredRegister.Items) parent.getItemSubHelper().getDeferredRegister());
 		}
 
-		private DeferredHolder<Item, Item> createTest() {
+		private DeferredItem<Item> createTest() {
 			return this.deferredRegister.register("test", () -> new Item(new Item.Properties()));
 		}
 

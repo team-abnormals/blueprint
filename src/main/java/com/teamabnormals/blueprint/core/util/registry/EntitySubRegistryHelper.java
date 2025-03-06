@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * @author SmellyModder (Luke Tonon)
  * @see AbstractSubRegistryHelper
  */
-public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityType<?>> {
+public class EntitySubRegistryHelper extends AbstractSubRegistryHelper<EntityType<?>, DeferredRegister<EntityType<?>>> {
 
 	public EntitySubRegistryHelper(RegistryHelper parent, DeferredRegister<EntityType<?>> deferredRegister) {
 		super(parent, deferredRegister);

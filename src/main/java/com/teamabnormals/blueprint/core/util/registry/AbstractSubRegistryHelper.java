@@ -10,14 +10,15 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * <p> It is recommended you use this for making a new {@link ISubRegistryHelper}. </p>
  *
  * @param <T> The type of objects this helper registers.
+ * @param <R> The type of {@link DeferredRegister} this helper uses.
  * @author SmellyModder (Luke Tonon)
  * @see ISubRegistryHelper
  */
-public abstract class AbstractSubRegistryHelper<T> implements ISubRegistryHelper<T> {
+public abstract class AbstractSubRegistryHelper<T, R extends DeferredRegister<T>> implements ISubRegistryHelper<T> {
 	protected final RegistryHelper parent;
-	protected final DeferredRegister<T> deferredRegister;
+	protected final R deferredRegister;
 
-	public AbstractSubRegistryHelper(RegistryHelper parent, DeferredRegister<T> deferredRegister) {
+	public AbstractSubRegistryHelper(RegistryHelper parent, R deferredRegister) {
 		this.parent = parent;
 		this.deferredRegister = deferredRegister;
 	}
@@ -34,7 +35,7 @@ public abstract class AbstractSubRegistryHelper<T> implements ISubRegistryHelper
 	 * @return The {@link DeferredRegister} belonging to this {@link AbstractSubRegistryHelper}.
 	 */
 	@Override
-	public DeferredRegister<T> getDeferredRegister() {
+	public R getDeferredRegister() {
 		return this.deferredRegister;
 	}
 

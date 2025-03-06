@@ -98,27 +98,27 @@ public class RegistryHelper {
 	}
 
 	@Nonnull
-	public <T extends AbstractSubRegistryHelper<Item>> T getItemSubHelper() {
+	public <T extends AbstractSubRegistryHelper<Item, ?>> T getItemSubHelper() {
 		return this.getSubHelper(Registries.ITEM);
 	}
 
 	@Nonnull
-	public <T extends AbstractSubRegistryHelper<Block>> T getBlockSubHelper() {
+	public <T extends AbstractSubRegistryHelper<Block, ?>> T getBlockSubHelper() {
 		return this.getSubHelper(Registries.BLOCK);
 	}
 
 	@Nonnull
-	public <T extends AbstractSubRegistryHelper<SoundEvent>> T getSoundSubHelper() {
+	public <T extends AbstractSubRegistryHelper<SoundEvent, ?>> T getSoundSubHelper() {
 		return this.getSubHelper(Registries.SOUND_EVENT);
 	}
 
 	@Nonnull
-	public <T extends AbstractSubRegistryHelper<BlockEntityType<?>>> T getBlockEntitySubHelper() {
+	public <T extends AbstractSubRegistryHelper<BlockEntityType<?>, ?>> T getBlockEntitySubHelper() {
 		return this.getSubHelper(Registries.BLOCK_ENTITY_TYPE);
 	}
 
 	@Nonnull
-	public <T extends AbstractSubRegistryHelper<EntityType<?>>> T getEntitySubHelper() {
+	public <T extends AbstractSubRegistryHelper<EntityType<?>, ?>> T getEntitySubHelper() {
 		return this.getSubHelper(Registries.ENTITY_TYPE);
 	}
 

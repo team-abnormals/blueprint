@@ -11,7 +11,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * @author SmellyModder (Luke Tonon)
  * @see AbstractSubRegistryHelper
  */
-public class SoundSubRegistryHelper extends AbstractSubRegistryHelper<SoundEvent> {
+public class SoundSubRegistryHelper extends AbstractSubRegistryHelper<SoundEvent, DeferredRegister<SoundEvent>> {
 
 	public SoundSubRegistryHelper(RegistryHelper parent, DeferredRegister<SoundEvent> deferredRegister) {
 		super(parent, deferredRegister);

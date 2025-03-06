@@ -20,7 +20,7 @@ import java.util.function.Supplier;
  * @author SmellyModder (Luke Tonon)
  * @see AbstractSubRegistryHelper
  */
-public class BlockEntitySubRegistryHelper extends AbstractSubRegistryHelper<BlockEntityType<?>> {
+public class BlockEntitySubRegistryHelper extends AbstractSubRegistryHelper<BlockEntityType<?>, DeferredRegister<BlockEntityType<?>>> {
 
 	public BlockEntitySubRegistryHelper(RegistryHelper parent, DeferredRegister<BlockEntityType<?>> deferredRegister) {
 		super(parent, deferredRegister);
