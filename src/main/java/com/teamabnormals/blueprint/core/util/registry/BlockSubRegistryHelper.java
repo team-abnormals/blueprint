@@ -18,7 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -70,11 +69,11 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block, Def
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static IClientItemExtensions chestBEWLRItemExtensions(boolean trapped) {
+	private static IClientItemExtensions chestBEWLRItemExtensions(Supplier<? extends Block> block, boolean trapped) {
 		return MemoizedBEWLR.asCustomItemRenderer(trapped ? (dispatcher, entityModelSet) -> {
-			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintTrappedChestBlockEntity(BlockPos.ZERO, Blocks.TRAPPED_CHEST.defaultBlockState()));
+			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintTrappedChestBlockEntity(BlockPos.ZERO, block.get().defaultBlockState()));
 		} : (dispatcher, entityModelSet) -> {
-			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()));
+			return new ChestBlockEntityWithoutLevelRenderer<>(dispatcher, entityModelSet, new BlueprintChestBlockEntity(BlockPos.ZERO, block.get().defaultBlockState()));
 		});
 	}
 
@@ -218,7 +217,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block, Def
 		DeferredBlock<BlueprintChestBlock> block = this.deferredRegister.register(name, () -> new BlueprintChestBlock(chestMaterialsName, properties));
 		var item = this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
 		if (FMLEnvironment.dist == Dist.CLIENT) {
-			this.clientItemExtensions.put(item, chestBEWLRItemExtensions(false));
+			this.clientItemExtensions.put(item, chestBEWLRItemExtensions(block, false));
 		}
 		return block;
 	}
@@ -248,7 +247,7 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block, Def
 		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, materialName, true);
 		var item = this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
 		if (FMLEnvironment.dist == Dist.CLIENT) {
-			this.clientItemExtensions.put(item, chestBEWLRItemExtensions(true));
+			this.clientItemExtensions.put(item, chestBEWLRItemExtensions(block, true));
 		}
 		return block;
 	}
