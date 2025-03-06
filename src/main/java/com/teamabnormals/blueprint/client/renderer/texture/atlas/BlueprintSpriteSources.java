@@ -14,6 +14,6 @@ public final class BlueprintSpriteSources {
 	public static SpriteSourceType PALETTED_PERMUTATIONS;
 
 	public static void register(RegisterSpriteSourceTypesEvent event) {
-		PALETTED_PERMUTATIONS = event.register(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "paletted_permutations"), BlueprintPalettedPermutations.CODEC);
+		event.register(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "paletted_permutations"), PALETTED_PERMUTATIONS = new SpriteSourceType(BlueprintPalettedPermutations.CODEC));
 	}
 }
