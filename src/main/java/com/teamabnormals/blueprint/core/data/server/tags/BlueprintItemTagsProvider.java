@@ -26,6 +26,7 @@ public class BlueprintItemTagsProvider extends ItemTagsProvider {
 	protected void addTags(HolderLookup.Provider p_256380_) {
 		this.tag(MILK).addTag(Tags.Items.BUCKETS_MILK);
 		this.tag(PUMPKINS).add(Items.PUMPKIN);
+		this.tag(HORSE_ARMOR).add(Items.LEATHER_HORSE_ARMOR, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR, Items.DIAMOND_HORSE_ARMOR);
 
 		this.copyWoodworksTags();
 		this.copy(BlueprintBlockTags.LEAF_PILES, LEAF_PILES);
