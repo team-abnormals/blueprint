@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 public class BlueprintItemTags {
 	public static final TagKey<Item> MILK = TagUtil.itemTag("c", "milk");
 	public static final TagKey<Item> PUMPKINS = TagUtil.itemTag("c", "pumpkins");
+	public static final TagKey<Item> HORSE_ARMOR = TagUtil.itemTag("c", "pumpkins");
 
 	public static final TagKey<Item> LADDERS = TagUtil.itemTag("c", "ladders");
 

@@ -177,8 +177,6 @@ public final class Blueprint {
 		generator.addProvider(server, blockTags);
 		generator.addProvider(server, new BlueprintItemTagsProvider(MOD_ID, output, provider, blockTags.contentsGetter(), helper));
 		generator.addProvider(server, new BlueprintEntityTypeTagsProvider(MOD_ID, output, provider, helper));
-		generator.addProvider(server, new BlueprintBiomeTagsProvider(MOD_ID, output, provider, helper));
-		generator.addProvider(server, new BlueprintDamageTypeTagsProvider(MOD_ID, output, provider, helper));
 		generator.addProvider(server, new BlueprintPoiTypeTagsProvider(MOD_ID, output, provider, helper));
 		generator.addProvider(server, new BlueprintRecipeProvider(MOD_ID, output, provider));
 		generator.addProvider(server, new BlueprintDatapackBuiltinEntriesProvider(output, provider));
