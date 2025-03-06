@@ -1,0 +1,25 @@
+{
+  "values": {
+    "#blueprint:wooden_bookshelves": {
+      "burn_time": 300
+    },
+    "#blueprint:wooden_chests": {
+      "burn_time": 300
+    },
+    "#blueprint:wooden_chiseled_bookshelves": {
+      "burn_time": 300
+    },
+    "#blueprint:wooden_ladders": {
+      "burn_time": 300
+    },
+    "#blueprint:wooden_trapped_chests": {
+      "burn_time": 300
+    },
+    "#boatload:large_boats": {
+      "burn_time": 2400
+    },
+    "#woodworks:wooden_boards": {
+      "burn_time": 300
+    }
+  }
+}

@@ -21,6 +21,7 @@ import com.teamabnormals.blueprint.core.api.BlockSetTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.BlueprintTrims;
 import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.conditions.config.*;
+import com.teamabnormals.blueprint.core.data.server.BlueprintDataMapProvider;
 import com.teamabnormals.blueprint.core.data.server.BlueprintDatapackBuiltinEntriesProvider;
 import com.teamabnormals.blueprint.core.data.server.BlueprintRecipeProvider;
 import com.teamabnormals.blueprint.core.data.server.tags.*;
@@ -181,6 +182,7 @@ public final class Blueprint {
 		generator.addProvider(server, new BlueprintPoiTypeTagsProvider(MOD_ID, output, provider, helper));
 		generator.addProvider(server, new BlueprintRecipeProvider(MOD_ID, output, provider));
 		generator.addProvider(server, new BlueprintDatapackBuiltinEntriesProvider(output, provider));
+		generator.addProvider(server, new BlueprintDataMapProvider(output, provider));
 	}
 
 	private void registerOnEvent(RegisterEvent event) {
