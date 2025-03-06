@@ -24,15 +24,8 @@ public class BlueprintItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.Provider p_256380_) {
-		this.tag(MILK).addTag(BUCKETS_MILK);
+		this.tag(MILK).addTag(Tags.Items.BUCKETS_MILK);
 		this.tag(PUMPKINS).add(Items.PUMPKIN);
-
-		this.tag(BUCKETS_EMPTY).add(Items.BUCKET);
-		this.tag(BUCKETS_WATER).add(Items.WATER_BUCKET);
-		this.tag(BUCKETS_LAVA).add(Items.LAVA_BUCKET);
-		this.tag(BUCKETS_MILK).add(Items.MILK_BUCKET);
-		this.tag(BUCKETS_POWDER_SNOW).add(Items.POWDER_SNOW_BUCKET);
-		this.tag(BUCKETS).addTag(BUCKETS_EMPTY).addTag(BUCKETS_WATER).addTag(BUCKETS_LAVA).addTag(BUCKETS_MILK).addTag(BUCKETS_LAVA);
 
 		this.copyWoodworksTags();
 		this.copy(BlueprintBlockTags.LEAF_PILES, LEAF_PILES);

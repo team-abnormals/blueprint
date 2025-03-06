@@ -6,7 +6,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
 public class BlueprintBlockTags {
-	public static final TagKey<Block> LADDERS = TagUtil.blockTag("forge", "ladders");
+	public static final TagKey<Block> LADDERS = TagUtil.blockTag("c", "ladders");
 
 	public static final TagKey<Block> NOTE_BLOCK_TOP_INSTRUMENTS = blockTag("noteblock_top_instruments");
 

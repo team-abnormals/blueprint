@@ -6,17 +6,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class BlueprintItemTags {
-	public static final TagKey<Item> MILK = TagUtil.itemTag("forge", "milk");
-	public static final TagKey<Item> PUMPKINS = TagUtil.itemTag("forge", "pumpkins");
+	public static final TagKey<Item> MILK = TagUtil.itemTag("c", "milk");
+	public static final TagKey<Item> PUMPKINS = TagUtil.itemTag("c", "pumpkins");
 
-	public static final TagKey<Item> BUCKETS = TagUtil.itemTag("forge", "buckets");
-	public static final TagKey<Item> BUCKETS_EMPTY = TagUtil.itemTag("forge", "buckets/empty");
-	public static final TagKey<Item> BUCKETS_WATER = TagUtil.itemTag("forge", "buckets/water");
-	public static final TagKey<Item> BUCKETS_LAVA = TagUtil.itemTag("forge", "buckets/lava");
-	public static final TagKey<Item> BUCKETS_MILK = TagUtil.itemTag("forge", "buckets/milk");
-	public static final TagKey<Item> BUCKETS_POWDER_SNOW = TagUtil.itemTag("forge", "buckets/powder_snow");
-
-	public static final TagKey<Item> LADDERS = TagUtil.itemTag("forge", "ladders");
+	public static final TagKey<Item> LADDERS = TagUtil.itemTag("c", "ladders");
 
 	public static final TagKey<Item> WOODEN_CHESTS = itemTag("wooden_chests");
 	public static final TagKey<Item> WOODEN_TRAPPED_CHESTS = itemTag("wooden_trapped_chests");

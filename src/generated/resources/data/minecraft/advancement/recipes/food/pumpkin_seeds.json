@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:pumpkins"
+            "items": "#c:pumpkins"
           }
         ]
       },
