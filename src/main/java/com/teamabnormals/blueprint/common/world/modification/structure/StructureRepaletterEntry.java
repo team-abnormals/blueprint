@@ -15,22 +15,32 @@ import java.util.Optional;
  * The record class for storing the data for an "unassigned" {@link StructureRepaletter} instance.
  * <p>A {@link HolderSet} of {@link Structure} is stored for selecting structures.</p>
  * <p>An optional {@link HolderSet} of {@link StructurePieceType} is stored for selecting specific piece types if desired.</p>
+ * <p>An optional {@link StructureRepaletter.Condition} is used for having the repaletter only apply under specific conditions.</p>
  *
  * @author SmellyModder (Luke Tonon)
- * @see StructureRepalleterManager
+ * @see StructureRepaletterManager
  */
-public record StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, int priority, StructureRepaletter repaletter) {
+public record StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, int priority, Optional<StructureRepaletter.Condition> condition, StructureRepaletter repaletter) {
 	public static final Codec<StructureRepaletterEntry> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
 				RegistryCodecs.homogeneousList(Registries.STRUCTURE).fieldOf("structures").forGetter(entry -> entry.structures),
 				RegistryCodecs.homogeneousList(Registries.STRUCTURE_PIECE).optionalFieldOf("pieces").forGetter(entry -> entry.pieces),
 				Codec.BOOL.optionalFieldOf("should_apply_to_after_place", false).forGetter(entry -> entry.shouldApplyToAfterPlace),
 				NullableFieldCodec.nullable("priority", Codec.INT, 100).forGetter(entry -> entry.priority),
+				StructureRepaletter.Condition.CODEC.optionalFieldOf("condition").forGetter(entry -> entry.condition),
 				StructureRepaletter.CODEC.fieldOf("repaletter").forGetter(entry -> entry.repaletter)
 		).apply(instance, StructureRepaletterEntry::new);
 	});
 
+	public StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, int priority, StructureRepaletter.Condition condition, StructureRepaletter repaletter) {
+		this(structures, pieces, shouldApplyToAfterPlace, priority, Optional.of(condition), repaletter);
+	}
+
 	public StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, StructureRepaletter repaletter) {
-		this(structures, pieces, shouldApplyToAfterPlace, 100, repaletter);
+		this(structures, pieces, shouldApplyToAfterPlace, 100, Optional.empty(), repaletter);
+	}
+
+	public StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, StructureRepaletter.Condition condition, StructureRepaletter repaletter) {
+		this(structures, pieces, shouldApplyToAfterPlace, 100, Optional.of(condition), repaletter);
 	}
 }

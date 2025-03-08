@@ -5,6 +5,9 @@ import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlice;
 import com.teamabnormals.blueprint.common.world.modification.structure.SimpleStructureRepaletter;
 import com.teamabnormals.blueprint.common.world.modification.structure.StructureRepaletterEntry;
 import com.teamabnormals.blueprint.common.world.modification.structure.WeightedStructureRepaletter;
+import com.teamabnormals.blueprint.common.world.modification.structure.condition.AndStructureCondition;
+import com.teamabnormals.blueprint.common.world.modification.structure.condition.BiomeStructureCondition;
+import com.teamabnormals.blueprint.common.world.modification.structure.condition.ChanceStructureCondition;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.data.server.BlueprintDatapackBuiltinEntriesProvider;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
@@ -65,6 +68,7 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 						new WeightedStructureRepaletter(BlockTags.PLANKS, WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1)))
 				)
 		);
+		var biomes = context.lookup(Registries.BIOME);
 		context.register(
 				repaletterKey("fences_become_random_fences_in_mineshafts"),
 				new StructureRepaletterEntry(
@@ -72,6 +76,7 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 						Optional.empty(),
 						false,
 						50,
+						AndStructureCondition.and(new ChanceStructureCondition(0.5F), new BiomeStructureCondition(HolderSet.direct(biomes.getOrThrow(Biomes.FOREST)))),
 						new WeightedStructureRepaletter(BlockTags.WOODEN_FENCES, WeightedRandomList.create(WeightedEntry.wrap(Blocks.CRIMSON_FENCE, 1), WeightedEntry.wrap(Blocks.WARPED_FENCE, 1)))
 				)
 		);
@@ -82,6 +87,7 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 						Optional.empty(),
 						false,
 						0,
+						new ChanceStructureCondition(0.5F),
 						new SimpleStructureRepaletter(Blocks.MOSSY_STONE_BRICKS, Blocks.SLIME_BLOCK)
 				)
 		);

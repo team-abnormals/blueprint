@@ -1,4 +1,17 @@
 {
+  "condition": {
+    "type": "blueprint:and",
+    "biomes": [
+      {
+        "type": "blueprint:chance",
+        "chance": 0.5
+      },
+      {
+        "type": "blueprint:biome",
+        "biomes": "minecraft:forest"
+      }
+    ]
+  },
   "priority": 50,
   "repaletter": {
     "type": "blueprint:weighted",

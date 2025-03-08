@@ -20,13 +20,18 @@ import org.jetbrains.annotations.Nullable;
  * @author SmellyModder (Luke Tonon)
  * @see StructureRepaletter
  */
-public record WeightedStructureRepaletter(TagKey<Block> replacesBlocks, WeightedRandomList<WeightedEntry.Wrapper<Block>> replacesWith) implements StructureRepaletter {
+public record WeightedStructureRepaletter(TagKey<Block> replacesBlocks, WeightedRandomList<WeightedEntry.Wrapper<Block>> replacesWith) implements StructureRepaletter, StructureRepaletter.Replacer {
 	public static final MapCodec<WeightedStructureRepaletter> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
 				TagKey.codec(Registries.BLOCK).fieldOf("replaces_blocks").forGetter(repaletter -> repaletter.replacesBlocks),
 				WeightedRandomList.codec(WeightedEntry.Wrapper.codec(BuiltInRegistries.BLOCK.byNameCodec())).fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
 		).apply(instance, WeightedStructureRepaletter::new);
 	});
+
+	@Override
+	public Replacer createReplacer(StructureModificationContext context) {
+		return this;
+	}
 
 	@Nullable
 	@Override
@@ -36,6 +41,11 @@ public record WeightedStructureRepaletter(TagKey<Block> replacesBlocks, Weighted
 
 	@Override
 	public MapCodec<? extends StructureRepaletter> codec() {
+		return CODEC;
+	}
+
+	@Override
+	public MapCodec<? extends Replacer> savedTagCodec() {
 		return CODEC;
 	}
 }

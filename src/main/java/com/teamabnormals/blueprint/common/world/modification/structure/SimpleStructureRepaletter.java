@@ -16,13 +16,18 @@ import org.jetbrains.annotations.Nullable;
  * @author SmellyModder (Luke Tonon)
  * @see StructureRepaletter
  */
-public record SimpleStructureRepaletter(Block replacesBlock, Block replacesWith) implements StructureRepaletter {
+public record SimpleStructureRepaletter(Block replacesBlock, Block replacesWith) implements StructureRepaletter, StructureRepaletter.Replacer {
 	public static final MapCodec<SimpleStructureRepaletter> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
 				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("replaces_block").forGetter(repaletter -> repaletter.replacesBlock),
 				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
 		).apply(instance, SimpleStructureRepaletter::new);
 	});
+
+	@Override
+	public Replacer createReplacer(StructureModificationContext context) {
+		return this;
+	}
 
 	@Nullable
 	@Override
@@ -32,6 +37,11 @@ public record SimpleStructureRepaletter(Block replacesBlock, Block replacesWith)
 
 	@Override
 	public MapCodec<? extends StructureRepaletter> codec() {
+		return CODEC;
+	}
+
+	@Override
+	public MapCodec<? extends Replacer> savedTagCodec() {
 		return CODEC;
 	}
 }

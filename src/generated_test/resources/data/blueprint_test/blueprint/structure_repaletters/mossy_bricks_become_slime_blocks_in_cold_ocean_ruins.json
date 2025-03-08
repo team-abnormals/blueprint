@@ -1,4 +1,8 @@
 {
+  "condition": {
+    "type": "blueprint:chance",
+    "chance": 0.5
+  },
   "priority": 0,
   "repaletter": {
     "type": "blueprint:simple",
