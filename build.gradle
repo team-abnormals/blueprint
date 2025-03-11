@@ -5,11 +5,11 @@ plugins {
     id "net.neoforged.gradle.userdev" version "7.0.182"
 }
 
-version = "${project.mcVersion}-${project.modVersion}"
+version = "${project.mc_version}-${project.mod_version}"
 group = "com.teamabnormals"
 
 base {
-    archivesName = project.modId
+    archivesName = project.mod_id
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
@@ -41,7 +41,7 @@ runs {
             add project.sourceSets.main
             add "blueprint_test", project.sourceSets.test
         }
-        programArguments.addAll "--mod", "blueprint", "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath()
+        programArguments.addAll "--mod", project.mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath()
         // programArguments.addAll "--mod", "blueprint_test", "--all", "--output", file("src/generated_test/resources/").getAbsolutePath(), "--existing", file("src/test/resources/").getAbsolutePath()
     }
 }
@@ -60,7 +60,7 @@ dependencies {
 
 subsystems {
     parchment {
-        mcVersion = "${project.mcVersion}"
+        minecraftVersion = "${project.mc_version}"
         mappingsVersion = "${project.parchment}"
     }
 }
@@ -68,11 +68,11 @@ subsystems {
 tasks.named("jar", Jar).configure {
     manifest {
         attributes([
-                "Specification-Title"     : project.modName,
+                "Specification-Title"     : project.mod_name,
                 "Specification-Vendor"    : "Team Abnormals",
                 "Specification-Version"   : "1",
-                "Implementation-Title"    : project.modName,
-                "Implementation-Version"  : project.modVersion,
+                "Implementation-Title"    : project.mod_name,
+                "Implementation-Version"  : project.mod_version,
                 "Implementation-Vendor"   : "Team Abnormals",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
@@ -91,6 +91,14 @@ task sourcesJar(type: Jar) {
 
 artifacts {
     archives sourcesJar
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [mod_version: mod_version, mc_version: mc_version, neoforge: neoforge]
+    inputs.properties replaceProperties
+    filesMatching(["META-INF/neoforge.mods.toml"]) {
+        expand replaceProperties
+    }
 }
 
 publishing {

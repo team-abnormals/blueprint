@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[4,)"
+loaderVersion = "[1,)"
 issueTrackerURL = "https://github.com/team-abnormals/blueprint/issues"
 license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 
@@ -8,7 +8,7 @@ license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
 
 [[mods]]
     modId = "blueprint"
-    version = "8.0.0"
+    version = "${mod_version}"
     logoFile = "logo.png"
     itemIcon = "minecraft:creeper_head"
     configBackground = "blueprint:textures/blueprint.png"
@@ -22,15 +22,15 @@ license = "https://github.com/team-abnormals/blueprint/blob/main/LICENSE.txt"
     '''
 
 [[dependencies.blueprint]]
-    modId = "neoforge"
+    modId = "minecraft"
     type = "required"
-    versionRange = "[21.0.0,21.2.0)"
-    ordering = "NONE"
+    versionRange = "[${mc_version}]"
+    ordering = "AFTER"
     side = "BOTH"
 
 [[dependencies.blueprint]]
-    modId = "minecraft"
+    modId = "neoforge"
     type = "required"
-    versionRange = "[1.21,1.21.2)"
-    ordering = "NONE"
+    versionRange = "[${neoforge},)"
+    ordering = "AFTER"
     side = "BOTH"
