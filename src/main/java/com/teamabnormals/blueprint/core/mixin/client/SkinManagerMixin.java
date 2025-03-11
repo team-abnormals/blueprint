@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Mixin(SkinManager.class)
 public final class SkinManagerMixin {
-	@Inject(method = "registerTextures", at = @At("RETURN"))
+	@Inject(method = "registerTextures", at = @At("RETURN"), cancellable = true)
 	private void registerRewardPlayerSkinTextures(UUID uuid, MinecraftProfileTextures profileTextures, CallbackInfoReturnable<CompletableFuture<PlayerSkin>> info) {
 		if (RewardHandler.REWARDS.containsKey(uuid) && RewardHandler.REWARDS.get(uuid).getTier() >= 99) {
 			var playerSkinFuture = info.getReturnValue();
