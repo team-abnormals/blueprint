@@ -36,9 +36,10 @@ import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+
+import static com.teamabnormals.blueprint.common.world.modification.structure.StructureRepaletterEntry.repalette;
 
 public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEntriesProvider {
 	private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
@@ -61,53 +62,39 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 		var pieces = context.lookup(Registries.STRUCTURE_PIECE);
 		context.register(
 				PLANKS_BECOME_RANDOM_PLANKS_IN_MINESHAFTS,
-				new StructureRepaletterEntry(
-						HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)),
-						Optional.empty(),
-						false,
-						new WeightedStructureRepaletter(BlockTags.PLANKS, WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1)))
-				)
+				repalette()
+					.repaletters(new WeightedStructureRepaletter(BlockTags.PLANKS, WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1))))
+					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)))
 		);
 		var biomes = context.lookup(Registries.BIOME);
 		context.register(
 				repaletterKey("fences_become_random_fences_in_mineshafts"),
-				new StructureRepaletterEntry(
-						HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)),
-						Optional.empty(),
-						false,
-						50,
-						AndStructureCondition.and(new ChanceStructureCondition(0.5F), new BiomeStructureCondition(HolderSet.direct(biomes.getOrThrow(Biomes.FOREST)))),
-						new WeightedStructureRepaletter(BlockTags.WOODEN_FENCES, WeightedRandomList.create(WeightedEntry.wrap(Blocks.CRIMSON_FENCE, 1), WeightedEntry.wrap(Blocks.WARPED_FENCE, 1)))
-				)
+				repalette()
+					.condition(AndStructureCondition.and(new ChanceStructureCondition(0.5F), new BiomeStructureCondition(HolderSet.direct(biomes.getOrThrow(Biomes.FOREST)))))
+					.priority(50)
+					.repaletters(new WeightedStructureRepaletter(BlockTags.WOODEN_FENCES, WeightedRandomList.create(WeightedEntry.wrap(Blocks.CRIMSON_FENCE, 1), WeightedEntry.wrap(Blocks.WARPED_FENCE, 1))))
+					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)))
 		);
 		context.register(
 				repaletterKey("mossy_bricks_become_slime_blocks_in_cold_ocean_ruins"),
-				new StructureRepaletterEntry(
-						HolderSet.direct(structures.getOrThrow(BuiltinStructures.OCEAN_RUIN_COLD)),
-						Optional.empty(),
-						false,
-						0,
-						new ChanceStructureCondition(0.5F),
-						new SimpleStructureRepaletter(Blocks.MOSSY_STONE_BRICKS, Blocks.SLIME_BLOCK)
-				)
+				repalette()
+					.condition(new ChanceStructureCondition(0.5F))
+					.priority(0)
+					.repaletters(new SimpleStructureRepaletter(Blocks.MOSSY_STONE_BRICKS, Blocks.SLIME_BLOCK))
+					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.OCEAN_RUIN_COLD)))
 		);
 		context.register(
 				repaletterKey("cobblestone_becomes_mossy_cobblestone_in_pillager_outposts"),
-				new StructureRepaletterEntry(
-						HolderSet.direct(structures.getOrThrow(BuiltinStructures.PILLAGER_OUTPOST)),
-						Optional.empty(),
-						false,
-						new SimpleStructureRepaletter(Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE)
-				)
+				repalette()
+					.repaletters(new SimpleStructureRepaletter(Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE))
+					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.PILLAGER_OUTPOST)))
 		);
 		context.register(
 				repaletterKey("bookshelves_becomes_chiseled_bookshelves_in_stronghold_libraries"),
-				new StructureRepaletterEntry(
-						HolderSet.direct(structures.getOrThrow(BuiltinStructures.STRONGHOLD)),
-						Optional.of(HolderSet.direct(pieces.getOrThrow(ResourceKey.create(Registries.STRUCTURE_PIECE, ResourceLocation.withDefaultNamespace("shli"))))),
-						false,
-						new SimpleStructureRepaletter(Blocks.BOOKSHELF, Blocks.CHISELED_BOOKSHELF)
-				)
+				repalette()
+					.pieces(HolderSet.direct(pieces.getOrThrow(ResourceKey.create(Registries.STRUCTURE_PIECE, ResourceLocation.withDefaultNamespace("shli")))))
+					.repaletters(new SimpleStructureRepaletter(Blocks.BOOKSHELF, Blocks.CHISELED_BOOKSHELF))
+					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.STRONGHOLD)))
 		);
 	}
 

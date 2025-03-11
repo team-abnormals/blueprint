@@ -7,7 +7,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -30,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,9 +49,11 @@ public final class StructureStartMixin implements RepalettedStructureStart {
 		ArrayList<StructureRepaletterManager.Entry> repaletters = new ArrayList<>();
 		for (StructureRepaletterEntry entry : entries) {
 			if (entry.condition().isPresent() && !entry.condition().get().test(context)) continue;
-			StructureRepaletter.Replacer replacer = entry.repaletter().createReplacer(context);
-			if (replacer == null) continue;
-			repaletters.add(new StructureRepaletterManager.Entry(entry.pieces(), entry.shouldApplyToAfterPlace(), replacer));
+			for (StructureRepaletter repaletter : entry.repaletters()) {
+				StructureRepaletter.Replacer replacer = repaletter.createReplacer(context);
+				if (replacer == null) continue;
+				repaletters.add(new StructureRepaletterManager.Entry(entry.pieces(), entry.shouldApplyToAfterPlace(), replacer));
+			}
 		}
 		if (!repaletters.isEmpty()) this.repaletters = repaletters;
 	}

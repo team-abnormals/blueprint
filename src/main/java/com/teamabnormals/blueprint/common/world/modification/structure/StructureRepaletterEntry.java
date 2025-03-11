@@ -1,14 +1,18 @@
 package com.teamabnormals.blueprint.common.world.modification.structure;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.codec.NullableFieldCodec;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,7 +24,7 @@ import java.util.Optional;
  * @author SmellyModder (Luke Tonon)
  * @see StructureRepaletterManager
  */
-public record StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, int priority, Optional<StructureRepaletter.Condition> condition, StructureRepaletter repaletter) {
+public record StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, int priority, Optional<StructureRepaletter.Condition> condition, List<StructureRepaletter> repaletters) {
 	public static final Codec<StructureRepaletterEntry> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
 				RegistryCodecs.homogeneousList(Registries.STRUCTURE).fieldOf("structures").forGetter(entry -> entry.structures),
@@ -28,9 +32,26 @@ public record StructureRepaletterEntry(HolderSet<Structure> structures, Optional
 				Codec.BOOL.optionalFieldOf("should_apply_to_after_place", false).forGetter(entry -> entry.shouldApplyToAfterPlace),
 				NullableFieldCodec.nullable("priority", Codec.INT, 100).forGetter(entry -> entry.priority),
 				StructureRepaletter.Condition.CODEC.optionalFieldOf("condition").forGetter(entry -> entry.condition),
-				StructureRepaletter.CODEC.fieldOf("repaletter").forGetter(entry -> entry.repaletter)
+				Codec.either(StructureRepaletter.CODEC, ExtraCodecs.nonEmptyList(StructureRepaletter.CODEC.listOf()))
+					.xmap(
+						either -> either.map(List::of, repalleters -> repalleters),
+						repaletters -> repaletters.size() == 1 ? Either.left(repaletters.getFirst()) : Either.right(repaletters)
+					).fieldOf("repaletter").forGetter(entry -> entry.repaletters)
 		).apply(instance, StructureRepaletterEntry::new);
 	});
+
+	/**
+	 * Constructs a new {@link Builder} instance.
+	 *
+	 * @return A new {@link Builder} instance.
+	 */
+	public static Builder repalette() {
+		return new Builder();
+	}
+
+	public StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, int priority, Optional<StructureRepaletter.Condition> condition, StructureRepaletter repaletter) {
+		this(structures, pieces, shouldApplyToAfterPlace, priority, condition, List.of(repaletter));
+	}
 
 	public StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, int priority, StructureRepaletter.Condition condition, StructureRepaletter repaletter) {
 		this(structures, pieces, shouldApplyToAfterPlace, priority, Optional.of(condition), repaletter);
@@ -42,5 +63,85 @@ public record StructureRepaletterEntry(HolderSet<Structure> structures, Optional
 
 	public StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, StructureRepaletter.Condition condition, StructureRepaletter repaletter) {
 		this(structures, pieces, shouldApplyToAfterPlace, 100, Optional.of(condition), repaletter);
+	}
+
+	/**
+	 * Builder class for {@link StructureRepaletterEntry}.
+	 *
+	 * @author SmellyModder (Luke Tonon)
+	 */
+	public static final class Builder {
+		private Optional<StructureRepaletter.Condition> condition = Optional.empty();
+		private Optional<HolderSet<StructurePieceType>> pieces = Optional.empty();
+		private final List<StructureRepaletter> repaletters = new ArrayList<>();
+		private boolean applyToAfterPlace;
+		private int priority = 100;
+
+		/**
+		 * Sets the condition to use for determining when to repalette.
+		 *
+		 * @param condition The {@link StructureRepaletter.Condition} instance to use.
+		 * @return This builder.
+		 */
+		public Builder condition(StructureRepaletter.Condition condition) {
+			this.condition = Optional.of(condition);
+			return this;
+		}
+
+		/**
+		 * Sets the set of structure pieces to only repalette.
+		 *
+		 * @param pieces Holder set of {@link StructurePieceType} to only repalette.
+		 * @return This builder.
+		 */
+		public Builder pieces(HolderSet<StructurePieceType> pieces) {
+			this.pieces = Optional.of(pieces);
+			return this;
+		}
+
+		/**
+		 * Adds repaletters to use.
+		 *
+		 * @param repaletters An array of {@link StructureRepaletter} instances to use.
+		 * @return This builder.
+		 */
+		public Builder repaletters(StructureRepaletter... repaletters) {
+			var list = this.repaletters;
+			for (StructureRepaletter repaletter : repaletters) {
+				list.add(repaletter);
+			}
+			return this;
+		}
+
+		/**
+		 * Makes the repaletters apply after piece placement.
+		 *
+		 * @return This builder.
+		 */
+		public Builder applyToAfterPlace() {
+			this.applyToAfterPlace = true;
+			return this;
+		}
+
+		/**
+		 * Sets the priority for ordering this entry with others.
+		 *
+		 * @param priority Priority to use.
+		 * @return This builder.
+		 */
+		public Builder priority(int priority) {
+			this.priority = priority;
+			return this;
+		}
+
+		/**
+		 * Builds a {@link StructureRepaletterEntry} instance configured by this builder that targets a holder set of structures.
+		 *
+		 * @param structures A holder set of {@link Structure} to target.
+		 * @return A new {@link StructureRepaletterEntry} instance.
+		 */
+		public StructureRepaletterEntry select(HolderSet<Structure> structures) {
+			return new StructureRepaletterEntry(structures, this.pieces, this.applyToAfterPlace, this.priority, this.condition, this.repaletters);
+		}
 	}
 }
