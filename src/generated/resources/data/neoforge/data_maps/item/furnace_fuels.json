@@ -1,4 +1,7 @@
 {
+  "remove": [
+    "#minecraft:non_flammable_wood"
+  ],
   "values": {
     "#blueprint:wooden_bookshelves": {
       "burn_time": 300

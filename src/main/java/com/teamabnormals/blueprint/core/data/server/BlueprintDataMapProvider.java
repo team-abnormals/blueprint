@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.core.data.server;
 import com.teamabnormals.blueprint.core.other.tags.BlueprintItemTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.tags.ItemTags;
 import net.neoforged.neoforge.common.data.DataMapProvider;
 import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
@@ -24,6 +25,7 @@ public class BlueprintDataMapProvider extends DataMapProvider {
 				.add(BlueprintItemTags.WOODEN_BOOKSHELVES, new FurnaceFuel(300), false)
 				.add(BlueprintItemTags.WOODEN_CHISELED_BOOKSHELVES, new FurnaceFuel(300), false)
 				.add(BlueprintItemTags.WOODEN_BOARDS, new FurnaceFuel(300), false)
-				.add(BlueprintItemTags.LARGE_BOATS, new FurnaceFuel(2400), false);
+				.add(BlueprintItemTags.LARGE_BOATS, new FurnaceFuel(2400), false)
+				.remove(ItemTags.NON_FLAMMABLE_WOOD);
 	}
 }
