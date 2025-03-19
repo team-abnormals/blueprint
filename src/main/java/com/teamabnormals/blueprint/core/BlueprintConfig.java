@@ -48,6 +48,9 @@ public final class BlueprintConfig {
 		@ConfigKey("disable_experimental_settings_screen")
 		public final ModConfigSpec.ConfigValue<Boolean> disableExperimentalSettingsScreenValue;
 		public boolean disableExperimentalSettingsScreen;
+		@ConfigKey("disable_slabfish_hats")
+		public final ModConfigSpec.ConfigValue<Boolean> disableSlabfishHatsValue;
+		public boolean disableSlabfishHats;
 
 		public final SlabfishSettings slabfishSettings;
 
@@ -67,6 +70,11 @@ public final class BlueprintConfig {
 					.translation(makeTranslation("disable_experimental_settings_screen"))
 					.define("disableExperimentalSettingsScreen", true);
 
+			this.disableSlabfishHatsValue = builder
+					.comment("If no Slabfish hats should render at all, including on other players")
+					.translation(makeTranslation("disable_slabfish_hats"))
+					.define("disableSlabfishHats", false);
+
 			this.slabfishSettings = new SlabfishSettings(builder);
 		}
 
@@ -77,6 +85,7 @@ public final class BlueprintConfig {
 			this.screenShakeScale = this.screenShakeScaleValue.get();
 			this.maxScreenShakers = this.maxScreenShakersValue.get();
 			this.disableExperimentalSettingsScreen = this.disableExperimentalSettingsScreenValue.get();
+			this.disableSlabfishHats = this.disableSlabfishHatsValue.get();
 		}
 	}
 

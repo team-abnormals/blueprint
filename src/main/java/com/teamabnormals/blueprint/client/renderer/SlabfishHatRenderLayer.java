@@ -6,6 +6,7 @@ import com.teamabnormals.blueprint.client.RewardHandler.RewardProperties;
 import com.teamabnormals.blueprint.client.model.SlabfishHatModel;
 import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.BlueprintConfig;
 import com.teamabnormals.blueprint.core.sonar.OnlineImageCache;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -34,6 +35,9 @@ public class SlabfishHatRenderLayer extends RenderLayer<AbstractClientPlayer, Pl
 
 	@Override
 	public void render(PoseStack stack, MultiBufferSource source, int packedLight, AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		if (BlueprintConfig.CLIENT.disableSlabfishHats)
+			return;
+
 		RewardProperties properties = RewardHandler.getRewardProperties();
 		if (properties == null)
 			return;
