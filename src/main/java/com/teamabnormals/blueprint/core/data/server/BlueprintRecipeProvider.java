@@ -35,9 +35,13 @@ public class BlueprintRecipeProvider extends RecipeProvider {
 	}
 
 	public static void foodCookingRecipes(RecipeOutput recipeOutput, ItemLike input, ItemLike output) {
-		SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.FOOD, output, 0.35F, 200).unlockedBy(getHasName(input), has(input)).save(recipeOutput);
-		SimpleCookingRecipeBuilder.smoking(Ingredient.of(input), RecipeCategory.FOOD, output, 0.35F, 100).unlockedBy(getHasName(input), has(input)).save(recipeOutput, RecipeBuilder.getDefaultRecipeId(output) + "_from_smoking");
-		SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(input), RecipeCategory.FOOD, output, 0.35F, 600).unlockedBy(getHasName(input), has(input)).save(recipeOutput, RecipeBuilder.getDefaultRecipeId(output) + "_from_campfire_cooking");
+		foodCookingRecipes(recipeOutput, input, output, 0.35F, 200);
+	}
+
+	public static void foodCookingRecipes(RecipeOutput recipeOutput, ItemLike input, ItemLike output, float xp, int baseCookTime) {
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.FOOD, output, xp, baseCookTime).unlockedBy(getHasName(input), has(input)).save(recipeOutput);
+		SimpleCookingRecipeBuilder.smoking(Ingredient.of(input), RecipeCategory.FOOD, output, xp, baseCookTime / 2).unlockedBy(getHasName(input), has(input)).save(recipeOutput, RecipeBuilder.getDefaultRecipeId(output) + "_from_smoking");
+		SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(input), RecipeCategory.FOOD, output, xp, baseCookTime * 3).unlockedBy(getHasName(input), has(input)).save(recipeOutput, RecipeBuilder.getDefaultRecipeId(output) + "_from_campfire_cooking");
 	}
 
 	public void oreRecipes(RecipeOutput recipeOutput, List<ItemLike> inputs, RecipeCategory category, ItemLike output, float smeltingXp, int smeltingTime, String group) {
@@ -52,18 +56,18 @@ public class BlueprintRecipeProvider extends RecipeProvider {
 	public void smeltingRecipe(RecipeOutput recipeOutput, List<ItemLike> inputs, RecipeCategory category, ItemLike output, float xp, int cookTime, String group) {
 		for (ItemLike item : inputs) {
 			SimpleCookingRecipeBuilder.smelting(Ingredient.of(item), category, output, xp, cookTime)
-				.unlockedBy(getHasName(item), has(item))
-				.group(group)
-				.save(recipeOutput);
+					.unlockedBy(getHasName(item), has(item))
+					.group(group)
+					.save(recipeOutput);
 		}
 	}
 
 	public void blastingRecipe(RecipeOutput recipeOutput, List<ItemLike> inputs, RecipeCategory category, ItemLike output, float xp, int cookTime, String group) {
 		for (ItemLike item : inputs) {
 			SimpleCookingRecipeBuilder.blasting(Ingredient.of(item), category, output, xp, cookTime)
-				.unlockedBy(getHasName(item), has(item))
-				.group(group)
-				.save(recipeOutput);
+					.unlockedBy(getHasName(item), has(item))
+					.group(group)
+					.save(recipeOutput);
 		}
 	}
 
@@ -78,6 +82,10 @@ public class BlueprintRecipeProvider extends RecipeProvider {
 
 	public void stonecutterRecipe(RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, ItemLike input, int count) {
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(input), category, output, count).unlockedBy(getHasName(input), has(input)).save(recipeOutput, this.getModConversionRecipeName(output, input) + "_stonecutting");
+	}
+
+	public void conversionRecipe(RecipeOutput recipeOutput, ItemLike output, ItemLike input) {
+		this.conversionRecipe(recipeOutput, output, input, null);
 	}
 
 	public void conversionRecipe(RecipeOutput recipeOutput, ItemLike output, ItemLike input, @Nullable String group) {
@@ -117,20 +125,20 @@ public class BlueprintRecipeProvider extends RecipeProvider {
 	}
 
 	public void conditionalStorageRecipes(RecipeOutput output, ICondition condition, RecipeCategory itemCategory, ItemLike item, RecipeCategory storageCategory, ItemLike storage, String storageLocation, @Nullable String itemGroup, String itemLocation, @Nullable String storageGroup) {
-		conditionalRecipe(output, condition, itemCategory, ShapelessRecipeBuilder.shapeless(itemCategory, item, 9).requires(storage).group(storageGroup).unlockedBy(getHasName(storage), has(storage)), ResourceLocation.fromNamespaceAndPath(this.modid, itemLocation));
-		conditionalRecipe(output, condition, storageCategory, ShapedRecipeBuilder.shaped(storageCategory, storage).define('#', item).pattern("###").pattern("###").pattern("###").group(itemGroup).unlockedBy(getHasName(item), has(item)), ResourceLocation.fromNamespaceAndPath(this.modid, storageLocation));
+		conditionalRecipe(output, ShapelessRecipeBuilder.shapeless(itemCategory, item, 9).requires(storage).group(storageGroup).unlockedBy(getHasName(storage), has(storage)), ResourceLocation.fromNamespaceAndPath(this.modid, itemLocation), condition);
+		conditionalRecipe(output, ShapedRecipeBuilder.shaped(storageCategory, storage).define('#', item).pattern("###").pattern("###").pattern("###").group(itemGroup).unlockedBy(getHasName(item), has(item)), ResourceLocation.fromNamespaceAndPath(this.modid, storageLocation), condition);
 	}
 
 	public void conditionalStorageRecipesWithCustomUnpacking(RecipeOutput output, ICondition condition, RecipeCategory itemCategory, ItemLike item, RecipeCategory storageCategory, ItemLike storage, String shapelessName, String shapelessGroup) {
 		conditionalStorageRecipes(output, condition, itemCategory, item, storageCategory, storage, getSimpleRecipeName(storage), null, shapelessName, shapelessGroup);
 	}
 
-	public static void conditionalRecipe(RecipeOutput output, ICondition condition, RecipeCategory category, RecipeBuilder recipe) {
-		conditionalRecipe(output, condition, category, recipe, RecipeBuilder.getDefaultRecipeId(recipe.getResult()));
+	public static void conditionalRecipe(RecipeOutput output, RecipeBuilder recipe, ICondition... conditions) {
+		recipe.save(output.withConditions(conditions));
 	}
 
-	public static void conditionalRecipe(RecipeOutput output, ICondition condition, RecipeCategory category, RecipeBuilder recipe, ResourceLocation id) {
-		recipe.save(output.withConditions(condition), ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "recipes/" + category.getFolderName() + "/" + id.getPath()));
+	public static void conditionalRecipe(RecipeOutput output, RecipeBuilder recipe, ResourceLocation id, ICondition... conditions) {
+		recipe.save(output.withConditions(conditions), id);
 	}
 
 	public void waxRecipe(RecipeOutput output, RecipeCategory category, ItemLike input, ItemLike result) {
