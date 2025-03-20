@@ -4,16 +4,15 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
-import com.teamabnormals.blueprint.common.remolder.Remold;
 import org.jetbrains.annotations.Nullable;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 
 import java.text.ParseException;
 import java.util.function.Function;
 
+import static com.teamabnormals.blueprint.common.remolder.data.VariableDataVisitor.OPS;
+
 /**
- * The interface for facilitating data-driven access to direct and expressed {@link DataAccessor} instances.
+ * The interface for facilitating data-driven access to direct and expressed {@link DataVisitor} instances.
  *
  * @author SmellyModder (Luke Tonon)
  */
@@ -79,65 +78,48 @@ public sealed interface DynamicReference {
 		return new Expression(expression);
 	}
 
-	DataAccessor access();
+	DataVisitor visitor();
 
 	final class Direct implements DynamicReference {
 		private final Function<DynamicOps<?>, ?> getter;
-		private final DataAccessor dataAccessor;
+		private final DataVisitor visitor;
 
 		public Direct(Function<DynamicOps<?>, ?> getter) {
 			this.getter = getter;
 			String fieldName = "getter" + System.nanoTime();
-			this.dataAccessor = new DataAccessor() {
+			this.visitor = new DataVisitor() {
 				@Override
-				public void visitParent(Molding<?> molding, String owner, MethodVisitor method) {}
-
-				@Override
-				public void visitIdentifier(Molding<?> molding, String owner, MethodVisitor method) {}
-
-				@Override
-				public boolean isIdentifierAnIndex() {
-					return false;
+				public void visit(Molding molding) {
+					molding.provideVariable("direct", DataType.FUNCTION, getter).visit(molding);
+					OPS.visit(molding);
+					molding.visitMethodInsn(INVOKEINTERFACE, "java/util/function/Function", "apply", "(Ljava/lang/Object;)Ljava/lang/Object;", true);
+					molding.visitTypeInsn(CHECKCAST, molding.getDataType().getInternalName());
 				}
 
 				@Override
-				public void visit(Molding<?> molding, String owner, MethodVisitor method) {
-					method.visitVarInsn(Opcodes.ALOAD, 0);
-					method.visitFieldInsn(Opcodes.GETFIELD, owner, fieldName, "Ljava/util/function/Function;");
-					method.visitVarInsn(Opcodes.ALOAD, 1);
-					method.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/function/Function", "apply", "(Ljava/lang/Object;)Ljava/lang/Object;", true);
-					molding.cast(method);
-				}
-
-				@Override
-				public void accept(Remold.Fields fields) {
-					fields.addField(fieldName, new Remold.Field(() -> getter, "java/util/function/Function", "Ljava/util/function/Function;", (molding, methodVisitor) -> {}));
-				}
-
-				@Override
-				public DataType getDataType() {
-					return DataType.ELEMENT;
+				public ReturnType getReturnType() {
+					return ElementType.ELEMENTAL;
 				}
 			};
 		}
 
 		@Override
-		public DataAccessor access() {
-			return this.dataAccessor;
+		public DataVisitor visitor() {
+			return this.visitor;
 		}
 	}
 
 	final class Expression implements DynamicReference {
 		private final String rawExpression;
-		private final DataAccessor accessor;
+		private final DataVisitor visitor;
 
 		public Expression(String rawExpression) throws ParseException {
 			this(rawExpression, DataExpressionParser.parse(rawExpression));
 		}
 
-		public Expression(String rawExpression, @Nullable DataAccessor accessor) {
+		public Expression(String rawExpression, @Nullable DataVisitor visitor) {
 			this.rawExpression = rawExpression;
-			this.accessor = accessor;
+			this.visitor = visitor;
 		}
 
 		public String getRawExpression() {
@@ -145,8 +127,8 @@ public sealed interface DynamicReference {
 		}
 
 		@Override
-		public DataAccessor access() {
-			return this.accessor;
+		public DataVisitor visitor() {
+			return this.visitor;
 		}
 	}
 }

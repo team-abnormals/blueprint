@@ -12,5 +12,5 @@ import javax.annotation.Nullable;
  */
 @FunctionalInterface
 public interface Remolding<T> {
-	Pair<T, T> apply(DynamicOps<T> ops, T root, @Nullable T meta, T variables);
+	Pair<T, T> apply(DynamicOps<T> ops, T root, @Nullable T meta);
 }

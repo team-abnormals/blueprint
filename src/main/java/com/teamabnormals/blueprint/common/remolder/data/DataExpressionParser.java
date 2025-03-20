@@ -1,22 +1,19 @@
 package com.teamabnormals.blueprint.common.remolder.data;
 
 import org.jetbrains.annotations.Nullable;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Type;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.teamabnormals.blueprint.common.remolder.data.DataAccessor.*;
+import static com.teamabnormals.blueprint.common.remolder.data.DataVisitors.*;
 
 /**
- * The class for parsing {@link DataAccessor} instances from string expressions.
+ * The class for parsing {@link DataVisitor} instances from string expressions.
  *
  * @author SmellyModder (Luke Tonon)
  */
@@ -31,42 +28,29 @@ public final class DataExpressionParser {
 			int tokensLength = tokens.length;
 			if ((i == tokensLength - 1 && tokens[i].type() == TokenType.RIGHT_PARENTHESIS) || i + 1 > tokensLength)
 				throw new ParseException("Missing parameter", tokens[i - 1].startIndex() + 1);
-			return objectElement(instance, parseTokens(tokens, index, TokenType.RIGHT_PARENTHESIS));
+			return new EncapsulatedDataVisitor.Elemental(instance, parseTokens(tokens, index, TokenType.RIGHT_PARENTHESIS));
 		});
-		registerSingleParameterInstanceFunction("size", (instance, tokens, index) -> map(instance, DataType.INT, Molding::size));
-		registerSingleParameterInstanceFunction("length", (instance, tokens, index) -> {
-			DataType dataType = instance.getDataType();
-			BiConsumer<Molding<?>, MethodVisitor> visitor;
-			if (dataType.elementType() != DataType.ElementType.NONE) {
-				visitor = Molding::arrayLength;
-			} else {
-				Type type = dataType.getTrueType(null);
-				if (!type.equals(DataType.STRING_TYPE))
-					throw new ParseException(".length() not supported for type: " + type, tokens[index.get() - 1].startIndex() + 1);
-				visitor = (molding, method) -> stringLength(method);
-			}
-			return map(instance, DataType.INT, visitor);
+		registerSingleParameterInstanceFunction("size", (instance, tokens, index) -> {
+			return instance.then(molding -> molding.size(instance.getReturnType().getDataType(molding)), DataType.INT);
 		});
-		registerSingleParameterInstanceFunction("mapSize", (instance, tokens, index) -> map(instance, DataType.INT, Molding::mapSize));
-		registerSingleParameterInstanceFunction("clone", (instance, tokens, index) -> map(instance, instance.getDataType(), Molding::clone));
-		registerSingleParameterFunction("data", DataAccessor::data);
-		registerSingleParameterFunction("str", DataAccessor::str);
-		registerSingleParameterFunction("boolean", DataAccessor::convertToBoolean);
-		registerSingleParameterFunction("Boolean", DataAccessor::convertToBooleanWrapper);
-		registerSingleParameterFunction("char", DataAccessor::convertToChar);
-		registerSingleParameterFunction("Character", DataAccessor::convertToCharWrapper);
-		registerSingleParameterFunction("byte", DataAccessor::convertToByte);
-		registerSingleParameterFunction("Byte", DataAccessor::convertToByteWrapper);
-		registerSingleParameterFunction("short", DataAccessor::convertToShort);
-		registerSingleParameterFunction("Short", DataAccessor::convertToShortWrapper);
-		registerSingleParameterFunction("int", DataAccessor::convertToInt);
-		registerSingleParameterFunction("Integer", DataAccessor::convertToIntWrapper);
-		registerSingleParameterFunction("long", DataAccessor::convertToLong);
-		registerSingleParameterFunction("Long", DataAccessor::convertToLongWrapper);
-		registerSingleParameterFunction("float", DataAccessor::convertToFloat);
-		registerSingleParameterFunction("Float", DataAccessor::convertToFloatWrapper);
-		registerSingleParameterFunction("double", DataAccessor::convertToDouble);
-		registerSingleParameterFunction("Double", DataAccessor::convertToDoubleWrapper);
+		registerSingleParameterFunction("element", DataVisitors::element);
+		registerSingleParameterFunction("str", DataVisitors::str);
+		registerSingleParameterFunction("boolean", DataVisitors::convertToBoolean);
+		registerSingleParameterFunction("Boolean", DataVisitors::convertToBooleanWrapper);
+		registerSingleParameterFunction("char", DataVisitors::convertToChar);
+		registerSingleParameterFunction("Character", DataVisitors::convertToCharWrapper);
+		registerSingleParameterFunction("byte", DataVisitors::convertToByte);
+		registerSingleParameterFunction("Byte", DataVisitors::convertToByteWrapper);
+		registerSingleParameterFunction("short", DataVisitors::convertToShort);
+		registerSingleParameterFunction("Short", DataVisitors::convertToShortWrapper);
+		registerSingleParameterFunction("int", DataVisitors::convertToInt);
+		registerSingleParameterFunction("Integer", DataVisitors::convertToIntWrapper);
+		registerSingleParameterFunction("long", DataVisitors::convertToLong);
+		registerSingleParameterFunction("Long", DataVisitors::convertToLongWrapper);
+		registerSingleParameterFunction("float", DataVisitors::convertToFloat);
+		registerSingleParameterFunction("Float", DataVisitors::convertToFloatWrapper);
+		registerSingleParameterFunction("double", DataVisitors::convertToDouble);
+		registerSingleParameterFunction("Double", DataVisitors::convertToDoubleWrapper);
 	}
 
 	public static synchronized void registerFunction(String name, FunctionParser parser) {
@@ -82,7 +66,7 @@ public final class DataExpressionParser {
 		});
 	}
 
-	public static void registerSingleParameterFunction(String name, Function<DataAccessor, DataAccessor> function) {
+	public static void registerSingleParameterFunction(String name, Function<DataVisitor, DataVisitor> function) {
 		registerFunction(name, (instance, tokens, index) -> {
 			int i = index.get();
 			if (instance != null)
@@ -114,7 +98,7 @@ public final class DataExpressionParser {
 		throw new ParseException("Unknown token(s) for remaining characters: " + expression, initialLength - expression.length());
 	}
 
-	public static DataAccessor parse(String expression) throws ParseException {
+	public static DataVisitor parse(String expression) throws ParseException {
 		AtomicInteger index = new AtomicInteger();
 		Token[] tokens = tokenize(expression);
 		try {
@@ -127,8 +111,8 @@ public final class DataExpressionParser {
 		}
 	}
 
-	public static DataAccessor parseTokens(Token[] tokens, AtomicInteger index, @Nullable TokenType closerType) throws ParseException {
-		DataAccessor dataAccessor = ROOT;
+	public static DataVisitor parseTokens(Token[] tokens, AtomicInteger index, @Nullable TokenType closerType) throws ParseException {
+		DataVisitor dataVisitor = VariableDataVisitor.ROOT;
 		int tokensLength = tokens.length;
 		int localStartingIndex = index.get();
 		int i = localStartingIndex;
@@ -138,16 +122,16 @@ public final class DataExpressionParser {
 				case NUMBER -> {
 					String contents = token.contents();
 					if (contents.contains(".")) {
-						dataAccessor = doubleValue(Double.parseDouble(contents));
+						dataVisitor = doubleValue(Double.parseDouble(contents));
 						continue;
 					}
 					long longValue = Long.parseLong(contents);
-					dataAccessor = longValue > Integer.MAX_VALUE || longValue < Integer.MIN_VALUE ? longValue(longValue) : intValue((int) longValue);
+					dataVisitor = longValue > Integer.MAX_VALUE || longValue < Integer.MIN_VALUE ? longValue(longValue) : intValue((int) longValue);
 				}
 				case STRING -> {
 					String string = token.contents();
 					string = token.contents().substring(1, string.length() - 1);
-					dataAccessor = string(cleanEscapedCharacters(string));
+					dataVisitor = string(cleanEscapedCharacters(string));
 				}
 				case NAME -> {
 					String tokenContents = token.contents();
@@ -155,10 +139,10 @@ public final class DataExpressionParser {
 					if (i == localStartingIndex) {
 						switch (name) {
 							case "@":
-								dataAccessor = VARIABLES;
+								dataVisitor = VariableDataVisitor.THIS;
 								continue;
 							case "meta":
-								dataAccessor = META;
+								dataVisitor = VariableDataVisitor.META;
 								continue;
 							case "this":
 								continue;
@@ -169,30 +153,30 @@ public final class DataExpressionParser {
 						FunctionParser functionParser = FUNCTIONS.get(name);
 						if (functionParser == null)
 							throw new ParseException("Unknown function: " + name, token.startIndex() + tokenContents.length());
-						DataAccessor instance = null;
+						DataVisitor instance = null;
 						int previousIndex = i - 1;
 						if (previousIndex >= 1 && tokens[previousIndex].type() == TokenType.DOT)
-							instance = dataAccessor;
+							instance = dataVisitor;
 						index.set(nextIndex + 1);
-						dataAccessor = functionParser.parse(instance, tokens, index);
+						dataVisitor = functionParser.parse(instance, tokens, index);
 						checkTokenExists(TokenType.RIGHT_PARENTHESIS, index, tokens);
 						i = index.get();
 					} else {
-						dataAccessor = objectElement(dataAccessor, string(name));
+						dataVisitor = dataVisitor == VariableDataVisitor.THIS ? new VariableDataVisitor.Local(name, ElementType.ELEMENTAL) : new EncapsulatedDataVisitor.Elemental(dataVisitor, string(name));
 					}
 				}
 				case LEFT_BRACKET -> {
 					int indexAfterLeftBracket = i + 1;
 					if (indexAfterLeftBracket < tokensLength && tokens[indexAfterLeftBracket].type() == TokenType.RIGHT_BRACKET) {
-						dataAccessor = lastArrayElement(dataAccessor);
+						dataVisitor = new EncapsulatedDataVisitor.Elemental(dataVisitor, null);
 						i = indexAfterLeftBracket;
 						continue;
 					}
 					index.set(indexAfterLeftBracket);
-					DataAccessor indexAccessor = parseTokens(tokens, index, TokenType.RIGHT_BRACKET);
+					DataVisitor indexAccessor = parseTokens(tokens, index, TokenType.RIGHT_BRACKET);
 					checkTokenExists(TokenType.RIGHT_BRACKET, index, tokens);
 					i = index.get();
-					dataAccessor = arrayElement(dataAccessor, indexAccessor);
+					dataVisitor = new EncapsulatedDataVisitor.Elemental(dataVisitor, indexAccessor);
 				}
 				case LEFT_PARENTHESIS -> {
 					int indexAfterLeftParenthesis = i + 1;
@@ -201,13 +185,13 @@ public final class DataExpressionParser {
 					if (tokens[indexAfterLeftParenthesis].type() == TokenType.RIGHT_PARENTHESIS)
 						throw new ParseException("Missing contents inside parentheses", tokens[i].startIndex() + 1);
 					index.set(indexAfterLeftParenthesis);
-					dataAccessor = parseTokens(tokens, index, TokenType.RIGHT_PARENTHESIS);
+					dataVisitor = parseTokens(tokens, index, TokenType.RIGHT_PARENTHESIS);
 					i = index.get();
 					checkTokenExists(TokenType.RIGHT_PARENTHESIS, index, tokens);
 				}
 				case DOT -> {
-					if (i <= 0 || dataAccessor.getDataType().elementType() == DataType.ElementType.NONE)
-						throw new ParseException("Cannot perform instance operation on non-elemental type", token.startIndex() + 1);
+					if (i <= 0 || (dataVisitor != VariableDataVisitor.THIS && !(dataVisitor.getReturnType() instanceof ElementType)))
+						throw new ParseException("Cannot perform dot operation on non-elemental type", token.startIndex() + 1);
 					int nextIndex = i + 1;
 					if (nextIndex >= tokensLength || tokens[nextIndex].type() != TokenType.NAME)
 						throw new ParseException("Expected to find name after dot", token.startIndex() + 1);
@@ -217,12 +201,12 @@ public final class DataExpressionParser {
 					if (type != closerType)
 						throw new ParseException("Found dangling token of type " + type, token.startIndex() + 1);
 					index.set(i);
-					return dataAccessor;
+					return dataVisitor;
 				}
 			}
 		}
 		index.set(i);
-		return dataAccessor;
+		return dataVisitor;
 	}
 
 	private static void checkTokenExists(TokenType type, AtomicInteger index, Token[] tokens) throws ParseException {
@@ -264,7 +248,7 @@ public final class DataExpressionParser {
 	}
 
 	public interface FunctionParser {
-		DataAccessor parse(@Nullable DataAccessor instance, Token[] tokens, AtomicInteger index) throws ParseException;
+		DataVisitor parse(@Nullable DataVisitor instance, Token[] tokens, AtomicInteger index) throws ParseException;
 	}
 
 	public record Token(TokenType type, String contents, int startIndex) {}

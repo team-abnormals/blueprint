@@ -53,9 +53,9 @@ public final class TestDataRemolderProvider extends RemolderProvider {
 						value(16776960, Codec.INT)
 				));
 		this.entry("recipe_gold_block_to_netherite_block")
-				.path("minecraft:recipes/gold_block")
+				.path("minecraft:recipe/gold_block")
 				.remolder(replace(
-						target("result.item"),
+						target("result.id"),
 						value("minecraft:netherite_block", Codec.STRING)
 				));
 		// Remolder is not needed to do this, but this is just a test!

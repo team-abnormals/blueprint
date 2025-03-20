@@ -5,12 +5,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
+import com.teamabnormals.blueprint.common.remolder.data.Molding;
 
 import java.util.List;
 import java.util.function.Function;
 
 /**
- * Responsible for creating {@link Remold} instances that can get compiled into {@link Remolding} instances.
+ * Responsible for adding instructions to {@link Molding} instances.
  *
  * @author SmellyModder (Luke Tonon)
  */
@@ -32,7 +33,7 @@ public interface Remolder {
 		}
 	};
 
-	Remold remold() throws Exception;
+	void remold(Molding molding) throws Exception;
 
 	MapCodec<? extends Remolder> codec();
 }

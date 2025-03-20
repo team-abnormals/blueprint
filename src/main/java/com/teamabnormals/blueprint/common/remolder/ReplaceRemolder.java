@@ -2,8 +2,10 @@ package com.teamabnormals.blueprint.common.remolder;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamabnormals.blueprint.common.remolder.data.DataAccessor;
 import com.teamabnormals.blueprint.common.remolder.data.DynamicReference;
+import com.teamabnormals.blueprint.common.remolder.data.EncapsulatedDataVisitor;
+import com.teamabnormals.blueprint.common.remolder.data.Molding;
+import com.teamabnormals.blueprint.common.remolder.data.VariableDataVisitor;
 
 /**
  * A {@link Remolder} implementation for replacing abstract data.
@@ -19,15 +21,15 @@ public record ReplaceRemolder(DynamicReference.Expression target, DynamicReferen
 	});
 
 	@Override
-	public Remold remold() throws Exception {
-		DataAccessor targetAccessor = this.target.access();
-		DataAccessor valueAccessor = this.value.access();
-		Remold.Fields fields = new Remold.Fields();
-		targetAccessor.accept(fields);
-		valueAccessor.accept(fields);
-		return new Remold(this.getClass().getSimpleName(), (molding, owner, method) -> {
-			targetAccessor.set(molding, owner, method, valueAccessor);
-		}, fields);
+	public void remold(Molding molding) throws Exception {
+		var target = this.target;
+		var targetVisitor = target.visitor();
+		if (targetVisitor instanceof VariableDataVisitor variable) {
+			this.value.visitor().visit(molding);
+			variable.set(molding);
+		} else if (targetVisitor instanceof EncapsulatedDataVisitor encapsulated) {
+			molding.set(encapsulated.parent(), encapsulated.identifier(), this.value.visitor());
+		} else throw new UnsupportedOperationException("Don't know how to replace target: " + target.getRawExpression());
 	}
 
 	@Override

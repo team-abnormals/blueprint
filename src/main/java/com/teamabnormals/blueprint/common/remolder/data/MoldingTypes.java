@@ -9,7 +9,10 @@ import com.teamabnormals.blueprint.common.remolder.RemolderLoader;
 import com.teamabnormals.blueprint.common.remolder.Remolding;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
+import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.repository.KnownPack;
+import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceMetadata;
 
@@ -19,6 +22,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public final class MoldingTypes {
@@ -39,7 +43,8 @@ public final class MoldingTypes {
 
 	public static final MoldingType<JsonElement> JSON = register(
 			"json",
-			JsonMolding.INSTANCE,
+			JsonMolding.ELEMENT_DATA_TYPE,
+			JsonMolding::new,
 			JsonOps.INSTANCE,
 			resource -> {
 				try (Reader reader = resource.openAsReader()) {
@@ -52,8 +57,8 @@ public final class MoldingTypes {
 			"json"
 	);
 
-	public static synchronized <T> MoldingType<T> register(String name, Molding<T> molding, DynamicOps<T> ops, Function<Resource, T> deserializer, Function<T, byte[]> serializer, String... fileExtensions) {
-		var moldingType = new MoldingType<>(molding, ops, deserializer, serializer, fileExtensions);
+	public static synchronized <T> MoldingType<T> register(String name, DataType<T> dataType, Molding.Factory factory, DynamicOps<T> ops, Function<Resource, T> deserializer, Function<T, byte[]> serializer, String... fileExtensions) {
+		var moldingType = new MoldingType<>(dataType, factory, ops, deserializer, serializer, fileExtensions);
 		REGISTRY.register(name, moldingType);
 		return moldingType;
 	}
@@ -62,7 +67,7 @@ public final class MoldingTypes {
 		return GSON.toJson(element).getBytes(StandardCharsets.UTF_8);
 	}
 
-	public record MoldingType<T>(Molding<T> molding, DynamicOps<T> ops, Function<Resource, T> deserializer, Function<T, byte[]> serializer, String... fileExtensions) {
+	public record MoldingType<T>(DataType<T> dataType, Molding.Factory factory, DynamicOps<T> ops, Function<Resource, T> deserializer, Function<T, byte[]> serializer, String... fileExtensions) {
 		@SuppressWarnings("unchecked")
 		private static <T> T getMetadata(Resource resource, DynamicOps<T> ops) {
 			try {
@@ -88,7 +93,7 @@ public final class MoldingTypes {
 			for (RemolderLoader.Entry entry : entries) {
 				if (!entry.packFilter().test(pack)) continue;
 				try {
-					result = ((Remolding<T>) entry.remolding()).apply(ops, root, metadata, ops.emptyMap());
+					result = ((Remolding<T>) entry.remolding()).apply(ops, root, metadata);
 				} catch (Exception exception) {
 					logFailedRemolder(entry.remolding(), exception, location);
 					return resource;
@@ -98,16 +103,31 @@ public final class MoldingTypes {
 			}
 			InputStream inputStream = new ByteArrayInputStream(this.serializer().apply(root));
 			if (metadata == null) {
-				return new Resource(resource.source(), () -> inputStream);
+				return new RemoldedResource(resource.source(), () -> inputStream);
 			} else {
 				try {
 					ResourceMetadata resourceMetadata = ResourceMetadata.fromJsonStream(new ByteArrayInputStream(serializeJsonElement(metadata instanceof JsonElement element ? element : ops.convertTo(JsonOps.INSTANCE, metadata))));
-					return new Resource(resource.source(), () -> inputStream, () -> resourceMetadata);
+					return new RemoldedResource(resource.source(), () -> inputStream, () -> resourceMetadata);
 				} catch (IOException exception) {
-					exception.printStackTrace();
+					Blueprint.LOGGER.error("Failed to serialize metadata", exception);
 					return resource;
 				}
 			}
+		}
+	}
+
+	private static class RemoldedResource extends Resource {
+		public RemoldedResource(PackResources source, IoSupplier<InputStream> streamSupplier) {
+			super(source, streamSupplier);
+		}
+
+		public RemoldedResource(PackResources source, IoSupplier<InputStream> streamSupplier, IoSupplier<ResourceMetadata> metadataSupplier) {
+			super(source, streamSupplier, metadataSupplier);
+		}
+
+		@Override
+		public Optional<KnownPack> knownPackInfo() {
+			return Optional.empty();
 		}
 	}
 }

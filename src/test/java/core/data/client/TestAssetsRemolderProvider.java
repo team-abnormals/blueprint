@@ -31,7 +31,7 @@ public final class TestAssetsRemolderProvider extends RemolderProvider {
 				.pack(Sets.newHashSet("vanilla"))
 				.remolder(add(
 						target("variants.get(\"\").x"),
-						target("data(90)")
+						target("element(90)")
 				));
 	}
 

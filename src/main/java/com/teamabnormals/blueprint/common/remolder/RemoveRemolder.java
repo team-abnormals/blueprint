@@ -2,7 +2,8 @@ package com.teamabnormals.blueprint.common.remolder;
 
 import com.mojang.serialization.MapCodec;
 import com.teamabnormals.blueprint.common.remolder.data.DynamicReference;
-import org.objectweb.asm.Opcodes;
+import com.teamabnormals.blueprint.common.remolder.data.EncapsulatedDataVisitor;
+import com.teamabnormals.blueprint.common.remolder.data.Molding;
 
 /**
  * A {@link Remolder} implementation for removing abstract data.
@@ -13,14 +14,12 @@ public record RemoveRemolder(DynamicReference.Expression target) implements Remo
 	public static final MapCodec<RemoveRemolder> CODEC = DynamicReference.EXPRESSION_CODEC.fieldOf("target").xmap(RemoveRemolder::new, RemoveRemolder::target);
 
 	@Override
-	public Remold remold() throws Exception {
-		var targetAccessor = this.target.access();
-		Remold.Fields fields = new Remold.Fields();
-		targetAccessor.accept(fields);
-		return new Remold(this.getClass().getSimpleName(), (molding, owner, method) -> {
-			targetAccessor.remove(molding, owner, method);
-			method.visitInsn(Opcodes.POP);
-		}, fields);
+	public void remold(Molding molding) throws Exception {
+		var target = this.target;
+		var targetVisitor = target.visitor();
+		if (targetVisitor instanceof EncapsulatedDataVisitor encapsulated) {
+			molding.remove(encapsulated.parent(), encapsulated.identifier());
+		} else throw new UnsupportedOperationException("Don't know how to remove target: " + target.getRawExpression());
 	}
 
 	@Override

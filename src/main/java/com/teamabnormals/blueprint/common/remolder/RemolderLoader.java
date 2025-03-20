@@ -85,7 +85,7 @@ public final class RemolderLoader {
 					MoldingTypes.MoldingType<?> moldingType = remolderEntry.molding();
 					Remolding<?> remolding;
 					try {
-						remolding = this.compiler.compile(entryKey.toString(), moldingType.molding(), remolderEntry.remolder().remold());
+						remolding = this.compiler.compile(entryKey.toString(), moldingType.dataType(), moldingType.factory(), remolderEntry.remolder());
 					} catch (Throwable throwable) {
 						throw new JsonParseException("Error while generating modifications for Remolder '" + entryKey + "': " + throwable);
 					}

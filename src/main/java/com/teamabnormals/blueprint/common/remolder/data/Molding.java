@@ -1,91 +1,122 @@
 package com.teamabnormals.blueprint.common.remolder.data;
 
+import com.mojang.datafixers.util.Pair;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
-import java.util.function.Consumer;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
- * The interface for providing various core format-specific operations to use at the bytecode level.
- * <p>Implementations of this interface define these core format-specific operations for a specific data format.</p>
+ * The abstract class for providing various core format-specific operations to use at the bytecode level.
  *
  * @author SmellyModder (Luke Tonon)
  */
-public interface Molding<T> extends Opcodes {
-	void get(MethodVisitor method, Consumer<MethodVisitor> parentVisitor, Consumer<MethodVisitor> identifierVisitor, boolean isIdentifierAnIndex);
+public abstract class Molding extends MethodVisitor implements Opcodes {
+	private final HashMap<String, Pair<DataType<?>, Integer>> localVariables = new HashMap<>();
+	private final ArrayList<VariableDataVisitor.Provided<?>> providedVariables = new ArrayList<>();
+	private final String fieldOwnerTypeName;
+	private final VariableDataVisitor fieldOwnerVariable;
+	private int localVariableOffset;
 
-	void set(MethodVisitor method, Consumer<MethodVisitor> parentVisitor, Consumer<MethodVisitor> identifierVisitor, Consumer<MethodVisitor> valueVisitor, boolean isIdentifierAnIndex);
+	public Molding(MethodVisitor method, String fieldOwnerTypeName, VariableDataVisitor fieldOwnerVariable, int localVariableOffset) {
+		super(ASM9, method);
+		this.fieldOwnerTypeName = fieldOwnerTypeName;
+		this.fieldOwnerVariable = fieldOwnerVariable;
+		this.localVariableOffset = localVariableOffset;
+	}
 
-	void add(MethodVisitor method, Consumer<MethodVisitor> parentVisitor, Consumer<MethodVisitor> identifierVisitor, Consumer<MethodVisitor> valueVisitor, boolean isIdentifierAnIndex);
+	public final int localVarIndex(@Nullable String name, DataType<?> type) {
+		if (name != null) {
+			var variable = this.localVariables.get(name);
+			if (variable == null) {
+				variable = Pair.of(type, this.localVariableOffset++);
+				this.localVariables.put(name, variable);
+			} else if (!variable.getFirst().getClazz().isAssignableFrom(type.getClazz())) {
+				throw new IllegalArgumentException("Variable with name '" + name + "' exists that has type incompatible with " + type);
+			}
+			return variable.getSecond();
+		}
+		return this.localVariableOffset++;
+	}
 
-	void append(MethodVisitor method, Consumer<MethodVisitor> parentVisitor, Consumer<MethodVisitor> valueVisitor);
+	public final <T> VariableDataVisitor.Provided<T> provideVariable(String name, DataType<T> type, T value) {
+		VariableDataVisitor.Provided<T> provided = new VariableDataVisitor.Provided<>("provided" + this.providedVariables.size() + "$" + name, type, value);
+		this.providedVariables.add(provided);
+		return provided;
+	}
 
-	void remove(MethodVisitor method, Consumer<MethodVisitor> parentVisitor, Consumer<MethodVisitor> identifierVisitor, boolean isIdentifierAnIndex);
+	public final ArrayList<VariableDataVisitor.Provided<?>> getProvidedVariables() {
+		return this.providedVariables;
+	}
 
-	void booleanElementFromPrimitive(MethodVisitor method, Consumer<MethodVisitor> primitiveVisitor);
+	public String getFieldOwnerTypeName() {
+		return this.fieldOwnerTypeName;
+	}
 
-	void booleanElementFromWrapper(MethodVisitor method, Consumer<MethodVisitor> wrapperVisitor);
+	public final VariableDataVisitor getFieldOwnerVariable() {
+		return this.fieldOwnerVariable;
+	}
 
-	void characterElementFromPrimitive(MethodVisitor method, Consumer<MethodVisitor> primitiveVisitor);
+	public final void checkThenCast(Class<?> from, DataType<?> to) {
+		if (!to.getClazz().isAssignableFrom(from))
+			this.visitTypeInsn(CHECKCAST, to.getInternalName());
+	}
 
-	void characterElementFromWrapper(MethodVisitor method, Consumer<MethodVisitor> wrapperVisitor);
+	protected final void prepareChildVisit(DataVisitor object, DataVisitor key, Class<?> from, DataType<?> to) {
+		object.visit(this);
+		this.checkThenCast(from, to);
+		key.visit(this);
+	}
 
-	void byteElementFromPrimitive(MethodVisitor method, Consumer<MethodVisitor> primitiveVisitor);
+	public abstract DataType<?> getDataType();
 
-	void byteElementFromWrapper(MethodVisitor method, Consumer<MethodVisitor> wrapperVisitor);
+	public abstract DataType<?> getListType();
 
-	void shortElementFromPrimitive(MethodVisitor method, Consumer<MethodVisitor> primitiveVisitor);
+	public abstract DataType<?> getMapType();
 
-	void shortElementFromWrapper(MethodVisitor method, Consumer<MethodVisitor> wrapperVisitor);
+	public abstract DataType<?> getNullType();
 
-	void intElementFromPrimitive(MethodVisitor method, Consumer<MethodVisitor> primitiveVisitor);
+	public abstract DataType<?> getRepresentationType(DataType<?> type) throws UnsupportedOperationException;
 
-	void intElementFromWrapper(MethodVisitor method, Consumer<MethodVisitor> wrapperVisitor);
+	@Nullable
+	public abstract ElementType getElementType(DataType<?> type);
 
-	void longElementFromPrimitive(MethodVisitor method, Consumer<MethodVisitor> primitiveVisitor);
+	public abstract void element(DataVisitor visitor) throws UnsupportedOperationException;
 
-	void longElementFromWrapper(MethodVisitor method, Consumer<MethodVisitor> wrapperVisitor);
+	public abstract void convert(DataType<?> from, DataType<?> to) throws UnsupportedOperationException;
 
-	void floatElementFromPrimitive(MethodVisitor method, Consumer<MethodVisitor> primitiveVisitor);
+	public abstract void toString(DataType<?> type) throws UnsupportedOperationException;
 
-	void floatElementFromWrapper(MethodVisitor method, Consumer<MethodVisitor> wrapperVisitor);
+	public abstract void testElementalList();
 
-	void doubleElementFromPrimitive(MethodVisitor method, Consumer<MethodVisitor> primitiveVisitor);
+	public abstract void testElementalMap();
 
-	void doubleElementFromWrapper(MethodVisitor method, Consumer<MethodVisitor> wrapperVisitor);
+	public abstract void testStringElement();
 
-	void numberElement(MethodVisitor method, Consumer<MethodVisitor> numberVisitor);
+	public abstract void testNumericalElement();
 
-	void stringElement(MethodVisitor method, Consumer<MethodVisitor> stringVisitor);
+	public abstract void testBooleanElement();
 
-	void arrayLength(MethodVisitor method);
+	public abstract void size(DataType<?> collectionType) throws UnsupportedOperationException;
 
-	void mapSize(MethodVisitor method);
+	public abstract void get(DataVisitor object, @Nullable DataVisitor key) throws UnsupportedOperationException;
 
-	void size(MethodVisitor method);
+	public abstract void set(DataVisitor object, @Nullable DataVisitor key, DataVisitor value) throws UnsupportedOperationException;
 
-	void clone(MethodVisitor method);
+	public abstract void add(DataVisitor object, @Nullable DataVisitor key, DataVisitor value) throws UnsupportedOperationException;
 
-	void cast(MethodVisitor method);
+	public abstract void remove(DataVisitor object, @Nullable DataVisitor key) throws UnsupportedOperationException;
 
-	void elementToBoolean(MethodVisitor method);
+	public abstract void clear(DataType<?> type) throws UnsupportedOperationException;
 
-	void elementToChar(MethodVisitor method);
-
-	void elementToByte(MethodVisitor method);
-
-	void elementToShort(MethodVisitor method);
-
-	void elementToInt(MethodVisitor method);
-
-	void elementToLong(MethodVisitor method);
-
-	void elementToFloat(MethodVisitor method);
-
-	void elementToDouble(MethodVisitor method);
-
-	void elementToString(MethodVisitor method);
-
-	Type getDataType();
+	/**
+	 * Interface for creating a {@link Molding} instance for an injection point.
+	 *
+	 * @author SmellyModder (Luke Tonon)
+	 */
+	public interface Factory {
+		Molding create(MethodVisitor method, String fieldOwnerTypeName, VariableDataVisitor fieldOwnerVariable, int localVariableOffset);
+	}
 }

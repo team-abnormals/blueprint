@@ -2,8 +2,9 @@ package com.teamabnormals.blueprint.common.remolder;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamabnormals.blueprint.common.remolder.data.DataAccessor;
 import com.teamabnormals.blueprint.common.remolder.data.DynamicReference;
+import com.teamabnormals.blueprint.common.remolder.data.EncapsulatedDataVisitor;
+import com.teamabnormals.blueprint.common.remolder.data.Molding;
 
 /**
  * A {@link Remolder} implementation for adding new abstract data.
@@ -19,15 +20,12 @@ public record AddRemolder(DynamicReference.Expression target, DynamicReference v
 	});
 
 	@Override
-	public Remold remold() throws Exception {
-		DataAccessor targetAccessor = this.target.access();
-		DataAccessor valueAccessor = this.value.access();
-		Remold.Fields fields = new Remold.Fields();
-		targetAccessor.accept(fields);
-		valueAccessor.accept(fields);
-		return new Remold(this.getClass().getSimpleName(), (molding, owner, method) -> {
-			targetAccessor.add(molding, owner, method, valueAccessor);
-		}, fields);
+	public void remold(Molding molding) throws Exception {
+		var target = this.target;
+		var targetVisitor = target.visitor();
+		if (targetVisitor instanceof EncapsulatedDataVisitor encapsulated) {
+			molding.add(encapsulated.parent(), encapsulated.identifier(), this.value.visitor());
+		} else throw new UnsupportedOperationException("Don't know how to add for target: " + target.getRawExpression());
 	}
 
 	@Override

@@ -1,11 +1,11 @@
 package com.teamabnormals.blueprint.common.remolder;
 
+import com.teamabnormals.blueprint.common.remolder.data.DataType;
 import com.teamabnormals.blueprint.common.remolder.data.Molding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Type;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,9 +13,10 @@ import java.nio.file.Paths;
 import java.util.function.Predicate;
 
 import static org.objectweb.asm.Opcodes.*;
+import static com.teamabnormals.blueprint.common.remolder.data.VariableDataVisitor.*;
 
 /**
- * A {@link ClassLoader} subclass that compiles {@link Remold} instances into {@link Remolder} instances.
+ * A {@link ClassLoader} subclass that compiles {@link Remolding} instances from {@link Remolder} instances.
  *
  * @author SmellyModder (Luke Tonon)
  */
@@ -50,18 +51,17 @@ public final class RemoldingCompiler extends ClassLoader {
 		return result.toString();
 	}
 
-	public <T> Remolding<T> compile(String identifier, Molding<T> molding, Remold... remolds) throws Throwable {
-		return this.compile(remolds[0].type(), identifier, molding, remolds);
+	public <T> Remolding<T> compile(String identifier, DataType<?> dataType, Molding.Factory moldingFactory, Remolder... remolders) throws Throwable {
+		return this.compile(remolders[0].getClass().getSimpleName(), identifier, dataType, moldingFactory, remolders);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Remolding<T> compile(String type, String identifier, Molding<T> molding, Remold... remolds) throws Throwable {
-		int remoldsLength = remolds.length;
-		if (remoldsLength == 0) throw new IllegalArgumentException("Cannot compile an empty array of Remolds");
+	public <T> Remolding<T> compile(String type, String identifier, DataType<?> dataType, Molding.Factory moldingFactory, Remolder... remolders) throws Throwable {
+		int remoldersLength = remolders.length;
+		if (remoldersLength == 0) throw new IllegalArgumentException("Cannot compile an empty array of Remolders");
 		ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 		String name = formatIdentifierForClassName(identifier) + type + "Remolding" + System.nanoTime();
-		Type dataType = molding.getDataType();
-		String typeDescriptor = dataType.getDescriptor();
+		String typeDescriptor = dataType.getType().getDescriptor();
 		classWriter.visit(
 				V17,
 				ACC_PUBLIC,
@@ -70,22 +70,6 @@ public final class RemoldingCompiler extends ClassLoader {
 				"java/lang/Object",
 				new String[]{"com/teamabnormals/blueprint/common/remolder/Remolding"}
 		);
-		MethodVisitor constructor = classWriter.visitMethod(
-				ACC_PUBLIC,
-				"<init>",
-				"(Lcom/teamabnormals/blueprint/common/remolder/Remold$Fields;)V",
-				null,
-				null
-		);
-		constructor.visitVarInsn(ALOAD, 0);
-		constructor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-		Remold.Fields fields = new Remold.Fields();
-		for (Remold remold : remolds) fields.addFields(remold.fields());
-		fields.visitFields(name, molding, classWriter, constructor);
-		constructor.visitInsn(RETURN);
-		constructor.visitMaxs(0, 0);
-		constructor.visitEnd();
-
 		MethodVisitor toString = classWriter.visitMethod(
 				ACC_PUBLIC,
 				"toString",
@@ -98,27 +82,71 @@ public final class RemoldingCompiler extends ClassLoader {
 		toString.visitMaxs(0, 0);
 		toString.visitEnd();
 
-		String realApplyDescriptor = "(Lcom/mojang/serialization/DynamicOps;" + typeDescriptor + typeDescriptor + typeDescriptor + ")Lcom/mojang/datafixers/util/Pair;";
-		String applySignature = "(Lcom/mojang/serialization/DynamicOps<" + typeDescriptor + ">;" + typeDescriptor + typeDescriptor + typeDescriptor + ")" + "Lcom/mojang/datafixers/util/Pair<" + typeDescriptor + typeDescriptor + ">;";
-		MethodVisitor apply = classWriter.visitMethod(
+		String realApplyDescriptor = "(Lcom/mojang/serialization/DynamicOps;" + typeDescriptor + typeDescriptor + ")Lcom/mojang/datafixers/util/Pair;";
+		String applySignature = "(Lcom/mojang/serialization/DynamicOps<" + typeDescriptor + ">;" + typeDescriptor + typeDescriptor + ")" + "Lcom/mojang/datafixers/util/Pair<" + typeDescriptor + typeDescriptor + ">;";
+		Molding apply = moldingFactory.create(classWriter.visitMethod(
 				ACC_PUBLIC,
 				"apply",
 				realApplyDescriptor,
 				applySignature,
 				null
-		);
-		for (Remold remold : remolds) remold.visitor().visit(molding, name, apply);
-		apply.visitVarInsn(ALOAD, 2);
-		apply.visitVarInsn(ALOAD, 3);
+		), name, THIS, 0);
+		THIS.allocate(apply);
+		OPS.allocate(apply);
+		ROOT.allocate(apply);
+		META.allocate(apply);
+		for (Remolder remolder : remolders) remolder.remold(apply);
+		ROOT.visit(apply);
+		META.visit(apply);
 		apply.visitMethodInsn(INVOKESTATIC, "com/mojang/datafixers/util/Pair", "of", "(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;", false);
 		apply.visitInsn(ARETURN);
 		apply.visitMaxs(0, 0);
 		apply.visitEnd();
 
+		// Create constructor
+		var providedVariables = apply.getProvidedVariables();
+		int providedVariableCount = providedVariables.size();
+		Class<?>[] parameterTypes = new Class[providedVariableCount];
+		Object[] parameterValues = new Object[providedVariableCount];
+		StringBuilder constructorDescriptor = new StringBuilder();
+		constructorDescriptor.append('(');
+		for (int i = 0; i < providedVariableCount; i++) {
+			var provided = providedVariables.get(i);
+			var variableReturnType = provided.getReturnType();
+			parameterTypes[i] = variableReturnType.getClazz();
+			parameterValues[i] = provided.initial();
+			constructorDescriptor.append(variableReturnType.getType().getDescriptor());
+		}
+		constructorDescriptor.append(")V");
+		MethodVisitor constructor = classWriter.visitMethod(
+				ACC_PUBLIC,
+				"<init>",
+				constructorDescriptor.toString(),
+				null,
+				null
+		);
+		constructor.visitVarInsn(ALOAD, 0);
+		constructor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+		for (int i = 0; i < providedVariableCount;) {
+			var provided = providedVariables.get(i);
+			String fieldName = provided.name();
+			var variableType = provided.getReturnType().getType();
+			String descriptor = variableType.getDescriptor();
+			// Add field to class
+			classWriter.visitField(ACC_PRIVATE, fieldName, descriptor, null, null);
+			// Initialize field in constructor
+			constructor.visitVarInsn(ALOAD, 0);
+			constructor.visitVarInsn(variableType.getOpcode(ILOAD), ++i);
+			constructor.visitFieldInsn(PUTFIELD, name, fieldName, descriptor);
+		}
+		constructor.visitInsn(RETURN);
+		constructor.visitMaxs(0, 0);
+		constructor.visitEnd();
+
 		MethodVisitor bridgeApply = classWriter.visitMethod(
 				ACC_PUBLIC | ACC_BRIDGE | ACC_SYNTHETIC,
 				"apply",
-				"(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;",
+				"(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;",
 				null,
 				null
 		);
@@ -128,8 +156,6 @@ public final class RemoldingCompiler extends ClassLoader {
 		String dataTypeInternalName = dataType.getInternalName();
 		bridgeApply.visitTypeInsn(CHECKCAST, dataTypeInternalName);
 		bridgeApply.visitVarInsn(ALOAD, 3);
-		bridgeApply.visitTypeInsn(CHECKCAST, dataTypeInternalName);
-		bridgeApply.visitVarInsn(ALOAD, 4);
 		bridgeApply.visitTypeInsn(CHECKCAST, dataTypeInternalName);
 		bridgeApply.visitMethodInsn(INVOKEVIRTUAL, name, "apply", realApplyDescriptor, false);
 		bridgeApply.visitInsn(ARETURN);
@@ -146,7 +172,7 @@ public final class RemoldingCompiler extends ClassLoader {
 				LOGGER.error("Failed to export Remolder class '{}' that matched '{}': {}", exportName, export.pattern, exception);
 			}
 		}
-		return ((Class<? extends Remolding<T>>) this.defineClass(name, data, 0, data.length)).getConstructor(Remold.Fields.class).newInstance(fields);
+		return ((Class<? extends Remolding<T>>) this.defineClass(name, data, 0, data.length)).getConstructor(parameterTypes).newInstance(parameterValues);
 	}
 
 	public record ExportEntry(String folder, String pattern, Predicate<String> predicate) {}
