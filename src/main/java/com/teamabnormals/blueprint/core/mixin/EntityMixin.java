@@ -11,8 +11,10 @@ import com.teamabnormals.blueprint.core.endimator.Endimatable;
 import com.teamabnormals.blueprint.core.events.EntityStepEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -40,6 +42,9 @@ public abstract class EntityMixin implements IDataManager, Endimatable {
 
 	@Shadow
 	public abstract BlockPos getOnPos();
+
+	@Shadow
+	public abstract RegistryAccess registryAccess();
 
 	private Map<TrackedData<?>, DataEntry<?>> dataMap = Maps.newHashMap();
 	private boolean dirty = false;
@@ -132,10 +137,11 @@ public abstract class EntityMixin implements IDataManager, Endimatable {
 	private void writeTrackedData(CompoundTag compound, CallbackInfoReturnable<CompoundTag> info) {
 		if (!this.dataMap.isEmpty()) {
 			ListTag dataListTag = new ListTag();
+			var ops = this.registryAccess().createSerializationContext(NbtOps.INSTANCE);
 			this.dataMap.forEach((trackedData, dataEntry) -> {
 				var codec = trackedData.getCodec();
 				if (codec != null) {
-					CompoundTag dataTag = dataEntry.encode(new CompoundTag());
+					CompoundTag dataTag = dataEntry.encode(new CompoundTag(), ops);
 					dataTag.putString("Id", TrackedDataManager.INSTANCE.getKey(trackedData).toString());
 					dataListTag.add(dataTag);
 				}
@@ -146,21 +152,21 @@ public abstract class EntityMixin implements IDataManager, Endimatable {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", shift = At.Shift.BEFORE), method = "load")
 	public void read(CompoundTag compound, CallbackInfo info) {
-		if (compound.contains("BlueprintTrackedData", Tag.TAG_LIST)) {
-			ListTag dataListTag = compound.getList("BlueprintTrackedData", Tag.TAG_COMPOUND);
-			dataListTag.forEach(nbt -> {
-				CompoundTag dataTag = (CompoundTag) nbt;
-				ResourceLocation id = ResourceLocation.parse(dataTag.getString("Id"));
-				TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(id);
-				if (trackedData != null && trackedData.getCodec() != null) {
-					IDataManager.DataEntry<?> dataEntry = new DataEntry<>(trackedData);
-					dataEntry.readValue(dataTag, true);
-					this.dataMap.put(trackedData, dataEntry);
-				} else if (trackedData == null) {
-					Blueprint.LOGGER.warn("Received NBT for unknown Tracked Data: {}", id);
-				}
-			});
-		}
+		ListTag dataListTag = compound.getList("BlueprintTrackedData", Tag.TAG_COMPOUND);
+		if (dataListTag.isEmpty()) return;
+		var ops = this.registryAccess().createSerializationContext(NbtOps.INSTANCE);
+		dataListTag.forEach(nbt -> {
+			CompoundTag dataTag = (CompoundTag) nbt;
+			ResourceLocation id = ResourceLocation.parse(dataTag.getString("Id"));
+			TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(id);
+			if (trackedData != null && trackedData.getCodec() != null) {
+				IDataManager.DataEntry<?> dataEntry = new DataEntry<>(trackedData);
+				dataEntry.readValue(dataTag, ops, true);
+				this.dataMap.put(trackedData, dataEntry);
+			} else if (trackedData == null) {
+				Blueprint.LOGGER.warn("Received NBT for unknown Tracked Data: {}", id);
+			}
+		});
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", shift = At.Shift.AFTER), method = "baseTick")

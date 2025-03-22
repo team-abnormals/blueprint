@@ -3,11 +3,12 @@ package com.teamabnormals.blueprint.common.world.storage.tracking;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryOps;
 
 import java.util.List;
 import java.util.Map;
@@ -114,10 +115,11 @@ public interface IDataManager {
 		 * Saves this data to a tag.
 		 *
 		 * @param tag A {@link CompoundTag} instance to start saving from.
+		 * @param ops A {@link RegistryOps} instance to use.
 		 * @return A {@link CompoundTag} instance containing the saved data.
 		 */
-		public CompoundTag encode(CompoundTag tag) {
-			var result = this.getTrackedData().getCodec().codec().encode(this.value, NbtOps.INSTANCE, tag);
+		public CompoundTag encode(CompoundTag tag, RegistryOps<Tag> ops) {
+			var result = this.getTrackedData().getCodec().codec().encode(this.value, ops, tag);
 			var error = result.error();
 			if (error.isPresent()) throw new RuntimeException("Error encoding tracked data: " + error.get());
 			if (!(result.result().get() instanceof CompoundTag compoundTag))
@@ -202,11 +204,12 @@ public interface IDataManager {
 		 * Reads a new {@link #value} for this entry from a {@link CompoundTag}.
 		 *
 		 * @param tag   A {@link CompoundTag} to read from.
+		 * @param ops   A {@link RegistryOps} instance to use.
 		 * @param dirty If this entry should now be marked dirty.
 		 */
-		public void readValue(CompoundTag tag, boolean dirty) {
+		public void readValue(CompoundTag tag, RegistryOps<Tag> ops, boolean dirty) {
 			this.dirty = dirty;
-			this.value = this.getTrackedData().getCodec().codec().decode(NbtOps.INSTANCE, tag).mapOrElse(Pair::getFirst, error -> {
+			this.value = this.getTrackedData().getCodec().codec().decode(ops, tag).mapOrElse(Pair::getFirst, error -> {
 				Blueprint.LOGGER.error("Error while decoding tracked data {}:\n{}", tag, error.message());
 				Blueprint.LOGGER.warn("Using default value instead");
 				return this.getTrackedData().getDefaultValue();
