@@ -134,6 +134,7 @@ public final class Blueprint {
 		REGISTRY_HELPER.getBlockEntitySubHelper().register(bus);
 		BlueprintHolderSets.HOLDER_SET_TYPES.register(bus);
 		BlueprintPoiTypes.POI_TYPES.register(bus);
+		BlueprintPlacementModifierTypes.PLACEMENT_MODIFIER_TYPES.register(bus);
 		BlueprintSurfaceRules.RULE_SOURCES.register(bus);
 		BlueprintLootConditions.LOOT_CONDITION_TYPES.register(bus);
 
