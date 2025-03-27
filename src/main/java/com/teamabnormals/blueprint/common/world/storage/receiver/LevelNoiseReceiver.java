@@ -27,6 +27,6 @@ public class LevelNoiseReceiver extends LevelDataReceiver<NormalNoise> {
 	@Override
 	public NormalNoise create(ServerLevel level) {
 		Registry<NoiseParameters> noise = level.registryAccess().registryOrThrow(Registries.NOISE);
-		return NormalNoise.create(this.algorithm.newInstance(level.getSeed()).forkPositional().fromHashOf(this.noiseParameters.location()), noise.getOrThrow(this.noiseParameters));
+		return NormalNoise.create(this.algorithm.newInstance(level.getSeed() + level.dimension().location().hashCode()).forkPositional().fromHashOf(this.noiseParameters.location().toString()), noise.getOrThrow(this.noiseParameters));
 	}
 }

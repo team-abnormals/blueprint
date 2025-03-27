@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * This class works as an easy way of creating and quickly accessing objects associated with a specific {@link ServerLevel}.
- * These obejcts do not get saved.
+ * These objects do not get saved.
  */
 public abstract class LevelDataReceiver<T> {
 	private static final List<LevelDataReceiver<?>> RECEIVERS = new ArrayList<>();
