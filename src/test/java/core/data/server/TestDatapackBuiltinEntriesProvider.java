@@ -12,7 +12,6 @@ import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
 import com.teamabnormals.blueprint.core.registry.BlueprintHolderSets;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import core.BlueprintTest;
-import core.registry.TestBiomeModifiers;
 import core.registry.TestFeatures.TestConfiguredFeatures;
 import core.registry.TestFeatures.TestPlacedFeatures;
 import core.registry.TestNoises;
@@ -39,7 +38,6 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +49,6 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 			.add(Registries.CONFIGURED_FEATURE, TestConfiguredFeatures::bootstrap)
 			.add(Registries.PLACED_FEATURE, TestPlacedFeatures::bootstrap)
 			.add(Registries.BIOME, BlueprintDatapackBuiltinEntriesProvider::bootstrapBiomes)
-			.add(ForgeRegistries.Keys.BIOME_MODIFIERS, TestBiomeModifiers::bootstrap)
 			.add(Registries.NOISE, TestNoises::bootstrap)
 			.add(BlueprintDataPackRegistries.STRUCTURE_REPALETTERS, TestDatapackBuiltinEntriesProvider::bootstrapStructureRepaletters)
 			.add(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, TestDatapackBuiltinEntriesProvider::bootstrapSlices)
