@@ -21,7 +21,7 @@ public class BlueprintBlockTagsProvider extends BlockTagsProvider {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(ATTACHES_BLOCKS_TO_PISTON).add(Blocks.SLIME_BLOCK, Blocks.HONEY_BLOCK);
+		this.tag(ATTACHES_BLOCKS_TO_PISTONS).add(Blocks.SLIME_BLOCK, Blocks.HONEY_BLOCK);
 		this.tag(NOTE_BLOCK_TOP_INSTRUMENTS);
 
 		this.tag(WOODEN_CHESTS);

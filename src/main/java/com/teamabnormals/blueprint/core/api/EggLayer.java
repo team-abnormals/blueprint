@@ -11,6 +11,8 @@ public interface EggLayer {
 
 	boolean isBirdJockey();
 
+	void setBirdJockey(boolean jockey);
+
 	Item getEggItem();
 
 	int getNextEggTime(RandomSource rand);

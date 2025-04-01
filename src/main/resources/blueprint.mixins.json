@@ -25,7 +25,8 @@
     "StructurePieceMixin",
     "StructureStartMixin",
     "StructureTemplateMixin",
-    "WorldLoaderPackConfigMixin"
+    "WorldLoaderPackConfigMixin",
+    "ZombieMixin"
   ],
   "client": [
     "client.CameraMixin",

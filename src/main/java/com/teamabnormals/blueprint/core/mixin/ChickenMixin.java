@@ -26,6 +26,8 @@ public abstract class ChickenMixin extends Animal implements EggLayer {
 	@Shadow
 	public boolean isChickenJockey;
 
+	@Shadow public abstract void setChickenJockey(boolean isChickenJockey);
+
 	@Override
 	public int getEggTimer() {
 		return this.eggTime;
@@ -39,6 +41,11 @@ public abstract class ChickenMixin extends Animal implements EggLayer {
 	@Override
 	public boolean isBirdJockey() {
 		return this.isChickenJockey;
+	}
+
+	@Override
+	public void setBirdJockey(boolean jockey) {
+		this.setChickenJockey(jockey);
 	}
 
 	@Override
