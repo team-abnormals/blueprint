@@ -243,8 +243,8 @@ public class BlockSubRegistryHelper extends AbstractSubRegistryHelper<Block, Def
 	 */
 	public DeferredBlock<BlueprintTrappedChestBlock> createTrappedChestBlock(String name, String materialName, Block.Properties properties) {
 		String modId = this.parent.getModId();
-		DeferredBlock<BlueprintTrappedChestBlock> block = this.deferredRegister.register(name, () -> new BlueprintTrappedChestBlock(modId + ":" + materialName + "_trapped", properties));
 		String chestMaterialsName = BlueprintChestMaterials.registerMaterials(modId, materialName, true);
+		DeferredBlock<BlueprintTrappedChestBlock> block = this.deferredRegister.register(name, () -> new BlueprintTrappedChestBlock(chestMaterialsName, properties));
 		var item = this.itemRegister.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
 		if (FMLEnvironment.dist == Dist.CLIENT) {
 			this.clientItemExtensions.put(item, chestBEWLRItemExtensions(block, true));

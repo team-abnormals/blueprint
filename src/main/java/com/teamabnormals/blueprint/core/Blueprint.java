@@ -84,7 +84,6 @@ import java.util.concurrent.CompletableFuture;
 public final class Blueprint {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MOD_ID = "blueprint";
-	public static final String NETWORK_PROTOCOL = "BP1";
 	public static final EndimationLoader ENDIMATION_LOADER = new EndimationLoader();
 	public static final RegistryHelper REGISTRY_HELPER = new RegistryHelper(MOD_ID);
 	public static final TrackedData<Byte> SLABFISH_SETTINGS = TrackedData.Builder.create(ByteBufCodecs.BYTE, () -> (byte) 8).enablePersistence().build();
