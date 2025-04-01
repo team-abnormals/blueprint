@@ -1,6 +1,5 @@
 package com.teamabnormals.blueprint.core.data.server.tags;
 
-import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -22,7 +21,8 @@ public class BlueprintBlockTagsProvider extends BlockTagsProvider {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(BlueprintBlockTags.NOTE_BLOCK_TOP_INSTRUMENTS);
+		this.tag(ATTACHES_BLOCKS_TO_PISTON).add(Blocks.SLIME_BLOCK, Blocks.HONEY_BLOCK);
+		this.tag(NOTE_BLOCK_TOP_INSTRUMENTS);
 
 		this.tag(WOODEN_CHESTS);
 		this.tag(WOODEN_TRAPPED_CHESTS);
