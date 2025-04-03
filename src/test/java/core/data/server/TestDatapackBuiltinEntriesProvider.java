@@ -14,6 +14,9 @@ import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import core.BlueprintTest;
+import core.registry.TestFeatures.TestConfiguredFeatures;
+import core.registry.TestFeatures.TestPlacedFeatures;
+import core.registry.TestNoises;
 import core.registry.TestTrimMaterials;
 import core.registry.TestTrimPatterns;
 import net.minecraft.core.HolderLookup;
@@ -28,7 +31,10 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandomList;
-import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.CheckerboardColumnBiomeSource;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterLists;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
@@ -43,7 +49,10 @@ import static com.teamabnormals.blueprint.common.world.modification.structure.St
 
 public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEntriesProvider {
 	private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
+			.add(Registries.CONFIGURED_FEATURE, TestConfiguredFeatures::bootstrap)
+			.add(Registries.PLACED_FEATURE, TestPlacedFeatures::bootstrap)
 			.add(Registries.BIOME, BlueprintDatapackBuiltinEntriesProvider::bootstrapBiomes)
+			.add(Registries.NOISE, TestNoises::bootstrap)
 			.add(BlueprintDataPackRegistries.STRUCTURE_REPALETTERS, TestDatapackBuiltinEntriesProvider::bootstrapStructureRepaletters)
 			.add(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, TestDatapackBuiltinEntriesProvider::bootstrapSlices)
 			.add(Registries.TRIM_MATERIAL, TestTrimMaterials::bootstrap)

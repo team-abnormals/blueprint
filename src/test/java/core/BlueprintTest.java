@@ -126,4 +126,8 @@ public final class BlueprintTest {
 		event.registerEntityRenderer(TestEntities.ENDIMATED_WALKING.get(), EndimatedWalkingEntityRenderer::new);
 		event.registerBlockEntityRenderer(TestBlockEntities.TEST_ENDIMATED.get(), TestEndimatedBlockEntityRenderer::new);
 	}
+
+	public static ResourceLocation location(String path) {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	}
 }

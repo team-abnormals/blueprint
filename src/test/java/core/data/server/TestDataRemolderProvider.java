@@ -19,9 +19,12 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
-import static com.teamabnormals.blueprint.common.remolder.RemolderTypes.*;
-import static com.teamabnormals.blueprint.common.remolder.data.DynamicReference.*;
-import static com.teamabnormals.blueprint.common.remolder.util.LootRemolders.*;
+import static com.teamabnormals.blueprint.common.remolder.RemolderTypes.add;
+import static com.teamabnormals.blueprint.common.remolder.RemolderTypes.replace;
+import static com.teamabnormals.blueprint.common.remolder.data.DynamicReference.target;
+import static com.teamabnormals.blueprint.common.remolder.data.DynamicReference.value;
+import static com.teamabnormals.blueprint.common.remolder.util.LootRemolders.addEntry;
+import static com.teamabnormals.blueprint.common.remolder.util.LootRemolders.addPool;
 
 public final class TestDataRemolderProvider extends RemolderProvider {
 
@@ -51,6 +54,12 @@ public final class TestDataRemolderProvider extends RemolderProvider {
 				.remolder(replace(
 						target("effects.water_color"),
 						value(16776960, Codec.INT)
+				));
+		this.entry("bastion_indicators")
+				.path("minecraft:worldgen/biome/plains", "minecraft:worldgen/biome/forest", "minecraft:worldgen/biome/dark_forest", "minecraft:worldgen/biome/desert", "minecraft:worldgen/biome/crimson_forest")
+				.remolder(add(
+						target("features[9][]"),
+						value("blueprint_test:test_data_receiver", Codec.STRING)
 				));
 		this.entry("recipe_gold_block_to_netherite_block")
 				.path("minecraft:recipe/gold_block")

@@ -1,0 +1,18 @@
+{
+  "molding": "json",
+  "remolder": {
+    "type": "add",
+    "target": "features[9][]",
+    "value": "blueprint_test:test_data_receiver"
+  },
+  "selector": {
+    "type": "names",
+    "config": [
+      "minecraft:worldgen/biome/plains",
+      "minecraft:worldgen/biome/desert",
+      "minecraft:worldgen/biome/crimson_forest",
+      "minecraft:worldgen/biome/dark_forest",
+      "minecraft:worldgen/biome/forest"
+    ]
+  }
+}

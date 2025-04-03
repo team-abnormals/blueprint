@@ -9,12 +9,18 @@ import com.teamabnormals.blueprint.core.events.FallingBlockEvent.BlockFallEvent;
 import com.teamabnormals.blueprint.core.events.FallingBlockEvent.FallingBlockTickEvent;
 import com.teamabnormals.blueprint.core.util.TradeUtil;
 import com.teamabnormals.blueprint.core.util.TradeUtil.BlueprintTrade;
+import core.registry.TestFeatures;
 import core.registry.TestItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -26,6 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -49,6 +56,21 @@ public final class TestEvents {
 			} else {
 				ScreenShakeHandler.INSTANCE.addShakeSource(new EmanatingShakeSource(entity, 100, 0.1F, 0.1F, 0.02F, 0.2F, 0.2F, 0.04F, 0.98F, 0.98F, 0.99F));
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onBlockIntteract(PlayerInteractEvent.RightClickBlock event) {
+		Level level = event.getLevel();
+		ItemStack stack = event.getItemStack();
+		if (stack.is(Items.DIAMOND_HOE)) {
+			if (!level.isClientSide) {
+				BlockPos pos = event.getPos();
+				NormalNoise noise = TestFeatures.HOE_DIAMONDS.get((ServerLevel) level);
+				level.setBlock(event.getPos(), noise.getValue(pos.getX(), pos.getY(), pos.getZ()) > 0.0D ? Blocks.DIAMOND_BLOCK.defaultBlockState() : Blocks.COAL_BLOCK.defaultBlockState(), 2);
+			}
+			event.setCancellationResult(InteractionResult.sidedSuccess(level.isClientSide));
+			event.setCanceled(true);
 		}
 	}
 

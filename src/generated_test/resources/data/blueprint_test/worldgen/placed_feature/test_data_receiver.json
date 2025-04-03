@@ -1,0 +1,12 @@
+{
+  "feature": "blueprint_test:test_data_receiver",
+  "placement": [
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "WORLD_SURFACE_WG"
+    }
+  ]
+}
