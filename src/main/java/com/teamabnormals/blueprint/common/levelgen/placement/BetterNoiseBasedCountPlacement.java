@@ -3,7 +3,6 @@ package com.teamabnormals.blueprint.common.levelgen.placement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamabnormals.blueprint.common.world.storage.receiver.LevelNoiseReceiver;
 import com.teamabnormals.blueprint.core.registry.BlueprintPlacementModifierTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -28,19 +27,26 @@ public final class BetterNoiseBasedCountPlacement extends PlacementModifier {
 	private final Holder<NormalNoise.NoiseParameters> noiseParameters;
 	private final int noiseToCountRatio;
 	private final double noiseOffset;
-	private LevelNoiseReceiver noise;
+	private volatile boolean initialized;
+	private NormalNoise noise;
 
 	public BetterNoiseBasedCountPlacement(Holder<NormalNoise.NoiseParameters> noiseParameters, int noiseToCountRatio, double noiseOffset) {
 		this.noiseParameters = noiseParameters;
 		this.noiseToCountRatio = noiseToCountRatio;
 		this.noiseOffset = noiseOffset;
-		this.noise = new LevelNoiseReceiver(WorldgenRandom.Algorithm.LEGACY, noiseParameters.getKey());
 	}
 
 	@Override
 	public Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
-		double value = this.noise.get(context.getLevel().getLevel()).getValue(pos.getX(), 0.0F, pos.getZ());
-		return IntStream.range(0, (int) Math.ceil((value + this.noiseOffset) * this.noiseToCountRatio)).mapToObj((i) -> pos);
+		if (!this.initialized) {
+			synchronized (this) {
+				if (!this.initialized) {
+					this.noise = NormalNoise.create(WorldgenRandom.Algorithm.LEGACY.newInstance(context.getLevel().getSeed()).forkPositional().fromHashOf(this.noiseParameters.unwrapKey().orElseThrow().location()), this.noiseParameters.value());
+					this.initialized = true;
+				}
+			}
+		}
+		return IntStream.range(0, (int) Math.ceil((this.noise.getValue(pos.getX(), 0.0F, pos.getZ()) + this.noiseOffset) * this.noiseToCountRatio)).mapToObj((i) -> pos);
 	}
 
 	@Override
