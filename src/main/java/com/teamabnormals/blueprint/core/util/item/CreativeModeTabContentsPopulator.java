@@ -6,7 +6,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.util.MutableHashedLinkedMap;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 import java.util.ArrayList;
@@ -263,23 +262,34 @@ public final class CreativeModeTabContentsPopulator {
 		}
 
 		@SafeVarargs
-		private static void addStacksAlphabetically(BuildCreativeModeTabContentsEvent event, CreativeModeTab.TabVisibility visibility, ObjectSortedSet<ItemStack> entries, Predicate<ItemStack> shouldCompareToStack, Supplier<ItemStack>... items) {
+		private static void addStacksAlphabetically(BuildCreativeModeTabContentsEvent event, CreativeModeTab.TabVisibility visibility, ObjectSortedSet<ItemStack> entries, Predicate<ItemStack> shouldCompareToStack, String trimRegex, Supplier<ItemStack>... items) {
 			TreeMap<String, ItemStack> treeMap = new TreeMap<>();
-			entries.forEach(stack -> {
+			String lastPath = "";
+			for (ItemStack stack : entries) {
 				var key = BuiltInRegistries.ITEM.getResourceKey(stack.getItem());
-				if (key.isPresent() && shouldCompareToStack.test(stack))
-					treeMap.putIfAbsent(key.get().location().getPath(), stack);
-			});
+				if (key.isPresent() && shouldCompareToStack.test(stack)) {
+					String path = key.get().location().getPath().replaceAll(trimRegex, "");
+					if (path.compareTo(lastPath) > 0) {
+						treeMap.putIfAbsent(path, stack);
+						lastPath = path;
+					} else break;
+				}
+			}
 			for (Supplier<ItemStack> supplier : items) {
 				ItemStack stack = supplier.get();
 				var key = BuiltInRegistries.ITEM.getResourceKey(stack.getItem());
 				if (key.isEmpty()) continue;
-				String path = key.get().location().getPath();
+				String path = key.get().location().getPath().replace(trimRegex, "");
 				var entry = treeMap.floorEntry(path);
 				if (entry != null) {
 					event.insertAfter(entry.getValue(), stack, visibility);
 				} else {
-					event.accept(stack, visibility);
+					var firstEntry = treeMap.firstEntry();
+					if (firstEntry != null) {
+						event.insertBefore(firstEntry.getValue(), stack, visibility);
+					} else {
+						event.accept(stack, visibility);
+					}
 				}
 				treeMap.put(path, stack);
 			}
@@ -289,18 +299,19 @@ public final class CreativeModeTabContentsPopulator {
 		 * Adds an editor that will add multiple item stacks in alphabetical order.
 		 *
 		 * @param shouldCompareToStack A {@link Predicate} of {@link ItemStack} to determine which item stacks should be compared.
+		 * @param trimRegex            A regex expression for trimming item names before sorting.
 		 * @param items                An array of {@link Supplier} of {@link ItemStack} to add in alphabetical order.
 		 * @return This instance.
 		 */
 		@SafeVarargs
-		public final Entry addStacksAlphabetically(Predicate<ItemStack> shouldCompareToStack, Supplier<ItemStack>... items) {
+		public final Entry addStacksAlphabetically(Predicate<ItemStack> shouldCompareToStack, String trimRegex, Supplier<ItemStack>... items) {
 			return this.editor(event -> {
 				var visibility = this.visibility;
 				if (visibility == CreativeModeTab.TabVisibility.PARENT_TAB_ONLY || visibility == CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS) {
-					addStacksAlphabetically(event, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY, event.getParentEntries(), shouldCompareToStack, items);
+					addStacksAlphabetically(event, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY, event.getParentEntries(), shouldCompareToStack, trimRegex, items);
 				}
 				if (visibility == CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY || visibility == CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS) {
-					addStacksAlphabetically(event, CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY, event.getSearchEntries(), shouldCompareToStack, items);
+					addStacksAlphabetically(event, CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY, event.getSearchEntries(), shouldCompareToStack, trimRegex, items);
 				}
 			});
 		}
@@ -309,12 +320,13 @@ public final class CreativeModeTabContentsPopulator {
 		 * Adds an editor that will add multiple item stacks in alphabetical order.
 		 *
 		 * @param shouldCompareToStack A {@link Predicate} of {@link ItemStack} to determine which item stacks should be compared.
+		 * @param trimRegex            A regex expression for trimming item names before sorting.
 		 * @param items                An array of {@link Supplier} of {@link ItemLike} to add in alphabetical order.
 		 * @return This instance.
 		 */
 		@SafeVarargs
-		public final Entry addItemsAlphabetically(Predicate<ItemStack> shouldCompareToStack, Supplier<? extends ItemLike>... items) {
-			return this.addStacksAlphabetically(shouldCompareToStack, convertItemLikesToStacks(items));
+		public final Entry addItemsAlphabetically(Predicate<ItemStack> shouldCompareToStack, String trimRegex, Supplier<? extends ItemLike>... items) {
+			return this.addStacksAlphabetically(shouldCompareToStack, trimRegex, convertItemLikesToStacks(items));
 		}
 
 		private void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
