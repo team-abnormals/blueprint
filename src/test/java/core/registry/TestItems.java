@@ -32,7 +32,7 @@ public final class TestItems {
 	public static void setupTabEditors() {
 		CreativeModeTabContentsPopulator.mod(BlueprintTest.MOD_ID)
 				.tab(SPAWN_EGGS)
-				.addItemsAlphabetically(is(SpawnEggItem.class), COW_SPAWN_EGG)
+				.addItemsAlphabetically(is(SpawnEggItem.class), "spawn_egg|_", COW_SPAWN_EGG)
 				.tab(TOOLS_AND_UTILITIES)
 				.addItemsAfter(of(Items.BAMBOO_CHEST_RAFT), BOAT.getFirst(), BOAT.getSecond())
 				.addItemsFirst(ITEM)

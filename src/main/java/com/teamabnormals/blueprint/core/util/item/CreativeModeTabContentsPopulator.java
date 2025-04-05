@@ -250,48 +250,70 @@ public final class CreativeModeTabContentsPopulator {
 		 * Adds an editor that will add multiple item stacks in alphabetical order.
 		 *
 		 * @param shouldCompareToStack A {@link Predicate} of {@link ItemStack} to determine which item stacks should be compared.
+		 * @param trimRegex            A regex expression for trimming item names before sorting.
 		 * @param items                An array of {@link Supplier} of {@link ItemStack} to add in alphabetical order.
 		 * @return This instance.
 		 */
 		@SafeVarargs
-		public final Entry addStacksAlphabetically(Predicate<ItemStack> shouldCompareToStack, Supplier<ItemStack>... items) {
+		public final Entry addStacksAlphabetically(Predicate<ItemStack> shouldCompareToStack, String trimRegex, Supplier<ItemStack>... items) {
 			return this.editor(event -> {
 				MutableHashedLinkedMap<ItemStack, CreativeModeTab.TabVisibility> entries = event.getEntries();
 				TreeMap<String, ItemStack> treeMap = new TreeMap<>();
-				entries.forEach(entry -> {
+				String lastPath = "";
+				for (var entry : entries) {
 					ItemStack stack = entry.getKey();
 					ResourceLocation location = ForgeRegistries.ITEMS.getKey(stack.getItem());
-					if (location != null && shouldCompareToStack.test(stack))
-						treeMap.putIfAbsent(location.getPath(), stack);
-				});
+					if (location != null && shouldCompareToStack.test(stack)) {
+						String path = location.getPath().replaceAll(trimRegex, "");
+						if (path.compareTo(lastPath) > 0) {
+							treeMap.putIfAbsent(path, stack);
+							lastPath = path;
+						} else break;
+					}
+				}
 				CreativeModeTab.TabVisibility visibility = this.visibility;
 				for (Supplier<ItemStack> supplier : items) {
 					ItemStack stack = supplier.get();
-					ResourceLocation location = ForgeRegistries.ITEMS.getKey(stack.getItem());
-					if (location != null) {
-						String path = location.getPath();
-						var entry = treeMap.floorEntry(path);
-						if (entry != null) {
-							entries.putAfter(entry.getValue(), stack, visibility);
+					var key = ForgeRegistries.ITEMS.getResourceKey(stack.getItem());
+					if (key.isEmpty()) continue;
+					String path = key.get().location().getPath().replace(trimRegex, "");
+					var entry = treeMap.floorEntry(path);
+					if (entry != null) {
+						entries.putAfter(entry.getValue(), stack, visibility);
+					} else {
+						var firstEntry = treeMap.firstEntry();
+						if (firstEntry != null) {
+							entries.putBefore(firstEntry.getValue(), stack, visibility);
 						} else {
 							entries.put(stack, visibility);
 						}
-						treeMap.put(path, stack);
 					}
+					treeMap.put(path, stack);
 				}
 			});
+		}
+
+		@Deprecated(forRemoval = true)
+		public Entry addStacksAlphabetically(Predicate<ItemStack> shouldCompareToStack, Supplier<ItemStack>... items) {
+			return this.addStacksAlphabetically(shouldCompareToStack, "spawn_egg|pottery_sherd|_", items);
 		}
 
 		/**
 		 * Adds an editor that will add multiple item stacks in alphabetical order.
 		 *
 		 * @param shouldCompareToStack A {@link Predicate} of {@link ItemStack} to determine which item stacks should be compared.
+		 * @param trimRegex            A regex expression for trimming item names before sorting.
 		 * @param items                An array of {@link Supplier} of {@link ItemLike} to add in alphabetical order.
 		 * @return This instance.
 		 */
 		@SafeVarargs
-		public final Entry addItemsAlphabetically(Predicate<ItemStack> shouldCompareToStack, Supplier<? extends ItemLike>... items) {
-			return this.addStacksAlphabetically(shouldCompareToStack, convertItemLikesToStacks(items));
+		public final Entry addItemsAlphabetically(Predicate<ItemStack> shouldCompareToStack, String trimRegex, Supplier<? extends ItemLike>... items) {
+			return this.addStacksAlphabetically(shouldCompareToStack, trimRegex, convertItemLikesToStacks(items));
+		}
+
+		@Deprecated(forRemoval = true)
+		public Entry addItemsAlphabetically(Predicate<ItemStack> shouldCompareToStack, Supplier<? extends ItemLike>... items) {
+			return this.addStacksAlphabetically(shouldCompareToStack, "spawn_egg|pottery_sherd|_", convertItemLikesToStacks(items));
 		}
 
 		private void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
