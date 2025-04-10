@@ -318,16 +318,6 @@ public final class CreativeModeTabContentsPopulator {
 			});
 		}
 
-		@SafeVarargs
-		public final Entry addSpawnEggsAlphabetically(Supplier<ItemStack>... items) {
-			return this.addStacksAlphabetically(ItemStackUtil.is(SpawnEggItem.class), "spawn_egg|_", items);
-		}
-
-		@SafeVarargs
-		public final Entry addPotterySherdsAlphabetically(Supplier<ItemStack>... items) {
-			return this.addStacksAlphabetically(stack -> stack.is(ItemTags.DECORATED_POT_SHERDS), "pottery_sherd|_", items);
-		}
-		
 		/**
 		 * Adds an editor that will add multiple item stacks in alphabetical order.
 		 *
@@ -340,6 +330,17 @@ public final class CreativeModeTabContentsPopulator {
 		public final Entry addItemsAlphabetically(Predicate<ItemStack> shouldCompareToStack, String trimRegex, Supplier<? extends ItemLike>... items) {
 			return this.addStacksAlphabetically(shouldCompareToStack, trimRegex, convertItemLikesToStacks(items));
 		}
+
+		@SafeVarargs
+		public final Entry addSpawnEggsAlphabetically(Supplier<? extends ItemLike>... items) {
+			return this.addItemsAlphabetically(ItemStackUtil.is(SpawnEggItem.class), "spawn_egg|_", items);
+		}
+
+		@SafeVarargs
+		public final Entry addPotterySherdsAlphabetically(Supplier<? extends ItemLike>... items) {
+			return this.addItemsAlphabetically(stack -> stack.is(ItemTags.DECORATED_POT_SHERDS), "pottery_sherd|_", items);
+		}
+
 
 		private void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
 			var editorsForKey = this.keyedContentEditors.get(event.getTabKey());
