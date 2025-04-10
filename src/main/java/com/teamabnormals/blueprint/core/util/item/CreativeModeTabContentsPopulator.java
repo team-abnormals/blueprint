@@ -3,8 +3,10 @@ package com.teamabnormals.blueprint.core.util.item;
 import it.unimi.dsi.fastutil.objects.ObjectSortedSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
@@ -316,6 +318,16 @@ public final class CreativeModeTabContentsPopulator {
 			});
 		}
 
+		@SafeVarargs
+		public final Entry addSpawnEggsAlphabetically(Supplier<ItemStack>... items) {
+			return this.addStacksAlphabetically(ItemStackUtil.is(SpawnEggItem.class), "spawn_egg|_", items);
+		}
+
+		@SafeVarargs
+		public final Entry addPotterySherdsAlphabetically(Supplier<ItemStack>... items) {
+			return this.addStacksAlphabetically(stack -> stack.is(ItemTags.DECORATED_POT_SHERDS), "pottery_sherd|_", items);
+		}
+		
 		/**
 		 * Adds an editor that will add multiple item stacks in alphabetical order.
 		 *
