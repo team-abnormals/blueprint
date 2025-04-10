@@ -2,8 +2,10 @@ package com.teamabnormals.blueprint.core.util.item;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.util.MutableHashedLinkedMap;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -309,6 +311,16 @@ public final class CreativeModeTabContentsPopulator {
 		@SafeVarargs
 		public final Entry addItemsAlphabetically(Predicate<ItemStack> shouldCompareToStack, String trimRegex, Supplier<? extends ItemLike>... items) {
 			return this.addStacksAlphabetically(shouldCompareToStack, trimRegex, convertItemLikesToStacks(items));
+		}
+
+		@SafeVarargs
+		public final Entry addSpawnEggsAlphabetically(Supplier<? extends ItemLike>... items) {
+			return this.addItemsAlphabetically(ItemStackUtil.is(SpawnEggItem.class), "spawn_egg|_", items);
+		}
+
+		@SafeVarargs
+		public final Entry addPotterySherdsAlphabetically(Supplier<? extends ItemLike>... items) {
+			return this.addItemsAlphabetically(stack -> stack.is(ItemTags.DECORATED_POT_SHERDS), "pottery_sherd|_", items);
 		}
 
 		@Deprecated(forRemoval = true)
