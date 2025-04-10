@@ -341,7 +341,6 @@ public final class CreativeModeTabContentsPopulator {
 			return this.addItemsAlphabetically(stack -> stack.is(ItemTags.DECORATED_POT_SHERDS), "pottery_sherd|_", items);
 		}
 
-
 		private void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
 			var editorsForKey = this.keyedContentEditors.get(event.getTabKey());
 			if (editorsForKey != null) editorsForKey.forEach(editor -> editor.edit(event));
