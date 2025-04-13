@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.common.world.storage;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -40,12 +41,12 @@ public interface GlobalStorage {
 	 *
 	 * @return The serialized NBT data of this {@link GlobalStorage}.
 	 */
-	CompoundTag toTag();
+	CompoundTag createTag(HolderLookup.Provider provider);
 
 	/**
 	 * Called when loading the saved NBT data for this {@link GlobalStorage}.
 	 *
 	 * @param tag The deserialized NBT data of this {@link GlobalStorage}.
 	 */
-	void fromTag(CompoundTag tag);
+	void fromTag(CompoundTag tag, HolderLookup.Provider provider);
 }

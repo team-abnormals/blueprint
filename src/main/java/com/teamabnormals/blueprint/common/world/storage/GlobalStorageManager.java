@@ -34,7 +34,7 @@ public final class GlobalStorageManager extends SavedData {
 				CompoundTag storageTag = storageTags.getCompound(i);
 				GlobalStorage storage = GlobalStorage.STORAGES.get(ResourceLocation.parse(storageTag.getString("id")));
 				if (storage != null) {
-					storage.fromTag(storageTag);
+					storage.fromTag(storageTag, provider);
 				}
 			}
 			return INSTANCE;
@@ -49,7 +49,7 @@ public final class GlobalStorageManager extends SavedData {
 	public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
 		ListTag storageList = new ListTag();
 		GlobalStorage.STORAGES.forEach((key, value) -> {
-			CompoundTag storageTag = value.toTag();
+			CompoundTag storageTag = value.createTag(provider);
 			storageTag.putString("id", key.toString());
 			storageList.add(storageTag);
 		});
