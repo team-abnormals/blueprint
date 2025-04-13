@@ -2,7 +2,7 @@ plugins {
     id "java-library"
     id "idea"
     id "maven-publish"
-    id "net.neoforged.gradle.userdev" version "7.0.182"
+    id "net.neoforged.moddev" version "2.0.80"
 }
 
 version = "${project.mc_version}-${project.mod_version}"
@@ -13,36 +13,50 @@ base {
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-minecraft.accessTransformers.file rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
 
-runs {
-    configureEach {
-        systemProperty "forge.logging.markers", "REGISTRIES"
-        systemProperty "forge.logging.console.level", "debug"
-        systemProperty "blueprint.indev", "true"
+neoForge {
+    version = project.neoforge
+    parchment {
+        minecraftVersion = project.mc_version
+        mappingsVersion = project.parchment
     }
 
-    client {
-        modSources {
-            add project.sourceSets.main
-            add "blueprint_test", project.sourceSets.test
+    runs {
+        configureEach {
+            systemProperty "forge.logging.markers", "REGISTRIES"
+            systemProperty "forge.logging.console.level", "debug"
+            systemProperty "blueprint.indev", "true"
+        }
+
+        client {
+            client()
+        }
+
+        server {
+            server()
+        }
+
+        data {
+            data()
+            programArguments.addAll "--mod", project.mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath()
+        }
+
+        dataTest {
+            data()
+            programArguments.addAll "--mod", "blueprint_test", "--all", "--output", file("src/generated_test/resources/").getAbsolutePath(), "--existing", file("src/test/resources/").getAbsolutePath()
         }
     }
 
-    server {
-        modSources {
-            add project.sourceSets.main
-            add "blueprint_test", project.sourceSets.test
-        }
+    mods {
+        "blueprint" {sourceSet(sourceSets.main)}
+        "blueprint_test" {sourceSet(sourceSets.test)}
     }
+}
 
-    data {
-        modSources {
-            add project.sourceSets.main
-            add "blueprint_test", project.sourceSets.test
-        }
-        programArguments.addAll "--mod", project.mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath()
-        // programArguments.addAll "--mod", "blueprint_test", "--all", "--output", file("src/generated_test/resources/").getAbsolutePath(), "--existing", file("src/test/resources/").getAbsolutePath()
+sourceSets {
+    test {
+        compileClasspath += sourceSets.main.output + configurations.compileClasspath
+        runtimeClasspath += sourceSets.main.output + configurations.runtimeClasspath
     }
 }
 
@@ -55,14 +69,6 @@ sourceSets.test.resources {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${project.neoforge}"
-}
-
-subsystems {
-    parchment {
-        minecraftVersion = "${project.mc_version}"
-        mappingsVersion = "${project.parchment}"
-    }
 }
 
 tasks.named("jar", Jar).configure {
