@@ -98,14 +98,18 @@ public final class DataUtil {
 	/**
 	 * Adds a Decorated Pot Pattern for Decorated Pots
 	 *
-	 * @param entries Pairs of an {@link Item} and a {@link net.minecraft.core.Holder} of a String
+	 * @param entries Pairs of an {@link Item} and a {@link ResourceKey} of a {@link DecoratedPotPattern}
 	 */
 	@SafeVarargs
-	public static void registerDecoratedPotPattern(Pair<Item, DeferredHolder<DecoratedPotPattern, ?>>... entries) {
-		Map<Item, ResourceKey<DecoratedPotPattern>> itemToPotTextureMap = Maps.newHashMap(DecoratedPotPatterns.ITEM_TO_POT_TEXTURE);
-		for (Pair<Item, DeferredHolder<DecoratedPotPattern, ?>> entry : entries) {
-			itemToPotTextureMap.put(entry.getFirst(), entry.getSecond().getKey());
+	public static void registerDecoratedPotPattern(Pair<ItemLike, DeferredHolder<DecoratedPotPattern, ?>>... entries) {
+		for (Pair<ItemLike, DeferredHolder<DecoratedPotPattern, ?>> entry : entries) {
+			registerDecoratedPotPattern(entry.getFirst(), entry.getSecond());
 		}
+	}
+
+	public static void registerDecoratedPotPattern(ItemLike item, DeferredHolder<DecoratedPotPattern, ?> pattern) {
+		Map<Item, ResourceKey<DecoratedPotPattern>> itemToPotTextureMap = Maps.newHashMap(DecoratedPotPatterns.ITEM_TO_POT_TEXTURE);
+		itemToPotTextureMap.put(item.asItem(), pattern.getKey());
 		DecoratedPotPatterns.ITEM_TO_POT_TEXTURE = itemToPotTextureMap;
 	}
 

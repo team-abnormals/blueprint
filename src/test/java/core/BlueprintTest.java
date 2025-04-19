@@ -80,7 +80,7 @@ public final class BlueprintTest {
 
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
-			DataUtil.registerDecoratedPotPattern(Pair.of(TestItems.ITEM.get(), TestItems.TEST_POTTERY_SHERD));
+			DataUtil.registerDecoratedPotPattern(TestItems.ITEM.get(), TestItems.TEST_POTTERY_SHERD);
 		});
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(Blueprint.MOD_ID, source -> source.state().is(BlockTags.IRON_ORES), SoundEvents.BELL_BLOCK));
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.state().is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, false, (id1, id2) -> id2.equals("blueprint") ? -1 : 0));
