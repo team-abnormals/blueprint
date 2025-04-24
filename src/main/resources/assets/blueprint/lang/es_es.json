@@ -15,5 +15,7 @@
 	"blueprint.screen.slabfish_settings.tooltip": "Ajustes del sombrero de pez losa para patrocinadores de Team Abnormals. Puedes convertirte en patrocinador en %s.",
 	"blueprint.message.redirect": "Redireccionando",
 	"biome.blueprint.original_source_marker": "Marcador de fuente original",
-	"entity.blueprint.boat": "Barca"
+	"entity.blueprint.boat": "Barca",
+	"entity.blueprint.chest_boat": "Barca con cofre",
+	"entity.blueprint.falling_block": "Bloque cayendo"
 }
