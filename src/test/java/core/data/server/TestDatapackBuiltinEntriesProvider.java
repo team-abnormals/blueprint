@@ -69,10 +69,11 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 	private static void bootstrapStructureRepaletters(BootstrapContext<StructureRepaletterEntry> context) {
 		var structures = context.lookup(Registries.STRUCTURE);
 		var pieces = context.lookup(Registries.STRUCTURE_PIECE);
+		var blocks = context.lookup(Registries.BLOCK);
 		context.register(
 				PLANKS_BECOME_RANDOM_PLANKS_IN_MINESHAFTS,
 				repalette()
-					.repaletters(new WeightedStructureRepaletter(BlockTags.PLANKS, WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1))))
+					.repaletters(new WeightedStructureRepaletter(blocks.getOrThrow(BlockTags.PLANKS), WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1))))
 					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)))
 		);
 		var biomes = context.lookup(Registries.BIOME);
@@ -81,7 +82,7 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 				repalette()
 					.condition(AndStructureCondition.and(new ChanceStructureCondition(0.5F), new BiomeStructureCondition(HolderSet.direct(biomes.getOrThrow(Biomes.FOREST)))))
 					.priority(50)
-					.repaletters(new WeightedStructureRepaletter(BlockTags.WOODEN_FENCES, WeightedRandomList.create(WeightedEntry.wrap(Blocks.CRIMSON_FENCE, 1), WeightedEntry.wrap(Blocks.WARPED_FENCE, 1))))
+					.repaletters(new WeightedStructureRepaletter(blocks.getOrThrow(BlockTags.WOODEN_FENCES), WeightedRandomList.create(WeightedEntry.wrap(Blocks.CRIMSON_FENCE, 1), WeightedEntry.wrap(Blocks.WARPED_FENCE, 1))))
 					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)))
 		);
 		context.register(
@@ -89,7 +90,7 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 				repalette()
 					.condition(new ChanceStructureCondition(0.5F))
 					.priority(0)
-					.repaletters(new SimpleStructureRepaletter(Blocks.MOSSY_STONE_BRICKS, Blocks.SLIME_BLOCK))
+					.repaletters(new SimpleStructureRepaletter(Blocks.MOSSY_COBBLESTONE, Blocks.SLIME_BLOCK))
 					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.OCEAN_RUIN_COLD)))
 		);
 		context.register(

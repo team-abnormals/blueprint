@@ -2,6 +2,8 @@ package com.teamabnormals.blueprint.common.world.modification.structure;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
@@ -20,10 +22,15 @@ import org.jetbrains.annotations.Nullable;
  * @author SmellyModder (Luke Tonon)
  * @see StructureRepaletter
  */
-public record WeightedStructureRepaletter(TagKey<Block> replacesBlocks, WeightedRandomList<WeightedEntry.Wrapper<Block>> replacesWith) implements StructureRepaletter, StructureRepaletter.Replacer {
+public record WeightedStructureRepaletter(HolderSet<Block> replacesBlocks, WeightedRandomList<WeightedEntry.Wrapper<Block>> replacesWith) implements StructureRepaletter, StructureRepaletter.Replacer {
+
+	public WeightedStructureRepaletter(Block replacesBlock, WeightedRandomList<WeightedEntry.Wrapper<Block>> replacesWith) {
+		this(HolderSet.direct(BuiltInRegistries.BLOCK.wrapAsHolder(replacesBlock)), replacesWith);
+	}
+
 	public static final MapCodec<WeightedStructureRepaletter> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
-				TagKey.codec(Registries.BLOCK).fieldOf("replaces_blocks").forGetter(repaletter -> repaletter.replacesBlocks),
+				RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("replaces").forGetter(repaletter -> repaletter.replacesBlocks),
 				WeightedRandomList.codec(WeightedEntry.Wrapper.codec(BuiltInRegistries.BLOCK.byNameCodec())).fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
 		).apply(instance, WeightedStructureRepaletter::new);
 	});

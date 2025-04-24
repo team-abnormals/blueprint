@@ -2,7 +2,10 @@ package com.teamabnormals.blueprint.common.world.modification.structure;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -16,10 +19,15 @@ import org.jetbrains.annotations.Nullable;
  * @author SmellyModder (Luke Tonon)
  * @see StructureRepaletter
  */
-public record SimpleStructureRepaletter(Block replacesBlock, Block replacesWith) implements StructureRepaletter, StructureRepaletter.Replacer {
+public record SimpleStructureRepaletter(HolderSet<Block> replacesBlock, Block replacesWith) implements StructureRepaletter, StructureRepaletter.Replacer {
+
+	public SimpleStructureRepaletter(Block replacesBlock, Block replacesWith) {
+		this(HolderSet.direct(BuiltInRegistries.BLOCK.wrapAsHolder(replacesBlock)), replacesWith);
+	}
+
 	public static final MapCodec<SimpleStructureRepaletter> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
-				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("replaces_block").forGetter(repaletter -> repaletter.replacesBlock),
+				RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("replaces").forGetter(repaletter -> repaletter.replacesBlock),
 				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
 		).apply(instance, SimpleStructureRepaletter::new);
 	});

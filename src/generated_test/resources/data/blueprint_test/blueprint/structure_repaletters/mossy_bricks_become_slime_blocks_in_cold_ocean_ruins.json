@@ -6,7 +6,7 @@
   "priority": 0,
   "repaletter": {
     "type": "blueprint:simple",
-    "replaces_block": "minecraft:mossy_stone_bricks",
+    "replaces": "minecraft:mossy_cobblestone",
     "replaces_with": "minecraft:slime_block"
   },
   "structures": "minecraft:ocean_ruin_cold"

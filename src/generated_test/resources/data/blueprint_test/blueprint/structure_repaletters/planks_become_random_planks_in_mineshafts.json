@@ -7,7 +7,7 @@
   ],
   "repaletter": {
     "type": "blueprint:weighted",
-    "replaces_blocks": "minecraft:planks",
+    "replaces": "#minecraft:planks",
     "replaces_with": [
       {
         "data": "minecraft:acacia_planks",
