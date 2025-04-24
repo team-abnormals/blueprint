@@ -2,8 +2,8 @@ package com.teamabnormals.blueprint.core.util;
 
 import com.teamabnormals.blueprint.client.ClientInfo;
 import com.teamabnormals.blueprint.common.network.UpdateSlabfishHatPayload;
-import com.teamabnormals.blueprint.common.network.entity.UpdateEndimationPayload;
 import com.teamabnormals.blueprint.common.network.entity.TeleportEntityPayload;
+import com.teamabnormals.blueprint.common.network.entity.UpdateEndimationPayload;
 import com.teamabnormals.blueprint.common.network.entity.UpdateEntityDataPayload;
 import com.teamabnormals.blueprint.common.network.particle.SpawnParticlesPayload;
 import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;

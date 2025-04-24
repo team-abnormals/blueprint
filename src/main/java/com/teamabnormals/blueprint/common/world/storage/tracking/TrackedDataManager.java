@@ -141,7 +141,7 @@ public enum TrackedDataManager {
 	}
 
 	@SubscribeEvent
-		public void onEntityJoinWorld(EntityJoinLevelEvent event) {
+	public void onEntityJoinWorld(EntityJoinLevelEvent event) {
 		Entity target = event.getEntity();
 		if (!target.level().isClientSide) {
 			Set<IDataManager.DataEntry<?>> entries = ((IDataManager) target).getEntries(false);

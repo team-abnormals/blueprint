@@ -9,7 +9,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -21,7 +20,7 @@ import java.util.List;
  * @author SmellyModder (Luke Tonon)
  */
 public record SpawnParticlesPayload(ParticleOptions particleOptions, List<ParticleInstance> instances) implements CustomPacketPayload {
-	public static final CustomPacketPayload.Type<SpawnParticlesPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "spawn_particles"));
+	public static final CustomPacketPayload.Type<SpawnParticlesPayload> TYPE = new CustomPacketPayload.Type<>(Blueprint.location("spawn_particles"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, SpawnParticlesPayload> STREAM_CODEC = StreamCodec.composite(
 			ParticleTypes.STREAM_CODEC, SpawnParticlesPayload::particleOptions,
 			ParticleInstance.LIST_STREAM_CODEC, SpawnParticlesPayload::instances,

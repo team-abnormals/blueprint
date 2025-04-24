@@ -18,39 +18,39 @@ import java.util.function.Predicate;
 
 @Mixin(MultiPackResourceManager.class)
 public abstract class MultiPackResourceManagerMixin implements RemoldableResourceManager {
-    private RemolderLoader remolderLoader;
+	private RemolderLoader remolderLoader;
 
-    @Inject(method = "getResource", at = @At("RETURN"), cancellable = true)
-    private void getRemoldedResource(ResourceLocation location, CallbackInfoReturnable<Optional<Resource>> info) {
-        if (this.remolderLoader == null) return;
-        info.setReturnValue(this.remolderLoader.getResource(location, info.getReturnValue()));
-    }
+	@Inject(method = "getResource", at = @At("RETURN"), cancellable = true)
+	private void getRemoldedResource(ResourceLocation location, CallbackInfoReturnable<Optional<Resource>> info) {
+		if (this.remolderLoader == null) return;
+		info.setReturnValue(this.remolderLoader.getResource(location, info.getReturnValue()));
+	}
 
-    @Inject(method = "getResourceStack", at = @At("RETURN"), cancellable = true)
-    private void getRemoldedResourceStack(ResourceLocation location, CallbackInfoReturnable<List<Resource>> info) {
-        if (this.remolderLoader == null) return;
-        info.setReturnValue(this.remolderLoader.getResourceStack(info.getReturnValue(), location));
-    }
+	@Inject(method = "getResourceStack", at = @At("RETURN"), cancellable = true)
+	private void getRemoldedResourceStack(ResourceLocation location, CallbackInfoReturnable<List<Resource>> info) {
+		if (this.remolderLoader == null) return;
+		info.setReturnValue(this.remolderLoader.getResourceStack(info.getReturnValue(), location));
+	}
 
-    @Inject(method = "listResources", at = @At("RETURN"), cancellable = true)
-    private void listRemoldedResources(String path, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Map<ResourceLocation, Resource>> info) {
-        if (this.remolderLoader == null) return;
-        info.setReturnValue(this.remolderLoader.listResources(info.getReturnValue()));
-    }
+	@Inject(method = "listResources", at = @At("RETURN"), cancellable = true)
+	private void listRemoldedResources(String path, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Map<ResourceLocation, Resource>> info) {
+		if (this.remolderLoader == null) return;
+		info.setReturnValue(this.remolderLoader.listResources(info.getReturnValue()));
+	}
 
-    @Inject(method = "listResourceStacks", at = @At("RETURN"), cancellable = true)
-    private void listRemoldedResourceStacks(String path, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Map<ResourceLocation, List<Resource>>> info) {
-        if (this.remolderLoader == null) return;
-        info.setReturnValue(this.remolderLoader.listResourceStacks(info.getReturnValue()));
-    }
+	@Inject(method = "listResourceStacks", at = @At("RETURN"), cancellable = true)
+	private void listRemoldedResourceStacks(String path, Predicate<ResourceLocation> filter, CallbackInfoReturnable<Map<ResourceLocation, List<Resource>>> info) {
+		if (this.remolderLoader == null) return;
+		info.setReturnValue(this.remolderLoader.listResourceStacks(info.getReturnValue()));
+	}
 
-    @Override
-    public RemolderLoader updateRemolderLoader(PackType packType) {
-        return this.remolderLoader = new RemolderLoader(this, packType);
-    }
+	@Override
+	public RemolderLoader updateRemolderLoader(PackType packType) {
+		return this.remolderLoader = new RemolderLoader(this, packType);
+	}
 
-    @Override
-    public RemolderLoader getRemolderLoader() {
-        return this.remolderLoader;
-    }
+	@Override
+	public RemolderLoader getRemolderLoader() {
+		return this.remolderLoader;
+	}
 }

@@ -24,7 +24,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.IdentityHashMap;
+import java.util.Optional;
 
 /**
  * A {@link SimpleJsonResourceReloadListener} extension for loading {@link StructureRepaletterEntry} instances.
@@ -43,13 +46,13 @@ public final class StructureRepaletterManager {
 	private static final ThreadLocal<ActiveData> ACTIVE_DATA = ThreadLocal.withInitial(ActiveData::new);
 
 	static {
-		registerRepalleter(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "simple"), SimpleStructureRepaletter.CODEC, SimpleStructureRepaletter.CODEC);
-		registerRepalleter(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "weighted"), WeightedStructureRepaletter.CODEC, WeightedStructureRepaletter.CODEC);
-		registerCondition(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "not"), NotStructureCondition.CODEC);
-		registerCondition(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "and"), AndStructureCondition.CODEC);
-		registerCondition(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "or"), OrStructureCondition.CODEC);
-		registerCondition(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "biome"), BiomeStructureCondition.CODEC);
-		registerCondition(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "chance"), ChanceStructureCondition.CODEC);
+		registerRepalleter(Blueprint.location("simple"), SimpleStructureRepaletter.CODEC, SimpleStructureRepaletter.CODEC);
+		registerRepalleter(Blueprint.location("weighted"), WeightedStructureRepaletter.CODEC, WeightedStructureRepaletter.CODEC);
+		registerCondition(Blueprint.location("not"), NotStructureCondition.CODEC);
+		registerCondition(Blueprint.location("and"), AndStructureCondition.CODEC);
+		registerCondition(Blueprint.location("or"), OrStructureCondition.CODEC);
+		registerCondition(Blueprint.location("biome"), BiomeStructureCondition.CODEC);
+		registerCondition(Blueprint.location("chance"), ChanceStructureCondition.CODEC);
 	}
 
 	@SubscribeEvent

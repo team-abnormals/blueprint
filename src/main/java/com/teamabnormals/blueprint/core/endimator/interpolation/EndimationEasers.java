@@ -157,13 +157,14 @@ public final class EndimationEasers {
 	public static final Function<Float, Float> EASE_OUT_BOUNCE = register("ease_out_bounce", EndimationEasers::bounce);
 	public static final Function<Float, Float> EASE_IN_OUT_BOUNCE = register("ease_in_out_bounce", progress -> {
 		if (progress < 0.5F) {
-			return  (1.0F - bounce(1 - 2 * progress)) * 0.5F;
+			return (1.0F - bounce(1 - 2 * progress)) * 0.5F;
 		} else {
 			return (1.0F + bounce(2 * progress - 1)) * 0.5F;
 		}
 	});
 
-	private EndimationEasers() {}
+	private EndimationEasers() {
+	}
 
 	private static float bounce(float progress) {
 		float base1 = 7.5625F;

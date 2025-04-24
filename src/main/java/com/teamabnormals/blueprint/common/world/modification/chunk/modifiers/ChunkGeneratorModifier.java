@@ -18,5 +18,6 @@ public interface ChunkGeneratorModifier<M extends ChunkGeneratorModifier<M>> ext
 	 * @param <M> The type of {@link ChunkGeneratorModifier} instances to serialize and deserialize.
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	interface Serializer<M extends ChunkGeneratorModifier<M>> extends ObjectModifier.Serializer<M, RegistryOps<JsonElement>, RegistryOps<JsonElement>> {}
+	interface Serializer<M extends ChunkGeneratorModifier<M>> extends ObjectModifier.Serializer<M, RegistryOps<JsonElement>, RegistryOps<JsonElement>> {
+	}
 }

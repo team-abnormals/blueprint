@@ -106,9 +106,9 @@ public class BlueprintBoatItem extends Item {
 			ServerLevel serverlevel = source.level();
 			Vec3 vec3 = source.center();
 			double d0 = 0.5625 + (double) BlueprintEntityTypes.BOAT.get().getWidth() / 2.0;
-			double d1 = vec3.x() + (double)direction.getStepX() * d0;
-			double d2 = vec3.y() + (double)((float)direction.getStepY() * 1.125F);
-			double d3 = vec3.z() + (double)direction.getStepZ() * d0;
+			double d1 = vec3.x() + (double) direction.getStepX() * d0;
+			double d2 = vec3.y() + (double) ((float) direction.getStepY() * 1.125F);
+			double d3 = vec3.z() + (double) direction.getStepZ() * d0;
 			BlockPos blockpos = source.pos().relative(direction);
 			Boat boat = this.hasChest ? new BlueprintChestBoat(serverlevel, this.type, d1, d2, d3) : new BlueprintBoat(serverlevel, this.type, d1, d2, d3);
 			EntityType.<Boat>createDefaultStackConfig(serverlevel, stack, null).accept(boat);

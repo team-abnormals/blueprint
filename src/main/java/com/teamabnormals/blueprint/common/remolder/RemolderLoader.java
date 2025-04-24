@@ -46,7 +46,7 @@ public final class RemolderLoader {
 	public RemolderLoader(CloseableResourceManager manager, PackType packType) {
 		this.packType = packType;
 		RemoldingCompiler.ExportEntry[] exports;
-		try (Reader reader = manager.getResourceOrThrow(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "remolder.json")).openAsReader()) {
+		try (Reader reader = manager.getResourceOrThrow(Blueprint.location("remolder.json")).openAsReader()) {
 			JsonElement element = GsonHelper.fromJson(GSON, reader, JsonElement.class);
 			var dataResult = Settings.CODEC.decode(JsonOps.INSTANCE, element);
 			var dataResultError = dataResult.error();
@@ -214,5 +214,6 @@ public final class RemolderLoader {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public record Entry(Predicate<String> packFilter, Remolding<?> remolding) {}
+	public record Entry(Predicate<String> packFilter, Remolding<?> remolding) {
+	}
 }

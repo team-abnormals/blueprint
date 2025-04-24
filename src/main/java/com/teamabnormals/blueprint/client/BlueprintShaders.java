@@ -24,10 +24,10 @@ public final class BlueprintShaders {
 	public static void registerShaders(RegisterShadersEvent event) {
 		try {
 			ResourceProvider resourceProvider = event.getResourceProvider();
-			event.registerShader(new ShaderInstance(resourceProvider, ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "rendertype_entity_unshaded_cutout"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
+			event.registerShader(new ShaderInstance(resourceProvider, Blueprint.location("rendertype_entity_unshaded_cutout"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
 				rendertypeEntityUnshadedCutout = shaderInstance;
 			});
-			event.registerShader(new ShaderInstance(resourceProvider, ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "rendertype_entity_unshaded_translucent"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
+			event.registerShader(new ShaderInstance(resourceProvider, Blueprint.location("rendertype_entity_unshaded_translucent"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> {
 				rendertypeEntityUnshadedTranslucent = shaderInstance;
 			});
 		} catch (IOException e) {

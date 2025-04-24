@@ -9,7 +9,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /**
@@ -18,7 +17,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
  * @author SmellyModder (Luke Tonon)
  */
 public record UpdateEndimationPayload(int entityId, int endimationId) implements CustomPacketPayload {
-	public static final CustomPacketPayload.Type<UpdateEndimationPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "update_endimation"));
+	public static final CustomPacketPayload.Type<UpdateEndimationPayload> TYPE = new CustomPacketPayload.Type<>(Blueprint.location("update_endimation"));
 	public static final StreamCodec<ByteBuf, UpdateEndimationPayload> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, UpdateEndimationPayload::entityId,
 			ByteBufCodecs.VAR_INT, UpdateEndimationPayload::endimationId,

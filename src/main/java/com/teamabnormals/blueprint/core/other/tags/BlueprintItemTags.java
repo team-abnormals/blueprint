@@ -19,8 +19,8 @@ public class BlueprintItemTags {
 	public static final TagKey<Item> WOODEN_BOOKSHELVES = itemTag("wooden_bookshelves");
 	public static final TagKey<Item> WOODEN_CHISELED_BOOKSHELVES = itemTag("wooden_chiseled_bookshelves");
 
-	public static final TagKey<Item> WOODEN_BOARDS = TagUtil.itemTag("woodworks","wooden_boards");
-	public static final TagKey<Item> LEAF_PILES = TagUtil.itemTag("woodworks","leaf_piles");
+	public static final TagKey<Item> WOODEN_BOARDS = TagUtil.itemTag("woodworks", "wooden_boards");
+	public static final TagKey<Item> LEAF_PILES = TagUtil.itemTag("woodworks", "leaf_piles");
 
 	public static final TagKey<Item> FURNACE_BOATS = TagUtil.itemTag("boatload", "furnace_boats");
 	public static final TagKey<Item> LARGE_BOATS = TagUtil.itemTag("boatload", "large_boats");

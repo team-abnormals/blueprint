@@ -48,7 +48,7 @@ public abstract class AbstractSubRegistryHelper<T, R extends DeferredRegister<T>
 	public void register(IEventBus eventBus) {
 		this.getDeferredRegister().register(eventBus);
 	}
-	
+
 	/**
 	 * Determines whether a group of mods are loaded.
 	 *

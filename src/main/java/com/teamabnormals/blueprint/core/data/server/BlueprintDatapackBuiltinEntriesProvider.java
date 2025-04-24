@@ -13,7 +13,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.biome.OverworldBiomes;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
@@ -39,7 +38,7 @@ public final class BlueprintDatapackBuiltinEntriesProvider extends DatapackBuilt
 	}
 
 	private static void bootstrapSlices(BootstrapContext<ModdedBiomeSlice> context) {
-		var originalsKey = ResourceKey.create(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "originals"));
+		var originalsKey = ResourceKey.create(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, Blueprint.location("originals"));
 		context.register(originalsKey, new ModdedBiomeSlice(100, BiomeUtil.OriginalModdedBiomeProvider.INSTANCE, LevelStem.OVERWORLD, LevelStem.NETHER, LevelStem.END));
 	}
 }

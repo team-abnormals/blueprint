@@ -10,8 +10,8 @@ import com.teamabnormals.blueprint.core.endimator.effects.EndimationEffectSource
 /**
  * An {@link EndimationEffect} extension for processing screen shaking effects.
  *
- * @see com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler
  * @author SmellyModder (Luke Tonon)
+ * @see com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler
  */
 public final class ShakeEndimationEffect extends EndimationEffect<ShakeEndimationEffect.Config> {
 

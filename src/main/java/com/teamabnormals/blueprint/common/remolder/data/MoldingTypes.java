@@ -73,7 +73,8 @@ public final class MoldingTypes {
 			try {
 				var optional = resource.metadata().getSection(JSON_METADATA_SERIALIZER);
 				if (optional.isPresent()) return ops instanceof JsonOps ? (T) optional.get() : JsonOps.INSTANCE.convertTo(ops, optional.get());
-			} catch (IOException ignored) {}
+			} catch (IOException ignored) {
+			}
 			return null;
 		}
 

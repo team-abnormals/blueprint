@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
  * @author abigailfails
  */
 public class ContainsPredicate implements IConfigPredicate {
-	private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "contains");
+	private static final ResourceLocation ID = Blueprint.location("contains");
 	private final String value;
 
 	public ContainsPredicate(String value) {
@@ -35,7 +35,7 @@ public class ContainsPredicate implements IConfigPredicate {
 	}
 
 	public static class Serializer implements IConfigPredicateSerializer<ContainsPredicate> {
-		private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "contains");
+		private static final ResourceLocation ID = Blueprint.location("contains");
 
 		@Override
 		public void write(JsonObject json, IConfigPredicate value) {

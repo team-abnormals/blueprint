@@ -55,5 +55,6 @@ public final class BlueprintChestMaterials {
 		return MATERIALS.get(name).get();
 	}
 
-	public record ChestMaterials(Material singleMaterial, Material leftMaterial, Material rightMaterial) {}
+	public record ChestMaterials(Material singleMaterial, Material leftMaterial, Material rightMaterial) {
+	}
 }

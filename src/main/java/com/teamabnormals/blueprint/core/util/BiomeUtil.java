@@ -47,10 +47,10 @@ public final class BiomeUtil {
 	public static final Codec<ResourceKey<Biome>> BIOME_KEY_CODEC = ResourceKey.codec(Registries.BIOME);
 
 	static {
-		MODDED_PROVIDERS.register(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "original"), BiomeUtil.OriginalModdedBiomeProvider.CODEC);
-		MODDED_PROVIDERS.register(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "multi_noise"), BiomeUtil.MultiNoiseModdedBiomeProvider.CODEC);
-		MODDED_PROVIDERS.register(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "overlay"), BiomeUtil.OverlayModdedBiomeProvider.CODEC);
-		MODDED_PROVIDERS.register(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "biome_source"), BiomeUtil.BiomeSourceModdedBiomeProvider.CODEC);
+		MODDED_PROVIDERS.register(Blueprint.location("original"), BiomeUtil.OriginalModdedBiomeProvider.CODEC);
+		MODDED_PROVIDERS.register(Blueprint.location("multi_noise"), BiomeUtil.MultiNoiseModdedBiomeProvider.CODEC);
+		MODDED_PROVIDERS.register(Blueprint.location("overlay"), BiomeUtil.OverlayModdedBiomeProvider.CODEC);
+		MODDED_PROVIDERS.register(Blueprint.location("biome_source"), BiomeUtil.BiomeSourceModdedBiomeProvider.CODEC);
 	}
 
 	/**

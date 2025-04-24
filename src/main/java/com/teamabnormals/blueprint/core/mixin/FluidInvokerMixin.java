@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(Fluid.class)
 public interface FluidInvokerMixin {
-    @Invoker
-    void callAnimateTick(Level level, BlockPos pos, FluidState state, RandomSource randomSource);
+	@Invoker
+	void callAnimateTick(Level level, BlockPos pos, FluidState state, RandomSource randomSource);
 }

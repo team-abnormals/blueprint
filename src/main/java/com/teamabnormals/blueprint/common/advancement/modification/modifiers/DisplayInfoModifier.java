@@ -21,7 +21,8 @@ import java.util.Optional;
  *
  * @author SmellyModder (Luke Tonon)
  */
-public record DisplayInfoModifier(boolean replaces, Optional<ItemStack> icon, Optional<Component> title, Optional<Component> description, Optional<ResourceLocation> background, Optional<AdvancementType> type, Optional<Boolean> showToast, Optional<Boolean> announceToChat, Optional<Boolean> hidden) implements AdvancementModifier<DisplayInfoModifier> {
+public record DisplayInfoModifier(boolean replaces, Optional<ItemStack> icon, Optional<Component> title, Optional<Component> description, Optional<ResourceLocation> background, Optional<AdvancementType> type, Optional<Boolean> showToast, Optional<Boolean> announceToChat,
+								  Optional<Boolean> hidden) implements AdvancementModifier<DisplayInfoModifier> {
 	/**
 	 * Creates a new {@link Builder} instance to simplify creation of {@link DisplayInfoModifier} instances.
 	 *
@@ -106,7 +107,8 @@ public record DisplayInfoModifier(boolean replaces, Optional<ItemStack> icon, Op
 		private Optional<Boolean> announceToChat = Optional.empty();
 		private Optional<Boolean> hidden = Optional.empty();
 
-		private Builder() {}
+		private Builder() {
+		}
 
 		/**
 		 * Updates the {@link #replaces}.

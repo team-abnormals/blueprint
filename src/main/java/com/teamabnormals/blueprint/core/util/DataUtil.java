@@ -272,7 +272,8 @@ public final class DataUtil {
 					field.setAccessible(true);
 					try {
 						configValues.put(field.getAnnotation(ConfigKey.class).value(), (ModConfigSpec.ConfigValue<?>) field.get(object));
-					} catch (IllegalAccessException ignored) {}
+					} catch (IllegalAccessException ignored) {
+					}
 				}
 			}
 		}
@@ -644,13 +645,13 @@ public final class DataUtil {
 		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
-		 * @param modId           The ID of the mod registering the condition.
-		 * @param condition       A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
-		 *                        position under the note block, or above the note block if {@code isMobHead} is true,
-		 *                        returning true if {@code sound} should be played.
-		 * @param sound           The {@link SoundEvent} that will be played if {@code condition} is met.
-		 * @param isMobHead       If the instrument is for a mob head, meaning that the {@code sound} is unaffected by the tune of the note block
-		 *                        and functions only above the note block
+		 * @param modId     The ID of the mod registering the condition.
+		 * @param condition A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
+		 *                  position under the note block, or above the note block if {@code isMobHead} is true,
+		 *                  returning true if {@code sound} should be played.
+		 * @param sound     The {@link SoundEvent} that will be played if {@code condition} is met.
+		 * @param isMobHead If the instrument is for a mob head, meaning that the {@code sound} is unaffected by the tune of the note block
+		 *                  and functions only above the note block
 		 */
 		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound, boolean isMobHead) {
 			this(modId, condition, sound, isMobHead, (id1, id2) -> 0);
@@ -660,10 +661,10 @@ public final class DataUtil {
 		 * Initialises a new {@link CustomNoteBlockInstrument} where {@code condition} decides whether {@code sound}
 		 * should get played instead of vanilla's when a note block is triggered.
 		 *
-		 * @param modId           The ID of the mod registering the condition.
-		 * @param condition       A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
-		 *                        position under the note block, returning true if {@code sound} should be played.
-		 * @param sound           The {@link SoundEvent} that will be played if {@code condition} is met.
+		 * @param modId     The ID of the mod registering the condition.
+		 * @param condition A {@link Predicate} that takes in a {@link BlockSource} instance that represents the
+		 *                  position under the note block, returning true if {@code sound} should be played.
+		 * @param sound     The {@link SoundEvent} that will be played if {@code condition} is met.
 		 */
 		public CustomNoteBlockInstrument(String modId, Predicate<BlockSource> condition, SoundEvent sound) {
 			this(modId, condition, sound, false, (id1, id2) -> 0);

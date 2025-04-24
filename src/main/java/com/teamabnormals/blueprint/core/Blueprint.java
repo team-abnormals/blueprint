@@ -10,8 +10,8 @@ import com.teamabnormals.blueprint.client.renderer.texture.atlas.BlueprintSprite
 import com.teamabnormals.blueprint.client.screen.splash.BlueprintSplashManager;
 import com.teamabnormals.blueprint.common.block.BlueprintChiseledBookShelfBlock;
 import com.teamabnormals.blueprint.common.network.UpdateSlabfishHatPayload;
-import com.teamabnormals.blueprint.common.network.entity.UpdateEndimationPayload;
 import com.teamabnormals.blueprint.common.network.entity.TeleportEntityPayload;
+import com.teamabnormals.blueprint.common.network.entity.UpdateEndimationPayload;
 import com.teamabnormals.blueprint.common.network.entity.UpdateEntityDataPayload;
 import com.teamabnormals.blueprint.common.network.particle.SpawnParticlesPayload;
 import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSource;
@@ -24,7 +24,10 @@ import com.teamabnormals.blueprint.core.api.conditions.config.*;
 import com.teamabnormals.blueprint.core.data.server.BlueprintDataMapProvider;
 import com.teamabnormals.blueprint.core.data.server.BlueprintDatapackBuiltinEntriesProvider;
 import com.teamabnormals.blueprint.core.data.server.BlueprintRecipeProvider;
-import com.teamabnormals.blueprint.core.data.server.tags.*;
+import com.teamabnormals.blueprint.core.data.server.tags.BlueprintBlockTagsProvider;
+import com.teamabnormals.blueprint.core.data.server.tags.BlueprintEntityTypeTagsProvider;
+import com.teamabnormals.blueprint.core.data.server.tags.BlueprintItemTagsProvider;
+import com.teamabnormals.blueprint.core.data.server.tags.BlueprintPoiTypeTagsProvider;
 import com.teamabnormals.blueprint.core.endimator.EndimationLoader;
 import com.teamabnormals.blueprint.core.other.BlueprintEvents;
 import com.teamabnormals.blueprint.core.registry.*;
@@ -147,7 +150,7 @@ public final class Blueprint {
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
-		TrackedDataManager.INSTANCE.registerData(ResourceLocation.fromNamespaceAndPath(MOD_ID, "slabfish_head"), SLABFISH_SETTINGS);
+		TrackedDataManager.INSTANCE.registerData(location("slabfish_head"), SLABFISH_SETTINGS);
 
 		Set<Block> validBlocks = Sets.newHashSet(BlockEntityType.CHISELED_BOOKSHELF.validBlocks);
 		validBlocks.addAll(Sets.newHashSet(BlockEntitySubRegistryHelper.collectBlocks(BlueprintChiseledBookShelfBlock.class)));
@@ -185,7 +188,7 @@ public final class Blueprint {
 
 	private void registerOnEvent(RegisterEvent event) {
 		event.register(Registries.BIOME_SOURCE, (helper) -> {
-			helper.register(ResourceLocation.fromNamespaceAndPath(MOD_ID, "modded"), ModdedBiomeSource.CODEC);
+			helper.register(location("modded"), ModdedBiomeSource.CODEC);
 		});
 	}
 
@@ -220,5 +223,9 @@ public final class Blueprint {
 		registrar.playToClient(SpawnParticlesPayload.TYPE, SpawnParticlesPayload.STREAM_CODEC, SpawnParticlesPayload::handle);
 		registrar.playToClient(UpdateEntityDataPayload.TYPE, UpdateEntityDataPayload.STREAM_CODEC, UpdateEntityDataPayload::handle);
 		registrar.playToServer(UpdateSlabfishHatPayload.TYPE, UpdateSlabfishHatPayload.STREAM_CODEC, UpdateSlabfishHatPayload::handle);
+	}
+
+	public static ResourceLocation location(String path) {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 }

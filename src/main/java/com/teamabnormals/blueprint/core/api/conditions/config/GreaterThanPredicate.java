@@ -13,7 +13,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
  * @author abigailfails
  */
 public class GreaterThanPredicate implements IConfigPredicate {
-	private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "greater_than");
+	private static final ResourceLocation ID = Blueprint.location("greater_than");
 	private final double value;
 
 	public GreaterThanPredicate(double value) {
@@ -35,7 +35,7 @@ public class GreaterThanPredicate implements IConfigPredicate {
 	}
 
 	public static class Serializer implements IConfigPredicateSerializer<GreaterThanPredicate> {
-		private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "greater_than");
+		private static final ResourceLocation ID = Blueprint.location("greater_than");
 
 		@Override
 		public void write(JsonObject json, IConfigPredicate value) {

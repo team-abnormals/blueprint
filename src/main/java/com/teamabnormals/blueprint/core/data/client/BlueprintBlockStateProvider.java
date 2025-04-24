@@ -245,8 +245,8 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 	}
 
 	public void boardsBlock(DeferredHolder<Block, ?> boards) {
-		ModelFile boardsModel = models().getBuilder(name(boards.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "block/template_boards"))).texture("all", blockTexture(boards.get()));
-		ModelFile boardsHorizontalModel = models().getBuilder(name(boards.get()) + "_horizontal").parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "block/template_boards_horizontal"))).texture("all", blockTexture(boards.get()));
+		ModelFile boardsModel = models().getBuilder(name(boards.get())).parent(new ModelFile.UncheckedModelFile(Blueprint.location("block/template_boards"))).texture("all", blockTexture(boards.get()));
+		ModelFile boardsHorizontalModel = models().getBuilder(name(boards.get()) + "_horizontal").parent(new ModelFile.UncheckedModelFile(Blueprint.location("block/template_boards_horizontal"))).texture("all", blockTexture(boards.get()));
 		this.getVariantBuilder(boards.get()).partialState().with(RotatedPillarBlock.AXIS, Axis.Y).modelForState().modelFile(boardsModel).addModel().partialState().with(RotatedPillarBlock.AXIS, Axis.Z).modelForState().modelFile(boardsHorizontalModel).addModel().partialState().with(RotatedPillarBlock.AXIS, Axis.X).modelForState().modelFile(boardsHorizontalModel).rotationY(270).addModel();
 		this.blockItem(boards);
 	}
@@ -312,8 +312,8 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 		ModelFile model = particle(chest, blockTexture(planks));
 		this.simpleBlock(chest.get(), model);
 		this.simpleBlock(trappedChest.get(), model);
-		this.simpleBlockItem(chest.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "item/template_chest")));
-		this.simpleBlockItem(trappedChest.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "item/template_chest")));
+		this.simpleBlockItem(chest.get(), new ModelFile.UncheckedModelFile(Blueprint.location("item/template_chest")));
+		this.simpleBlockItem(trappedChest.get(), new ModelFile.UncheckedModelFile(Blueprint.location("item/template_chest")));
 	}
 
 	public void beehiveBlock(DeferredHolder<Block, ?> registryObject) {
@@ -366,7 +366,7 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 	}
 
 	public void leafPileBlock(DeferredHolder<Block, ?> leafPile, ResourceLocation texture, boolean tint) {
-		ModelFile leafPileModel = models().getBuilder(name(leafPile.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "block/" + (tint ? "tinted_" : "") + "leaf_pile"))).renderType("cutout").texture("all", texture);
+		ModelFile leafPileModel = models().getBuilder(name(leafPile.get())).parent(new ModelFile.UncheckedModelFile(Blueprint.location("block/" + (tint ? "tinted_" : "") + "leaf_pile"))).renderType("cutout").texture("all", texture);
 		MultiPartBlockStateBuilder builder = getMultipartBuilder(leafPile.get());
 		builder.part().modelFile(leafPileModel).rotationX(270).uvLock(true).addModel().condition(BlockStateProperties.UP, true);
 		builder.part().modelFile(leafPileModel).rotationX(270).uvLock(true).addModel().condition(BlockStateProperties.UP, false).condition(BlockStateProperties.NORTH, false).condition(BlockStateProperties.WEST, false).condition(BlockStateProperties.SOUTH, false).condition(BlockStateProperties.EAST, false).condition(BlockStateProperties.DOWN, false);

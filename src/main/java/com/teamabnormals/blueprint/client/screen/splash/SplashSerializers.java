@@ -14,7 +14,7 @@ public final class SplashSerializers {
 	static final BasicRegistry<MapCodec<? extends Splash>> SPLASH_SERIALIZERS = new BasicRegistry<>();
 
 	static {
-		SPLASH_SERIALIZERS.register(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "literal"), LiteralSplash.CODEC);
+		SPLASH_SERIALIZERS.register(Blueprint.location("literal"), LiteralSplash.CODEC);
 	}
 
 	/**

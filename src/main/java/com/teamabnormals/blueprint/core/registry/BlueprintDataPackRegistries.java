@@ -5,7 +5,6 @@ import com.teamabnormals.blueprint.common.world.modification.structure.Structure
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 /**
@@ -28,6 +27,6 @@ public final class BlueprintDataPackRegistries {
 	}
 
 	private static <T> ResourceKey<Registry<T>> key(String name) {
-		return ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, name));
+		return ResourceKey.createRegistryKey(Blueprint.location(name));
 	}
 }

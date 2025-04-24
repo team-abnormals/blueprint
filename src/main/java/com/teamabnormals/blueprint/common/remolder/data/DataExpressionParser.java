@@ -251,7 +251,8 @@ public final class DataExpressionParser {
 		DataVisitor parse(@Nullable DataVisitor instance, Token[] tokens, AtomicInteger index) throws ParseException;
 	}
 
-	public record Token(TokenType type, String contents, int startIndex) {}
+	public record Token(TokenType type, String contents, int startIndex) {
+	}
 
 	public enum TokenType {
 		NAME("([a-zA-Z_@][a-zA-Z_0-9]*|\\\\.)+"),

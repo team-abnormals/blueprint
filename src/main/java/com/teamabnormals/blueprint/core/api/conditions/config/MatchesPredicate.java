@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
  * @author abigailfails
  */
 public class MatchesPredicate implements IConfigPredicate {
-	private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "matches");
+	private static final ResourceLocation ID = Blueprint.location("matches");
 	private final String regex;
 
 	public MatchesPredicate(String regex) {
@@ -35,7 +35,7 @@ public class MatchesPredicate implements IConfigPredicate {
 	}
 
 	public static class Serializer implements IConfigPredicateSerializer<MatchesPredicate> {
-		private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "matches");
+		private static final ResourceLocation ID = Blueprint.location("matches");
 
 		@Override
 		public void write(JsonObject json, IConfigPredicate value) {

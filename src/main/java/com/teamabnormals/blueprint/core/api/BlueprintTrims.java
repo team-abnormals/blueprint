@@ -34,7 +34,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Class for managing Blueprint's Armor Trims API.
@@ -69,7 +72,7 @@ public class BlueprintTrims {
 			ResourceLocation.withDefaultNamespace("trims/items/leggings_trim"),
 			ResourceLocation.withDefaultNamespace("trims/items/boots_trim")
 	);
-	public static final ResourceLocation TRIM_TYPE_PREDICATE_ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "trim_type");
+	public static final ResourceLocation TRIM_TYPE_PREDICATE_ID = Blueprint.location("trim_type");
 	private static final LinkedHashMap<ResourceKey<TrimMaterial>, Pair<TrimMaterial, Float>> GENERATED_OVERRIDE_INDICES = new LinkedHashMap<>();
 	private static final ArrayList<RevertibleOverrides> REVERTIBLE_OVERRIDES = new ArrayList<>();
 
@@ -151,7 +154,7 @@ public class BlueprintTrims {
 			}
 			builder.append('_').append(predicate.getValue());
 		}
-		return ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, builder.toString());
+		return Blueprint.location(builder.toString());
 	}
 
 	private static ItemOverrides.BakedOverride createBakedOverride(ItemOverrides.PropertyMatcher[] matchers, ModelBakery bakery, ModelBakery.TextureGetter textureGetter, ResourceLocation location, ResourceLocation unbakedLocation) {

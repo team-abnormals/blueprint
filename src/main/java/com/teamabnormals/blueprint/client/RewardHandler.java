@@ -45,7 +45,7 @@ public final class RewardHandler {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = new Gson();
 	private static final String REWARDS_URL = "https://api.minecraftabnormals.com/rewards.json";
-	public static final ResourceLocation CAPE_TEXTURE = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "textures/abnormals_cape.png");
+	public static final ResourceLocation CAPE_TEXTURE = Blueprint.location("textures/abnormals_cape.png");
 
 	private static RewardProperties rewardProperties;
 
@@ -80,7 +80,7 @@ public final class RewardHandler {
 	public static RewardProperties getRewardProperties() {
 		return rewardProperties;
 	}
-	
+
 	@SubscribeEvent
 	public static void onEvent(ClientPlayerNetworkEvent.LoggingIn event) {
 		NetworkUtil.updateSlabfish(SlabfishSetting.getConfig());

@@ -111,5 +111,6 @@ public final class EndimationKeyframe implements Comparable<EndimationKeyframe> 
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public static record Transform(Supplier<Float> x, Supplier<Float> y, Supplier<Float> z) {}
+	public static record Transform(Supplier<Float> x, Supplier<Float> y, Supplier<Float> z) {
+	}
 }

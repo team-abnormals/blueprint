@@ -59,5 +59,6 @@ public interface EndimatablePart {
 	/**
 	 * Resets the part values to their intitial values.
 	 */
-	default void reset() {}
+	default void reset() {
+	}
 }

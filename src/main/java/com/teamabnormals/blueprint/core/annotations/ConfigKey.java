@@ -4,11 +4,7 @@ import com.teamabnormals.blueprint.core.api.conditions.ConfigValueCondition;
 import com.teamabnormals.blueprint.core.api.conditions.loot.ConfigLootCondition;
 import com.teamabnormals.blueprint.core.util.DataUtil;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * This annotation, when applied to {@link net.neoforged.neoforge.common.ModConfigSpec.ConfigValue} fields
@@ -27,7 +23,7 @@ import java.lang.annotation.Target;
  *     public final ConfigValue<Boolean> testField; //Initialized somewhere else
  * }
  * }</pre>
- *
+ * <p>
  * And an instance of {@code ExampleConfigKey} was registered under a config condition with {@code example_id}, the
  * {@code testField} in that instance could be tested by using its annotation's value as shown here:
  *
@@ -47,11 +43,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigKey {
-    /**
-     * The string value to look for in JSON when retrieving this field. For config values under the same mod ID, this
-     * has to be unique.
-     *
-     * @return the string key for this config value
-     */
-    String value();
+	/**
+	 * The string value to look for in JSON when retrieving this field. For config values under the same mod ID, this
+	 * has to be unique.
+	 *
+	 * @return the string key for this config value
+	 */
+	String value();
 }

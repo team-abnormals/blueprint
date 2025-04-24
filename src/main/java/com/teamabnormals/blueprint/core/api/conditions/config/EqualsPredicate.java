@@ -1,10 +1,6 @@
 package com.teamabnormals.blueprint.core.api.conditions.config;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -18,7 +14,7 @@ import java.util.Objects;
  * @author abigailfails
  */
 public class EqualsPredicate implements IConfigPredicate {
-	private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "equals");
+	private static final ResourceLocation ID = Blueprint.location("equals");
 	private final Object value;
 
 	public EqualsPredicate(Object value) {
@@ -36,7 +32,7 @@ public class EqualsPredicate implements IConfigPredicate {
 	}
 
 	public static class Serializer implements IConfigPredicateSerializer<EqualsPredicate> {
-		private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Blueprint.MOD_ID, "equals");
+		private static final ResourceLocation ID = Blueprint.location("equals");
 
 		@Override
 		public void write(JsonObject json, IConfigPredicate value) {

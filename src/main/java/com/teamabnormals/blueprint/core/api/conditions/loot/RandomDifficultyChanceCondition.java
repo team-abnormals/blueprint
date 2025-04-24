@@ -26,11 +26,11 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
  */
 public class RandomDifficultyChanceCondition implements LootItemCondition {
 	public static final MapCodec<RandomDifficultyChanceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		Codec.FLOAT.fieldOf("default_chance").forGetter(condition -> condition.defaultChance),
-		Codec.FLOAT.optionalFieldOf("peaceful", -1.0F).forGetter(condition -> condition.peacefulChance),
-		Codec.FLOAT.optionalFieldOf("easy", -1.0F).forGetter(condition -> condition.peacefulChance),
-		Codec.FLOAT.optionalFieldOf("normal", -1.0F).forGetter(condition -> condition.peacefulChance),
-		Codec.FLOAT.optionalFieldOf("hard", -1.0F).forGetter(condition -> condition.peacefulChance)
+			Codec.FLOAT.fieldOf("default_chance").forGetter(condition -> condition.defaultChance),
+			Codec.FLOAT.optionalFieldOf("peaceful", -1.0F).forGetter(condition -> condition.peacefulChance),
+			Codec.FLOAT.optionalFieldOf("easy", -1.0F).forGetter(condition -> condition.peacefulChance),
+			Codec.FLOAT.optionalFieldOf("normal", -1.0F).forGetter(condition -> condition.peacefulChance),
+			Codec.FLOAT.optionalFieldOf("hard", -1.0F).forGetter(condition -> condition.peacefulChance)
 	).apply(instance, RandomDifficultyChanceCondition::new));
 	private final float defaultChance;
 	private final float peacefulChance;

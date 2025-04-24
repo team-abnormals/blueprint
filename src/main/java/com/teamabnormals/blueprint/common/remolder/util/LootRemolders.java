@@ -9,7 +9,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import java.util.List;
 
-import static com.teamabnormals.blueprint.common.remolder.RemolderTypes.*;
+import static com.teamabnormals.blueprint.common.remolder.RemolderTypes.add;
+import static com.teamabnormals.blueprint.common.remolder.RemolderTypes.replace;
 import static com.teamabnormals.blueprint.common.remolder.data.DynamicReference.target;
 import static com.teamabnormals.blueprint.common.remolder.data.DynamicReference.value;
 

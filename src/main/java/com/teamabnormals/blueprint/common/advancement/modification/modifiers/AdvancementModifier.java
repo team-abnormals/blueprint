@@ -19,5 +19,6 @@ public interface AdvancementModifier<M extends AdvancementModifier<M>> extends O
 	 * @param <M> The type of {@link AdvancementModifier} instances to serialize and deserialize.
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	interface Serializer<M extends AdvancementModifier<M>> extends ObjectModifier.Serializer<M, RegistryOps<JsonElement>, RegistryOps<JsonElement>> {}
+	interface Serializer<M extends AdvancementModifier<M>> extends ObjectModifier.Serializer<M, RegistryOps<JsonElement>, RegistryOps<JsonElement>> {
+	}
 }

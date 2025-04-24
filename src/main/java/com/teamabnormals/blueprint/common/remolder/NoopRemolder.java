@@ -14,7 +14,8 @@ public enum NoopRemolder implements Remolder {
 	public static final MapCodec<NoopRemolder> CODEC = MapCodec.unit(INSTANCE);
 
 	@Override
-	public void remold(Molding molding) {}
+	public void remold(Molding molding) {
+	}
 
 	@Override
 	public MapCodec<? extends Remolder> codec() {

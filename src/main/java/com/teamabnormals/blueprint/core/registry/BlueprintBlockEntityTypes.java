@@ -19,7 +19,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @EventBusSubscriber(modid = Blueprint.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class BlueprintBlockEntityTypes {
 	@SubscribeEvent
-	public static void $(LoadThisClassEvent event) {}
+	public static void $(LoadThisClassEvent event) {
+	}
 
 	public static final BlockEntitySubRegistryHelper HELPER = Blueprint.REGISTRY_HELPER.getBlockEntitySubHelper();
 

@@ -12,8 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.function.Predicate;
 
-import static org.objectweb.asm.Opcodes.*;
 import static com.teamabnormals.blueprint.common.remolder.data.VariableDataVisitor.*;
+import static org.objectweb.asm.Opcodes.*;
 
 /**
  * A {@link ClassLoader} subclass that compiles {@link Remolding} instances from {@link Remolder} instances.
@@ -127,7 +127,7 @@ public final class RemoldingCompiler extends ClassLoader {
 		);
 		constructor.visitVarInsn(ALOAD, 0);
 		constructor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-		for (int i = 0; i < providedVariableCount;) {
+		for (int i = 0; i < providedVariableCount; ) {
 			var provided = providedVariables.get(i);
 			String fieldName = provided.name();
 			var variableType = provided.getReturnType().getType();
@@ -175,5 +175,6 @@ public final class RemoldingCompiler extends ClassLoader {
 		return ((Class<? extends Remolding<T>>) this.defineClass(name, data, 0, data.length)).getConstructor(parameterTypes).newInstance(parameterValues);
 	}
 
-	public record ExportEntry(String folder, String pattern, Predicate<String> predicate) {}
+	public record ExportEntry(String folder, String pattern, Predicate<String> predicate) {
+	}
 }

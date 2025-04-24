@@ -3,7 +3,9 @@ package com.teamabnormals.blueprint.core.util.modification.selection.selectors;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
-import com.teamabnormals.blueprint.core.util.modification.selection.*;
+import com.teamabnormals.blueprint.core.util.modification.selection.ConditionedResourceSelector;
+import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelector;
+import com.teamabnormals.blueprint.core.util.modification.selection.ResourceSelectorSerializers;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;

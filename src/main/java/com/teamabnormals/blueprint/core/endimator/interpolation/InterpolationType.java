@@ -74,7 +74,7 @@ public interface InterpolationType {
 	 * @param vec3          A {@link Vector3f} instance to alter the values of.
 	 * @param keyframes     An array of {@link EndimationKeyframe} instances to use for relative frame reference.
 	 * @param from          The {@link EndimationKeyframe} instance being approached away from.
-	 * @param to         The {@link EndimationKeyframe} instance being approached to.
+	 * @param to            The {@link EndimationKeyframe} instance being approached to.
 	 * @param index         The index of the current {@link EndimationKeyframe}.
 	 * @param keyframeCount The length of the array of {@link EndimationKeyframe} instances.
 	 * @param progress      A percentage of how far the current {@link EndimationKeyframe} is to being done. Should be between 0 and 1.

@@ -51,9 +51,9 @@ public final class BlueprintAndCondition implements ICondition {
 		}
 	};
 	public static final MapCodec<BlueprintAndCondition> CODEC = RecordCodecBuilder.mapCodec(
-		builder -> builder.group(
-			SHORT_CIRCUIT_CODEC.fieldOf("values").forGetter(condition -> condition.children))
-		.apply(builder, BlueprintAndCondition::new)
+			builder -> builder.group(
+							SHORT_CIRCUIT_CODEC.fieldOf("values").forGetter(condition -> condition.children))
+					.apply(builder, BlueprintAndCondition::new)
 	);
 	private final List<ICondition> children;
 

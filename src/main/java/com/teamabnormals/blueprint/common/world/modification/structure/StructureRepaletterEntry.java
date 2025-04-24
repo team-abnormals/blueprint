@@ -33,10 +33,10 @@ public record StructureRepaletterEntry(HolderSet<Structure> structures, Optional
 				NullableFieldCodec.nullable("priority", Codec.INT, 100).forGetter(entry -> entry.priority),
 				StructureRepaletter.Condition.CODEC.optionalFieldOf("condition").forGetter(entry -> entry.condition),
 				Codec.either(StructureRepaletter.CODEC, ExtraCodecs.nonEmptyList(StructureRepaletter.CODEC.listOf()))
-					.xmap(
-						either -> either.map(List::of, repalleters -> repalleters),
-						repaletters -> repaletters.size() == 1 ? Either.left(repaletters.getFirst()) : Either.right(repaletters)
-					).fieldOf("repaletter").forGetter(entry -> entry.repaletters)
+						.xmap(
+								either -> either.map(List::of, repalleters -> repalleters),
+								repaletters -> repaletters.size() == 1 ? Either.left(repaletters.getFirst()) : Either.right(repaletters)
+						).fieldOf("repaletter").forGetter(entry -> entry.repaletters)
 		).apply(instance, StructureRepaletterEntry::new);
 	});
 

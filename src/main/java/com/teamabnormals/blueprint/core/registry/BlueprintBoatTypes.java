@@ -39,11 +39,11 @@ public final class BlueprintBoatTypes {
 	 * Registers a Blueprint Boat Type.
 	 * <p>This method is safe to call during parallel mod loading.</p>
 	 *
-	 * @param name     The registry name for the {@link BlueprintBoatType}.
-	 * @param boat     The boat item.
+	 * @param name      The registry name for the {@link BlueprintBoatType}.
+	 * @param boat      The boat item.
 	 * @param chestBoat The chest boat item.
-	 * @param plank    The planks item.
-	 * @param raft     If the boat is a raft.
+	 * @param plank     The planks item.
+	 * @param raft      If the boat is a raft.
 	 */
 	public static synchronized void registerType(ResourceLocation name, Supplier<Item> boat, Supplier<Item> chestBoat, Supplier<Block> plank, boolean raft) {
 		BOATS.put(name, new BlueprintBoatType(name, boat, chestBoat, plank, raft));

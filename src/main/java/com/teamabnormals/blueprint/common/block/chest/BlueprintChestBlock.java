@@ -4,8 +4,6 @@ import com.teamabnormals.blueprint.common.block.entity.BlueprintChestBlockEntity
 import com.teamabnormals.blueprint.core.api.IChestBlock;
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;

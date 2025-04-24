@@ -1,8 +1,8 @@
 package com.teamabnormals.blueprint.common.entity;
 
 import com.teamabnormals.blueprint.client.renderer.HasBlueprintBoatType;
-import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
 import com.teamabnormals.blueprint.core.registry.BlueprintBoatTypes;
+import com.teamabnormals.blueprint.core.registry.BlueprintEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -114,7 +114,7 @@ public class BlueprintChestBoat extends ChestBoat implements HasBlueprintBoatTyp
 				f += 0.2F;
 			}
 		}
-		return new Vec3(0.0, this.getBoatType().isRaft() ? (double)(p_295933_.height() * 0.8888889F) : (double)(p_295933_.height() / 3.0F), (double)f)
+		return new Vec3(0.0, this.getBoatType().isRaft() ? (double) (p_295933_.height() * 0.8888889F) : (double) (p_295933_.height() / 3.0F), (double) f)
 				.yRot(-this.getYRot() * (float) (Math.PI / 180.0));
 	}
 
