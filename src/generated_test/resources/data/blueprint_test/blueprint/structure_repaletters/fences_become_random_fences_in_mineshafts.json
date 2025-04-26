@@ -14,8 +14,8 @@
   },
   "priority": 50,
   "repaletter": {
-    "type": "blueprint:weighted",
-    "replaces": "#minecraft:wooden_fences",
+    "type": "blueprint:weighted_tag",
+    "replaces_blocks": "minecraft:wooden_fences",
     "replaces_with": [
       {
         "data": "minecraft:crimson_fence",

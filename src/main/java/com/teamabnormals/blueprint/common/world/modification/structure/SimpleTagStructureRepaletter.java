@@ -2,32 +2,29 @@ package com.teamabnormals.blueprint.common.world.modification.structure;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.WeightedEntry;
-import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * An implementation of {@link StructureRepaletter} that replaces tagged {@link BlockState} instances with weighted random blocks.
+ * An implementation of {@link StructureRepaletter} that replaces {@link BlockState} instances containing a specific {@link Block} instance.
  * <p>Use {@link #CODEC} for serializing and deserializing instances of this class.</p>
  *
  * @author SmellyModder (Luke Tonon)
  * @see StructureRepaletter
  */
-public record WeightedStructureRepaletter(Block replacesBlock, WeightedRandomList<WeightedEntry.Wrapper<Block>> replacesWith) implements StructureRepaletter, StructureRepaletter.Replacer {
+public record SimpleTagStructureRepaletter(TagKey<Block> replacesBlock, Block replacesWith) implements StructureRepaletter, StructureRepaletter.Replacer {
 
-	public static final MapCodec<WeightedStructureRepaletter> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+	public static final MapCodec<SimpleTagStructureRepaletter> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
-				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("replaces_block").forGetter(repaletter -> repaletter.replacesBlock),
-				WeightedRandomList.codec(WeightedEntry.Wrapper.codec(BuiltInRegistries.BLOCK.byNameCodec())).fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
-		).apply(instance, WeightedStructureRepaletter::new);
+				TagKey.codec(Registries.BLOCK).fieldOf("replaces_block").forGetter(repaletter -> repaletter.replacesBlock),
+				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("replaces_with").forGetter(repaletter -> repaletter.replacesWith)
+		).apply(instance, SimpleTagStructureRepaletter::new);
 	});
 
 	@Override
@@ -38,7 +35,7 @@ public record WeightedStructureRepaletter(Block replacesBlock, WeightedRandomLis
 	@Nullable
 	@Override
 	public BlockState getReplacement(ServerLevelAccessor level, BlockState state, RandomSource random) {
-		return state.is(this.replacesBlock) ? this.replacesWith.getRandom(random).orElseThrow().data().withPropertiesOf(state) : null;
+		return state.is(this.replacesBlock) ? this.replacesWith.withPropertiesOf(state) : null;
 	}
 
 	@Override

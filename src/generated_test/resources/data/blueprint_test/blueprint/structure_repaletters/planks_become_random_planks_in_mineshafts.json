@@ -6,8 +6,8 @@
     }
   ],
   "repaletter": {
-    "type": "blueprint:weighted",
-    "replaces": "#minecraft:planks",
+    "type": "blueprint:weighted_tag",
+    "replaces_blocks": "minecraft:planks",
     "replaces_with": [
       {
         "data": "minecraft:acacia_planks",

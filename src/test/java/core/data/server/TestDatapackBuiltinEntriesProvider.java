@@ -5,6 +5,7 @@ import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlice;
 import com.teamabnormals.blueprint.common.world.modification.structure.SimpleStructureRepaletter;
 import com.teamabnormals.blueprint.common.world.modification.structure.StructureRepaletterEntry;
 import com.teamabnormals.blueprint.common.world.modification.structure.WeightedStructureRepaletter;
+import com.teamabnormals.blueprint.common.world.modification.structure.WeightedTagStructureRepaletter;
 import com.teamabnormals.blueprint.common.world.modification.structure.condition.AndStructureCondition;
 import com.teamabnormals.blueprint.common.world.modification.structure.condition.BiomeStructureCondition;
 import com.teamabnormals.blueprint.common.world.modification.structure.condition.ChanceStructureCondition;
@@ -73,7 +74,7 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 		context.register(
 				PLANKS_BECOME_RANDOM_PLANKS_IN_MINESHAFTS,
 				repalette()
-					.repaletters(new WeightedStructureRepaletter(blocks.getOrThrow(BlockTags.PLANKS), WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1))))
+					.repaletters(new WeightedTagStructureRepaletter(BlockTags.PLANKS, WeightedRandomList.create(WeightedEntry.wrap(Blocks.ACACIA_PLANKS, 1), WeightedEntry.wrap(Blocks.BIRCH_PLANKS, 1))))
 					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)))
 		);
 		var biomes = context.lookup(Registries.BIOME);
@@ -82,7 +83,7 @@ public final class TestDatapackBuiltinEntriesProvider extends DatapackBuiltinEnt
 				repalette()
 					.condition(AndStructureCondition.and(new ChanceStructureCondition(0.5F), new BiomeStructureCondition(HolderSet.direct(biomes.getOrThrow(Biomes.FOREST)))))
 					.priority(50)
-					.repaletters(new WeightedStructureRepaletter(blocks.getOrThrow(BlockTags.WOODEN_FENCES), WeightedRandomList.create(WeightedEntry.wrap(Blocks.CRIMSON_FENCE, 1), WeightedEntry.wrap(Blocks.WARPED_FENCE, 1))))
+					.repaletters(new WeightedTagStructureRepaletter(BlockTags.WOODEN_FENCES, WeightedRandomList.create(WeightedEntry.wrap(Blocks.CRIMSON_FENCE, 1), WeightedEntry.wrap(Blocks.WARPED_FENCE, 1))))
 					.select(HolderSet.direct(structures.getOrThrow(BuiltinStructures.MINESHAFT)))
 		);
 		context.register(

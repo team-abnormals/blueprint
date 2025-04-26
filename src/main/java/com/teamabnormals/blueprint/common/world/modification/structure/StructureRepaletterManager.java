@@ -47,7 +47,9 @@ public final class StructureRepaletterManager {
 
 	static {
 		registerRepalleter(Blueprint.location("simple"), SimpleStructureRepaletter.CODEC, SimpleStructureRepaletter.CODEC);
+		registerRepalleter(Blueprint.location("simple_tag"), SimpleTagStructureRepaletter.CODEC, SimpleTagStructureRepaletter.CODEC);
 		registerRepalleter(Blueprint.location("weighted"), WeightedStructureRepaletter.CODEC, WeightedStructureRepaletter.CODEC);
+		registerRepalleter(Blueprint.location("weighted_tag"), WeightedTagStructureRepaletter.CODEC, WeightedTagStructureRepaletter.CODEC);
 		registerCondition(Blueprint.location("not"), NotStructureCondition.CODEC);
 		registerCondition(Blueprint.location("and"), AndStructureCondition.CODEC);
 		registerCondition(Blueprint.location("or"), OrStructureCondition.CODEC);
