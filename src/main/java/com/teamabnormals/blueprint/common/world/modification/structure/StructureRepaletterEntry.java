@@ -4,16 +4,24 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.codec.NullableFieldCodec;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The record class for storing the data for an "unassigned" {@link StructureRepaletter} instance.
@@ -47,6 +55,29 @@ public record StructureRepaletterEntry(HolderSet<Structure> structures, Optional
 	 */
 	public static Builder repalette() {
 		return new Builder();
+	}
+
+	public static SimpleStructureRepaletter simple(Block replacesBlock, Block replacesWith) {
+		return new SimpleStructureRepaletter(replacesBlock, replacesWith);
+	}
+
+	public static SimpleTagStructureRepaletter simple(TagKey<Block> replacesBlocks, Block replacesWith) {
+		return new SimpleTagStructureRepaletter(replacesBlocks, replacesWith);
+	}
+
+	@SafeVarargs
+	public static WeightedStructureRepaletter weighted(Block replacesBlock, WeightedEntry.Wrapper<Block>... weightedPairs) {
+		return new WeightedStructureRepaletter(replacesBlock, WeightedRandomList.create(List.of(weightedPairs)));
+	}
+
+	@SafeVarargs
+	public static WeightedTagStructureRepaletter weighted(TagKey<Block> replacesBlocks, WeightedEntry.Wrapper<Block>... weightedPairs) {
+		return new WeightedTagStructureRepaletter(replacesBlocks, WeightedRandomList.create(List.of(weightedPairs)));
+	}
+
+	@SafeVarargs
+	public static HolderSet<Structure> holder(HolderGetter<Structure> structures, ResourceKey<Structure>... keys) {
+		return HolderSet.direct(Stream.of(keys).map(structures::getOrThrow).collect(Collectors.toList()));
 	}
 
 	public StructureRepaletterEntry(HolderSet<Structure> structures, Optional<HolderSet<StructurePieceType>> pieces, boolean shouldApplyToAfterPlace, int priority, Optional<StructureRepaletter.Condition> condition, StructureRepaletter repaletter) {
