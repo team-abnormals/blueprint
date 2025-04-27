@@ -29,7 +29,6 @@ import java.util.List;
  */
 @EventBusSubscriber(modid = Blueprint.MOD_ID)
 public final class BlueprintEvents {
-	public static final String NOTE_KEY = "minecraft:note";
 	public static List<CustomNoteBlockInstrument> SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS = null;
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -37,10 +36,8 @@ public final class BlueprintEvents {
 		if (SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS != null) {
 			if (event.getLevel() instanceof ServerLevel level) {
 				BlockPos pos = event.getPos();
-				DispenserBlockEntity dispenserblockentity = level.getBlockEntity(pos, BlockEntityType.DISPENSER).orElse(null);
-				if (dispenserblockentity == null) return;
-				BlockSource source = new BlockSource(level, pos, level.getBlockState(pos.relative(Direction.DOWN)), dispenserblockentity);
-				BlockSource headSource = new BlockSource(level, pos, level.getBlockState(pos.relative(Direction.UP)), dispenserblockentity);
+				BlockSource source = new BlockSource(level, pos, level.getBlockState(pos.relative(Direction.DOWN)), null);
+				BlockSource headSource = new BlockSource(level, pos, level.getBlockState(pos.relative(Direction.UP)), null);
 				for (CustomNoteBlockInstrument instrument : SORTED_CUSTOM_NOTE_BLOCK_INSTRUMENTS) {
 					boolean isMobHead = instrument.isMobHead();
 					if (instrument.test(isMobHead ? headSource : source)) {
