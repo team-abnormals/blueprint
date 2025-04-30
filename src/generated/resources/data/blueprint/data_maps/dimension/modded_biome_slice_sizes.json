@@ -1,7 +1,5 @@
 {
   "values": {
-    "minecraft:the_nether": {
-      "size": 8
-    }
+    "modid:example": 8
   }
 }

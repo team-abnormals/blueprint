@@ -5,6 +5,7 @@ import com.teamabnormals.blueprint.core.other.BlueprintDataMaps.ModdedBiomeSlice
 import com.teamabnormals.blueprint.core.other.tags.BlueprintItemTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.neoforged.neoforge.common.data.DataMapProvider;
@@ -32,6 +33,6 @@ public class BlueprintDataMapProvider extends DataMapProvider {
 				.remove(ItemTags.NON_FLAMMABLE_WOOD);
 
 		this.builder(BlueprintDataMaps.MODDED_BIOME_SLICE_SIZES)
-				.add(LevelStem.NETHER, new ModdedBiomeSliceSizeEntry(8), false);
+				.add(ResourceLocation.fromNamespaceAndPath("modid", "example"), new ModdedBiomeSliceSizeEntry(8), false);
 	}
 }
