@@ -17,21 +17,16 @@ public final class BlueprintConfig {
 	 * Class that stores all the information about the Blueprint common config.
 	 */
 	public static final class Common {
-		public final ModConfigSpec.ConfigValue<CommentedConfig> moddedBiomeSliceSizes;
+		public final ModConfigSpec.IntValue defaultModdedBiomeSliceSize;
 
 		public Common(ModConfigSpec.Builder builder) {
 			builder.comment(
-					"The modded biome slice sizes for dimensions",
 					"Blueprint's Modded Biome Slice System allows for datapacks and mods to add new biome areas to any dimension",
 					"Changing the size values will affect the size of all modded biome areas in their respected dimension",
-					"If a slice size isn't a positive integer, it will get ignored and the default slice size will get used instead"
+					"If the slice size for a dimension is undefined or not a positive integer, it will get ignored this value will get used instead",
+					"To change the slice size for a specific dimension, use the 'blueprint:dimension/modded_biome_slice_sizes' datamap"
 			);
-			CommentedConfig config = TomlFormat.newConfig();
-			config.setComment("default", "If the slice size for a dimension isn't defined, this value will get used for that dimension");
-			config.set("default", 8);
-			config.setComment("minecraft:overworld", "For example, the overworld's slice size would be formatted like this");
-			config.set("minecraft:overworld", 8);
-			this.moddedBiomeSliceSizes = builder.define("modded_biome_slice_sizes", config);
+			this.defaultModdedBiomeSliceSize = builder.defineInRange("default_modded_biome_slice_size", 8, 1, Integer.MAX_VALUE);
 		}
 	}
 
@@ -40,16 +35,16 @@ public final class BlueprintConfig {
 	 */
 	public static final class Client {
 		@ConfigKey("screen_shake_scale")
-		public final ModConfigSpec.ConfigValue<Double> screenShakeScaleValue;
+		public final ModConfigSpec.DoubleValue screenShakeScaleValue;
 		public double screenShakeScale;
 		@ConfigKey("max_screen_shakers")
-		public final ModConfigSpec.ConfigValue<Integer> maxScreenShakersValue;
+		public final ModConfigSpec.IntValue maxScreenShakersValue;
 		public int maxScreenShakers;
 		@ConfigKey("disable_experimental_settings_screen")
-		public final ModConfigSpec.ConfigValue<Boolean> disableExperimentalSettingsScreenValue;
+		public final ModConfigSpec.BooleanValue disableExperimentalSettingsScreenValue;
 		public boolean disableExperimentalSettingsScreen;
 		@ConfigKey("disable_slabfish_hats")
-		public final ModConfigSpec.ConfigValue<Boolean> disableSlabfishHatsValue;
+		public final ModConfigSpec.BooleanValue disableSlabfishHatsValue;
 		public boolean disableSlabfishHats;
 
 		public final SlabfishSettings slabfishSettings;

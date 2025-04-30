@@ -1,9 +1,10 @@
 package com.teamabnormals.blueprint.common.world.modification;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.BlueprintConfig;
+import com.teamabnormals.blueprint.core.other.BlueprintDataMaps;
+import com.teamabnormals.blueprint.core.other.BlueprintDataMaps.ModdedBiomeSliceSizeEntry;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
@@ -51,8 +52,7 @@ public final class ModdedBiomeSlicesManager {
 			pairs.sort(Comparator.comparing(Pair::getFirst, ResourceLocation::compareNamespaced));
 		});
 
-		CommentedConfig moddedBiomeSliceSizes = BlueprintConfig.COMMON.moddedBiomeSliceSizes.get();
-		int defaultSize = moddedBiomeSliceSizes.getIntOrElse("default", 9);
+		int defaultSize = BlueprintConfig.COMMON.defaultModdedBiomeSliceSize.get();
 		if (defaultSize <= 0) {
 			Blueprint.LOGGER.warn("Found a non-positive value for the default slice size! Slice size 9 will be used instead.");
 			defaultSize = 9;
@@ -69,8 +69,12 @@ public final class ModdedBiomeSlicesManager {
 				// Checking specifically for an instance of MultiNoiseBiomeSource isn't reliable because mods may alter the biome source before we do
 				// If we do replace something we shouldn't then players can remove providers in a datapack
 				if (!(source instanceof FixedBiomeSource) && !(source instanceof CheckerboardColumnBiomeSource)) {
-					int size = moddedBiomeSliceSizes.getIntOrElse(location.toString(), defaultSize);
-					if (size <= 0) size = defaultSize;
+					int size = defaultSize;
+					ModdedBiomeSliceSizeEntry sizeEntry = dimensions.getData(BlueprintDataMaps.MODDED_BIOME_SLICE_SIZES, entry.getKey());
+					if (sizeEntry != null && sizeEntry.size() > 0) {
+						size = sizeEntry.size();
+					}
+
 					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForKey, size, seed, location.hashCode());
 					chunkGenerator.biomeSource = moddedBiomeSource;
 					chunkGenerator.featuresPerStep = Lazy.of(() -> {
