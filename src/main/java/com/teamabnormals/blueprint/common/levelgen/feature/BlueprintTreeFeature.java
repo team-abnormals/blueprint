@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -159,8 +160,12 @@ public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
 	}
 
 	public static void setDirtAt(WorldGenLevel level, RandomSource random, BlockPos pos, TreeConfiguration config) {
-		if (config.forceDirt || level.isStateAtPosition(pos, state -> state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.MYCELIUM))) {
+		if (config.forceDirt || !isDirt(level, pos)) {
 			level.setBlock(pos, config.dirtProvider.getState(random, pos), 19);
 		}
+	}
+
+	public static boolean isDirt(LevelSimulatedReader level, BlockPos pos) {
+		return level.isStateAtPosition(pos, state -> Feature.isDirt(state) && !state.is(Blocks.GRASS_BLOCK) && !state.is(Blocks.MYCELIUM));
 	}
 }
