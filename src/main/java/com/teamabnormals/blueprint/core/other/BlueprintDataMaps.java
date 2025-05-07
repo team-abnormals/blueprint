@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 
 @EventBusSubscriber(modid = Blueprint.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class BlueprintDataMaps {
-	public static final DataMapType<LevelStem, ModdedBiomeSliceSizeEntry> MODDED_BIOME_SLICE_SIZES = DataMapType.builder(Blueprint.location("modded_biome_slice_sizes"), Registries.LEVEL_STEM, ModdedBiomeSliceSizeEntry.CODEC).synced(ModdedBiomeSliceSizeEntry.CODEC, false).build();
+	public static final DataMapType<LevelStem, ModdedBiomeSliceSizeEntry> MODDED_BIOME_SLICE_SIZES = DataMapType.builder(Blueprint.location("modded_biome_slice_sizes"), Registries.LEVEL_STEM, ModdedBiomeSliceSizeEntry.CODEC).build();
 
 	@SubscribeEvent
 	public static void registerDataMaps(RegisterDataMapTypesEvent event) {
