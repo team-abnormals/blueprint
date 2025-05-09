@@ -11,6 +11,7 @@ import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicate;
 import com.teamabnormals.blueprint.core.api.conditions.config.IConfigPredicateSerializer;
 import net.minecraft.Util;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -111,6 +112,16 @@ public final class DataUtil {
 		Map<Item, ResourceKey<DecoratedPotPattern>> itemToPotTextureMap = Maps.newHashMap(DecoratedPotPatterns.ITEM_TO_POT_TEXTURE);
 		itemToPotTextureMap.put(item.asItem(), pattern.getKey());
 		DecoratedPotPatterns.ITEM_TO_POT_TEXTURE = itemToPotTextureMap;
+	}
+
+	/**
+	 * Adds a default cauldron interaction to all existing cauldrons in the interaction map
+	 *
+	 * @param item An {@link Item} to be used on a cauldron, usually a bucket
+	 * @param interaction A {@link CauldronInteraction} defining the behavior when using an item on a cauldron
+	 */
+	public static void addDefaultCauldronInteraction(Item item, CauldronInteraction interaction) {
+		CauldronInteraction.INTERACTIONS.forEach((str, map) -> map.map().put(item, interaction));
 	}
 
 	/**
