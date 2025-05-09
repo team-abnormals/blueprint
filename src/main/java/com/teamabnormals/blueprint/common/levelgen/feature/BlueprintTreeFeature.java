@@ -27,12 +27,6 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
-	public Set<BlockPos> logPositions;
-	public Set<BlockPos> foliagePositions;
-
-	public HashMap<BlockPos, BlockState> specialLogPositions;
-	public HashMap<BlockPos, BlockState> specialFoliagePositions;
-
 	public boolean placeDirt;
 
 	public BlueprintTreeFeature(Codec<TreeConfiguration> config) {
@@ -51,42 +45,37 @@ public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
 		RandomSource random = context.random();
 		BlockPos origin = context.origin();
 
-		this.logPositions = Sets.newHashSet();
-		this.foliagePositions = Sets.newHashSet();
-		this.specialLogPositions = Maps.newHashMap();
-		this.specialFoliagePositions = Maps.newHashMap();
+		TreeInfo info = new TreeInfo(context);
 
 		if (this.canSurvive(level, origin)) {
-			this.doPlace(context);
+			this.doPlace(context, info);
 
-			for (BlockPos logPos : this.logPositions) {
+			for (BlockPos logPos : info.logMap().keySet()) {
 				if (!TreeFeature.validTreePos(level, logPos) || logPos.getY() > level.getMaxBuildHeight())
 					return false;
 			}
 
-			for (BlockPos foliagePos : this.foliagePositions) {
+			for (BlockPos foliagePos : info.foliageMap().keySet()) {
 				if (!TreeFeature.validTreePos(level, foliagePos) || foliagePos.getY() > level.getMaxBuildHeight())
 					return false;
 			}
 
-			this.doMidPlace(context);
+			this.doMidPlace(context, info);
 
-			this.logPositions.forEach(logPos -> {
-				level.setBlock(logPos, this.specialLogPositions.getOrDefault(logPos, config.trunkProvider.getState(random, logPos)), 19);
+			info.logMap().forEach((logPos, logState) -> {
+				level.setBlock(logPos, logState, 19);
 				if (logPos.getY() == origin.getY() && this.placeDirt) {
 					setDirtAt(level, random, logPos.below(), config);
 				}
 			});
-			this.foliagePositions.forEach(foliagePos -> {
+			info.foliageMap().forEach((foliagePos, foliageState) -> {
 				if (TreeFeature.validTreePos(level, foliagePos)) {
-					BlockState state = this.specialFoliagePositions.getOrDefault(foliagePos, config.foliageProvider.getState(random, foliagePos));
-
-					if (state.hasProperty(BlockStateProperties.WATERLOGGED)) {
-						state = state.setValue(BlockStateProperties.WATERLOGGED, level.isFluidAtPosition(foliagePos, (fluidState) -> fluidState.isSourceOfType(Fluids.WATER)));
+					if (foliageState.hasProperty(BlockStateProperties.WATERLOGGED)) {
+						foliageState = foliageState.setValue(BlockStateProperties.WATERLOGGED, level.isFluidAtPosition(foliagePos, (fluidState) -> fluidState.isSourceOfType(Fluids.WATER)));
 					}
 
-					if (!state.isAir()) {
-						level.setBlock(foliagePos, state, 19);
+					if (!foliageState.isAir()) {
+						level.setBlock(foliagePos, foliageState, 19);
 					}
 				}
 			});
@@ -98,14 +87,14 @@ public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
 			};
 
 			if (!config.decorators.isEmpty()) {
-				TreeDecorator.Context decoratorContext = new TreeDecorator.Context(level, decorationSetter, random, this.logPositions, this.foliagePositions, Sets.newHashSet());
+				TreeDecorator.Context decoratorContext = new TreeDecorator.Context(level, decorationSetter, random, info.logMap().keySet(), info.foliageMap().keySet(), Sets.newHashSet());
 				config.decorators.forEach((decorator) -> decorator.place(decoratorContext));
 			}
 
-			this.doPostPlace(context);
+			this.doPostPlace(context, info);
 
-			return BoundingBox.encapsulatingPositions(Iterables.concat(this.logPositions, this.foliagePositions, decorationPositions)).map((boundingBox) -> {
-				DiscreteVoxelShape shape = TreeFeature.updateLeaves(level, boundingBox, this.logPositions, decorationPositions, Set.of());
+			return BoundingBox.encapsulatingPositions(Iterables.concat(info.logMap().keySet(), info.foliageMap().keySet(), decorationPositions)).map((boundingBox) -> {
+				DiscreteVoxelShape shape = TreeFeature.updateLeaves(level, boundingBox, info.logMap().keySet(), decorationPositions, Set.of());
 				StructureTemplate.updateShapeAtEdge(level, 3, shape, boundingBox.minX(), boundingBox.minY(), boundingBox.minZ());
 				return true;
 			}).orElse(false);
@@ -120,43 +109,12 @@ public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
 		return this.getSapling().canSurvive(level, pos);
 	}
 
-	public abstract void doPlace(FeaturePlaceContext<TreeConfiguration> context);
+	public abstract void doPlace(FeaturePlaceContext<TreeConfiguration> context, TreeInfo info);
 
-	public void doMidPlace(FeaturePlaceContext<TreeConfiguration> context) {
+	public void doMidPlace(FeaturePlaceContext<TreeConfiguration> context, TreeInfo info) {
 	}
 
-	public void doPostPlace(FeaturePlaceContext<TreeConfiguration> context) {
-	}
-
-	public void addLog(BlockPos pos) {
-		this.logPositions.add(pos.immutable());
-	}
-
-	public void addAxisLog(BlockPos pos, Direction.Axis axis, TreeConfiguration config, RandomSource random) {
-		BlockState state = config.trunkProvider.getState(random, pos);
-		if (state.hasProperty(BlockStateProperties.AXIS)) {
-			this.addSpecialLog(pos, state.setValue(BlockStateProperties.AXIS, axis));
-		} else {
-			this.addLog(pos);
-		}
-	}
-
-	public void addAxisLog(BlockPos pos, Direction direction, TreeConfiguration config, RandomSource random) {
-		this.addAxisLog(pos, direction.getAxis(), config, random);
-	}
-
-	public void addSpecialLog(BlockPos pos, BlockState state) {
-		this.addLog(pos);
-		this.specialLogPositions.put(pos.immutable(), state);
-	}
-
-	public void addFoliage(BlockPos pos) {
-		this.foliagePositions.add(pos.immutable());
-	}
-
-	public void addSpecialFoliage(BlockPos pos, BlockState state) {
-		this.addFoliage(pos);
-		this.specialFoliagePositions.put(pos.immutable(), state);
+	public void doPostPlace(FeaturePlaceContext<TreeConfiguration> context, TreeInfo info) {
 	}
 
 	public static void setDirtAt(WorldGenLevel level, RandomSource random, BlockPos pos, TreeConfiguration config) {
@@ -167,5 +125,41 @@ public abstract class BlueprintTreeFeature extends Feature<TreeConfiguration> {
 
 	public static boolean isDirt(LevelSimulatedReader level, BlockPos pos) {
 		return level.isStateAtPosition(pos, state -> Feature.isDirt(state) && !state.is(Blocks.GRASS_BLOCK) && !state.is(Blocks.MYCELIUM));
+	}
+
+	public record TreeInfo(FeaturePlaceContext<TreeConfiguration> context, HashMap<BlockPos, BlockState> logMap, HashMap<BlockPos, BlockState> foliageMap) {
+
+		public TreeInfo(FeaturePlaceContext<TreeConfiguration> context) {
+			this(context, Maps.newHashMap(), Maps.newHashMap());
+		}
+
+		public void addLog(BlockPos pos, BlockState state) {
+			logMap.put(pos.immutable(), state);
+		}
+
+		public void addLog(BlockPos pos) {
+			addLog(pos, context.config().trunkProvider.getState(context.random(), pos));
+		}
+
+		public void addAxisLog(BlockPos pos, Direction.Axis axis) {
+			BlockState state = context.config().trunkProvider.getState(context.random(), pos);
+			if (state.hasProperty(BlockStateProperties.AXIS)) {
+				addLog(pos, state.setValue(BlockStateProperties.AXIS, axis));
+			} else {
+				addLog(pos);
+			}
+		}
+
+		public void addAxisLog(BlockPos pos, Direction direction) {
+			addAxisLog(pos, direction.getAxis());
+		}
+
+		public void addFoliage(BlockPos pos, BlockState state) {
+			foliageMap.put(pos.immutable(), state);
+		}
+
+		public void addFoliage(BlockPos pos) {
+			addFoliage(pos, context.config().foliageProvider.getState(context.random(), pos));
+		}
 	}
 }
