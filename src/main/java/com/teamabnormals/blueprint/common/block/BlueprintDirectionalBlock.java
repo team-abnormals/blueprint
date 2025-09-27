@@ -30,7 +30,7 @@ public class BlueprintDirectionalBlock extends DirectionalBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return this.defaultBlockState().setValue(FACING, context.getPlayer() == null || context.getPlayer().isCrouching() ? context.getNearestLookingDirection().getOpposite() : context.getClickedFace());
+		return this.defaultBlockState().setValue(FACING, context.getPlayer() == null || context.getPlayer().isSecondaryUseActive() ? context.getNearestLookingDirection().getOpposite() : context.getClickedFace());
 	}
 
 	@Override
