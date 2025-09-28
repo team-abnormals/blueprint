@@ -24,5 +24,4 @@ public class BlueprintTrappedChestBlockEntity extends BlueprintChestBlockEntity 
 			level.updateNeighborsAt(pos.below(), block);
 		}
 	}
-
 }

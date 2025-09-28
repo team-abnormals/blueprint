@@ -54,6 +54,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -62,10 +63,14 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -142,6 +147,7 @@ public final class Blueprint {
 
 		bus.addListener(BlueprintDataPackRegistries::registerRegistries);
 		bus.addListener(this::registerOnEvent);
+		bus.addListener(this::registerCapabilities);
 		bus.addListener(EventPriority.LOWEST, this::commonSetup);
 		bus.addListener(EventPriority.LOWEST, this::postLoadingSetup);
 		bus.addListener(this::dataSetup);
@@ -190,6 +196,15 @@ public final class Blueprint {
 		event.register(Registries.BIOME_SOURCE, (helper) -> {
 			helper.register(location("modded"), ModdedBiomeSource.CODEC);
 		});
+	}
+
+	private void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.registerBlockEntity(ItemHandler.BLOCK, BlueprintBlockEntityTypes.CHEST.get(), (container, side) -> new InvWrapper(container.getContainer()));
+		event.registerBlockEntity(ItemHandler.BLOCK, BlueprintBlockEntityTypes.TRAPPED_CHEST.get(), (container, side) -> new InvWrapper(container.getContainer()));
+		event.registerBlockEntity(ItemHandler.BLOCK, BlueprintBlockEntityTypes.CHISELED_BOOKSHELF.get(), (container, side) -> new InvWrapper(container));
+
+		event.registerEntity(Capabilities.ItemHandler.ENTITY, BlueprintEntityTypes.CHEST_BOAT.get(), (entity, ctx) -> new InvWrapper(entity));
+		event.registerEntity(Capabilities.ItemHandler.ENTITY_AUTOMATION, BlueprintEntityTypes.CHEST_BOAT.get(), (entity, ctx) -> new InvWrapper(entity));
 	}
 
 	@OnlyIn(Dist.CLIENT)

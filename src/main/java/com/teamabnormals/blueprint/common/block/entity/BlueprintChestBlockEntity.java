@@ -2,6 +2,8 @@ package com.teamabnormals.blueprint.common.block.entity;
 
 import com.teamabnormals.blueprint.core.registry.BlueprintBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,4 +21,7 @@ public class BlueprintChestBlockEntity extends ChestBlockEntity {
 		super(BlueprintBlockEntityTypes.CHEST.get(), pos, state);
 	}
 
+	public Container getContainer() {
+		return ChestBlock.getContainer((ChestBlock) this.getBlockState().getBlock(), this.getBlockState(), this.getLevel(), this.getBlockPos(), true);
+	}
 }
