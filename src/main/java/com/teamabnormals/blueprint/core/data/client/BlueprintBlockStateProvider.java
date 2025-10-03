@@ -346,7 +346,7 @@ public abstract class BlueprintBlockStateProvider extends BlockStateProvider {
 	}
 
 	public void leavesBlock(DeferredHolder<Block, ?> leaves) {
-		this.simpleBlock(leaves.get(), models().getBuilder(name(leaves.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.withDefaultNamespace("block/leaves"))).renderType("cutout_mipped").texture("all", blockTexture(leaves.get())));
+		this.simpleBlock(leaves.get(), models().getBuilder(name(leaves.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.withDefaultNamespace("block/leaves"))).texture("all", blockTexture(leaves.get())));
 		this.blockItem(leaves);
 	}
 
