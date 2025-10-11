@@ -6,7 +6,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class BlueprintItemTags {
+	@Deprecated(forRemoval = true)
 	public static final TagKey<Item> MILK = TagUtil.itemTag("c", "milk");
+	@Deprecated(forRemoval = true)
 	public static final TagKey<Item> PUMPKINS = TagUtil.itemTag("c", "pumpkins");
 	public static final TagKey<Item> HORSE_ARMOR = TagUtil.itemTag("c", "horse_armor");
 

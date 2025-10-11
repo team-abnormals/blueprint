@@ -24,8 +24,8 @@ public class BlueprintItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.Provider p_256380_) {
-		this.tag(MILK).addTag(Tags.Items.BUCKETS_MILK);
-		this.tag(PUMPKINS).add(Items.PUMPKIN);
+		this.tag(MILK).addTag(Tags.Items.DRINKS_MILK);
+		this.tag(PUMPKINS).addTag(Tags.Items.PUMPKINS_NORMAL);
 		this.tag(HORSE_ARMOR).add(Items.LEATHER_HORSE_ARMOR, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR, Items.DIAMOND_HORSE_ARMOR);
 
 		this.copyWoodworksTags();
