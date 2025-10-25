@@ -33,7 +33,6 @@ public enum TrackedDataManager {
 	INSTANCE;
 
 	private final BiMap<ResourceLocation, TrackedData<?>> dataMap = HashBiMap.create();
-	private final BiMap<Integer, TrackedData<?>> idMap = HashBiMap.create();
 	private int nextId = 0;
 
 	TrackedDataManager() {
@@ -52,7 +51,6 @@ public enum TrackedDataManager {
 			throw new IllegalArgumentException(String.format("A Tracked Data with key '%s' is already registered!", key));
 		}
 		this.dataMap.put(key, trackedData);
-		this.idMap.put(this.nextId, trackedData);
 		this.nextId++;
 	}
 
@@ -106,27 +104,6 @@ public enum TrackedDataManager {
 	@Nullable
 	public ResourceLocation getKey(TrackedData<?> trackedData) {
 		return this.dataMap.inverse().get(trackedData);
-	}
-
-	/**
-	 * Gets a {@link TrackedData} by its registry id.
-	 *
-	 * @param id The id to lookup.
-	 * @return The {@link TrackedData} for the supplied id.
-	 */
-	@Nullable
-	public TrackedData<?> getTrackedData(int id) {
-		return this.idMap.get(id);
-	}
-
-	/**
-	 * Gets the id of a {@link TrackedData}.
-	 *
-	 * @param trackedData The {@link TrackedData} to get the id for.
-	 * @return The id of the supplied id.
-	 */
-	public int getId(TrackedData<?> trackedData) {
-		return this.idMap.inverse().get(trackedData);
 	}
 
 	@SubscribeEvent

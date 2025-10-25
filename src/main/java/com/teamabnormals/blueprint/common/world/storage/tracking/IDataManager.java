@@ -10,10 +10,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryOps;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This interface handles all the management of the {@link TrackedData}s on an object.
@@ -103,9 +100,8 @@ public interface IDataManager {
 		 * @return A new entry from a {@link RegistryFriendlyByteBuf} instance.
 		 */
 		public static DataEntry<?> read(RegistryFriendlyByteBuf buffer) {
-			int id = buffer.readVarInt();
-			TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(id);
-			Objects.requireNonNull(trackedData, String.format("Tracked Data does not exist for id %o", id));
+			TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(buffer.readResourceLocation());
+			Objects.requireNonNull(trackedData, String.format("Tracked Data does not exist for id %o", trackedData));
 			DataEntry<?> entry = new DataEntry<>(trackedData);
 			entry.readValue(buffer, true);
 			return entry;
@@ -185,7 +181,7 @@ public interface IDataManager {
 		 * @param buffer A {@link FriendlyByteBuf} to write this entry to.
 		 */
 		public void write(RegistryFriendlyByteBuf buffer) {
-			buffer.writeVarInt(TrackedDataManager.INSTANCE.getId(this.trackedData));
+			buffer.writeResourceLocation(Objects.requireNonNull(TrackedDataManager.INSTANCE.getKey(this.trackedData)));
 			this.getTrackedData().getStreamCodec().encode(buffer, this.getValue());
 		}
 
