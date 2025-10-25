@@ -9,6 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
@@ -100,8 +101,9 @@ public interface IDataManager {
 		 * @return A new entry from a {@link RegistryFriendlyByteBuf} instance.
 		 */
 		public static DataEntry<?> read(RegistryFriendlyByteBuf buffer) {
-			TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(buffer.readResourceLocation());
-			Objects.requireNonNull(trackedData, String.format("Tracked Data does not exist for id %o", trackedData));
+			ResourceLocation location = buffer.readResourceLocation();
+			TrackedData<?> trackedData = TrackedDataManager.INSTANCE.getTrackedData(location);
+			Objects.requireNonNull(trackedData, String.format("Tracked Data does not exist for id %s", location));
 			DataEntry<?> entry = new DataEntry<>(trackedData);
 			entry.readValue(buffer, true);
 			return entry;

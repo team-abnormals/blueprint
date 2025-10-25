@@ -33,7 +33,6 @@ public enum TrackedDataManager {
 	INSTANCE;
 
 	private final BiMap<ResourceLocation, TrackedData<?>> dataMap = HashBiMap.create();
-	private int nextId = 0;
 
 	TrackedDataManager() {
 		NeoForge.EVENT_BUS.register(this);
@@ -51,7 +50,6 @@ public enum TrackedDataManager {
 			throw new IllegalArgumentException(String.format("A Tracked Data with key '%s' is already registered!", key));
 		}
 		this.dataMap.put(key, trackedData);
-		this.nextId++;
 	}
 
 	/**
