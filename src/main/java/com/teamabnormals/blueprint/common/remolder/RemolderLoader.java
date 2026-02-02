@@ -214,6 +214,5 @@ public final class RemolderLoader {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public record Entry(Predicate<String> packFilter, Remolding<?> remolding) {
-	}
+	public record Entry(Predicate<String> packFilter, Remolding<?> remolding) {}
 }

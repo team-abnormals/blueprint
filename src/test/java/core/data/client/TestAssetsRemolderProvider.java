@@ -30,8 +30,8 @@ public final class TestAssetsRemolderProvider extends RemolderProvider {
 				.path("minecraft:blockstates/acacia_planks")
 				.pack(Sets.newHashSet("vanilla"))
 				.remolder(add(
-						target("variants.get(\"\").x"),
-						target("element(90)")
+						target("variants[\"\"].x"),
+						parse("#element(90)")
 				));
 	}
 

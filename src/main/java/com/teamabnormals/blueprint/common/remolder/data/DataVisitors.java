@@ -1,14 +1,19 @@
 package com.teamabnormals.blueprint.common.remolder.data;
 
+import com.teamabnormals.blueprint.common.remolder.util.DataExpression;
+import com.teamabnormals.blueprint.common.remolder.util.DiscretionaryLabel;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.teamabnormals.blueprint.common.remolder.data.DataType.BOOLEAN;
 import static org.objectweb.asm.Opcodes.*;
 
 /**
@@ -17,35 +22,54 @@ import static org.objectweb.asm.Opcodes.*;
  * @author SmellyModder (Luke Tonon)
  */
 public final class DataVisitors {
-	static Const booleanValue(boolean value) {
-		return new Const(DataType.BOOLEAN, value, value ? ICONST_1 : ICONST_0);
+	public static final Const NULL = new Const(DataType.VOID, null, ACONST_NULL);
+	public static final Const FALSE = new Const(DataType.BOOLEAN, false, ICONST_0);
+	public static final Const TRUE = new Const(DataType.BOOLEAN, true, ICONST_1);
+	public static final Handle MAKE_CONCAT_WITH_CONSTANTS = new Handle(
+			H_INVOKESTATIC,
+			"java/lang/invoke/StringConcatFactory",
+			"makeConcatWithConstants",
+			"(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;",
+			false
+	);
+
+	public static Const booleanValue(boolean value) {
+		return value ? TRUE : FALSE;
 	}
 
-	static DataVisitor charValue(char value) {
-		return value <= 5 ? new Const(DataType.CHAR, value, value + ICONST_0) : new Ldc(DataType.CHAR, value);
+	public static DataVisitor charValue(char value) {
+		if (value <= 5) return new Const(DataType.CHAR, value, value + ICONST_0);
+		if (value <= Byte.MAX_VALUE) return new IntPush(DataType.CHAR, BIPUSH, (int) value);
+		if (value <= Short.MAX_VALUE) return new IntPush(DataType.CHAR, SIPUSH, (int) value);
+		return new Ldc(DataType.CHAR, value);
 	}
 
-	static DataVisitor byteValue(byte value) {
-		return value >= -1 && value <= 5 ? new Const(DataType.BYTE, value, value + ICONST_0) : new Ldc(DataType.BYTE, value);
+	public static DataVisitor byteValue(byte value) {
+		return value >= -1 && value <= 5 ? new Const(DataType.BYTE, value, value + ICONST_0) : new IntPush(DataType.BYTE, BIPUSH, value);
 	}
 
-	static DataVisitor shortValue(short value) {
-		return value >= -1 && value <= 5 ? new Const(DataType.SHORT, value, value + ICONST_0) : new Ldc(DataType.SHORT, value);
+	public static DataVisitor shortValue(short value) {
+		if (value >= -1 && value <= 5) return new Const(DataType.SHORT, value, value + ICONST_0);
+		if (value == (byte) value) return new IntPush(DataType.SHORT, BIPUSH, value);
+		return new IntPush(DataType.SHORT, SIPUSH, value);
 	}
 
-	static DataVisitor intValue(int value) {
-		return value >= -1 && value <= 5 ? new Const(DataType.INT, value, value + ICONST_0) : new Ldc(DataType.INT, value);
+	public static DataVisitor intValue(int value) {
+		if (value >= -1 && value <= 5) return new Const(DataType.INT, value, value + ICONST_0);
+		if (value == (byte) value) return new IntPush(DataType.INT, BIPUSH, value);
+		if (value == (short) value) return new IntPush(DataType.INT, SIPUSH, value);
+		return new Ldc(DataType.INT, value);
 	}
 
-	static DataVisitor longValue(long value) {
+	public static DataVisitor longValue(long value) {
 		if (value == 0) return new Const(DataType.LONG, value, LCONST_0);
 		if (value == 1) return new Const(DataType.LONG, value, LCONST_1);
 		return new Ldc(DataType.LONG, value);
 	}
 
-	static DataVisitor floatValue(float value) {
+	public static DataVisitor floatValue(float value) {
 		int opcode;
-		if (value == 0.0F) {
+		if (Float.floatToIntBits(value) == 0) {
 			opcode = FCONST_0;
 		} else if (value == 1.0F) {
 			opcode = FCONST_1;
@@ -55,17 +79,22 @@ public final class DataVisitors {
 		return new Const(DataType.FLOAT, value, opcode);
 	}
 
-	static DataVisitor doubleValue(double value) {
-		if (value == 0.0D) return new Const(DataType.DOUBLE, value, DCONST_0);
+	public static DataVisitor doubleValue(double value) {
+		if (Double.doubleToLongBits(value) == 0L) return new Const(DataType.DOUBLE, value, DCONST_0);
 		if (value == 1.0D) return new Const(DataType.DOUBLE, value, DCONST_1);
 		return new Ldc(DataType.DOUBLE, value);
 	}
 
-	static DataVisitor string(String value) {
+	public static DataVisitor string(String value) {
 		return new Ldc(DataType.STRING, value);
 	}
 
-	static void ifneResult(MethodVisitor method) {
+	public static void visitInsn(Molding molding, DataVisitor visitor, int opcode) {
+		visitor.visit(molding);
+		molding.visitInsn(opcode);
+	}
+
+	public static void ifneResult(MethodVisitor method) {
 		Label trueResult = new Label();
 		method.visitJumpInsn(IFNE, trueResult);
 		method.visitInsn(ICONST_0);
@@ -76,12 +105,12 @@ public final class DataVisitors {
 		method.visitLabel(end);
 	}
 
-	static void boolean2Int(MethodVisitor method) {
+	public static void boolean2Int(MethodVisitor method) {
 		method.visitInsn(ICONST_0);
 		method.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "compare", "(ZZ)I", false);
 	}
 
-	static void boolean2Long(MethodVisitor method) {
+	public static void boolean2Long(MethodVisitor method) {
 		Label trueLabel = new Label();
 		method.visitJumpInsn(IFNE, trueLabel);
 		method.visitInsn(LCONST_0);
@@ -92,7 +121,7 @@ public final class DataVisitors {
 		method.visitLabel(endLabel);
 	}
 
-	static void boolean2Float(MethodVisitor method) {
+	public static void boolean2Float(MethodVisitor method) {
 		Label trueLabel = new Label();
 		method.visitJumpInsn(IFNE, trueLabel);
 		method.visitInsn(FCONST_0);
@@ -103,7 +132,7 @@ public final class DataVisitors {
 		method.visitLabel(endLabel);
 	}
 
-	static void boolean2Double(MethodVisitor method) {
+	public static void boolean2Double(MethodVisitor method) {
 		Label trueLabel = new Label();
 		method.visitJumpInsn(IFNE, trueLabel);
 		method.visitInsn(DCONST_0);
@@ -114,182 +143,182 @@ public final class DataVisitors {
 		method.visitLabel(endLabel);
 	}
 
-	static void long2Boolean(MethodVisitor method) {
+	public static void long2Boolean(MethodVisitor method) {
 		method.visitInsn(LCONST_0);
 		method.visitInsn(LCMP);
 		ifneResult(method);
 	}
 
-	static void float2Boolean(MethodVisitor method) {
+	public static void float2Boolean(MethodVisitor method) {
 		method.visitInsn(FCONST_0);
 		method.visitInsn(FCMPL);
 		ifneResult(method);
 	}
 
-	static void double2Boolean(MethodVisitor method) {
+	public static void double2Boolean(MethodVisitor method) {
 		method.visitInsn(DCONST_0);
 		method.visitInsn(DCMPL);
 		ifneResult(method);
 	}
 
-	static void int2Long(MethodVisitor method) {
+	public static void int2Long(MethodVisitor method) {
 		method.visitInsn(I2L);
 	}
 
-	static void int2Float(MethodVisitor method) {
+	public static void int2Float(MethodVisitor method) {
 		method.visitInsn(I2F);
 	}
 
-	static void int2Double(MethodVisitor method) {
+	public static void int2Double(MethodVisitor method) {
 		method.visitInsn(I2D);
 	}
 
-	static void int2Byte(MethodVisitor method) {
+	public static void int2Byte(MethodVisitor method) {
 		method.visitInsn(I2B);
 	}
 
-	static void int2Char(MethodVisitor method) {
+	public static void int2Char(MethodVisitor method) {
 		method.visitInsn(I2C);
 	}
 
-	static void int2Short(MethodVisitor method) {
+	public static void int2Short(MethodVisitor method) {
 		method.visitInsn(I2S);
 	}
 
-	static void float2Int(MethodVisitor method) {
+	public static void float2Int(MethodVisitor method) {
 		method.visitInsn(F2I);
 	}
 
-	static void float2Long(MethodVisitor method) {
+	public static void float2Long(MethodVisitor method) {
 		method.visitInsn(F2L);
 	}
 
-	static void float2Double(MethodVisitor method) {
+	public static void float2Double(MethodVisitor method) {
 		method.visitInsn(F2D);
 	}
 
-	static void long2Int(MethodVisitor method) {
+	public static void long2Int(MethodVisitor method) {
 		method.visitInsn(L2I);
 	}
 
-	static void long2Float(MethodVisitor method) {
+	public static void long2Float(MethodVisitor method) {
 		method.visitInsn(L2F);
 	}
 
-	static void long2Double(MethodVisitor method) {
+	public static void long2Double(MethodVisitor method) {
 		method.visitInsn(L2D);
 	}
 
-	static void double2Int(MethodVisitor method) {
+	public static void double2Int(MethodVisitor method) {
 		method.visitInsn(D2I);
 	}
 
-	static void double2Long(MethodVisitor method) {
+	public static void double2Long(MethodVisitor method) {
 		method.visitInsn(D2L);
 	}
 
-	static void double2Float(MethodVisitor method) {
+	public static void double2Float(MethodVisitor method) {
 		method.visitInsn(D2F);
 	}
 
-	static void number2Boolean(MethodVisitor method) {
+	public static void number2Boolean(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Number", "doubleValue", "()D", false);
 		double2Boolean(method);
 	}
 
-	static void number2Char(MethodVisitor method) {
+	public static void number2Char(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Number", "charValue", "()C", false);
 	}
 
-	static void number2Byte(MethodVisitor method) {
+	public static void number2Byte(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Number", "byteValue", "()B", false);
 	}
 
-	static void number2Short(MethodVisitor method) {
+	public static void number2Short(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Number", "shortValue", "()S", false);
 	}
 
-	static void number2Int(MethodVisitor method) {
+	public static void number2Int(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Number", "intValue", "()I", false);
 	}
 
-	static void number2Long(MethodVisitor method) {
+	public static void number2Long(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Number", "longValue", "()J", false);
 	}
 
-	static void number2Float(MethodVisitor method) {
+	public static void number2Float(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Number", "floatValue", "()F", false);
 	}
 
-	static void number2Double(MethodVisitor method) {
+	public static void number2Double(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Number", "doubleValue", "()D", false);
 	}
 
-	static void boxBoolean(MethodVisitor method) {
+	public static void boxBoolean(MethodVisitor method) {
 		method.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
 	}
 
-	static void unboxBoolean(MethodVisitor method) {
+	public static void unboxBoolean(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z", false);
 	}
 
-	static void boxChar(MethodVisitor method) {
+	public static void boxChar(MethodVisitor method) {
 		method.visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false);
 	}
 
-	static void unboxCharacter(MethodVisitor method) {
+	public static void unboxCharacter(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C", false);
 	}
 
-	static void boxByte(MethodVisitor method) {
+	public static void boxByte(MethodVisitor method) {
 		method.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false);
 	}
 
-	static void unboxByte(MethodVisitor method) {
+	public static void unboxByte(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B", false);
 	}
 
-	static void boxShort(MethodVisitor method) {
+	public static void boxShort(MethodVisitor method) {
 		method.visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false);
 	}
 
-	static void unboxShort(MethodVisitor method) {
+	public static void unboxShort(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S", false);
 	}
 
-	static void boxInt(MethodVisitor method) {
+	public static void boxInt(MethodVisitor method) {
 		method.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
 	}
 
-	static void unboxInteger(MethodVisitor method) {
+	public static void unboxInteger(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I", false);
 	}
 
-	static void boxLong(MethodVisitor method) {
+	public static void boxLong(MethodVisitor method) {
 		method.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false);
 	}
 
-	static void unboxLong(MethodVisitor method) {
+	public static void unboxLong(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J", false);
 	}
 
-	static void boxFloat(MethodVisitor method) {
+	public static void boxFloat(MethodVisitor method) {
 		method.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false);
 	}
 
-	static void unboxFloat(MethodVisitor method) {
+	public static void unboxFloat(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F", false);
 	}
 
-	static void boxDouble(MethodVisitor method) {
+	public static void boxDouble(MethodVisitor method) {
 		method.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
 	}
 
-	static void unboxDouble(MethodVisitor method) {
+	public static void unboxDouble(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D", false);
 	}
 
-	static void boxPrimitive(Molding molding, Class<?> clazz) {
+	public static void boxPrimitive(Molding molding, Class<?> clazz) {
 		if (clazz == boolean.class) {
 			boxBoolean(molding);
 		} else if (clazz == int.class) {
@@ -309,84 +338,129 @@ public final class DataVisitors {
 		}
 	}
 
-	static void stringLength(MethodVisitor method) {
+	public static DataVisitor negate(DataVisitor visitor) {
+		return molding -> {
+			var dataType = visitor.visit(molding);
+			if (dataType.isSmallInteger()) {
+				dataType.unbox(molding);
+				molding.visitInsn(INEG);
+				return DataType.INT;
+			} else if (dataType.isDouble()) {
+				dataType.unbox(molding);
+				molding.visitInsn(DNEG);
+				return DataType.DOUBLE;
+			} else if (dataType.isFloat()) {
+				dataType.unbox(molding);
+				molding.visitInsn(FNEG);
+				return DataType.FLOAT;
+			} else if (dataType.isLong()) {
+				dataType.unbox(molding);
+				molding.visitInsn(LNEG);
+				return DataType.LONG;
+			}
+			throw new UnsupportedOperationException("Cannot negate type: " + dataType);
+		};
+	}
+
+	public static DataVisitor logicalComplement(DataVisitor visitor) {
+		if (visitor instanceof BinaryOp binaryOp && (binaryOp.op == DataExpression.BinaryOp.AND || binaryOp.op == DataExpression.BinaryOp.OR))
+			return new LogicalComplement(visitor, LogicalComplement.Type.CONNECTIVE);
+		return new LogicalComplement(visitor, isLogicalVisitor(visitor) ? LogicalComplement.Type.VISITOR : LogicalComplement.Type.LITERAL);
+	}
+
+	public static DataVisitor integerComplement(DataVisitor visitor) {
+		return molding -> {
+			var dataType = visitor.visit(molding);
+			if (dataType.isSmallInteger()) {
+				dataType.unbox(molding);
+				molding.visitInsn(ICONST_M1);
+				molding.visitInsn(IXOR);
+				return DataType.INT;
+			} else if (dataType.isLong()) {
+				dataType.unbox(molding);
+				molding.visitLdcInsn(-1L);
+				molding.visitInsn(LXOR);
+				return DataType.LONG;
+			} else throw new UnsupportedOperationException("Cannot numerically complement type: " + dataType);
+		};
+	}
+
+	public static void stringLength(MethodVisitor method) {
 		method.visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "length", "()I", false);
 	}
 
-	static DataVisitor element(DataVisitor visitor) {
-		return new DataVisitor() {
-			@Override
-			public void visit(Molding molding) {
-				molding.element(visitor);
-			}
+	public static DataVisitor element(DataVisitor visitor) {
+		return molding -> molding.element(visitor);
+	}
 
-			@Override
-			public ReturnType getReturnType() {
-				return molding -> molding.getRepresentationType(visitor.getReturnType().getDataType(molding));
-			}
+	public static DataVisitor elementalTest(DataVisitor visitor, BiConsumer<Molding, DataType<?>> consumer) {
+		return molding -> {
+			consumer.accept(molding, visitor.visit(molding));
+			return BOOLEAN;
 		};
 	}
 
-	static DataVisitor str(DataVisitor visitor) {
-		return new DataVisitor() {
-			@Override
-			public void visit(Molding molding) {
-				visitor.visit(molding);
-				var dataType = visitor.getReturnType().getDataType(molding);
-				try {
-					molding.toString(dataType);
-				} catch (UnsupportedOperationException unsupported) {
-					var type = dataType.getType();
-					TypeVisitors.Visitors visitorsForType = TypeVisitors.getVisitors(type);
-					if (visitorsForType != null) {
-						var converter = visitorsForType.stringConverter();
-						if (converter != null) converter.accept(molding);
-						return;
-					}
-					int sort = type.getSort();
-					if (sort == Type.OBJECT || sort == Type.ARRAY) {
-						molding.visitMethodInsn(INVOKESTATIC, "java/lang/String", "valueOf", "(Ljava/lang/Object;)Ljava/lang/String;", false);
-					}
-					throw new UnsupportedOperationException("Don't know how to convert " + type + " to string");
+	public static DataVisitor str(DataVisitor visitor) {
+		return molding -> {
+			var dataType = visitor.visit(molding);
+			if (dataType == DataType.STRING) return DataType.STRING;
+			try {
+				molding.toString(dataType);
+			} catch (UnsupportedOperationException unsupported) {
+				var type = dataType.getType();
+				TypeVisitors.Visitors visitorsForType = TypeVisitors.getVisitors(type);
+				if (visitorsForType != null) {
+					var converter = visitorsForType.stringConverter();
+					if (converter != null) converter.accept(molding);
+					return DataType.STRING;
 				}
+				int sort = type.getSort();
+				if (sort == Type.OBJECT || sort == Type.ARRAY) {
+					molding.visitMethodInsn(INVOKESTATIC, "java/lang/String", "valueOf", "(Ljava/lang/Object;)Ljava/lang/String;", false);
+				}
+				throw new UnsupportedOperationException("Don't know how to convert " + type + " to string");
 			}
-
-			@Override
-			public ReturnType getReturnType() {
-				return DataType.STRING;
-			}
+			return DataType.STRING;
 		};
 	}
 
-	static DataVisitor convertViaTypeVisitors(DataVisitor visitor, DataType<?> type, Function<TypeVisitors.Visitors, Consumer<? super Molding>> converterFromVisitors, Consumer<Molding> numberVisitor) {
-		var returnType = visitor.getReturnType();
-		final Consumer<? super Molding> converter;
-		if (returnType instanceof DataType<?> dataType) {
-			TypeVisitors.Visitors visitorsForType = TypeVisitors.getVisitors(dataType.getType());
-			if (visitorsForType != null) {
-				converter = converterFromVisitors.apply(visitorsForType);
-				if (converter == null) return visitor;
-			} else {
-				if (!Number.class.isAssignableFrom(dataType.getClazz()))
-					throw new UnsupportedOperationException("Don't know how to convert " + dataType + " to " + type);
-				converter = numberVisitor;
-			}
+	public static void convertViaTypeVisitors(Molding molding, DataType<?> fromType, DataType<?> type, Function<TypeVisitors.Visitors, Consumer<? super Molding>> converterFromVisitors, Consumer<Molding> numberVisitor) {
+		if (fromType == type) return;
+		TypeVisitors.Visitors visitorsForType = TypeVisitors.getVisitors(fromType.getType());
+		if (visitorsForType != null) {
+			var converter = converterFromVisitors.apply(visitorsForType);
+			if (converter != null) converter.accept(molding);
+		} else if (Number.class.isAssignableFrom(fromType.getClazz())) {
+			numberVisitor.accept(molding);
 		} else {
-			converter = molding -> molding.convert(returnType.getDataType(molding), type);
+			try {
+				molding.convert(fromType, type);
+			} catch (UnsupportedOperationException unsupported) {
+				throw new UnsupportedOperationException("Don't know how to convert " + fromType + " to " + type);
+			}
 		}
-		return new Pipe(visitor, converter, type);
 	}
 
-	static DataVisitor convertToBoolean(DataVisitor visitor) {
-		return convertViaTypeVisitors(visitor, DataType.BOOLEAN, TypeVisitors.Visitors::booleanConverter, DataVisitors::number2Boolean);
+	public static void convertToBoolean(Molding molding, DataType<?> fromType) {
+		convertViaTypeVisitors(molding, fromType, DataType.BOOLEAN, TypeVisitors.Visitors::booleanConverter, DataVisitors::number2Boolean);
 	}
 
-	static DataVisitor convertToBooleanWrapper(DataVisitor visitor) {
-		if (visitor.getReturnType() == DataType.BOOLEAN_WRAPPER) return visitor;
+	public static DataVisitor convertToBoolean(DataVisitor visitor) {
+		return molding -> {
+			convertToBoolean(molding, visitor.visit(molding));
+			return DataType.BOOLEAN;
+		};
+	}
+
+	public static DataVisitor convertToBooleanWrapper(DataVisitor visitor) {
 		return convertToBoolean(visitor).then(DataVisitors::boxBoolean, DataType.BOOLEAN_WRAPPER);
 	}
 
-	static DataVisitor convertToChar(DataVisitor visitor) {
+	public static void convertToChar(Molding molding, DataType<?> fromType) {
+		convertViaTypeVisitors(molding, fromType, DataType.CHAR, TypeVisitors.Visitors::charConverter, DataVisitors::number2Char);
+	}
+
+	public static DataVisitor convertToChar(DataVisitor visitor) {
 		// Optimize for (char) constant
 		if (visitor instanceof Constant constant && constant.value() instanceof Number number) {
 			switch (number) {
@@ -412,128 +486,356 @@ public final class DataVisitors {
 				}
 			}
 		}
-		return convertViaTypeVisitors(visitor, DataType.CHAR, TypeVisitors.Visitors::charConverter, DataVisitors::number2Char);
+		return molding -> {
+			convertToChar(molding, visitor.visit(molding));
+			return DataType.CHAR;
+		};
 	}
 
-	static DataVisitor convertToCharWrapper(DataVisitor visitor) {
-		if (visitor.getReturnType() == DataType.CHARACTER_WRAPPER) return visitor;
+	public static DataVisitor convertToCharWrapper(DataVisitor visitor) {
 		return convertToChar(visitor).then(DataVisitors::boxChar, DataType.CHARACTER_WRAPPER);
 	}
 
-	static DataVisitor convertToByte(DataVisitor visitor) {
+	public static void convertToByte(Molding molding, DataType<?> fromType) {
+		convertViaTypeVisitors(molding, fromType, DataType.BYTE, TypeVisitors.Visitors::byteConverter, DataVisitors::number2Byte);
+	}
+
+	public static DataVisitor convertToByte(DataVisitor visitor) {
 		// Optimize for (byte) constant
 		if (visitor instanceof Constant constant && constant.value() instanceof Number number)
 			return byteValue(number.byteValue());
-		return convertViaTypeVisitors(visitor, DataType.BYTE, TypeVisitors.Visitors::byteConverter, DataVisitors::number2Byte);
+		return molding -> {
+			convertToByte(molding, visitor.visit(molding));
+			return DataType.BYTE;
+		};
 	}
 
-	static DataVisitor convertToByteWrapper(DataVisitor visitor) {
-		if (visitor.getReturnType() == DataType.BYTE_WRAPPER) return visitor;
+	public static DataVisitor convertToByteWrapper(DataVisitor visitor) {
 		return convertToByte(visitor).then(DataVisitors::boxByte, DataType.BYTE_WRAPPER);
 	}
 
-	static DataVisitor convertToShort(DataVisitor visitor) {
+	public static void convertToShort(Molding molding, DataType<?> fromType) {
+		convertViaTypeVisitors(molding, fromType, DataType.SHORT, TypeVisitors.Visitors::shortConverter, DataVisitors::number2Short);
+	}
+
+	public static DataVisitor convertToShort(DataVisitor visitor) {
 		// Optimize for (short) constant
 		if (visitor instanceof Constant constant && constant.value() instanceof Number number)
 			return shortValue(number.shortValue());
-		return convertViaTypeVisitors(visitor, DataType.SHORT, TypeVisitors.Visitors::shortConverter, DataVisitors::number2Short);
+		return molding -> {
+			convertToShort(molding, visitor.visit(molding));
+			return DataType.SHORT;
+		};
 	}
 
-	static DataVisitor convertToShortWrapper(DataVisitor visitor) {
-		if (visitor.getReturnType() == DataType.SHORT_WRAPPER) return visitor;
+	public static DataVisitor convertToShortWrapper(DataVisitor visitor) {
 		return convertToShort(visitor).then(DataVisitors::boxShort, DataType.SHORT_WRAPPER);
 	}
 
-	static DataVisitor convertToInt(DataVisitor visitor) {
+	public static void convertToInt(Molding molding, DataType<?> fromType) {
+		convertViaTypeVisitors(molding, fromType, DataType.INT, TypeVisitors.Visitors::intConverter, DataVisitors::number2Int);
+	}
+
+	public static DataVisitor convertToInt(DataVisitor visitor) {
 		// Optimize for (int) constant
 		if (visitor instanceof Constant constant && constant.value() instanceof Number number)
 			return intValue(number.intValue());
-		return convertViaTypeVisitors(visitor, DataType.INT, TypeVisitors.Visitors::intConverter, DataVisitors::number2Int);
+		return molding -> {
+			convertToInt(molding, visitor.visit(molding));
+			return DataType.INT;
+		};
 	}
 
-	static DataVisitor convertToIntWrapper(DataVisitor visitor) {
-		if (visitor.getReturnType() == DataType.INTEGER_WRAPPER) return visitor;
+	public static DataVisitor convertToIntWrapper(DataVisitor visitor) {
 		return convertToInt(visitor).then(DataVisitors::boxInt, DataType.INTEGER_WRAPPER);
 	}
 
-	static DataVisitor convertToLong(DataVisitor visitor) {
+	public static void convertToLong(Molding molding, DataType<?> fromType) {
+		convertViaTypeVisitors(molding, fromType, DataType.LONG, TypeVisitors.Visitors::longConverter, DataVisitors::number2Long);
+	}
+
+	public static DataVisitor convertToLong(DataVisitor visitor) {
 		// Optimize for (long) constant
 		if (visitor instanceof Constant constant && constant.value() instanceof Number number)
 			return longValue(number.longValue());
-		return convertViaTypeVisitors(visitor, DataType.LONG, TypeVisitors.Visitors::longConverter, DataVisitors::number2Long);
+		return molding -> {
+			convertToLong(molding, visitor.visit(molding));
+			return DataType.LONG;
+		};
 	}
 
-	static DataVisitor convertToLongWrapper(DataVisitor visitor) {
-		if (visitor.getReturnType() == DataType.LONG_WRAPPER) return visitor;
+	public static DataVisitor convertToLongWrapper(DataVisitor visitor) {
 		return convertToLong(visitor).then(DataVisitors::boxLong, DataType.LONG_WRAPPER);
 	}
 
-	static DataVisitor convertToFloat(DataVisitor visitor) {
+	public static void convertToFloat(Molding molding, DataType<?> fromType) {
+		convertViaTypeVisitors(molding, fromType, DataType.FLOAT, TypeVisitors.Visitors::floatConverter, DataVisitors::number2Float);
+	}
+
+	public static DataVisitor convertToFloat(DataVisitor visitor) {
 		// Optimize for (float) constant
 		if (visitor instanceof Constant constant && constant.value() instanceof Number number)
 			return floatValue(number.floatValue());
-		return convertViaTypeVisitors(visitor, DataType.FLOAT, TypeVisitors.Visitors::floatConverter, DataVisitors::number2Float);
+		return molding -> {
+			convertToFloat(molding, visitor.visit(molding));
+			return DataType.FLOAT;
+		};
 	}
 
-	static DataVisitor convertToFloatWrapper(DataVisitor visitor) {
-		if (visitor.getReturnType() == DataType.FLOAT_WRAPPER) return visitor;
+	public static DataVisitor convertToFloatWrapper(DataVisitor visitor) {
 		return convertToFloat(visitor).then(DataVisitors::boxFloat, DataType.FLOAT_WRAPPER);
 	}
 
-	static DataVisitor convertToDouble(DataVisitor visitor) {
+	public static void convertToDouble(Molding molding, DataType<?> fromType) {
+		convertViaTypeVisitors(molding, fromType, DataType.DOUBLE, TypeVisitors.Visitors::doubleConverter, DataVisitors::number2Double);
+	}
+
+	public static DataVisitor convertToDouble(DataVisitor visitor) {
 		// Optimize for (double) constant
 		if (visitor instanceof Constant constant && constant.value() instanceof Number number)
 			return doubleValue(number.doubleValue());
-		return convertViaTypeVisitors(visitor, DataType.DOUBLE, TypeVisitors.Visitors::doubleConverter, DataVisitors::number2Double);
+		return molding -> {
+			convertToDouble(molding, visitor.visit(molding));
+			return DataType.DOUBLE;
+		};
 	}
 
-	static DataVisitor convertToDoubleWrapper(DataVisitor visitor) {
-		if (visitor.getReturnType() == DataType.DOUBLE_WRAPPER) return visitor;
+	public static DataVisitor convertToDoubleWrapper(DataVisitor visitor) {
 		return convertToDouble(visitor).then(DataVisitors::boxDouble, DataType.DOUBLE_WRAPPER);
 	}
 
-	interface Constant extends DataVisitor {
+	public static void convertToString(Molding molding, DataType<?> fromType) {
+		convertViaTypeVisitors(molding, fromType, DataType.STRING, TypeVisitors.Visitors::stringConverter, m -> {
+			molding.visitMethodInsn(INVOKESTATIC, "java/lang/String", "valueOf", "(Ljava/lang/Object;)Ljava/lang/String;", false);
+		});
+	}
+
+	public static DataVisitor convertToString(DataVisitor visitor) {
+		return molding -> {
+			convertViaTypeVisitors(molding, visitor.visit(molding), DataType.STRING, TypeVisitors.Visitors::stringConverter, m -> {
+				molding.visitMethodInsn(INVOKESTATIC, "java/lang/String", "valueOf", "(Ljava/lang/Object;)Ljava/lang/String;", false);
+			});
+			return DataType.STRING;
+		};
+	}
+
+	@Nullable
+	public static DataVisitor tryToConvert(DataVisitor visitor, Class<?> type) {
+		if (type.isPrimitive()) {
+			if (type == int.class) {
+				return convertToInt(visitor);
+			} else if (type == long.class) {
+				return convertToLong(visitor);
+			} else if (type == double.class) {
+				return convertToDouble(visitor);
+			} else if (type == float.class) {
+				return convertToFloat(visitor);
+			} else if (type == short.class) {
+				return convertToShort(visitor);
+			} else if (type == byte.class) {
+				return convertToByte(visitor);
+			} else if (type == char.class) {
+				return convertToChar(visitor);
+			}
+			return convertToBoolean(visitor);
+		} else if (type == Integer.class) {
+			return convertToIntWrapper(visitor);
+		} else if (type == Long.class) {
+			return convertToLongWrapper(visitor);
+		} else if (type == Double.class) {
+			return convertToDoubleWrapper(visitor);
+		} else if (type == Float.class) {
+			return convertToFloatWrapper(visitor);
+		} else if (type == Short.class) {
+			return convertToShortWrapper(visitor);
+		} else if (type == Byte.class) {
+			return convertToByteWrapper(visitor);
+		} else if (type == Character.class) {
+			return convertToCharWrapper(visitor);
+		} else if (type == Boolean.class) {
+			return convertToBooleanWrapper(visitor);
+		}
+		return null;
+	}
+
+	public static DataVisitor cast(DataVisitor visitor, DataType<?> type) {
+		var toClazz = type.getClazz();
+		if (toClazz.isPrimitive())
+			return tryToConvert(visitor, type.getClazz());
+		if (toClazz == String.class)
+			return convertToString(visitor);
+		return molding -> {
+			var visitorClazz = visitor.visit(molding).getClazz();
+			if (visitorClazz.isPrimitive())
+				throw new UnsupportedOperationException("Can't cast primitive type to non-primitive type");
+			if (toClazz.isAssignableFrom(visitorClazz))
+				return type;
+			if (shouldCheckcast(visitorClazz, toClazz)) {
+				molding.visitTypeInsn(CHECKCAST, type.getInternalName());
+				return type;
+			}
+			throw new UnsupportedOperationException("Can't cast " + visitorClazz + " to " + toClazz);
+		};
+	}
+
+	public static boolean shouldCheckcast(Class<?> fromClazz, Class<?> toClazz) {
+		if (fromClazz.isAssignableFrom(toClazz) || toClazz.isInterface())
+			return true;
+		var componentType = toClazz.getComponentType();
+		if (componentType != null) {
+			var fromComponentType = fromClazz.getComponentType();
+			if (fromComponentType == null)
+				return false;
+			if (componentType.isPrimitive())
+				return toClazz == fromClazz;
+			return canCastArrayComponents(fromComponentType, componentType);
+		} else return false;
+	}
+
+	private static boolean canCastArrayComponents(Class<?> fromClazz, Class<?> toClazz) {
+		if (toClazz.isAssignableFrom(fromClazz))
+			return true;
+		if (fromClazz.isAssignableFrom(toClazz))
+			return true;
+		var componentType = toClazz.getComponentType();
+		if (componentType != null) {
+			var visitorComponentType = fromClazz.getComponentType();
+			if (visitorComponentType == null)
+				return false;
+			if (componentType.isPrimitive())
+				return toClazz == fromClazz;
+			return canCastArrayComponents(visitorComponentType, componentType);
+		} else return toClazz.isInterface(); // For rare cases like (Serializable[])
+	}
+
+	public static void assertCanAcceptInstanceof(DataType<?> type) {
+		if (type.getClazz().isPrimitive())
+			throw new UnsupportedOperationException("Expected " + type + " to be non-primitive to use instanceof");
+	}
+
+	public static boolean isLogicalVisitor(DataVisitor visitor) {
+		if (visitor instanceof LogicalComplement) return true;
+		if (!(visitor instanceof BinaryOp op)) return false;
+		return DataExpression.BinaryOp.LOGICAL_OPERATORS.contains(op.op());
+	}
+
+	public static void unboxBoolean(DataVisitor visitor, Molding molding) {
+		var rightType = visitor.visit(molding);
+		if (!rightType.isBoolean())
+			throw new UnsupportedOperationException("Logical operation cannot apply to non-booleans");
+		rightType.unbox(molding);
+	}
+
+	public interface Constant extends DataVisitor {
 		Object value();
+
+		DataType<?> type();
 	}
 
-	record Ldc(DataType<?> type, Object value) implements Constant {
+	public record Ldc(DataType<?> type, Object value) implements Constant {
 		@Override
-		public void visit(Molding molding) {
+		public DataType<?> visit(Molding molding) {
 			molding.visitLdcInsn(this.value);
+			return this.type;
 		}
 
 		@Override
-		public ReturnType getReturnType() {
+		public DataType<?> type() {
 			return this.type;
 		}
 	}
 
-	record Const(DataType<?> type, Object value, int opcode) implements Constant {
+	public record Const(DataType<?> type, Object value, int opcode) implements Constant {
 		@Override
-		public void visit(Molding molding) {
+		public DataType<?> visit(Molding molding) {
 			molding.visitInsn(this.opcode);
+			return this.type;
 		}
 
 		@Override
-		public ReturnType getReturnType() {
+		public DataType<?> type() {
 			return this.type;
 		}
 	}
 
-	record Pipe(DataVisitor visitor, Consumer<? super Molding> consumer, ReturnType type) implements DataVisitor {
+	public record IntPush(DataType<?> type, int opcode, Number value) implements Constant {
 		@Override
-		public void visit(Molding molding) {
+		public DataType<?> visit(Molding molding) {
+			molding.visitIntInsn(this.opcode, this.value.intValue());
+			return this.type;
+		}
+
+		@Override
+		public DataType<?> type() {
+			return this.type;
+		}
+	}
+
+	public record Pipe(DataVisitor visitor, Consumer<? super Molding> consumer, DataType<?> type) implements DataVisitor {
+		@Override
+		public DataType<?> visit(Molding molding) {
 			this.visitor.visit(molding);
 			this.consumer.accept(molding);
-		}
-
-		@Override
-		public ReturnType getReturnType() {
 			return this.type;
 		}
 	}
 
-	static final class TypeVisitors {
+	public record LogicalComplement(DataVisitor visitor, Type type) implements DataVisitor {
+		@Override
+		public DataType<?> visit(Molding molding) {
+			if (this.type == Type.LITERAL) {
+				var buffer = molding.createBuffer();
+				var dataType = this.visitor.visit(buffer);
+				if (dataType.isBoolean()) {
+					dataType.unbox(molding);
+				} else throw new UnsupportedOperationException("Cannot logically complement type: " + dataType);
+				buffer.accept(molding);
+				Label continueLabel = molding.getTrueLabel();
+				Label exitLabel = molding.getExitLabel();
+				if (continueLabel != null) {
+					if (exitLabel == null || molding.shortCircuitsWithOr()) {
+						molding.visitJumpInsn(IFEQ, continueLabel);
+						DiscretionaryLabel.tryToMark(continueLabel);
+					} else {
+						molding.visitJumpInsn(IFNE, exitLabel);
+						DiscretionaryLabel.tryToMark(exitLabel);
+					}
+				} else if (exitLabel != null) {
+					molding.visitJumpInsn(IFNE, exitLabel);
+					DiscretionaryLabel.tryToMark(exitLabel);
+				} else {
+					Label trueResult = new Label();
+					molding.visitJumpInsn(IFNE, trueResult);
+					molding.visitInsn(ICONST_1);
+					Label end = new Label();
+					molding.visitJumpInsn(GOTO, end);
+					molding.visitLabel(trueResult);
+					molding.visitInsn(ICONST_0);
+					molding.visitLabel(end);
+				}
+			} else {
+				Molding buffer = molding.negate(this.type == Type.CONNECTIVE);
+				this.visitor.visit(buffer);
+				buffer.accept(molding);
+			}
+			return DataType.BOOLEAN;
+		}
+
+		public enum Type {
+			LITERAL,
+			CONNECTIVE,
+			VISITOR
+		}
+	}
+
+	public record BinaryOp(DataExpression.BinaryOp op, DataVisitor left, DataVisitor right) implements DataVisitor {
+		@Override
+		public DataType<?> visit(Molding molding) {
+			return this.op.visit(molding, this.left, this.right);
+		}
+	}
+
+	public static final class TypeVisitors {
 		private static final HashMap<Type, Visitors> MAP = new HashMap<>();
 		public static final Visitors BOOLEAN_VISITORS;
 		public static final Visitors BOOLEAN_WRAPPER_VISITORS;
@@ -985,15 +1287,15 @@ public final class DataVisitors {
 			return MAP.get(type);
 		}
 
-		record Visitors(@Nullable Consumer<MethodVisitor> stringConverter,
-						@Nullable Consumer<MethodVisitor> booleanConverter,
-						@Nullable Consumer<MethodVisitor> charConverter,
-						@Nullable Consumer<MethodVisitor> byteConverter,
-						@Nullable Consumer<MethodVisitor> shortConverter,
-						@Nullable Consumer<MethodVisitor> intConverter,
-						@Nullable Consumer<MethodVisitor> longConverter,
-						@Nullable Consumer<MethodVisitor> floatConverter,
-						@Nullable Consumer<MethodVisitor> doubleConverter) {
+		public record Visitors(@Nullable Consumer<MethodVisitor> stringConverter,
+							   @Nullable Consumer<MethodVisitor> booleanConverter,
+							   @Nullable Consumer<MethodVisitor> charConverter,
+							   @Nullable Consumer<MethodVisitor> byteConverter,
+							   @Nullable Consumer<MethodVisitor> shortConverter,
+							   @Nullable Consumer<MethodVisitor> intConverter,
+							   @Nullable Consumer<MethodVisitor> longConverter,
+							   @Nullable Consumer<MethodVisitor> floatConverter,
+							   @Nullable Consumer<MethodVisitor> doubleConverter) {
 		}
 	}
 }

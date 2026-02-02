@@ -108,7 +108,7 @@ public record CriteriaModifier(Map<String, Criterion<?>> criteria, Optional<Adva
 	 * @author SmellyModder (Luke Tonon)
 	 */
 	public record IndexedRequirementsEntry(int index, boolean replace, List<String> requirements) {
-		private static final Codec<IndexedRequirementsEntry> CODEC = RecordCodecBuilder.create(
+		public static final Codec<IndexedRequirementsEntry> CODEC = RecordCodecBuilder.create(
 				instance -> instance.group(
 						Codec.INT.fieldOf("index").forGetter(IndexedRequirementsEntry::index),
 						Codec.BOOL.fieldOf("replace").forGetter(IndexedRequirementsEntry::replace),
@@ -122,6 +122,7 @@ public record CriteriaModifier(Map<String, Criterion<?>> criteria, Optional<Adva
 	 * <p>Use {@link CriteriaModifier#builder(String)} to create new instances of this class.</p>
 	 *
 	 * @author SmellyModder (Luke Tonon)
+	 * TODO: Move later
 	 */
 	public static final class Builder {
 		private final String modId;

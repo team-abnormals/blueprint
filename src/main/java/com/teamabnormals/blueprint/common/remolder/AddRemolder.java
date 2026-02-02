@@ -2,9 +2,7 @@ package com.teamabnormals.blueprint.common.remolder;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamabnormals.blueprint.common.remolder.data.DynamicReference;
-import com.teamabnormals.blueprint.common.remolder.data.EncapsulatedDataVisitor;
-import com.teamabnormals.blueprint.common.remolder.data.Molding;
+import com.teamabnormals.blueprint.common.remolder.data.*;
 
 /**
  * A {@link Remolder} implementation for adding new abstract data.
@@ -25,7 +23,9 @@ public record AddRemolder(DynamicReference.Expression target, DynamicReference v
 		var targetVisitor = target.visitor();
 		if (targetVisitor instanceof EncapsulatedDataVisitor encapsulated) {
 			molding.add(encapsulated.parent(), encapsulated.identifier(), this.value.visitor());
-		} else throw new UnsupportedOperationException("Don't know how to add for target: " + target.getRawExpression());
+		} else {
+			molding.add(targetVisitor, null, this.value.visitor());
+		}
 	}
 
 	@Override

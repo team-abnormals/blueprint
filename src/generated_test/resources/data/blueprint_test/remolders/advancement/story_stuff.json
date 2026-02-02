@@ -1,0 +1,59 @@
+{
+  "molding": "json",
+  "remolder": [
+    {
+      "type": "replace",
+      "expressed_value": "display",
+      "target": "$original_display"
+    },
+    {
+      "type": "conditional",
+      "!#isMap($original_display)": [
+        {
+          "type": "replace",
+          "target": "$original_display",
+          "value": {
+            "description": "",
+            "icon": {
+              "count": 1,
+              "id": "minecraft:stone"
+            },
+            "title": ""
+          }
+        },
+        {
+          "type": "replace",
+          "expressed_value": "$original_display",
+          "target": "display"
+        }
+      ]
+    },
+    {
+      "type": "replace",
+      "expressed_value": "#map($original_display)",
+      "target": "$display"
+    },
+    {
+      "type": "replace",
+      "target": "$display[\"description\"]",
+      "value": "Get modified!"
+    }
+  ],
+  "selector": {
+    "type": "multi",
+    "config": [
+      {
+        "type": "choice",
+        "config": {
+          "condition": {
+            "type": "neoforge:mod_loaded",
+            "modid": "blueprint"
+          },
+          "first": "minecraft:advancement/story/mine_diamond",
+          "second": "minecraft:advancement/story/mine_stone"
+        }
+      },
+      "minecraft:advancement/story/root"
+    ]
+  }
+}

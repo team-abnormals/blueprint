@@ -72,7 +72,8 @@ public final class MoldingTypes {
 		private static <T> T getMetadata(Resource resource, DynamicOps<T> ops) {
 			try {
 				var optional = resource.metadata().getSection(JSON_METADATA_SERIALIZER);
-				if (optional.isPresent()) return ops instanceof JsonOps ? (T) optional.get() : JsonOps.INSTANCE.convertTo(ops, optional.get());
+				if (optional.isPresent())
+					return ops instanceof JsonOps ? (T) optional.get() : JsonOps.INSTANCE.convertTo(ops, optional.get());
 			} catch (IOException ignored) {
 			}
 			return null;

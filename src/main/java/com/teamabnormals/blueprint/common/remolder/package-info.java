@@ -4,7 +4,7 @@
  * <p>It was primarily made to fix common compatibility problems present in data-driven systems.</p>
  *
  * @author SmellyModder (Luke Tonon)
- * @version 0.1.0
+ * @version 0.2.0
  * @since Blueprint 7.1.0
  */
 package com.teamabnormals.blueprint.common.remolder;

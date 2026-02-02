@@ -1,0 +1,39 @@
+{
+  "molding": "json",
+  "remolder": [
+    {
+      "type": "replace",
+      "target": "$effects",
+      "value": {
+        "minecraft:blindness": {}
+      }
+    },
+    {
+      "type": "replace",
+      "expressed_value": "#map(criteria.all_effects.conditions.effects)",
+      "target": "$safe_effects"
+    },
+    {
+      "type": "replace",
+      "expressed_value": "#entries(#map($effects))",
+      "target": "$generic_adding_iterator"
+    },
+    {
+      "type": "loop",
+      "remold": [
+        {
+          "type": "replace",
+          "expressed_value": "#nextEntry($generic_adding_iterator)",
+          "target": "$next_entry"
+        },
+        {
+          "type": "replace",
+          "expressed_value": "#getValue($next_entry)",
+          "target": "$safe_effects[#getKey($next_entry)]"
+        }
+      ],
+      "while": "#hasNext($generic_adding_iterator)"
+    }
+  ],
+  "selector": "minecraft:advancement/nether/all_potions"
+}

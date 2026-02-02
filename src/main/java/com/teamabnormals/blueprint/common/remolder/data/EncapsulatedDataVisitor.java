@@ -14,14 +14,14 @@ public interface EncapsulatedDataVisitor extends DataVisitor {
 	DataVisitor identifier();
 
 	record Elemental(DataVisitor parent, @Nullable DataVisitor identifier) implements EncapsulatedDataVisitor {
-		@Override
-		public void visit(Molding molding) {
-			molding.get(this.parent, this.identifier);
+		public static Elemental childOfRoot(String key) {
+			return new Elemental(VariableDataVisitor.ROOT, DataVisitors.string(key));
 		}
 
 		@Override
-		public ReturnType getReturnType() {
-			return ElementType.ELEMENTAL;
+		public DataType<?> visit(Molding molding) {
+			molding.get(this.parent, this.identifier);
+			return molding.getDataType();
 		}
 	}
 }

@@ -25,11 +25,11 @@ public record ReplaceRemolder(DynamicReference.Expression target, DynamicReferen
 		var target = this.target;
 		var targetVisitor = target.visitor();
 		if (targetVisitor instanceof VariableDataVisitor variable) {
-			this.value.visitor().visit(molding);
-			variable.set(molding);
+			variable.set(molding, this.value.visitor());
 		} else if (targetVisitor instanceof EncapsulatedDataVisitor encapsulated) {
-			molding.set(encapsulated.parent(), encapsulated.identifier(), this.value.visitor());
-		} else throw new UnsupportedOperationException("Don't know how to replace target: " + target.getRawExpression());
+			molding.set(encapsulated.parent(), encapsulated.identifier(), this.value.visitor(), true);
+		} else
+			throw new UnsupportedOperationException("Don't know how to replace target: " + target.getRawExpression());
 	}
 
 	@Override

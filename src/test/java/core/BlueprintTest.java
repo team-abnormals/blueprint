@@ -107,7 +107,6 @@ public final class BlueprintTest {
 		TestBlockTagsProvider testBlockTagsProvider = new TestBlockTagsProvider(packOutput, lookupProvider, helper);
 		generator.addProvider(includeServer, testBlockTagsProvider);
 		generator.addProvider(includeServer, new TestItemTagsProvider(packOutput, lookupProvider, testBlockTagsProvider.contentsGetter(), helper));
-		generator.addProvider(includeServer, new TestAdvancementModifiersProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new TestChunkGeneratorModifiersProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new TestDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new TestDataRemolderProvider(packOutput, lookupProvider));

@@ -11,18 +11,14 @@ import java.util.function.Consumer;
  */
 @FunctionalInterface
 public interface DataVisitor extends Consumer<Molding>, Opcodes {
-	void visit(Molding molding);
+	DataType<?> visit(Molding molding);
 
 	@Override
 	default void accept(Molding molding) {
 		this.visit(molding);
 	}
 
-	default ReturnType getReturnType() {
-		return DataType.VOID;
-	}
-
-	default DataVisitor then(Consumer<? super Molding> consumer, ReturnType type) {
+	default DataVisitor then(Consumer<? super Molding> consumer, DataType<?> type) {
 		return new DataVisitors.Pipe(this, consumer, type);
 	}
 }

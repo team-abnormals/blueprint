@@ -4,7 +4,9 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
+import com.teamabnormals.blueprint.common.remolder.util.DataExpression;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 
 import java.text.ParseException;
 import java.util.function.Function;
@@ -75,7 +77,20 @@ public sealed interface DynamicReference {
 	}
 
 	static Expression eval(String expression) throws ParseException {
-		return new Expression(expression);
+		try {
+			return new Expression(expression);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// TODO: Maybe rename
+	static Expression parse(String expression) {
+		try {
+			return new Expression(expression);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	DataVisitor visitor();
@@ -86,20 +101,13 @@ public sealed interface DynamicReference {
 
 		public Direct(Function<DynamicOps<?>, ?> getter) {
 			this.getter = getter;
-			String fieldName = "getter" + System.nanoTime();
-			this.visitor = new DataVisitor() {
-				@Override
-				public void visit(Molding molding) {
-					molding.provideVariable("direct", DataType.FUNCTION, getter).visit(molding);
-					OPS.visit(molding);
-					molding.visitMethodInsn(INVOKEINTERFACE, "java/util/function/Function", "apply", "(Ljava/lang/Object;)Ljava/lang/Object;", true);
-					molding.visitTypeInsn(CHECKCAST, molding.getDataType().getInternalName());
-				}
-
-				@Override
-				public ReturnType getReturnType() {
-					return ElementType.ELEMENTAL;
-				}
+			this.visitor = molding -> {
+				molding.provideVariable("direct", DataType.FUNCTION, getter).visit(molding);
+				OPS.visit(molding);
+				molding.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/function/Function", "apply", "(Ljava/lang/Object;)Ljava/lang/Object;", true);
+				var type = molding.getDataType();
+				molding.visitTypeInsn(Opcodes.CHECKCAST, type.getInternalName());
+				return type;
 			};
 		}
 
@@ -114,7 +122,7 @@ public sealed interface DynamicReference {
 		private final DataVisitor visitor;
 
 		public Expression(String rawExpression) throws ParseException {
-			this(rawExpression, DataExpressionParser.parse(rawExpression));
+			this(rawExpression, DataExpression.parse(rawExpression));
 		}
 
 		public Expression(String rawExpression, @Nullable DataVisitor visitor) {

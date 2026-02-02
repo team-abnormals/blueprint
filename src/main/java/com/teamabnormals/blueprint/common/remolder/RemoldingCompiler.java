@@ -12,8 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.function.Predicate;
 
-import static com.teamabnormals.blueprint.common.remolder.data.VariableDataVisitor.*;
 import static org.objectweb.asm.Opcodes.*;
+import static com.teamabnormals.blueprint.common.remolder.data.VariableDataVisitor.*;
 
 /**
  * A {@link ClassLoader} subclass that compiles {@link Remolding} instances from {@link Remolder} instances.
@@ -51,12 +51,12 @@ public final class RemoldingCompiler extends ClassLoader {
 		return result.toString();
 	}
 
-	public <T> Remolding<T> compile(String identifier, DataType<?> dataType, Molding.Factory moldingFactory, Remolder... remolders) throws Throwable {
+	public <T> Remolding<T> compile(String identifier, DataType<T> dataType, Molding.Factory moldingFactory, Remolder... remolders) throws Throwable {
 		return this.compile(remolders[0].getClass().getSimpleName(), identifier, dataType, moldingFactory, remolders);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Remolding<T> compile(String type, String identifier, DataType<?> dataType, Molding.Factory moldingFactory, Remolder... remolders) throws Throwable {
+	public <T> Remolding<T> compile(String type, String identifier, DataType<T> dataType, Molding.Factory moldingFactory, Remolder... remolders) throws Throwable {
 		int remoldersLength = remolders.length;
 		if (remoldersLength == 0) throw new IllegalArgumentException("Cannot compile an empty array of Remolders");
 		ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -84,13 +84,14 @@ public final class RemoldingCompiler extends ClassLoader {
 
 		String realApplyDescriptor = "(Lcom/mojang/serialization/DynamicOps;" + typeDescriptor + typeDescriptor + ")Lcom/mojang/datafixers/util/Pair;";
 		String applySignature = "(Lcom/mojang/serialization/DynamicOps<" + typeDescriptor + ">;" + typeDescriptor + typeDescriptor + ")" + "Lcom/mojang/datafixers/util/Pair<" + typeDescriptor + typeDescriptor + ">;";
-		Molding apply = moldingFactory.create(classWriter.visitMethod(
+		var apply = moldingFactory.create(classWriter.visitMethod(
 				ACC_PUBLIC,
 				"apply",
 				realApplyDescriptor,
 				applySignature,
 				null
-		), name, THIS, 0);
+		), name, THIS, null, null, 0);
+		apply.visitCode();
 		THIS.allocate(apply);
 		OPS.allocate(apply);
 		ROOT.allocate(apply);
@@ -100,7 +101,7 @@ public final class RemoldingCompiler extends ClassLoader {
 		META.visit(apply);
 		apply.visitMethodInsn(INVOKESTATIC, "com/mojang/datafixers/util/Pair", "of", "(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;", false);
 		apply.visitInsn(ARETURN);
-		apply.visitMaxs(0, 0);
+		apply.visitMaxs();
 		apply.visitEnd();
 
 		// Create constructor
@@ -162,6 +163,7 @@ public final class RemoldingCompiler extends ClassLoader {
 		bridgeApply.visitMaxs(0, 0);
 		bridgeApply.visitEnd();
 
+		classWriter.visitEnd();
 		byte[] data = classWriter.toByteArray();
 		for (var export : this.exports) {
 			if (!export.predicate.test(identifier)) continue;
@@ -175,6 +177,5 @@ public final class RemoldingCompiler extends ClassLoader {
 		return ((Class<? extends Remolding<T>>) this.defineClass(name, data, 0, data.length)).getConstructor(parameterTypes).newInstance(parameterValues);
 	}
 
-	public record ExportEntry(String folder, String pattern, Predicate<String> predicate) {
-	}
+	public record ExportEntry(String folder, String pattern, Predicate<String> predicate) {}
 }

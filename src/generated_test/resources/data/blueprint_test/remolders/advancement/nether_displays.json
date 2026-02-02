@@ -1,0 +1,53 @@
+{
+  "molding": "json",
+  "remolder": [
+    {
+      "type": "replace",
+      "expressed_value": "display",
+      "target": "$original_display"
+    },
+    {
+      "type": "conditional",
+      "!#isMap($original_display)": [
+        {
+          "type": "replace",
+          "target": "$original_display",
+          "value": {
+            "description": "",
+            "icon": {
+              "count": 1,
+              "id": "minecraft:stone"
+            },
+            "title": ""
+          }
+        },
+        {
+          "type": "replace",
+          "expressed_value": "$original_display",
+          "target": "display"
+        }
+      ]
+    },
+    {
+      "type": "replace",
+      "expressed_value": "#map($original_display)",
+      "target": "$display"
+    },
+    {
+      "type": "replace",
+      "target": "$display[\"icon\"]",
+      "value": {
+        "count": 1,
+        "id": "minecraft:nether_star"
+      }
+    }
+  ],
+  "selector": {
+    "type": "names",
+    "config": [
+      "minecraft:advancement/nether/explore_nether",
+      "minecraft:advancement/nether/distract_piglin",
+      "minecraft:advancement/nether/fast_travel"
+    ]
+  }
+}

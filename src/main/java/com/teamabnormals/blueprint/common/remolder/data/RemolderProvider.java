@@ -179,5 +179,16 @@ public abstract class RemolderProvider implements DataProvider {
 			this.remolder = remolder;
 			return this;
 		}
+
+		/**
+		 * Changes the {@link Remolder} instances used for modifying the targeted resources.
+		 *
+		 * @param remolders A new sequence of {@link Remolder} instances to use for modifying the targeted resources.
+		 * @return This entry.
+		 */
+		public Entry remolder(Remolder... remolders) {
+			this.remolder = RemolderTypes.sequence(remolders);
+			return this;
+		}
 	}
 }

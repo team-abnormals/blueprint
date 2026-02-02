@@ -5,8 +5,8 @@
   ],
   "remolder": {
     "type": "add",
-    "expressed_value": "element(90)",
-    "target": "variants.get(\"\").x"
+    "expressed_value": "#element(90)",
+    "target": "variants[\"\"].x"
   },
   "selector": "minecraft:blockstates/acacia_planks"
 }

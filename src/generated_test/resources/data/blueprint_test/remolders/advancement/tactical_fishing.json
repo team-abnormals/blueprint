@@ -1,0 +1,129 @@
+{
+  "molding": "json",
+  "remolder": [
+    {
+      "type": "replace",
+      "target": "$criteria",
+      "value": {
+        "blueprint_test:test": {
+          "conditions": {
+            "item": {
+              "items": "minecraft:lava_bucket"
+            }
+          },
+          "trigger": "minecraft:filled_bucket"
+        }
+      }
+    },
+    {
+      "type": "replace",
+      "expressed_value": "#map(criteria)",
+      "target": "$safe_criteria"
+    },
+    {
+      "type": "replace",
+      "expressed_value": "#entries(#map($criteria))",
+      "target": "$generic_adding_iterator"
+    },
+    {
+      "type": "loop",
+      "remold": [
+        {
+          "type": "replace",
+          "expressed_value": "#nextEntry($generic_adding_iterator)",
+          "target": "$next_entry"
+        },
+        {
+          "type": "replace",
+          "expressed_value": "#getValue($next_entry)",
+          "target": "$safe_criteria[#getKey($next_entry)]"
+        }
+      ],
+      "while": "#hasNext($generic_adding_iterator)"
+    },
+    {
+      "type": "replace",
+      "target": "$indexed_requirements",
+      "value": [
+        {
+          "index": 0,
+          "replace": false,
+          "requirements": [
+            "blueprint_test:test"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "#isList(requirements)": [
+        {
+          "type": "replace",
+          "expressed_value": "#list(requirements)",
+          "target": "$requirements"
+        },
+        {
+          "type": "replace",
+          "expressed_value": "#size($requirements)",
+          "target": "$length"
+        },
+        {
+          "type": "replace",
+          "expressed_value": "#elements(#list($indexed_requirements))",
+          "target": "$index_requirements_iterator"
+        },
+        {
+          "type": "loop",
+          "remold": [
+            {
+              "type": "replace",
+              "expressed_value": "#map((#) #next($index_requirements_iterator))",
+              "target": "$entry"
+            },
+            {
+              "type": "replace",
+              "expressed_value": "(int) $entry[\"index\"]",
+              "target": "$index"
+            },
+            {
+              "type": "conditional",
+              "$index < $length": [
+                {
+                  "type": "conditional",
+                  "$entry[\"replace\"]": {
+                    "type": "replace",
+                    "expressed_value": "$entry[\"requirements\"]",
+                    "target": "$requirements[$index]"
+                  },
+                  "else": [
+                    {
+                      "type": "replace",
+                      "expressed_value": "#list($requirements[$index])",
+                      "target": "$requirements_at_index"
+                    },
+                    {
+                      "type": "replace",
+                      "expressed_value": "#elements(#list($entry[\"requirements\"]))",
+                      "target": "$generic_adding_iterator"
+                    },
+                    {
+                      "type": "loop",
+                      "remold": {
+                        "type": "add",
+                        "expressed_value": "(#) #next($generic_adding_iterator)",
+                        "target": "$requirements_at_index"
+                      },
+                      "while": "#hasNext($generic_adding_iterator)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "while": "#hasNext($index_requirements_iterator)"
+        }
+      ]
+    }
+  ],
+  "selector": "minecraft:advancement/husbandry/tactical_fishing"
+}

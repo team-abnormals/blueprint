@@ -1,10 +1,13 @@
 package com.teamabnormals.blueprint.common.remolder.data;
 
 import com.google.gson.*;
+import com.teamabnormals.blueprint.common.remolder.util.DiscretionaryLabel;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 
 import javax.annotation.Nullable;
+
+import java.util.Iterator;
 
 import static com.teamabnormals.blueprint.common.remolder.data.DataType.*;
 
@@ -20,8 +23,17 @@ public final class JsonMolding extends Molding {
 	public static final DataType<JsonNull> NULL_DATA_TYPE = type(JsonNull.class);
 	public static final DataType<JsonPrimitive> PRIMITIVE_DATA_TYPE = type(JsonPrimitive.class);
 
-	public JsonMolding(MethodVisitor method, String fieldOwnerTypeName, VariableDataVisitor fieldOwnerVariable, int localVariableOffset) {
-		super(method, fieldOwnerTypeName, fieldOwnerVariable, localVariableOffset);
+	public JsonMolding(MethodVisitor method, String fieldOwnerTypeName, VariableDataVisitor fieldOwnerVariable, DiscretionaryLabel continueLabel, DiscretionaryLabel breakLabel, int localVariableOffset) {
+		super(method, fieldOwnerTypeName, fieldOwnerVariable, continueLabel, breakLabel, localVariableOffset);
+	}
+
+	public JsonMolding(JsonMolding molding) {
+		super(molding);
+	}
+
+	@Override
+	public JsonMolding createBuffer() {
+		return new JsonMolding(this);
 	}
 
 	@Override
@@ -63,24 +75,54 @@ public final class JsonMolding extends Molding {
 	}
 
 	@Override
-	public void element(DataVisitor visitor) throws UnsupportedOperationException {
-		DataType<?> dataType = visitor.getReturnType().getDataType(this);
+	public DataType<?> element(DataVisitor visitor) throws UnsupportedOperationException {
+		if (visitor == DataVisitors.NULL) {
+			this.visitFieldInsn(GETSTATIC, "com/google/gson/JsonNull", "INSTANCE", NULL_DATA_TYPE.getType().getDescriptor());
+			return NULL_DATA_TYPE;
+		}
+		var buffer = this.createBuffer();
+		DataType<?> dataType = visitor.visit(buffer);
 		Class<?> clazz = dataType.getClazz();
 		if (ELEMENT_DATA_TYPE.getClazz().isAssignableFrom(clazz)) {
-			visitor.visit(this);
+			buffer.accept(this);
 			this.visitMethodInsn(INVOKEVIRTUAL, ELEMENT_DATA_TYPE.getInternalName(), "deepCopy", "()Lcom/google/gson/JsonElement;", false);
 		} else if (dataType == STRING) {
-			this.newPrimitive(visitor, "(Ljava/lang/String;)V", null);
+			this.newPrimitive(buffer, "(Ljava/lang/String;)V", null);
 		} else if (dataType == CHARACTER_WRAPPER) {
-			this.newPrimitive(visitor, "(Ljava/lang/Character;)V", null);
+			this.newPrimitive(buffer, "(Ljava/lang/Character;)V", null);
 		} else if (dataType == BOOLEAN_WRAPPER) {
-			this.newPrimitive(visitor, "(Ljava/lang/Boolean;)V", null);
+			this.newPrimitive(buffer, "(Ljava/lang/Boolean;)V", null);
 		} else if (NUMBER.getClazz().isAssignableFrom(clazz)) {
-			this.newPrimitive(visitor, "(Ljava/lang/Number;)V", null);
+			this.newPrimitive(buffer, "(Ljava/lang/Number;)V", null);
+		} else if (clazz == boolean.class) {
+			this.newPrimitive(buffer, "(Ljava/lang/Boolean;)V", clazz);
 		} else if (clazz.isPrimitive()) {
-			this.newPrimitive(visitor, "(Ljava/lang/Number;)V", clazz);
+			this.newPrimitive(buffer, "(Ljava/lang/Number;)V", clazz);
 		} else
 			throw new UnsupportedOperationException("Don't know to create element from parameter of type: " + dataType);
+		return PRIMITIVE_DATA_TYPE;
+	}
+
+	@Override
+	public DataType<?> listElement(DataVisitor visitor) throws UnsupportedOperationException {
+		var type = visitor.visit(this);
+		if (type != ARRAY_DATA_TYPE) {
+			if (!type.getClazz().isAssignableFrom(ARRAY_DATA_TYPE.getClazz()))
+				throw new UnsupportedOperationException("Can't cast " + type + " to JsonArray");
+			this.visitTypeInsn(CHECKCAST, ARRAY_DATA_TYPE.getInternalName());
+		}
+		return ARRAY_DATA_TYPE;
+	}
+
+	@Override
+	public DataType<?> mapElement(DataVisitor visitor) throws UnsupportedOperationException {
+		var type = visitor.visit(this);
+		if (type != OBJECT_DATA_TYPE) {
+			if (!type.getClazz().isAssignableFrom(OBJECT_DATA_TYPE.getClazz()))
+				throw new UnsupportedOperationException("Can't cast " + type + " to JsonObject");
+			this.visitTypeInsn(CHECKCAST, OBJECT_DATA_TYPE.getInternalName());
+		}
+		return OBJECT_DATA_TYPE;
 	}
 
 	@Override
@@ -120,32 +162,45 @@ public final class JsonMolding extends Molding {
 	public void toString(DataType<?> type) throws UnsupportedOperationException {
 		if (!ELEMENT_DATA_TYPE.getClazz().isAssignableFrom(type.getClazz()))
 			throw new UnsupportedOperationException("Conversion to string is only supported for elemental types");
-		this.visitMethodInsn(INVOKESTATIC, "java/lang/String", "valueOf", "(Ljava/lang/Object;)Ljava/lang/String;", false);
+		this.visitMethodInsn(INVOKEVIRTUAL, ELEMENT_DATA_TYPE.getInternalName(), "getAsString", "()Ljava/lang/String;", false);
 	}
 
 	@Override
-	public void testElementalList() {
+	public void testElementalList(DataType<?> type) {
+		DataVisitors.assertCanAcceptInstanceof(type);
 		this.visitTypeInsn(INSTANCEOF, ARRAY_DATA_TYPE.getInternalName());
 	}
 
 	@Override
-	public void testElementalMap() {
+	public void testElementalMap(DataType<?> type) {
+		DataVisitors.assertCanAcceptInstanceof(type);
 		this.visitTypeInsn(INSTANCEOF, OBJECT_DATA_TYPE.getInternalName());
 	}
 
 	@Override
-	public void testStringElement() {
-		this.testPrimitive("isString");
+	public void testNullElement(DataType<?> type) {
+		DataVisitors.assertCanAcceptInstanceof(type);
+		this.visitTypeInsn(INSTANCEOF, NULL_DATA_TYPE.getInternalName());
 	}
 
 	@Override
-	public void testNumericalElement() {
-		this.testPrimitive("isNumber");
+	public void testStringElement(DataType<?> type) {
+		this.testPrimitive("isString", type);
 	}
 
 	@Override
-	public void testBooleanElement() {
-		this.testPrimitive("isBoolean");
+	public void testNumericalElement(DataType<?> type) {
+		this.testPrimitive("isNumber", type);
+	}
+
+	@Override
+	public void testBooleanElement(DataType<?> type) {
+		this.testPrimitive("isBoolean", type);
+	}
+
+	@Override
+	public void testEquality() {
+		this.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z", false);
 	}
 
 	@Override
@@ -176,86 +231,96 @@ public final class JsonMolding extends Molding {
 
 	@Override
 	public void get(DataVisitor object, @Nullable DataVisitor key) throws UnsupportedOperationException {
-		var dataType = object.getReturnType().getDataType(this);
+		var dataType = object.visit(this);
 		var clazz = dataType.getClazz();
-		this.assertElemental(dataType, clazz, "Cannot get child of non-elemental type: ");
+		assertElemental(dataType, clazz, "Cannot get child of non-elemental type: ");
 		if (key == null) {
-			this.prepareLastElementVisit(object, clazz);
+			this.prepareLastElementVisit(clazz);
 			this.invokeVirtualArray("get", "(I)Lcom/google/gson/JsonElement;");
 		} else {
-			var keyDataType = key.getReturnType().getDataType(this);
+			var keyBuffer = this.createBuffer();
+			var keyDataType = key.visit(keyBuffer);
 			if (keyDataType == INT) {
-				this.prepareChildVisit(object, key, clazz, ARRAY_DATA_TYPE);
+				this.checkThenCast(clazz, ARRAY_DATA_TYPE);
+				keyBuffer.accept(this);
 				this.invokeVirtualArray("get", "(I)Lcom/google/gson/JsonElement;");
 			} else if (keyDataType == STRING) {
-				this.prepareChildVisit(object, key, clazz, OBJECT_DATA_TYPE);
+				this.checkThenCast(clazz, OBJECT_DATA_TYPE);
+				keyBuffer.accept(this);
 				this.invokeVirtualObject("get", "(Ljava/lang/String;)Lcom/google/gson/JsonElement;");
 			} else throw new UnsupportedOperationException("Unknown key type for child getting: " + keyDataType);
 		}
 	}
 
 	@Override
-	public void set(DataVisitor object, @Nullable DataVisitor key, DataVisitor value) throws UnsupportedOperationException {
-		var dataType = object.getReturnType().getDataType(this);
+	public void set(DataVisitor object, @Nullable DataVisitor key, DataVisitor value, boolean noReturn) throws UnsupportedOperationException {
+		var dataType = object.visit(this);
 		var clazz = dataType.getClazz();
-		this.assertElemental(dataType, clazz, "Cannot set child of non-elemental type: ");
-		var valueType = value.getReturnType().getDataType(this);
-		this.assertElemental(valueType, valueType.getClazz(), "Cannot set child as non-elemental type: ");
+		assertElemental(dataType, clazz, "Cannot set child of non-elemental type: ");
 		if (key == null) {
-			this.prepareLastElementVisit(object, clazz);
-			value.visit(this);
+			this.prepareLastElementVisit(clazz);
+			var valueType = value.visit(this);
+			assertElemental(valueType, valueType.getClazz(), "Cannot set last child to non-elemental type: ");
 			this.invokeVirtualArray("set", "(ILcom/google/gson/JsonElement;)Lcom/google/gson/JsonElement;");
+			this.popIf(noReturn);
 		} else {
-			var keyDataType = key.getReturnType().getDataType(this);
+			var buffer = this.createBuffer();
+			var keyDataType = key.visit(buffer);
 			if (keyDataType == INT) {
-				this.prepareChildVisit(object, key, clazz, ARRAY_DATA_TYPE);
-				value.visit(this);
+				this.checkThenCast(clazz, ARRAY_DATA_TYPE);
+				buffer.accept(this);
+				var valueType = value.visit(this);
+				assertElemental(valueType, valueType.getClazz(), "Cannot set array child to non-elemental type: ");
 				this.invokeVirtualArray("set", "(ILcom/google/gson/JsonElement;)Lcom/google/gson/JsonElement;");
+				this.popIf(noReturn);
 			} else if (keyDataType == STRING) {
-				object.visit(this);
 				this.checkThenCast(clazz, OBJECT_DATA_TYPE);
-				this.invokeVirtualObject("asMap", "()Ljava/util/Map;");
-				key.visit(this);
-				value.visit(this);
-				this.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", true);
-				this.visitTypeInsn(CHECKCAST, ELEMENT_DATA_TYPE.getInternalName());
+				var valueType = value.visit(buffer);
+				assertElemental(valueType, valueType.getClazz(), "Cannot set object child to non-elemental type: ");
+				if (noReturn) {
+					buffer.accept(this);
+					this.invokeVirtualObject("add", "(Ljava/lang/String;Lcom/google/gson/JsonElement;)V");
+				} else {
+					this.invokeVirtualObject("asMap", "()Ljava/util/Map;");
+					buffer.accept(this);
+					this.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", true);
+				}
 			} else throw new UnsupportedOperationException("Unknown key type for setting child: " + keyDataType);
 		}
 	}
 
 	@Override
 	public void add(DataVisitor object, @Nullable DataVisitor key, DataVisitor value) throws UnsupportedOperationException {
-		var dataType = object.getReturnType().getDataType(this);
+		var dataType = object.visit(this);
 		var clazz = dataType.getClazz();
-		this.assertElemental(dataType, clazz, "Cannot add child of non-elemental type: ");
-		var valueType = value.getReturnType().getDataType(this);
-		this.assertElemental(valueType, valueType.getClazz(), "Cannot add child as non-elemental type: ");
+		assertElemental(dataType, clazz, "Cannot add child of non-elemental type: ");
 		if (key == null) {
-			object.visit(this);
 			this.checkThenCast(clazz, ARRAY_DATA_TYPE);
-			value.visit(this);
+			var valueType = value.visit(this);
+			assertElemental(valueType, valueType.getClazz(), "Cannot append child as non-elemental type: ");
 			this.invokeVirtualArray("add", "(Lcom/google/gson/JsonElement;)V");
 		} else {
-			var keyDataType = key.getReturnType().getDataType(this);
+			var keyBuffer = this.createBuffer();
+			var keyDataType = key.visit(keyBuffer);
 			if (keyDataType == INT) {
-				object.visit(this);
 				this.checkThenCast(clazz, ARRAY_DATA_TYPE);
 				this.invokeVirtualArray("asList", "()Ljava/util/List;");
-				key.visit(this);
-				value.visit(this);
+				keyBuffer.accept(this);
+				var valueType = value.visit(this);
+				assertElemental(valueType, valueType.getClazz(), "Cannot add array child of non-elemental type: ");
 				this.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(ILjava/lang/Object;)V", true);
 			} else if (keyDataType == STRING) {
-				object.visit(this);
 				this.checkThenCast(clazz, OBJECT_DATA_TYPE);
 				this.visitInsn(DUP);
-				key.visit(this);
+				keyBuffer.accept(this);
 				this.visitInsn(DUP_X1);
 				this.invokeVirtualObject("has", "(Ljava/lang/String;)Z");
 				// If the object has the key, do not add
 				Label keyExistsLabel = new Label();
 				this.visitJumpInsn(IFNE, keyExistsLabel);
 				// Otherwise, add to the object and goto end
-				value.visit(this);
+				var valueType = value.visit(this);
+				assertElemental(valueType, valueType.getClazz(), "Cannot add object child of non-elemental type: ");
 				this.invokeVirtualObject("add", "(Ljava/lang/String;Lcom/google/gson/JsonElement;)V");
 				Label endLabel = new Label();
 				this.visitJumpInsn(GOTO, endLabel);
@@ -269,21 +334,27 @@ public final class JsonMolding extends Molding {
 	}
 
 	@Override
-	public void remove(DataVisitor object, @Nullable DataVisitor key) throws UnsupportedOperationException {
-		var dataType = object.getReturnType().getDataType(this);
+	public void remove(DataVisitor object, @Nullable DataVisitor key, boolean noReturn) throws UnsupportedOperationException {
+		var dataType = object.visit(this);
 		var clazz = dataType.getClazz();
-		this.assertElemental(dataType, clazz, "Cannot remove child of non-elemental type: ");
+		assertElemental(dataType, clazz, "Cannot remove child of non-elemental type: ");
 		if (key == null) {
-			this.prepareLastElementVisit(object, clazz);
+			this.prepareLastElementVisit(clazz);
 			this.invokeVirtualArray("remove", "(I)Lcom/google/gson/JsonElement;");
+			this.popIf(noReturn);
 		} else {
-			var keyDataType = key.getReturnType().getDataType(this);
+			var keyBuffer = this.createBuffer();
+			var keyDataType = key.visit(keyBuffer);
 			if (keyDataType == INT) {
-				this.prepareChildVisit(object, key, clazz, ARRAY_DATA_TYPE);
+				this.checkThenCast(clazz, ARRAY_DATA_TYPE);
+				keyBuffer.accept(this);
 				this.invokeVirtualArray("remove", "(I)Lcom/google/gson/JsonElement;");
+				this.popIf(noReturn);
 			} else if (keyDataType == STRING) {
-				this.prepareChildVisit(object, key, clazz, OBJECT_DATA_TYPE);
+				this.checkThenCast(clazz, OBJECT_DATA_TYPE);
+				keyBuffer.accept(this);
 				this.invokeVirtualObject("remove", "(Ljava/lang/String;)Lcom/google/gson/JsonElement;");
+				this.popIf(noReturn);
 			} else throw new UnsupportedOperationException("Unknown key type for removing child: " + keyDataType);
 		}
 	}
@@ -299,10 +370,53 @@ public final class JsonMolding extends Molding {
 		} else throw new UnsupportedOperationException("Cannot clear variable of type: " + type);
 	}
 
-	private void newPrimitive(DataVisitor visitor, String constructorDesc, @Nullable Class<?> primitiveClass) {
+	@SuppressWarnings("RawUseOfParameterized")
+	@Override
+	public DataType<Iterator> elements(DataType<?> type) throws UnsupportedOperationException {
+		if (type != ARRAY_DATA_TYPE) {
+			if (type.getClazz().isAssignableFrom(ARRAY_DATA_TYPE.getClazz()))
+				this.visitTypeInsn(CHECKCAST, ARRAY_DATA_TYPE.getInternalName());
+			else throw new UnsupportedOperationException("Can't get array elements from value of " + type);
+		}
+		this.invokeVirtualArray("iterator", "()Ljava/util/Iterator;");
+		return ITERATOR;
+	}
+
+	@SuppressWarnings("RawUseOfParameterized")
+	@Override
+	public DataType<Iterator> keys(DataType<?> type) throws UnsupportedOperationException {
+		if (type != OBJECT_DATA_TYPE) {
+			if (type.getClazz().isAssignableFrom(OBJECT_DATA_TYPE.getClazz()))
+				this.visitTypeInsn(CHECKCAST, OBJECT_DATA_TYPE.getInternalName());
+			else throw new UnsupportedOperationException("Can't get object keys from value of " + type);
+		}
+		this.invokeVirtualObject("keySet", "()Ljava/util/Set;");
+		this.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "iterator", "()Ljava/util/Iterator;", true);
+		return ITERATOR;
+	}
+
+	@SuppressWarnings("RawUseOfParameterized")
+	@Override
+	public DataType<Iterator> entries(DataType<?> type) throws UnsupportedOperationException {
+		if (type != OBJECT_DATA_TYPE) {
+			if (type.getClazz().isAssignableFrom(OBJECT_DATA_TYPE.getClazz()))
+				this.visitTypeInsn(CHECKCAST, OBJECT_DATA_TYPE.getInternalName());
+			else throw new UnsupportedOperationException("Can't get object entries from value of " + type);
+		}
+		this.invokeVirtualObject("entrySet", "()Ljava/util/Set;");
+		this.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "iterator", "()Ljava/util/Iterator;", true);
+		return ITERATOR;
+	}
+
+	private static void assertElemental(DataType<?> type, Class<?> clazz, String message) {
+		if (!ELEMENT_DATA_TYPE.getClazz().isAssignableFrom(clazz))
+			throw new UnsupportedOperationException(message + type);
+	}
+
+	private void newPrimitive(Molding buffer, String constructorDesc, @Nullable Class<?> primitiveClass) {
 		this.visitTypeInsn(NEW, PRIMITIVE_DATA_TYPE.getInternalName());
 		this.visitInsn(DUP);
-		visitor.visit(this);
+		buffer.accept(this);
 		if (primitiveClass != null) DataVisitors.boxPrimitive(this, primitiveClass);
 		this.visitMethodInsn(INVOKESPECIAL, PRIMITIVE_DATA_TYPE.getInternalName(), "<init>", constructorDesc, false);
 	}
@@ -311,19 +425,23 @@ public final class JsonMolding extends Molding {
 		this.visitMethodInsn(INVOKEVIRTUAL, PRIMITIVE_DATA_TYPE.getInternalName(), method, descriptor, false);
 	}
 
-	private void testPrimitive(String method) {
-		Label falseLabel = new Label();
-		Label endLabel = new Label();
-		this.visitInsn(DUP);
-		this.visitTypeInsn(INSTANCEOF, PRIMITIVE_DATA_TYPE.getInternalName());
-		this.visitJumpInsn(IFEQ, falseLabel);
-		this.visitTypeInsn(CHECKCAST, PRIMITIVE_DATA_TYPE.getInternalName());
-		this.invokeVirtualPrimitive(method, "()Z");
-		this.visitJumpInsn(GOTO, endLabel);
-		this.visitLabel(falseLabel);
-		this.visitInsn(POP);
-		this.visitInsn(ICONST_0);
-		this.visitLabel(endLabel);
+	private void testPrimitive(String method, DataType<?> type) {
+		if (type == PRIMITIVE_DATA_TYPE) {
+			this.invokeVirtualPrimitive(method, "()Z");
+		} else {
+			Label falseLabel = new Label();
+			Label endLabel = new Label();
+			this.visitInsn(DUP);
+			this.visitTypeInsn(INSTANCEOF, PRIMITIVE_DATA_TYPE.getInternalName());
+			this.visitJumpInsn(IFEQ, falseLabel);
+			this.visitTypeInsn(CHECKCAST, PRIMITIVE_DATA_TYPE.getInternalName());
+			this.invokeVirtualPrimitive(method, "()Z");
+			this.visitJumpInsn(GOTO, endLabel);
+			this.visitLabel(falseLabel);
+			this.visitInsn(POP);
+			this.visitInsn(ICONST_0);
+			this.visitLabel(endLabel);
+		}
 	}
 
 	private void invokeVirtualArray(String method, String descriptor) {
@@ -334,13 +452,7 @@ public final class JsonMolding extends Molding {
 		this.visitMethodInsn(INVOKEVIRTUAL, OBJECT_DATA_TYPE.getInternalName(), method, descriptor, false);
 	}
 
-	private void assertElemental(DataType<?> type, Class<?> clazz, String message) {
-		if (!ELEMENT_DATA_TYPE.getClazz().isAssignableFrom(clazz))
-			throw new UnsupportedOperationException(message + type);
-	}
-
-	private void prepareLastElementVisit(DataVisitor object, Class<?> clazz) {
-		object.visit(this);
+	private void prepareLastElementVisit(Class<?> clazz) {
 		this.checkThenCast(clazz, ARRAY_DATA_TYPE);
 		this.visitInsn(DUP);
 		this.invokeVirtualArray("size", "()I");

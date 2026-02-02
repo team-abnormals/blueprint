@@ -1,0 +1,61 @@
+{
+  "molding": "json",
+  "remolder": [
+    {
+      "type": "replace",
+      "expressed_value": "display",
+      "target": "$original_display"
+    },
+    {
+      "type": "conditional",
+      "!#isMap($original_display)": [
+        {
+          "type": "replace",
+          "target": "$original_display",
+          "value": {
+            "description": "",
+            "icon": {
+              "count": 1,
+              "id": "minecraft:stone"
+            },
+            "title": ""
+          }
+        },
+        {
+          "type": "replace",
+          "expressed_value": "$original_display",
+          "target": "display"
+        }
+      ]
+    },
+    {
+      "type": "replace",
+      "expressed_value": "#map($original_display)",
+      "target": "$display"
+    },
+    {
+      "type": "replace",
+      "target": "$display[\"title\"]",
+      "value": {
+        "translate": "blueprint_test.advancements.husbandry.obtain_armor.title"
+      }
+    },
+    {
+      "type": "replace",
+      "target": "$display[\"description\"]",
+      "value": "Erm, yeah, environmental is loaded"
+    }
+  ],
+  "selector": {
+    "type": "names",
+    "conditions": [
+      {
+        "type": "neoforge:mod_loaded",
+        "modid": "environmental"
+      }
+    ],
+    "config": [
+      "minecraft:advancement/story/obtain_armor"
+    ]
+  }
+}

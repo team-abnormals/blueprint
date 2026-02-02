@@ -5,6 +5,10 @@ import com.teamabnormals.blueprint.common.remolder.data.DynamicReference;
 import com.teamabnormals.blueprint.common.remolder.data.EncapsulatedDataVisitor;
 import com.teamabnormals.blueprint.common.remolder.data.Molding;
 
+import java.util.Iterator;
+
+import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
+
 /**
  * A {@link Remolder} implementation for removing abstract data.
  *
@@ -18,7 +22,9 @@ public record RemoveRemolder(DynamicReference.Expression target) implements Remo
 		var target = this.target;
 		var targetVisitor = target.visitor();
 		if (targetVisitor instanceof EncapsulatedDataVisitor encapsulated) {
-			molding.remove(encapsulated.parent(), encapsulated.identifier());
+			molding.remove(encapsulated.parent(), encapsulated.identifier(), true);
+		} else if (Iterator.class.isAssignableFrom(targetVisitor.visit(molding).getClazz())) {
+			molding.visitMethodInsn(INVOKEINTERFACE, "java/util/Iterator", "remove", "()V", true);
 		} else throw new UnsupportedOperationException("Don't know how to remove target: " + target.getRawExpression());
 	}
 
