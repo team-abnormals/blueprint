@@ -127,7 +127,7 @@ public final class TradeUtil {
 		}
 
 		public BlueprintTrade(Item input, int inputCount, Item output, int outputCount, int maxTrades, int xp) {
-			this(input, inputCount, output, outputCount, maxTrades, xp, 0.15F);
+			this(input, inputCount, output, outputCount, maxTrades, xp, 0.05F);
 		}
 
 		public BlueprintTrade(Item input, int inputCount, int emeraldCount, int maxTrades, int xp, float priceMult) {
@@ -135,7 +135,7 @@ public final class TradeUtil {
 		}
 
 		public BlueprintTrade(Item input, int inputCount, int emeraldCount, int maxTrades, int xp) {
-			this(input, inputCount, emeraldCount, maxTrades, xp, 0.15F);
+			this(input, inputCount, emeraldCount, maxTrades, xp, 0.05F);
 		}
 
 		public BlueprintTrade(int emeraldCount, Item output, int outputCount, int maxTrades, int xp, float priceMult) {
@@ -143,7 +143,7 @@ public final class TradeUtil {
 		}
 
 		public BlueprintTrade(int emeraldCount, Item output, int outputCount, int maxTrades, int xp) {
-			this(emeraldCount, output, outputCount, maxTrades, xp, 0.15F);
+			this(emeraldCount, output, outputCount, maxTrades, xp, 0.05F);
 		}
 	}
 }
