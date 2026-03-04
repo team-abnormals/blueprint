@@ -3,6 +3,7 @@ plugins {
     id "idea"
     id "maven-publish"
     id "net.neoforged.gradle.userdev" version "7.0.182"
+    id "me.modmuss50.mod-publish-plugin" version "1.0.0"
 }
 
 version = "${project.mc_version}-${project.mod_version}"
@@ -113,6 +114,44 @@ publishing {
             name = "abnormals"
             url = "https://maven.teamabnormals.com"
             credentials(PasswordCredentials)
+        }
+    }
+}
+
+publishMods {
+    file = jar.archiveFile
+    changelog = providers.fileContents(layout.projectDirectory.file("changelog.md")).asText
+    type = STABLE
+    modLoaders.add("neoforge")
+    version = "${project.mod_version}"
+    displayName = "${project.mod_name} ${project.mc_version} - ${project.mod_version}"
+
+    modrinth {
+        announcementTitle = "<:modrinth:1428950505010364517> Download from Modrinth!"
+        accessToken = providers.gradleProperty("MODRINTH_API_KEY")
+        projectId = "${project.modrinth_id}"
+        minecraftVersions.add("${project.mc_version}")
+    }
+
+    curseforge {
+        announcementTitle = "<:curseforge:1428950488358850581> Download from CurseForge!"
+        accessToken = providers.gradleProperty("CURSEFORGE_API_KEY")
+        projectId = "${project.curseforge_id}"
+        projectSlug = "${project.mod_id}"
+        minecraftVersions.add("${project.mc_version}")
+    }
+
+    discord() {
+        webhookUrl = providers.gradleProperty("DISCORD_WEBHOOK")
+        dryRunWebhookUrl = providers.gradleProperty("DISCORD_WEBHOOK_ALT")
+        username = "Team Abnormals"
+        content = changelog.map {
+            "## ${project.mod_name} ${project.mc_version} - ${project.mod_version}\n" + it
+        }
+        style {
+            look = "MODERN"
+            thumbnailUrl = "https://github.com/team-abnormals/branding/blob/main/mods/icons_border/${project.mod_id}.png?raw=true"
+            color = "#537db5"
         }
     }
 }
