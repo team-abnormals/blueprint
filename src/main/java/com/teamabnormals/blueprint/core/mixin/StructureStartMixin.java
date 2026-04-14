@@ -68,8 +68,9 @@ public final class StructureStartMixin implements RepalettedStructureStart {
 		ArrayList<StructureRepaletterManager.Entry> repaletters = this.repaletters;
 		if (repaletters == null) return;
 		ListTag repalettersTag = new ListTag();
+		var ops = context.registryAccess().createSerializationContext(NbtOps.INSTANCE);
 		for (StructureRepaletterManager.Entry entry : repaletters) {
-			var result = StructureRepaletterManager.Entry.CODEC.encodeStart(NbtOps.INSTANCE, entry);
+			var result = StructureRepaletterManager.Entry.CODEC.encodeStart(ops, entry);
 			var error = result.error();
 			if (error.isPresent()) {
 				Blueprint.LOGGER.error("Failed to encode Structure Repaletter Entry: {}", error.get().message());
@@ -87,9 +88,10 @@ public final class StructureStartMixin implements RepalettedStructureStart {
 		ListTag repalettersTag = tag.getList(StructureRepaletterManager.Entry.KEY, 10);
 		if (repalettersTag.isEmpty()) return;
 		ArrayList<StructureRepaletterManager.Entry> repaletters = new ArrayList<>();
+		var ops = context.registryAccess().createSerializationContext(NbtOps.INSTANCE);
 		for (int i = 0; i < repalettersTag.size(); i++) {
 			CompoundTag compoundTag = repalettersTag.getCompound(i);
-			var result = StructureRepaletterManager.Entry.CODEC.decode(NbtOps.INSTANCE, compoundTag);
+			var result = StructureRepaletterManager.Entry.CODEC.decode(ops, compoundTag);
 			var error = result.error();
 			if (error.isPresent()) {
 				Blueprint.LOGGER.error("Failed to decode Structure Repaletter Entry: {}", error.get().message());
