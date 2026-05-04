@@ -52,6 +52,8 @@ public final class BlueprintConfig {
 
 		public final SlabfishSettings slabfishSettings;
 
+		public final ConfigValue<Boolean> disableSlabfishPlushCampaignValue;
+
 		Client(ForgeConfigSpec.Builder builder) {
 			this.screenShakeScaleValue = builder
 					.comment("Scale for screen shake effects")
@@ -67,6 +69,10 @@ public final class BlueprintConfig {
 					.comment("Determines if the experimental settings screen should be disabled")
 					.translation(makeTranslation("disable_experimental_settings_screen"))
 					.define("disableExperimentalSettingsScreen", true);
+
+			this.disableSlabfishPlushCampaignValue = builder
+					.comment("Whether the Slabfish Plush Campaign button should appear on the title screen. Ends May 11th.")
+					.define("disableSlabfishPlushCampaign", false);
 
 			this.slabfishSettings = new SlabfishSettings(builder);
 		}

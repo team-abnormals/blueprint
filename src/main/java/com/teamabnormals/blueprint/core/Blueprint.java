@@ -3,6 +3,7 @@ package com.teamabnormals.blueprint.core;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.teamabnormals.blueprint.client.BlueprintShaders;
+import com.teamabnormals.blueprint.client.PlushCampaignHandler;
 import com.teamabnormals.blueprint.client.RewardHandler;
 import com.teamabnormals.blueprint.client.renderer.BlueprintBoatRenderer;
 import com.teamabnormals.blueprint.client.renderer.block.BlueprintChestBlockEntityRenderer;
@@ -168,6 +169,7 @@ public final class Blueprint {
 			bus.addListener(BlueprintShaders::registerShaders);
 
 			BlueprintSpriteSources.register();
+			PlushCampaignHandler.INSTANCE.setup();
 		});
 
 		bus.addListener(BlueprintDataPackRegistries::registerRegistries);
