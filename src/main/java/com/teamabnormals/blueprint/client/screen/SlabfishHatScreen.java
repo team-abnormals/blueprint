@@ -2,6 +2,7 @@ package com.teamabnormals.blueprint.client.screen;
 
 import com.teamabnormals.blueprint.client.RewardHandler;
 import com.teamabnormals.blueprint.client.RewardHandler.SlabfishSetting;
+import com.teamabnormals.blueprint.core.BlueprintConfig;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -39,6 +40,7 @@ public class SlabfishHatScreen extends Screen {
 			Button settingButton = Button.builder(this.getOptionName(setting, configValue.get()), (button) -> {
 				boolean enabled = !configValue.get();
 				configValue.set(enabled);
+				BlueprintConfig.CLIENT_SPEC.save();
 				button.setMessage(this.getOptionName(setting, enabled));
 				NetworkUtil.updateSlabfish(RewardHandler.SlabfishSetting.getConfig());
 			}).bounds(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20).tooltip(Tooltip.create(Component.translatable("blueprint.config.slabfish_hat." + setting.name().toLowerCase(Locale.ROOT) + ".tooltip"))).build();
