@@ -118,7 +118,7 @@ public enum PlushCampaignHandler {
                 .append("Team Abnormals is working with Makeship to turn Slabfish into a physical plushie!")
                 .append("\n\n")
                 .append("In order for these to be put into production, we need to reach our petition goal of ")
-                .append(Component.literal("200 supporters").withStyle(style -> style.withColor(ACCENT_COLOR)))
+                .append(Component.literal("200 supporters by May 11th").withStyle(style -> style.withColor(ACCENT_COLOR)))
                 .append(".")
                 .append("\n\n")
                 .append("If you enjoy mods by Team Abnormals, please consider pledging!");
