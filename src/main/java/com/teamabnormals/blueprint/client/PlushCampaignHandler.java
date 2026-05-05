@@ -79,16 +79,15 @@ public enum PlushCampaignHandler {
                 .map(listener -> (AbstractWidget) listener)
                 .filter(widget -> widget.getMessage().getContents() instanceof TranslatableContents contents && contents.getKey().equals("menu.online"))
                 .findFirst()
-                .ifPresent(widget -> event.addListener(new CampaignButton(widget.getX() + widget.getWidth() + 4, widget.getY(), Tooltip.create(Component.literal("plush")), button -> {
+                .ifPresent(widget -> event.addListener(new CampaignButton(widget.getX() + widget.getWidth() + 4, widget.getY(), button -> {
                     this.campaignOpened = true;
                     Minecraft.getInstance().setScreen(new CampaignScreen(event.getScreen()));
                 })));
     }
 
     private final class CampaignButton extends Button {
-        CampaignButton(int x, int y, Tooltip tooltip, Button.OnPress pressCallback) {
+        CampaignButton(int x, int y, Button.OnPress pressCallback) {
             super(x, y, 20, 20, GameNarrator.NO_TITLE, pressCallback, Button.DEFAULT_NARRATION);
-            this.setTooltip(tooltip);
         }
 
         @Override
@@ -106,7 +105,7 @@ public enum PlushCampaignHandler {
         }
     }
 
-    private final class CampaignScreen extends Screen {
+    private static final class CampaignScreen extends Screen {
         private static final int PANEL_TOP = 32;
         private static final int PANEL_WIDTH = 298;
         private static final int FOOTER_HEIGHT = 37;
@@ -155,7 +154,7 @@ public enum PlushCampaignHandler {
             footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, button -> {
                         if (this.neverShowAgainCheckbox != null && this.neverShowAgainCheckbox.selected()) {
                             BlueprintConfig.CLIENT.disableSlabfishPlushCampaignValue.set(true);
-                            BlueprintConfig.CLIENT_SPEC.save();
+                            BlueprintConfig.CLIENT.disableSlabfishPlushCampaignValue.save();
                             this.getMinecraft().setScreen(new TitleScreen());
                             return;
                         }
