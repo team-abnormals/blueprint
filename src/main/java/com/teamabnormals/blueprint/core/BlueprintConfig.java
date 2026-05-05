@@ -49,6 +49,8 @@ public final class BlueprintConfig {
 
 		public final SlabfishSettings slabfishSettings;
 
+		public final ModConfigSpec.BooleanValue disableSlabfishPlushCampaignValue;
+
 		Client(ModConfigSpec.Builder builder) {
 			this.screenShakeScaleValue = builder
 					.comment("Scale for screen shake effects")
@@ -69,6 +71,10 @@ public final class BlueprintConfig {
 					.comment("If no Slabfish hats should render at all, including on other players")
 					.translation(makeTranslation("disable_slabfish_hats"))
 					.define("disableSlabfishHats", false);
+
+			this.disableSlabfishPlushCampaignValue = builder
+					.comment("Whether the Slabfish Plush Campaign button should appear on the title screen. Ends May 11th.")
+					.define("disableSlabfishPlushCampaign", false);
 
 			this.slabfishSettings = new SlabfishSettings(builder);
 		}
