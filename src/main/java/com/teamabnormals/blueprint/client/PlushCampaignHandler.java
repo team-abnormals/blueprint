@@ -161,7 +161,7 @@ public enum PlushCampaignHandler {
             footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, button -> {
                         if (this.neverShowAgainCheckbox != null && this.neverShowAgainCheckbox.selected()) {
                             BlueprintConfig.CLIENT.disableSlabfishPlushCampaignValue.set(true);
-                            BlueprintConfig.CLIENT_SPEC.save();
+                            BlueprintConfig.CLIENT.disableSlabfishPlushCampaignValue.save();
                             this.getMinecraft().setScreen(new TitleScreen());
                             return;
                         }
