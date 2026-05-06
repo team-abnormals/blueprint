@@ -123,22 +123,22 @@ publishMods {
     changelog = providers.fileContents(layout.projectDirectory.file("changelog.md")).asText
     type = STABLE
     modLoaders.add("neoforge")
-    version = "${project.mod_version}"
+    version = project.mod_version
     displayName = "${project.mod_name} ${project.mc_version} - ${project.mod_version}"
 
     modrinth {
         announcementTitle = "<:modrinth:1428950505010364517> Download from Modrinth!"
         accessToken = providers.gradleProperty("MODRINTH_API_KEY")
-        projectId = "${project.modrinth_id}"
-        minecraftVersions.add("${project.mc_version}")
+        projectId = project.modrinth_id
+        minecraftVersions.add(project.mc_version)
     }
 
     curseforge {
         announcementTitle = "<:curseforge:1428950488358850581> Download from CurseForge!"
         accessToken = providers.gradleProperty("CURSEFORGE_API_KEY")
-        projectId = "${project.curseforge_id}"
-        projectSlug = "${project.mod_id}"
-        minecraftVersions.add("${project.mc_version}")
+        projectId = project.curseforge_id
+        projectSlug = project.mod_id
+        minecraftVersions.add(project.mc_version)
     }
 
     discord() {
