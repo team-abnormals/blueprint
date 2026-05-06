@@ -4,28 +4,33 @@ buildscript {
         maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
     }
     dependencies {
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+", changing: true
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "6.0.46", changing: true
         classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
     }
 }
 
+plugins {
+    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
+}
+
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "eclipse"
+apply plugin: "idea"
 apply plugin: "maven-publish"
 apply plugin: "org.spongepowered.mixin"
 
 mixin {
-    add sourceSets.main, "${project.modId}.refmap.json"
+    add sourceSets.main, "${project.mod_id}.refmap.json"
 }
 
-version = "${project.minecraft}-${project.modVersion}"
+version = "${project.mc_version}-${project.mod_version}"
 group = "com.teamabnormals"
-archivesBaseName = project.modId
+archivesBaseName = project.mod_id
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: "official", version: "${project.minecraft}"
+    mappings channel: "official", version: "${project.mc_version}"
     accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
     runs {
         client {
@@ -33,7 +38,7 @@ minecraft {
             property "forge.logging.markers", "REGISTRIES"
             property "forge.logging.console.level", "debug"
             property "blueprint.indev", "true"
-            arg "-mixin.config=" + project.modId + ".mixins.json"
+            arg "-mixin.config=" + project.mod_id + ".mixins.json"
             arg "-mixin.config=" + "blueprint_test.mixins.json"
             mods {
                 blueprint {
@@ -49,7 +54,7 @@ minecraft {
             property "forge.logging.markers", "REGISTRIES"
             property "forge.logging.console.level", "debug"
             property "blueprint.indev", "true"
-            arg "-mixin.config=" + project.modId + ".mixins.json"
+            arg "-mixin.config=" + project.mod_id + ".mixins.json"
             arg "-mixin.config=" + "blueprint_test.mixins.json"
             mods {
                 blueprint {
@@ -61,7 +66,7 @@ minecraft {
             }
         }
         def blueprintDataArgs = [
-                "--mod", project.modId,
+                "--mod", project.mod_id,
                 "--all",
                 "--output", file("src/generated/resources/"),
                 "--existing", file("src/main/resources")
@@ -109,7 +114,7 @@ sourceSets.test.resources {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
+    minecraft "net.minecraftforge:forge:${project.mc_version}-${project.forge}"
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 }
@@ -117,14 +122,14 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : project.modName,
+                "Specification-Title"     : project.mod_name,
                 "Specification-Vendor"    : "Team Abnormals",
                 "Specification-Version"   : "1",
-                "Implementation-Title"    : project.modName,
-                "Implementation-Version"  : project.modVersion,
+                "Implementation-Title"    : project.mod_name,
+                "Implementation-Version"  : project.mod_version,
                 "Implementation-Vendor"   : "Team Abnormals",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs"            : project.modId + ".mixins.json"
+                "MixinConfigs"            : project.mod_id + ".mixins.json"
         ])
     }
     finalizedBy "reobfJar"
@@ -153,5 +158,50 @@ publishing {
             url = "https://maven.teamabnormals.com"
             credentials(PasswordCredentials)
         }
+    }
+}
+
+publishMods {
+    file = jar.archiveFile
+    changelog = providers.fileContents(layout.projectDirectory.file("changelog.md")).asText
+    type = STABLE
+    modLoaders.addAll("forge", "neoforge")
+    version = project.mod_version
+    displayName = "${project.mod_name} ${project.mc_version} - ${project.mod_version}"
+
+    modrinth {
+        announcementTitle = "<:modrinth:1428950505010364517> Download from Modrinth!"
+        accessToken = providers.gradleProperty("MODRINTH_API_KEY")
+        projectId = project.modrinth_id
+        minecraftVersions.add(project.mc_version)
+    }
+
+    curseforge {
+        announcementTitle = "<:curseforge:1428950488358850581> Download from CurseForge!"
+        accessToken = providers.gradleProperty("CURSEFORGE_API_KEY")
+        projectId = project.curseforge_id
+        projectSlug = project.mod_id.replace('_', '-')
+        minecraftVersions.add(project.mc_version)
+    }
+
+    discord() {
+        webhookUrl = providers.gradleProperty("DISCORD_WEBHOOK")
+        dryRunWebhookUrl = providers.gradleProperty("DISCORD_WEBHOOK_ALT")
+        username = "Team Abnormals"
+        content = changelog.map {
+            "## ${project.mod_name} ${project.mc_version} - ${project.mod_version}\n" + it
+        }
+        style {
+            look = "MODERN"
+            thumbnailUrl = "https://i.slabfi.sh/icon_border/${project.mod_id}.png"
+            color = "#537db5"
+        }
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
     }
 }
