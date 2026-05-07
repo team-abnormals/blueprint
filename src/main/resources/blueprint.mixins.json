@@ -40,7 +40,8 @@
     "client.ReloadableResourceManagerMixin",
     "client.SkinCustomizationScreenMixin",
     "client.SkinManagerMixin",
-    "client.SplashManagerMixin"
+    "client.SplashManagerMixin",
+    "client.WorldOpenFlowsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
