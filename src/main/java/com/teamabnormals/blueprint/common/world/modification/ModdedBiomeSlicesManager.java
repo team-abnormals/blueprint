@@ -7,7 +7,8 @@ import com.teamabnormals.blueprint.core.other.BlueprintDataMaps;
 import com.teamabnormals.blueprint.core.other.BlueprintDataMaps.ModdedBiomeSliceSizeEntry;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
-import com.teamabnormals.blueprint.core.util.BiomeUtil;
+import com.teamabnormals.blueprint.core.util.BiomeUtil.ModdedBiomeProvider;
+import com.teamabnormals.blueprint.core.util.BiomeUtil.OriginalModdedBiomeProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -41,8 +42,8 @@ public final class ModdedBiomeSlicesManager {
 		for (var unassignedSlice : slices) {
 			ModdedBiomeSlice slice = unassignedSlice.getValue();
 			if (slice.weight() <= 0) continue;
-			BiomeUtil.ModdedBiomeProvider provider = slice.provider();
-			if (provider != BiomeUtil.OriginalModdedBiomeProvider.INSTANCE) {
+			ModdedBiomeProvider provider = slice.provider();
+			if (provider != OriginalModdedBiomeProvider.INSTANCE) {
 				var additionalPossibleBiomes = provider.getAdditionalPossibleBiomes(biomeRegistry);
 				if (additionalPossibleBiomes.isEmpty() || (additionalPossibleBiomes.size() == 1 && additionalPossibleBiomes.contains(originalSourceMarker))) continue;
 			}
@@ -62,28 +63,28 @@ public final class ModdedBiomeSlicesManager {
 		long seed = server.getWorldData().worldGenOptions().seed();
 		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : dimensions.entrySet()) {
 			ResourceLocation location = entry.getKey().location();
-			var slicesForKey = assignedSlices.get(location);
-			if (slicesForKey != null && !slicesForKey.isEmpty()) {
-				ChunkGenerator chunkGenerator = entry.getValue().generator();
-				BiomeSource source = chunkGenerator.getBiomeSource();
-				// Checking specifically for an instance of MultiNoiseBiomeSource isn't reliable because mods may alter the biome source before we do
-				// If we do replace something we shouldn't then players can remove providers in a datapack
-				if (!(source instanceof FixedBiomeSource) && !(source instanceof CheckerboardColumnBiomeSource)) {
-					int size = defaultSize;
-					ModdedBiomeSliceSizeEntry sizeEntry = dimensions.getData(BlueprintDataMaps.MODDED_BIOME_SLICE_SIZES, entry.getKey());
-					if (sizeEntry != null && sizeEntry.size() > 0) {
-						size = sizeEntry.size();
-					}
-
-					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForKey, size, seed, location.hashCode());
-					chunkGenerator.biomeSource = moddedBiomeSource;
-					chunkGenerator.featuresPerStep = Lazy.of(() -> {
-						return FeatureSorter.buildFeaturesPerStep(List.copyOf(moddedBiomeSource.possibleBiomes()), (biomeHolder) -> {
-							return chunkGenerator.getBiomeGenerationSettings(biomeHolder).features();
-						}, true);
-					});
-				}
-			}
+			var slicesForLevel = assignedSlices.get(location);
+			if (slicesForLevel == null) continue;
+			int sliceCount = slicesForLevel.size();
+			// Don't add slices to this level if it has no meaningful slices
+			if (sliceCount == 0 || (sliceCount == 1 && slicesForLevel.getFirst().getSecond().provider() == OriginalModdedBiomeProvider.INSTANCE))
+				continue;
+			ChunkGenerator chunkGenerator = entry.getValue().generator();
+			BiomeSource source = chunkGenerator.getBiomeSource();
+			// Checking specifically for an instance of MultiNoiseBiomeSource isn't reliable because mods may alter the biome source before we do
+			// If we do replace something we shouldn't then players can remove providers in a datapack
+			if (source instanceof FixedBiomeSource || source instanceof CheckerboardColumnBiomeSource) continue;
+			int size = defaultSize;
+			ModdedBiomeSliceSizeEntry sizeEntry = dimensions.getData(BlueprintDataMaps.MODDED_BIOME_SLICE_SIZES, entry.getKey());
+			if (sizeEntry != null && sizeEntry.size() > 0)
+				size = sizeEntry.size();
+			ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForLevel, size, seed, location.hashCode());
+			chunkGenerator.biomeSource = moddedBiomeSource;
+			chunkGenerator.featuresPerStep = Lazy.of(() -> {
+				return FeatureSorter.buildFeaturesPerStep(List.copyOf(moddedBiomeSource.possibleBiomes()), (biomeHolder) -> {
+					return chunkGenerator.getBiomeGenerationSettings(biomeHolder).features();
+				}, true);
+			});
 		}
 	}
 }
