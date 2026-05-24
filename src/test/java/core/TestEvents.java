@@ -4,7 +4,6 @@ import com.teamabnormals.blueprint.client.screen.shaking.EmanatingShakeSource;
 import com.teamabnormals.blueprint.client.screen.shaking.ScreenShakeHandler;
 import com.teamabnormals.blueprint.common.entity.BlueprintFallingBlockEntity;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
-import com.teamabnormals.blueprint.core.events.EntityStepEvent;
 import com.teamabnormals.blueprint.core.events.FallingBlockEvent.BlockFallEvent;
 import com.teamabnormals.blueprint.core.events.FallingBlockEvent.FallingBlockTickEvent;
 import com.teamabnormals.blueprint.core.util.TradeUtil;
@@ -102,13 +101,6 @@ public final class TestEvents {
 				new BlueprintTrade(TestItems.COW_SPAWN_EGG.get(), 5, 2, 6, 15),
 				new BlueprintTrade(TestItems.COW_SPAWN_EGG.get(), 5, 2, 6, 55)
 		);
-	}
-
-	@SubscribeEvent
-	public static void onEntityStep(EntityStepEvent event) {
-		if (event.getState().getBlock() == Blocks.MAGMA_BLOCK) {
-			event.setCanceled(true);
-		}
 	}
 
 	@SubscribeEvent

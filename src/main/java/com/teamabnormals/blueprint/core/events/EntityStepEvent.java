@@ -8,13 +8,13 @@ import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-
 /**
  * This event is fired when an {@link Entity} steps on a block.
  * <p>Cancelling this event will prevent {@link net.minecraft.world.level.block.Block#stepOn} in the block's class from being called.</p>
  *
  * @author abigailfails
  */
+@Deprecated(forRemoval = true)
 public final class EntityStepEvent extends Event implements ICancellableEvent {
 	private final Level level;
 	private final BlockPos pos;
