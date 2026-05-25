@@ -1,5 +1,6 @@
 package com.teamabnormals.blueprint.core.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.serialization.JsonOps;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModificationManager;
 import net.minecraft.commands.Commands;
@@ -14,7 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +30,13 @@ public final class ReloadableServerResourcesMixin {
 		AdvancementModificationManager.INSTANCE = new AdvancementModificationManager(frozen.createSerializationContext(JsonOps.INSTANCE));
 	}
 
-	@Inject(method = "listeners", at = @At("RETURN"), cancellable = true)
-	private void insertListeners(CallbackInfoReturnable<List<PreparableReloadListener>> info) {
-		if (AdvancementModificationManager.INSTANCE == null) return;
-		int indexOfAdvancements = info.getReturnValue().indexOf(this.advancements);
-		if (indexOfAdvancements == -1) return;
-		ArrayList<PreparableReloadListener> listeners = new ArrayList<>(info.getReturnValue());
-		listeners.add(indexOfAdvancements, AdvancementModificationManager.INSTANCE);
-		info.setReturnValue(listeners);
+	@ModifyReturnValue(method = "listeners", at = @At("RETURN"))
+	private List<PreparableReloadListener> insertListeners(List<PreparableReloadListener> listeners) {
+		if (AdvancementModificationManager.INSTANCE != null) {
+			int indexOfAdvancements = listeners.indexOf(this.advancements);
+			if (indexOfAdvancements != -1)
+				(listeners = new ArrayList<>(listeners)).add(indexOfAdvancements, AdvancementModificationManager.INSTANCE);
+		}
+		return listeners;
 	}
 }
