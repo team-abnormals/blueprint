@@ -1,0 +1,9 @@
+{
+  "levels": [
+    "minecraft:the_nether"
+  ],
+  "provider": {
+    "type": "blueprint:original"
+  },
+  "weight": 100
+}

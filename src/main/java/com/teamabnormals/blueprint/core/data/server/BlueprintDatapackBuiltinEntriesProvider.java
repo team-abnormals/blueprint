@@ -4,7 +4,7 @@ import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlice;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
 import com.teamabnormals.blueprint.core.registry.BlueprintDataPackRegistries;
-import com.teamabnormals.blueprint.core.util.BiomeUtil;
+import com.teamabnormals.blueprint.core.util.BiomeUtil.OriginalModdedBiomeProvider;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -38,7 +38,12 @@ public final class BlueprintDatapackBuiltinEntriesProvider extends DatapackBuilt
 	}
 
 	private static void bootstrapSlices(BootstrapContext<ModdedBiomeSlice> context) {
-		var originalsKey = ResourceKey.create(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, Blueprint.location("originals"));
-		context.register(originalsKey, new ModdedBiomeSlice(100, BiomeUtil.OriginalModdedBiomeProvider.INSTANCE, LevelStem.OVERWORLD, LevelStem.NETHER, LevelStem.END));
+		registerOriginalSlice(context, LevelStem.OVERWORLD);
+		registerOriginalSlice(context, LevelStem.NETHER);
+		registerOriginalSlice(context, LevelStem.END);
+	}
+
+	private static void registerOriginalSlice(BootstrapContext<ModdedBiomeSlice> context, ResourceKey<LevelStem> level) {
+		context.register(ResourceKey.create(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, Blueprint.location(level.location().getPath())), new ModdedBiomeSlice(100, OriginalModdedBiomeProvider.INSTANCE, level));
 	}
 }
