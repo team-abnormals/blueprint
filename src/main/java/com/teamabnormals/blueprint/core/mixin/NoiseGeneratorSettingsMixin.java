@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface NoiseGeneratorSettingsMixin {
 	@Accessor
 	@Mutable
-		// Curse technique
+	// Curse technique
 	void setSurfaceRule(SurfaceRules.RuleSource surfaceRule);
 }

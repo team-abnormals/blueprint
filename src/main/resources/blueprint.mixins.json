@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "refmap": "blueprint.refmap.json",
   "mixins": [
+    "BiomeSourceMixin",
     "ChickenMixin",
     "DedicatedServerMixin",
     "EntityMixin",

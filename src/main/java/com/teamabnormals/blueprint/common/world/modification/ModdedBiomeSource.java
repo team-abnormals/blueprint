@@ -79,6 +79,10 @@ public final class ModdedBiomeSource extends BiomeSource {
 			strings.add("Modded Biome Slice: " + this.getSliceNameVanillaZoom(pos, sampler));
 	}
 
+	public BiomeSource getOriginalSource() {
+		return this.originalSource;
+	}
+
 	@SuppressWarnings("unchecked")
 	private <T> T getSlice(int x, int y, int z, Climate.Sampler sampler, boolean returnBiome) {
 		Pair<ResourceLocation, ModdedBiomeSlice>[] possibleSlices = new Pair[this.slices.length];
