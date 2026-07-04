@@ -82,7 +82,7 @@ public abstract class RemolderProvider implements DataProvider {
 			return CompletableFuture.allOf(entries.stream().map(entry -> {
 				Path resolvedPath = pathProvider.json(entry.name);
 				try {
-					var dataResult = RemolderEntry.CODEC.encodeStart(registryOps, new RemolderEntry(entry.pathSelector, entry.packs, entry.molding, entry.remolder));
+					var dataResult = RemolderEntry.CODEC.encodeStart(registryOps, new RemolderEntry(entry.pathSelector, entry.packs, entry.molding, entry.priority, entry.remolder));
 					var error = dataResult.error();
 					if (error.isPresent()) throw new JsonParseException(error.get().message());
 					return DataProvider.saveStable(output, dataResult.result().get(), resolvedPath);
@@ -110,6 +110,7 @@ public abstract class RemolderProvider implements DataProvider {
 		@Nullable
 		private Set<String> packs = null;
 		private MoldingTypes.MoldingType<?> molding = MoldingTypes.JSON;
+		private int priority = 1000;
 		private Remolder remolder = RemolderTypes.noop();
 
 		public Entry(ResourceLocation name) {
@@ -166,6 +167,17 @@ public abstract class RemolderProvider implements DataProvider {
 		 */
 		public Entry molding(MoldingTypes.MoldingType<?> molding) {
 			this.molding = molding;
+			return this;
+		}
+
+		/**
+		 * Changes the priority of the remolder. Lower priority remolders apply earlier.
+		 *
+		 * @param priority The new integer priority value.
+		 * @return This entry.
+		 */
+		public Entry priority(int priority) {
+			this.priority = priority;
 			return this;
 		}
 

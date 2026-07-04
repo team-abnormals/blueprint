@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -85,7 +85,7 @@ public final class MoldingTypes {
 		}
 
 		@SuppressWarnings("unchecked")
-		public Resource remold(String location, Resource resource, List<RemolderLoader.Entry> entries) {
+		public Resource remold(String location, Resource resource, Collection<RemolderLoader.Entry> entries) {
 			T root = this.deserializer().apply(resource);
 			if (root == null) return resource;
 			String pack = resource.sourcePackId();

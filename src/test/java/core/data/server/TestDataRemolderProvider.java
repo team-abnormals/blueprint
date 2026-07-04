@@ -61,6 +61,7 @@ public final class TestDataRemolderProvider extends RemolderProvider {
 				.remolder(addPool(pool));
 		var container = LootItem.lootTableItem(Items.NETHER_STAR).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))).setWeight(10).build();
 		this.entry("loot/igloo_chest")
+				.priority(999)
 				.path("minecraft:loot_table/chests/igloo_chest")
 				.remolder(addEntry(1, container));
 		container = LootItem.lootTableItem(Items.NETHERITE_INGOT).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))).setWeight(5).build();

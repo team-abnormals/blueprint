@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  */
 public final class RemolderLoader {
 	private static final Gson GSON = new Gson();
-	private final HashMap<String, IdentityHashMap<MoldingTypes.MoldingType<?>, Pair<Map<String, List<Entry>>, ArrayList<Pair<Predicate<ResourceLocation>, Entry>>>>> fileExtensionToEntries = new HashMap<>();
+	private final HashMap<String, IdentityHashMap<MoldingTypes.MoldingType<?>, Pair<Map<String, TreeSet<Entry>>, ArrayList<Pair<Predicate<ResourceLocation>, Entry>>>>> fileExtensionToEntries = new HashMap<>();
 	private final RemoldingCompiler compiler;
 	private final PackType packType;
 
@@ -101,10 +101,10 @@ public final class RemolderLoader {
 							var packs = remolderEntry.packs();
 							if (locations.isPresent()) {
 								var directRemoldings = entries.getFirst();
-								Entry remoldingEntry = new Entry(packs == null ? s -> true : packs::contains, remolding);
-								locations.get().forEach(location -> directRemoldings.computeIfAbsent(location.toString(), __ -> new ArrayList<>()).add(remoldingEntry));
+								Entry remoldingEntry = new Entry(entryKey, packs == null ? s -> true : packs::contains, remolderEntry.priority(), remolding);
+								locations.get().forEach(location -> directRemoldings.computeIfAbsent(location.toString(), __ -> new TreeSet<>()).add(remoldingEntry));
 							} else
-								entries.getSecond().add(Pair.of(either.right().get(), new Entry(packs == null ? s -> true : packs::contains, remolding)));
+								entries.getSecond().add(Pair.of(either.right().get(), new Entry(entryKey, packs == null ? s -> true : packs::contains, remolderEntry.priority(), remolding)));
 						}
 					}
 					successfulCount.getAndIncrement();
@@ -114,6 +114,11 @@ public final class RemolderLoader {
 			}, executor));
 		}
 		CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
+		for (var entry : fileExtensionToEntries.entrySet()) {
+			entry.getValue().values().forEach(remolders -> {
+				remolders.getSecond().sort(Comparator.comparing(Pair::getSecond));
+			});
+		}
 		Blueprint.LOGGER.info("Successfully loaded {} {} remolders!", successfulCount.get(), this.packType.getDirectory());
 	}
 
@@ -129,19 +134,22 @@ public final class RemolderLoader {
 				String locationWithoutExtension = locationString.substring(0, lastIndexOfDot);
 				ResourceLocation resourceLocationWithoutExtension = ResourceLocation.parse(locationWithoutExtension);
 				boolean foundNone = true;
-				Pair<MoldingTypes.MoldingType<?>, List<Entry>>[] typeEntries = new Pair[entriesForExtension.size()];
+				Pair<MoldingTypes.MoldingType<?>, Collection<Entry>>[] typeEntries = new Pair[entriesForExtension.size()];
 				int i = 0;
 				for (var entry : entriesForExtension.entrySet()) {
 					var value = entry.getValue();
 					var indirectRemolders = value.getSecond();
-					var entriesForLocation = value.getFirst().get(locationWithoutExtension);
+					Collection<Entry> entriesForLocation = value.getFirst().get(locationWithoutExtension);
 					if (!indirectRemolders.isEmpty()) {
-						entriesForLocation = entriesForLocation == null ? new ArrayList<>() : new ArrayList<>(entriesForLocation);
+						TreeSet<Entry> mergedRemolders = new TreeSet<>();
 						for (var filterAndRemolding : indirectRemolders) {
 							if (!filterAndRemolding.getFirst().test(resourceLocationWithoutExtension)) continue;
-							entriesForLocation.add(filterAndRemolding.getSecond());
+							mergedRemolders.add(filterAndRemolding.getSecond());
 						}
-						if (entriesForLocation.isEmpty()) continue;
+						if (!mergedRemolders.isEmpty()) {
+							if (entriesForLocation != null) mergedRemolders.addAll(entriesForLocation);
+							entriesForLocation = mergedRemolders;
+						} else if (entriesForLocation == null) continue;
 					} else if (entriesForLocation == null) continue;
 					foundNone = false;
 					typeEntries[i++] = Pair.of(entry.getKey(), entriesForLocation);
@@ -214,5 +222,21 @@ public final class RemolderLoader {
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public record Entry(Predicate<String> packFilter, Remolding<?> remolding) {}
+	public record Entry(ResourceLocation name, Predicate<String> packFilter, int priority, Remolding<?> remolding) implements Comparable<Entry> {
+		public Entry(Predicate<String> packFilter, Remolding<?> remolding) {
+			this(tryToExtractName(remolding), packFilter, 1000, remolding);
+		}
+
+		private static ResourceLocation tryToExtractName(Remolding<?> remolding) {
+			String id = remolding.toString();
+			int indexOfSpace = id.indexOf(' ');
+			return indexOfSpace != -1 ? ResourceLocation.parse(id.substring(0, indexOfSpace)) : ResourceLocation.withDefaultNamespace("unknown");
+		}
+
+		@Override
+		public int compareTo(RemolderLoader.Entry other) {
+			int i = Integer.compare(this.priority, other.priority);
+			return i == 0 ? this.name.compareTo(other.name) : i;
+		}
+	}
 }

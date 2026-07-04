@@ -1,5 +1,6 @@
 {
   "molding": "json",
+  "priority": 999,
   "remolder": {
     "type": "add",
     "target": "pools[1].entries[]",
