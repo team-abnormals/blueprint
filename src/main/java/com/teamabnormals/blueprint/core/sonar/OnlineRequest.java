@@ -35,6 +35,9 @@ public class OnlineRequest {
 	public static InputStream get(String url) throws URISyntaxException, IOException {
 		HttpURLConnection connection = (HttpURLConnection) new URI(url).toURL().openConnection();
 		connection.addRequestProperty("User-Agent", USER_AGENT);
+		connection.setConnectTimeout(5000);
+		connection.setReadTimeout(10000);
+		connection.setUseCaches(false);
 		InputStream stream = connection.getInputStream();
 
 		if (connection.getResponseCode() != 200) {
