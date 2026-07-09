@@ -1,6 +1,9 @@
-* Extended Remolder capabilities significantly
-* Added support for Advancement remolders
-* Added a small temporary prompt for Slabfish Plush campaign - [consider supporting here, we have until May 11th to hit our goal!](https://www.makeship.com/petitions/slabfish-plush)
-* Fixed BlueprintTrade price multiplier being incorrect
-* Fixed Thatch Stairs models
-* Fixed a minor potential repaletter bug
+* Simplify modded biome slices initialization code 
+* Made "original" slices easier to configure
+* Disable and deprecate unused stepping event
+* Force ModdedBiomeSource to never save
+* Made remolder ordering deterministic
+* Fixed world creation hanging when using Blueprint together with ModernFix
+* Fixed Experimental Settings toggle not fully working
+* Fixed ReloadableServerResourcesMixin preventing other mods from inserting reload listeners
+* Fix minor missing function call in BlueprintBoatItem
