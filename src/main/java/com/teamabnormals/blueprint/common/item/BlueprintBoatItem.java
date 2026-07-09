@@ -70,6 +70,9 @@ public class BlueprintBoatItem extends Item {
 
 			if (hitResult.getType() == HitResult.Type.BLOCK) {
 				Boat boat = this.hasChest ? new BlueprintChestBoat(level, this.type, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z) : new BlueprintBoat(level, this.type, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z);
+				if (level instanceof ServerLevel serverLevel) {
+					EntityType.<Boat>createDefaultStackConfig(serverLevel, itemstack, playerIn).accept(boat);
+				}
 				boat.setYRot(playerIn.getYRot());
 				if (!level.noCollision(boat, boat.getBoundingBox().inflate(-0.1D))) {
 					return new InteractionResultHolder<>(InteractionResult.FAIL, itemstack);
