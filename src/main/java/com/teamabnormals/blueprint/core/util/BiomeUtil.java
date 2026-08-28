@@ -11,11 +11,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.common.codec.NullableFieldCodec;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
+import com.teamabnormals.blueprint.core.registry.BlueprintDensityFunctions.SinglePointCacheDensityFunction;
 import com.teamabnormals.blueprint.core.util.registry.BasicRegistry;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
@@ -25,6 +23,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
+import net.minecraft.world.level.levelgen.DensityFunction;
 
 import java.util.HashSet;
 import java.util.List;
@@ -85,6 +84,140 @@ public final class BiomeUtil {
 	}
 
 	/**
+	 * A biome-optimized {@link DensityFunction.FunctionContext} that updates per change in block position.
+	 * <p>Many modded biome providers may need access to the same climate parameters or original biome.</p>
+	 * <p>This acts as a local-scope cache for commonly sampled biome conditions.</p>
+	 *
+	 * @author SmellyModder (Luke Tonon)
+	 */
+	public static class ScopedDensityFunctionContext implements DensityFunction.FunctionContext {
+		private Climate.Sampler optimizedSampler;
+		// These are fields to avoid casting on the sampler's getters
+		private SinglePointCacheDensityFunction temperature;
+		private SinglePointCacheDensityFunction humidity;
+		private SinglePointCacheDensityFunction continentalness;
+		private SinglePointCacheDensityFunction erosion;
+		private SinglePointCacheDensityFunction depth;
+		private SinglePointCacheDensityFunction weirdness;
+		private Holder<Biome> originalBiome;
+		private Climate.TargetPoint targetPoint;
+		private int blockX;
+		private int blockY;
+		private int blockZ;
+
+		public void reset(Climate.Sampler sampler, int x, int y, int z) {
+			// Some annoying bookkeeping, but the performance gains are worth it
+			// Wrap sampler's density functions (when needed) for caching repeated samples on (x, y, z)
+			if (this.optimizedSampler != null) {
+				boolean needsNewSampler = false;
+				if (this.temperature.base() != sampler.temperature()) {
+					this.temperature = this.cached(sampler.temperature());
+					needsNewSampler = true;
+				} else this.temperature.reset();
+				if (this.humidity.base() != sampler.humidity()) {
+					this.humidity = this.cached(sampler.humidity());
+					needsNewSampler = true;
+				} else this.humidity.reset();
+				if (this.continentalness.base() != sampler.continentalness()) {
+					this.continentalness = this.cached(sampler.continentalness());
+					needsNewSampler = true;
+				} else this.continentalness.reset();
+				if (this.erosion.base() != sampler.erosion()) {
+					this.erosion = this.cached(sampler.erosion());
+					needsNewSampler = true;
+				} else this.erosion.reset();
+				if (this.depth.base() != sampler.depth()) {
+					this.depth = this.cached(sampler.depth());
+					needsNewSampler = true;
+				} else this.depth.reset();
+				if (this.weirdness.base() != sampler.weirdness()) {
+					this.weirdness = this.cached(sampler.weirdness());
+					needsNewSampler = true;
+				} else this.weirdness.reset();
+				if (needsNewSampler)
+					this.optimizedSampler = new Climate.Sampler(this.temperature, this.humidity, this.continentalness, this.erosion, this.depth, this.weirdness, sampler.spawnTarget());
+			} else {
+				this.optimizedSampler = new Climate.Sampler(
+					this.temperature = this.cached(sampler.temperature()),
+					this.humidity = this.cached(sampler.humidity()),
+					this.continentalness = this.cached(sampler.continentalness()),
+					this.erosion = this.cached(sampler.erosion()),
+					this.depth = this.cached(sampler.depth()),
+					this.weirdness = this.cached(sampler.weirdness()),
+					sampler.spawnTarget()
+				);
+			}
+			this.originalBiome = null;
+			this.targetPoint = null;
+			this.blockX = QuartPos.toBlock(x);
+			this.blockY = QuartPos.toBlock(y);
+			this.blockZ = QuartPos.toBlock(z);
+		}
+
+		private SinglePointCacheDensityFunction cached(DensityFunction function) {
+			return new SinglePointCacheDensityFunction(function, this);
+		}
+
+		/**
+		 * Gets the cached "original" biome at (x, y, z).
+		 *
+		 * @param x        The x pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
+		 * @param y        The y pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
+		 * @param z        The z pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
+		 * @param original The original biome source to sample from.
+		 * @return The "original" biome.
+		 */
+		public Holder<Biome> getOriginalBiome(int x, int y, int z, BiomeSource original) {
+			if (this.originalBiome != null) return this.originalBiome;
+			return this.originalBiome = original.getNoiseBiome(x, y, z, this.optimizedSampler);
+		}
+
+		/**
+		 * Gets the cached {@link Climate.TargetPoint} at this context's position.
+		 * <p>This should only be used if you need most or all of the climate parameters.</p>
+		 *
+		 * @return The cached {@link Climate.TargetPoint} instance.
+		 */
+		public Climate.TargetPoint getTargetPoint() {
+			if (this.targetPoint != null) return this.targetPoint;
+			Climate.Sampler sampler = this.optimizedSampler;
+			return this.targetPoint = Climate.target(
+				(float) sampler.temperature().compute(this),
+				(float) sampler.humidity().compute(this),
+				(float) sampler.continentalness().compute(this),
+				(float) sampler.erosion().compute(this),
+				(float) sampler.depth().compute(this),
+				(float) sampler.weirdness().compute(this)
+			);
+		}
+
+		/**
+		 * Gets the {@link Climate.Sampler} for sampling climate parameters.
+		 * <p>This sampler is optimized for repeated usage at this context's position.</p>
+		 *
+		 * @return The {@link Climate.Sampler} instance for sampling climate parameters.
+		 */
+		public Climate.Sampler getClimateSampler() {
+			return this.optimizedSampler;
+		}
+
+		@Override
+		public int blockX() {
+			return this.blockX;
+		}
+
+		@Override
+		public int blockY() {
+			return this.blockY;
+		}
+
+		@Override
+		public int blockZ() {
+			return this.blockZ;
+		}
+	}
+
+	/**
 	 * The interface used for selecting biomes in {@link com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlice} instances.
 	 * <p>Use {@link #CODEC} for serializing and deserializing instances of this class.</p>
 	 *
@@ -100,11 +233,29 @@ public final class BiomeUtil {
 		 * @param x        The x pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param y        The y pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param z        The z pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
+		 * @param context  A {@link ScopedDensityFunctionContext} instance for efficient use of common sampling.
+		 * @param original The original {@link BiomeSource} instance that this provider is modding.
+		 * @param registry The biome {@link Registry} instance to use if needed.
+		 * @return A noise {@link Biome} at a position in a modded slice.
+		 */
+		default Holder<Biome> getNoiseBiome(int x, int y, int z, ScopedDensityFunctionContext context, BiomeSource original, Registry<Biome> registry) {
+			return this.getNoiseBiome(x, y, z, context.getClimateSampler(), original, registry);
+		}
+
+		/**
+		 * Gets a holder of a noise {@link Biome} at a position in a modded slice.
+		 * <p>In newer Minecraft versions, this method will get removed!</p>
+		 * <p>Use the fuller form of this method instead.</p>
+		 *
+		 * @param x        The x pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
+		 * @param y        The y pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
+		 * @param z        The z pos, shifted by {@link net.minecraft.core.QuartPos#fromBlock(int)}.
 		 * @param sampler  A {@link Climate.Sampler} instance to sample {@link net.minecraft.world.level.biome.Climate.TargetPoint} instances.
 		 * @param original The original {@link BiomeSource} instance that this provider is modding.
 		 * @param registry The biome {@link Registry} instance to use if needed.
 		 * @return A noise {@link Biome} at a position in a modded slice.
 		 */
+		@Deprecated
 		Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry);
 
 		/**
@@ -133,6 +284,11 @@ public final class BiomeUtil {
 
 		public static final MapCodec<OriginalModdedBiomeProvider> CODEC = MapCodec.unit(INSTANCE);
 		private static final Set<Holder<Biome>> POSSIBLE_BIOMES = ImmutableSet.of();
+
+		@Override
+		public Holder<Biome> getNoiseBiome(int x, int y, int z, ScopedDensityFunctionContext context, BiomeSource original, Registry<Biome> registry) {
+			return context.getOriginalBiome(x, y, z, original);
+		}
 
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
@@ -196,6 +352,11 @@ public final class BiomeUtil {
 		 */
 		public static Builder builder() {
 			return new Builder();
+		}
+
+		@Override
+		public Holder<Biome> getNoiseBiome(int x, int y, int z, ScopedDensityFunctionContext context, BiomeSource original, Registry<Biome> registry) {
+			return this.biomes.findValue(context.getTargetPoint());
 		}
 
 		@Override
@@ -297,10 +458,19 @@ public final class BiomeUtil {
 		});
 
 		@Override
+		public Holder<Biome> getNoiseBiome(int x, int y, int z, ScopedDensityFunctionContext context, BiomeSource original, Registry<Biome> registry) {
+			return this.getNoiseBiome(x, y, z, context.getClimateSampler(), registry, context.getOriginalBiome(x, y, z, original));
+		}
+
+		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
-			Holder<Biome> originalBiome = original.getNoiseBiome(x, y, z, sampler);
+			return this.getNoiseBiome(x, y, z, sampler, registry, original.getNoiseBiome(x, y, z, sampler));
+		}
+
+		private Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, Registry<Biome> registry, Holder<Biome> originalBiome) {
 			for (var overlay : this.overlays) {
-				if (overlay.getFirst().contains(originalBiome)) return overlay.getSecond().getNoiseBiome(x, y, z, sampler);
+				if (overlay.getFirst().contains(originalBiome))
+					return overlay.getSecond().getNoiseBiome(x, y, z, sampler);
 			}
 			return registry.getHolderOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER);
 		}

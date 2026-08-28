@@ -112,6 +112,7 @@ public final class Blueprint {
 		REGISTRY_HELPER.getBlockEntitySubHelper().register(bus);
 		BlueprintPoiTypes.POI_TYPES.register(bus);
 		BlueprintPlacementModifierTypes.PLACEMENT_MODIFIER_TYPES.register(bus);
+		BlueprintDensityFunctions.DENSITY_FUNCTION_TYPES.register(bus);
 		BlueprintSurfaceRules.RULE_SOURCES.register(bus);
 		BlueprintConditionCodecs.CONDITION_CODECS.register(bus);
 		BlueprintLootConditions.LOOT_CONDITION_TYPES.register(bus);

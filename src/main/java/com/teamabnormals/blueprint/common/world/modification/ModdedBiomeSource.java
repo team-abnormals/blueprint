@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
+import com.teamabnormals.blueprint.core.util.BiomeUtil.ScopedDensityFunctionContext;
 import net.minecraft.core.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LinearCongruentialGenerator;
@@ -88,14 +89,17 @@ public final class ModdedBiomeSource extends BiomeSource {
 		Pair<ResourceLocation, ModdedBiomeSlice>[] possibleSlices = new Pair[this.slices.length];
 		System.arraycopy(this.slices, 0, possibleSlices, 0, this.slices.length);
 		int totalWeight = this.totalWeight;
-		long random = this.getPositionalRandom(x, z);
+		var cache = this.positionalRandomCache.get();
+		long random = cache.getRandom(this, x, z);
+		ScopedDensityFunctionContext context = cache.context;
+		context.reset(sampler, x, y, z);
 		int randomWeight = Math.floorMod(random, totalWeight);
 		for (int i = 0; i < possibleSlices.length; ) {
 			Pair<ResourceLocation, ModdedBiomeSlice> slice = possibleSlices[i];
 			if (slice != null) {
 				ModdedBiomeSlice moddedBiomeSlice = slice.getSecond();
 				if ((randomWeight -= moddedBiomeSlice.weight()) < 0) {
-					Holder<Biome> biome = moddedBiomeSlice.provider().getNoiseBiome(x, y, z, sampler, this.originalSource, this.biomes);
+					Holder<Biome> biome = moddedBiomeSlice.provider().getNoiseBiome(x, y, z, context, this.originalSource, this.biomes);
 					if (biome.value() == this.originalSourceMarker) {
 						possibleSlices[i] = null;
 						randomWeight = Math.floorMod(random, totalWeight -= moddedBiomeSlice.weight());
@@ -110,10 +114,6 @@ public final class ModdedBiomeSource extends BiomeSource {
 		}
 		// Should not happen, but could
 		return returnBiome ? (T) this.originalSource.getNoiseBiome(x, y, z, sampler) : null;
-	}
-
-	private long getPositionalRandom(int x, int z) {
-		return this.positionalRandomCache.get().getRandom(this, x, z);
 	}
 
 	private long computeZoomedPositionalRandom(int x, int z) {
@@ -231,7 +231,9 @@ public final class ModdedBiomeSource extends BiomeSource {
 		return (d0 - 0.5D) * 0.9D;
 	}
 
+	// TODO: In future MC versions, rename this class or maybe move it to density functions
 	private static class PositionalRandomCache {
+		private final ScopedDensityFunctionContext context = new ScopedDensityFunctionContext();
 		private final long[] lastXZHashes;
 		private final long[] randoms;
 
