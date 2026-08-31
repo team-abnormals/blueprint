@@ -8,6 +8,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.teamabnormals.blueprint.common.codec.BlueprintExtraCodecs;
 import com.teamabnormals.blueprint.common.codec.NullableFieldCodec;
 import com.teamabnormals.blueprint.core.Blueprint;
 import com.teamabnormals.blueprint.core.registry.BlueprintBiomes;
@@ -18,6 +19,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -25,10 +27,7 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -226,6 +225,16 @@ public final class BiomeUtil {
 	 */
 	public interface ModdedBiomeProvider {
 		Codec<ModdedBiomeProvider> CODEC = BiomeUtil.MODDED_PROVIDERS.dispatchStable(ModdedBiomeProvider::codec, Function.identity());
+		Set<Holder<Biome>> EMPTY_POSSIBLE_BIOMES = ImmutableSet.of();
+
+		/**
+		 * Called just before this provider is ready to be assigned to biome sources.
+		 * <p>Use this method to do any initialization that needs server data.</p>
+		 *
+		 * @param server The server of the world.
+		 * @param seed   The seed of the world.
+		 */
+		default void finalize(MinecraftServer server, long seed) {}
 
 		/**
 		 * Gets a holder of a noise {@link Biome} at a position in a modded slice.
@@ -259,12 +268,25 @@ public final class BiomeUtil {
 		Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry);
 
 		/**
-		 * Gets a set of the additional possible biomes that this provider may have.
+		 * Gets the set of the additional possible biomes that this provider may return.
+		 * <p>Used by Blueprint to determine if the provider places nothing significant.</p>
 		 *
 		 * @param registry The biome {@link Registry} instance to use if needed.
-		 * @return A set of the additional possible biomes that this provider may have.
+		 * @return The set of the additional possible biomes that this provider may return.
 		 */
 		Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry);
+
+		/**
+		 * Gets the set of the possible biomes that this provider may return.
+		 * <p>Used by Blueprint for building the possible biomes list in biome sources.</p>
+		 *
+		 * @param originalPossibleBiomes The set of original (non-blueprint-modified) possible biomes.
+		 * @param registry The biome {@link Registry} instance to use if needed.
+		 * @return The set of the possible biomes that this provider may return.
+		 */
+		default Set<Holder<Biome>> getPossibleBiomes(Set<Holder<Biome>> originalPossibleBiomes, Registry<Biome> registry) {
+			return this.getAdditionalPossibleBiomes(registry);
+		}
 
 		/**
 		 * Gets a {@link MapCodec} instance for serializing and deserializing this provider.
@@ -283,7 +305,6 @@ public final class BiomeUtil {
 		INSTANCE;
 
 		public static final MapCodec<OriginalModdedBiomeProvider> CODEC = MapCodec.unit(INSTANCE);
-		private static final Set<Holder<Biome>> POSSIBLE_BIOMES = ImmutableSet.of();
 
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, ScopedDensityFunctionContext context, BiomeSource original, Registry<Biome> registry) {
@@ -302,7 +323,12 @@ public final class BiomeUtil {
 
 		@Override
 		public Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry) {
-			return POSSIBLE_BIOMES;
+			return EMPTY_POSSIBLE_BIOMES;
+		}
+
+		@Override
+		public Set<Holder<Biome>> getPossibleBiomes(Set<Holder<Biome>> originalPossibleBiomes, Registry<Biome> registry) {
+			return originalPossibleBiomes;
 		}
 	}
 
@@ -445,40 +471,98 @@ public final class BiomeUtil {
 	}
 
 	/**
-	 * A {@link ModdedBiomeProvider} implementation that maps out {@link BiomeSource} instances for overlaying specific biomes.
-	 * <p>This is especially useful for sub-biomes.</p>
+	 * A {@link ModdedBiomeProvider} implementation that maps out {@link ModdedBiomeProvider} instances for overlaying specific biomes.
+	 * <p>By default, the {@code underlay} biomes come from {@link OriginalModdedBiomeProvider}.</p>
+	 * <p>
+	 *     The {@code markUnderlayBiomesAsOriginal} parameter tells
+	 *     it to return the original source marker biome when
+	 *     no matching overlay fits the sampled {@code underlay} biome.
+	 *     By default, it is true.
+	 * </p>
+	 * <p>This provider is especially useful for sub-biomes and simple replacements.</p>
 	 *
 	 * @author SmellyModder (Luke Tonon)
 	 */
-	public record OverlayModdedBiomeProvider(List<Pair<HolderSet<Biome>, BiomeSource>> overlays) implements ModdedBiomeProvider {
+	public record OverlayModdedBiomeProvider(List<Pair<HolderSet<Biome>, ModdedBiomeProvider>> overlays, ModdedBiomeProvider underlay, boolean markUnderlayBiomesAsOriginal) implements ModdedBiomeProvider {
 		public static final MapCodec<OverlayModdedBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 			return instance.group(
-					Codec.mapPair(RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("matches_biomes"), BiomeSource.CODEC.fieldOf("biome_source")).codec().listOf().fieldOf("overlays").forGetter(provider -> provider.overlays)
+				Codec.mapPair(RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("matches_biomes"), Codec.mapEither(BiomeSource.CODEC.fieldOf("biome_source"), BlueprintExtraCodecs.lazyMapCodec(() -> ModdedBiomeProvider.CODEC.fieldOf("provider"))).xmap(
+					either -> {
+						return either.map(BiomeSourceModdedBiomeProvider::new, provider -> provider);
+					}, provider -> {
+						return provider instanceof BiomeSourceModdedBiomeProvider source ? Either.left(source.biomeSource) : Either.right(provider);
+					}
+				)).codec().listOf().fieldOf("overlays").forGetter(provider -> provider.overlays),
+				BlueprintExtraCodecs.lazyMapCodec(() -> ModdedBiomeProvider.CODEC.optionalFieldOf("underlay", OriginalModdedBiomeProvider.INSTANCE)).forGetter(provider -> provider.underlay),
+				Codec.BOOL.optionalFieldOf("mark_underlay_biomes_as_original", true).forGetter(provider -> provider.markUnderlayBiomesAsOriginal)
 			).apply(instance, OverlayModdedBiomeProvider::new);
 		});
 
+		public OverlayModdedBiomeProvider(List<Pair<HolderSet<Biome>, BiomeSource>> overlays) {
+			this(overlays.stream().map(pair -> Pair.of(pair.getFirst(), (ModdedBiomeProvider) new BiomeSourceModdedBiomeProvider(pair.getSecond()))).toList(), OriginalModdedBiomeProvider.INSTANCE, true);
+		}
+
+		public static OverlayModdedBiomeProvider overlays(List<Pair<HolderSet<Biome>, ModdedBiomeProvider>> overlays) {
+			return new OverlayModdedBiomeProvider(overlays, OriginalModdedBiomeProvider.INSTANCE, true);
+		}
+
+		@Override
+		public void finalize(MinecraftServer server, long seed) {
+			this.overlays.forEach(overlay -> overlay.getSecond().finalize(server, seed));
+			this.underlay.finalize(server, seed);
+		}
+
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, ScopedDensityFunctionContext context, BiomeSource original, Registry<Biome> registry) {
-			return this.getNoiseBiome(x, y, z, context.getClimateSampler(), registry, context.getOriginalBiome(x, y, z, original));
+			// Duplicated code looks weird here but fixing it
+			// without performance loss adds even more complexity
+			// Annoyances of not wanting to make breaking changes
+			var underlayBiome = this.underlay.getNoiseBiome(x, y, z, context, original, registry);
+			for (var overlay : this.overlays) {
+				if (overlay.getFirst().contains(underlayBiome))
+					return overlay.getSecond().getNoiseBiome(x, y, z, context, original, registry);
+			}
+			return this.markUnderlayBiomesAsOriginal ? registry.getHolderOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER) : underlayBiome;
 		}
 
 		@Override
 		public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, BiomeSource original, Registry<Biome> registry) {
-			return this.getNoiseBiome(x, y, z, sampler, registry, original.getNoiseBiome(x, y, z, sampler));
-		}
-
-		private Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler, Registry<Biome> registry, Holder<Biome> originalBiome) {
+			var underlayBiome = this.underlay.getNoiseBiome(x, y, z, sampler, original, registry);
 			for (var overlay : this.overlays) {
-				if (overlay.getFirst().contains(originalBiome))
-					return overlay.getSecond().getNoiseBiome(x, y, z, sampler);
+				if (overlay.getFirst().contains(underlayBiome))
+					return overlay.getSecond().getNoiseBiome(x, y, z, sampler, original, registry);
 			}
-			return registry.getHolderOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER);
+			return this.markUnderlayBiomesAsOriginal ? registry.getHolderOrThrow(BlueprintBiomes.ORIGINAL_SOURCE_MARKER) : underlayBiome;
 		}
 
 		@Override
 		public Set<Holder<Biome>> getAdditionalPossibleBiomes(Registry<Biome> registry) {
+			return this.getPossibleBiomes(EMPTY_POSSIBLE_BIOMES, registry);
+		}
+
+		@Override
+		public Set<Holder<Biome>> getPossibleBiomes(Set<Holder<Biome>> originalPossibleBiomes, Registry<Biome> registry) {
 			HashSet<Holder<Biome>> biomes = new HashSet<>();
-			this.overlays.forEach(overlay -> biomes.addAll(overlay.getSecond().possibleBiomes()));
+			if (this.markUnderlayBiomesAsOriginal) {
+				this.overlays.forEach(overlay -> biomes.addAll(overlay.getSecond().getPossibleBiomes(originalPossibleBiomes, registry)));
+				return biomes;
+			}
+			Set<Holder<Biome>> underlayBiomes = new HashSet<>(this.underlay.getPossibleBiomes(originalPossibleBiomes, registry));
+			for (var overlay : this.overlays) {
+				var underlayIterator = underlayBiomes.iterator();
+				var overlayBiomes = overlay.getSecond().getPossibleBiomes(originalPossibleBiomes, registry);
+				var overlayMatches = overlay.getFirst();
+				while (underlayIterator.hasNext()) {
+					var underlayBiome = underlayIterator.next();
+					if (overlayMatches.contains(underlayBiome)) {
+						if (overlayBiomes.contains(underlayBiome)) continue;
+						// Overlay removes the biome
+						underlayIterator.remove();
+					}
+				}
+				biomes.addAll(overlayBiomes);
+			}
+			biomes.addAll(underlayBiomes);
 			return biomes;
 		}
 

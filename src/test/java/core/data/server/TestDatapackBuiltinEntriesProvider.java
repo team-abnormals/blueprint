@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlice;
 import com.teamabnormals.blueprint.common.world.modification.structure.SimpleStructureRepaletter;
 import com.teamabnormals.blueprint.common.world.modification.structure.StructureRepaletterEntry;
-import com.teamabnormals.blueprint.common.world.modification.structure.WeightedStructureRepaletter;
 import com.teamabnormals.blueprint.common.world.modification.structure.WeightedTagStructureRepaletter;
 import com.teamabnormals.blueprint.common.world.modification.structure.condition.AndStructureCondition;
 import com.teamabnormals.blueprint.common.world.modification.structure.condition.BiomeStructureCondition;

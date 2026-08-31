@@ -4,6 +4,7 @@ import client.*;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.teamabnormals.blueprint.client.screen.splash.SplashSerializers;
+import com.teamabnormals.blueprint.common.world.modification.ModdedBiomeSlicesManager;
 import com.teamabnormals.blueprint.common.world.storage.GlobalStorage;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedData;
 import com.teamabnormals.blueprint.common.world.storage.tracking.TrackedDataManager;
@@ -21,6 +22,7 @@ import core.data.server.*;
 import core.registry.*;
 import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -30,7 +32,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.neoforged.api.distmarker.Dist;
@@ -46,6 +51,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(BlueprintTest.MOD_ID)
@@ -81,6 +87,21 @@ public final class BlueprintTest {
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
 			DataUtil.registerDecoratedPotPattern(TestItems.ITEM.get(), TestItems.TEST_POTTERY_SHERD);
+		});
+		var overworldSliceLocation = Blueprint.location(LevelStem.OVERWORLD.location().getPath());
+		ModdedBiomeSlicesManager.PROVIDER_LOADING_EVENT.registerListener((server, key, levels, provider) -> {
+			if (!key.location().equals(overworldSliceLocation)) return provider;
+			var biomes = server.registryAccess().registryOrThrow(Registries.BIOME);
+			var forestBiome = biomes.getHolderOrThrow(Biomes.FOREST);
+			var warpedForestBiome = biomes.getHolderOrThrow(Biomes.WARPED_FOREST);
+			return new BiomeUtil.OverlayModdedBiomeProvider(List.of(
+				Pair.of(HolderSet.direct(forestBiome), new BiomeUtil.BiomeSourceModdedBiomeProvider(
+					MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(List.of(
+						Pair.of(Climate.parameters(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), forestBiome),
+						Pair.of(Climate.parameters(0.0F, 0.0F, 0.0F, 0.0F, 0.1F, 0.0F, 0.0F), warpedForestBiome)
+					)))
+				))
+			), provider, false);
 		});
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(Blueprint.MOD_ID, source -> source.state().is(BlockTags.IRON_ORES), SoundEvents.BELL_BLOCK));
 		DataUtil.registerNoteBlockInstrument(new DataUtil.CustomNoteBlockInstrument(BlueprintTest.MOD_ID, source -> source.state().is(Blocks.LODESTONE), SoundEvents.SHIELD_BREAK, false, (id1, id2) -> id2.equals("blueprint") ? -1 : 0));

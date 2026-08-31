@@ -64,7 +64,8 @@ public final class ModdedBiomeSource extends BiomeSource {
 
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		return Stream.concat(this.originalSource.possibleBiomes().stream(), Arrays.stream(this.slices).flatMap(slice -> slice.getSecond().provider().getAdditionalPossibleBiomes(this.biomes).stream()));
+		var originalPossibleBiomes = this.originalSource.possibleBiomes();
+		return Arrays.stream(this.slices).flatMap(slice -> slice.getSecond().provider().getPossibleBiomes(originalPossibleBiomes, this.biomes).stream().filter(biome -> !biome.is(BlueprintBiomes.ORIGINAL_SOURCE_MARKER)));
 	}
 
 	@Override
