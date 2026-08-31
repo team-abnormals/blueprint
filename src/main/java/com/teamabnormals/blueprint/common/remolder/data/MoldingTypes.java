@@ -103,14 +103,14 @@ public final class MoldingTypes {
 				root = result.getFirst();
 				metadata = result.getSecond();
 			}
-			InputStream inputStream = new ByteArrayInputStream(this.serializer().apply(root));
+			byte[] serializedRoot = this.serializer().apply(root);
 			if (metadata == null) {
-				return new RemoldedResource(resource.source(), () -> inputStream);
+				return new RemoldedResource(resource.source(), () -> new ByteArrayInputStream(serializedRoot));
 			} else {
 				try {
-					ResourceMetadata resourceMetadata = ResourceMetadata.fromJsonStream(new ByteArrayInputStream(serializeJsonElement(metadata instanceof JsonElement element ? element : ops.convertTo(JsonOps.INSTANCE, metadata))));
-					return new RemoldedResource(resource.source(), () -> inputStream, () -> resourceMetadata);
-				} catch (IOException exception) {
+					byte[] serializedMetadata = serializeJsonElement(metadata instanceof JsonElement element ? element : ops.convertTo(JsonOps.INSTANCE, metadata));
+					return new RemoldedResource(resource.source(), () -> new ByteArrayInputStream(serializedRoot), () -> ResourceMetadata.fromJsonStream(new ByteArrayInputStream(serializedMetadata)));
+				} catch (JsonIOException exception) {
 					Blueprint.LOGGER.error("Failed to serialize metadata", exception);
 					return resource;
 				}
