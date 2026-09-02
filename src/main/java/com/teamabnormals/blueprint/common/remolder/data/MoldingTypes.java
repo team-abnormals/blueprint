@@ -15,7 +15,6 @@ import net.minecraft.server.packs.resources.ResourceMetadata;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -96,15 +95,15 @@ public final class MoldingTypes {
 				root = result.getFirst();
 				metadata = result.getSecond();
 			}
-			InputStream inputStream = new ByteArrayInputStream(this.serializer().apply(root));
+			byte[] serializedRoot = this.serializer().apply(root);
 			if (metadata == null) {
-				return new Resource(resource.source(), () -> inputStream);
+				return new Resource(resource.source(), () -> new ByteArrayInputStream(serializedRoot));
 			} else {
 				try {
-					ResourceMetadata resourceMetadata = ResourceMetadata.fromJsonStream(new ByteArrayInputStream(serializeJsonElement(metadata instanceof JsonElement element ? element : ops.convertTo(JsonOps.INSTANCE, metadata))));
-					return new Resource(resource.source(), () -> inputStream, () -> resourceMetadata);
-				} catch (IOException exception) {
-					exception.printStackTrace();
+					byte[] serializedMetadata = serializeJsonElement(metadata instanceof JsonElement element ? element : ops.convertTo(JsonOps.INSTANCE, metadata));
+					return new Resource(resource.source(), () -> new ByteArrayInputStream(serializedRoot), () -> ResourceMetadata.fromJsonStream(new ByteArrayInputStream(serializedMetadata)));
+				} catch (JsonIOException exception) {
+					Blueprint.LOGGER.error("Failed to serialize metadata", exception);
 					return resource;
 				}
 			}
