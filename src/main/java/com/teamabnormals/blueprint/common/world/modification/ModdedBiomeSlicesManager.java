@@ -63,24 +63,26 @@ public final class ModdedBiomeSlicesManager {
 		long seed = server.getWorldData().worldGenOptions().seed();
 		for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : dimensions.entrySet()) {
 			ResourceLocation location = entry.getKey().location();
-			var slicesForKey = assignedSlices.get(location);
-			if (slicesForKey != null && !slicesForKey.isEmpty()) {
-				ChunkGenerator chunkGenerator = entry.getValue().generator();
-				BiomeSource source = chunkGenerator.getBiomeSource();
-				// Checking specifically for an instance of MultiNoiseBiomeSource isn't reliable because mods may alter the biome source before we do
-				// If we do replace something we shouldn't then players can remove providers in a datapack
-				if (!(source instanceof FixedBiomeSource) && !(source instanceof CheckerboardColumnBiomeSource)) {
-					int size = moddedBiomeSliceSizes.getIntOrElse(location.toString(), defaultSize);
-					if (size <= 0) size = defaultSize;
-					ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForKey, size, seed, location.hashCode());
-					chunkGenerator.biomeSource = moddedBiomeSource;
-					chunkGenerator.featuresPerStep = Suppliers.memoize(() -> {
-						return FeatureSorter.buildFeaturesPerStep(List.copyOf(moddedBiomeSource.possibleBiomes()), (biomeHolder) -> {
-							return chunkGenerator.getBiomeGenerationSettings(biomeHolder).features();
-						}, true);
-					});
-				}
-			}
+			var slicesForLevel = assignedSlices.get(location);
+			if (slicesForLevel == null) continue;
+			int sliceCount = slicesForLevel.size();
+			// Don't add slices to this level if it has no meaningful slices
+			if (sliceCount == 0 || (sliceCount == 1 && slicesForLevel.get(0).getSecond().provider() == BiomeUtil.OriginalModdedBiomeProvider.INSTANCE))
+				continue;
+			ChunkGenerator chunkGenerator = entry.getValue().generator();
+			BiomeSource source = chunkGenerator.getBiomeSource();
+			// Checking specifically for an instance of MultiNoiseBiomeSource isn't reliable because mods may alter the biome source before we do
+			// If we do replace something we shouldn't then players can remove providers in a datapack
+			if (source instanceof FixedBiomeSource || source instanceof CheckerboardColumnBiomeSource) continue;
+			int size = moddedBiomeSliceSizes.getIntOrElse(location.toString(), defaultSize);
+			if (size <= 0) size = defaultSize;
+			ModdedBiomeSource moddedBiomeSource = new ModdedBiomeSource(biomeRegistry, source, slicesForLevel, size, seed, location.hashCode());
+			chunkGenerator.biomeSource = moddedBiomeSource;
+			chunkGenerator.featuresPerStep = Suppliers.memoize(() -> {
+				return FeatureSorter.buildFeaturesPerStep(List.copyOf(moddedBiomeSource.possibleBiomes()), (biomeHolder) -> {
+					return chunkGenerator.getBiomeGenerationSettings(biomeHolder).features();
+				}, true);
+			});
 		}
 	}
 }
