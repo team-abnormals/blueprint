@@ -51,6 +51,11 @@ public final class ModdedBiomeSlicesManager {
 			}
 			slice.levels().forEach(levelStemResourceKey -> assignedSlices.computeIfAbsent(levelStemResourceKey.location(), __ -> new ArrayList<>()).add(Pair.of(unassignedSlice.getKey().location(), slice)));
 		}
+		if (BlueprintConfig.COMMON.sortModdedBiomeSlices.get()) {
+			assignedSlices.forEach((location, pairs) -> {
+				pairs.sort(Comparator.comparing(Pair::getFirst, ResourceLocation::compareNamespaced));
+			});
+		}
 
 		CommentedConfig moddedBiomeSliceSizes = BlueprintConfig.COMMON.moddedBiomeSliceSizes.get();
 		int defaultSize = moddedBiomeSliceSizes.getIntOrElse("default", 9);

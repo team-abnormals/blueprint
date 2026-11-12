@@ -19,6 +19,7 @@ public final class BlueprintConfig {
 	 */
 	public static final class Common {
 		public final ConfigValue<CommentedConfig> moddedBiomeSliceSizes;
+		public final ConfigValue<Boolean> sortModdedBiomeSlices;
 
 		public Common(ForgeConfigSpec.Builder builder) {
 			builder.comment(
@@ -33,6 +34,11 @@ public final class BlueprintConfig {
 			config.setComment("minecraft:overworld", "For example, the overworld's slice size would be formatted like this");
 			config.set("minecraft:overworld", 8);
 			this.moddedBiomeSliceSizes = builder.define("modded_biome_slice_sizes", config);
+			this.sortModdedBiomeSlices = builder.comment(
+					"If modded biome slices should be ordered by name instead of by registry order",
+					"The registry order can change between launches, which moves modded biome areas for the same seed",
+					"Changing this will affect the placement of modded biome areas in new chunks of existing worlds"
+			).define("sort_modded_biome_slices", false);
 		}
 	}
 
